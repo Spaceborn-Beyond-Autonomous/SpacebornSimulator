@@ -42,7 +42,11 @@ $result = $users->insertOne([
     'email' => $email,
     'password' => $hashedPassword,
     'created_at' => new MongoDB\BSON\UTCDateTime(),
-    'org_id' => ''
+    'org_id' => '',
+    'auth_provid' => 0,
+    'sub_id' => 1,
+    'expires_at' => '',
+    'is_verified' => 0
 ]);
 
 if ($result->getInsertedCount() > 0) {
