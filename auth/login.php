@@ -9,7 +9,7 @@
     $email = trim($_POST['email'] ?? '');
     $pass = $_POST['password'] ?? '';
 
-    if ($email === "" || $password === "") {
+    if ($email === "" || $pass === "") {
 
     die("Email and password are required.");
 }
@@ -26,7 +26,7 @@ if (!$user) {
     die("User not found.");
 }
 
-if (!password_verify($password, $user['password'])) {
+if (!password_verify($pass, $user['password'])) {
     die("Invalid password.");
 }
 
