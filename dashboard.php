@@ -7,7 +7,6 @@ if(!isset($_SESSION['id']) || !isset($_SESSION['email'])){
 
 $name = $_SESSION['name'];
 
-
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
