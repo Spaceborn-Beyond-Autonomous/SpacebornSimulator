@@ -1,6 +1,6 @@
 <?php
 
-require 'auth/db.php';
+require 'db.php';
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     die("Invalid request.");
