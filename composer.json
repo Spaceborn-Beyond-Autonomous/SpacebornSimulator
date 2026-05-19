@@ -1,0 +1,18 @@
+{
+    "name": "hg/spaceborn",
+    "description": "Drone Simulator",
+    "autoload": {
+        "psr-4": {
+            "Hg\\Spaceborn\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Hemanth Gavara",
+            "email": "hemanthgavara9@gmail.com"
+        }
+    ],
+    "require": {
+        "mongodb/mongodb": "^2.3"
+    }
+}
