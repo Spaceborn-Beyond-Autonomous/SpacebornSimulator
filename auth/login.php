@@ -44,6 +44,7 @@ $sessCol = $db -> sessions;
 $result = $sessCol ->insertOne(['email' => $email , "is_running" => true]);
 
 $_SESSION['id'] = (string)$result -> getInsertedId();
+$_SESSION['name'] = $user['name'];
 
 error_log('Attempting to redirect to dashboard');
 header('Location: ../dashboard.php');
