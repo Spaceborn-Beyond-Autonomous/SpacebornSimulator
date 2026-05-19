@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="title" content="Spaceborn Robotics — Browser-Based 3D Drone Simulator" />
+  <meta name="description" content="India's first browser-based drone simulator. Physics-accurate, MAVLink-compatible, zero install. Start for $1." />
+  <meta property="og:title" content="Spaceborn Robotics — Build. Simulate. Fly." />
+  <meta property="og:description" content="Democratising drone engineering for India & the world. No install. No hardware. Start for $1." />
+  <title>Spaceborn Robotics — Build · Simulate · Fly</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- Section: Navigation -->
+<header class="navbar" id="navbar">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="4" fill="#10256D"/>
+        <rect x="6" y="14" width="8" height="4" rx="2" fill="#10256D" opacity="0.7"/>
+        <rect x="18" y="14" width="8" height="4" rx="2" fill="#10256D" opacity="0.7"/>
+        <rect x="14" y="6" width="4" height="8" rx="2" fill="#10256D" opacity="0.7"/>
+        <rect x="14" y="18" width="4" height="8" rx="2" fill="#10256D" opacity="0.7"/>
+        <circle cx="7" cy="7" r="3" fill="#EE9346"/>
+        <circle cx="25" cy="7" r="3" fill="#EE9346"/>
+        <circle cx="7" cy="25" r="3" fill="#EE9346"/>
+        <circle cx="25" cy="25" r="3" fill="#EE9346"/>
+      </svg>
+      <span>SPACEBORN ROBOTICS</span>
+    </div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#about">About</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="btn-outlined" id="loginBtn">Login</button>
+      <button class="btn-primary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Get Started</button>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Section: Hero -->
+<section class="hero" id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="badge-chip neu-inset">India's First Browser-Based Drone Simulator</div>
+      <h1 class="hero-headline">BUILD · SIMULATE<br>FLY · REVOLUTIONISE</h1>
+      <p class="hero-sub">Democratising Drone Engineering for India &amp; the World. Physics-accurate, MAVLink-compatible, browser-native. No install. No hardware. Start for <strong>$1</strong>.</p>
+      <div class="hero-btns">
+        <button class="btn-primary btn-large" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Get Started — $1</button>
+        <button class="btn-outlined btn-large" id="watchDemoBtn">Watch Demo</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="simulator-card neu-raised">
+        <div class="sim-topbar">
+          <span class="sim-dot red"></span>
+          <span class="sim-dot yellow"></span>
+          <span class="sim-dot green"></span>
+          <span class="sim-title">Spaceborn Simulator — v2.4</span>
+        </div>
+        <div class="sim-viewport">
+          <canvas id="droneCanvas" width="400" height="220"></canvas>
+          <div class="sim-overlay-grid"></div>
+          <div class="hud-badges">
+            <div class="hud-badge neu-inset">
+              <span class="hud-label">ALT</span>
+              <span class="hud-val" id="hudAlt">42.3m</span>
+            </div>
+            <div class="hud-badge neu-inset">
+              <span class="hud-label">SPD</span>
+              <span class="hud-val" id="hudSpd">8.1m/s</span>
+            </div>
+            <div class="hud-badge neu-inset">
+              <span class="hud-label">BAT</span>
+              <span class="hud-val" id="hudBat">87%</span>
+            </div>
+            <div class="hud-badge neu-inset">
+              <span class="hud-label">GPS</span>
+              <span class="hud-val">LOCK</span>
+            </div>
+          </div>
+        </div>
+        <div class="sim-controls">
+          <div class="sim-ctrl-row">
+            <span class="ctrl-badge">WASD</span>
+            <span class="ctrl-badge">HOVER</span>
+            <span class="ctrl-badge">LAND</span>
+            <span class="ctrl-badge">WPT</span>
+          </div>
+          <div class="mavlink-indicator">
+            <span class="mavlink-dot pulse"></span>
+            MAVLink Active — 50Hz
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-chip neu-raised">50Hz Telemetry</div>
+    <div class="stat-chip neu-raised">6 MAVLink Streams</div>
+    <div class="stat-chip neu-raised">5 Scenarios</div>
+    <div class="stat-chip neu-raised">15+ Modules</div>
+  </div>
+</section>
+
+<!-- Section: Problem -->
+<section class="problem-section" id="problem">
+  <div class="container">
+    <h2 class="section-title">The Problem We Solved</h2>
+    <div class="problem-cards">
+      <div class="problem-card neu-raised fade-in">
+        <div class="problem-icon"></div>
+        <h3>Cost of Failure</h3>
+        <p>A single crash can cost ₹5,000–₹1,00,000. Testing in real air is brutally expensive for students and startups.</p>
+      </div>
+      <div class="problem-card neu-raised fade-in">
+        <div class="problem-icon"></div>
+        <h3>PID Tuning Hell</h3>
+        <p>Dozens of flights, crashes, and repairs just to tune a drone. There had to be a better way.</p>
+      </div>
+      <div class="problem-card neu-raised fade-in">
+        <div class="problem-icon"></div>
+        <h3>Access Gap</h3>
+        <p>Students in tier-2 cities locked out of real practice. No simulators, no hardware, no chance.</p>
+      </div>
+    </div>
+    <div class="comparison-wrapper neu-raised fade-in">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th class="col-gap">THE GAP</th>
+            <th class="col-others">OTHERS</th>
+            <th class="col-spaceborn">SPACEBORN</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Physics Accuracy</td>
+            <td><span class="tbl-no">✗</span> Simplified</td>
+            <td class="spaceborn-col"><span class="tbl-yes">✓</span> Per-tick integrator</td>
+          </tr>
+          <tr>
+            <td>MAVLink Support</td>
+            <td><span class="tbl-no">✗</span> None</td>
+            <td class="spaceborn-col"><span class="tbl-yes">✓</span> Full 6-stream</td>
+          </tr>
+          <tr>
+            <td>Real PID Export</td>
+            <td><span class="tbl-no">✗</span> View-only</td>
+            <td class="spaceborn-col"><span class="tbl-yes">✓</span> JSON + CSV + .tlog</td>
+          </tr>
+          <tr>
+            <td>Price Barrier</td>
+            <td><span class="tbl-no">✗</span> $200–$1,000/yr</td>
+            <td class="spaceborn-col"><span class="tbl-yes">✓</span> From $1/hr</td>
+          </tr>
+          <tr>
+            <td>India-First Design</td>
+            <td><span class="tbl-no">✗</span> Western-centric</td>
+            <td class="spaceborn-col"><span class="tbl-yes">✓</span> Built for India</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Section: How It Works -->
+<section class="how-section" id="how-it-works">
+  <div class="container">
+    <h2 class="section-title">From Simulation to Real Flight — In 6 Steps</h2>
+    <div class="steps-flow">
+      <div class="step-card neu-raised fade-in">
+        <div class="step-num">1</div>
+        <h4>Subscribe to MAX</h4>
+        <p>Open simulator directly in your browser. Zero install.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-card neu-raised fade-in">
+        <div class="step-num">2</div>
+        <h4>Choose Profile & Scenario</h4>
+        <p>Pick drone model, environment, and difficulty.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-card neu-raised fade-in">
+        <div class="step-num">3</div>
+        <h4>Fly & Tune PID</h4>
+        <p>Live 4-axis PID panel, windup protection, derivative filter.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-card neu-raised fade-in">
+        <div class="step-num">4</div>
+        <h4>Export Telemetry</h4>
+        <p>Download JSON + CSV telemetry bundle from your flight.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-card neu-raised fade-in">
+        <div class="step-num">5</div>
+        <h4>Download MAVLink .tlog</h4>
+        <p>Full MAVLink log file, identical to real Pixhawk output.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step-card neu-raised fade-in">
+        <div class="step-num">6</div>
+        <h4>Paste into FC</h4>
+        <p>Copy PID values into Betaflight, ArduPilot, or PX4.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Features -->
+<section class="features-section" id="features">
+  <div class="container">
+    <h2 class="section-title">15+ Core Modules. All In-Browser.</h2>
+    <p class="section-sub">WebGL / Three.js powered. Zero install. Zero GPU requirement beyond a modern laptop.</p>
+    <div class="features-grid">
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>3D Rendering</h4><p>Procedural quadcopter mesh, load custom .gltf/.glb models</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Physics Engine</h4><p>Custom per-tick integrator with wind &amp; motor failure simulation</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Flight Controls</h4><p>WASD keyboard, touch controls, hover/land/waypoint modes</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Drone Profiles</h4><p>DJI Matrice, Mavic 3, PX4 F450, Nano Quad + Custom</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Scenarios</h4><p>Normal, Wind, GPS Denied, Motor Failure, Obstacle Avoidance</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Waypoint Missions</h4><p>Click-to-place, auto-fly, configurable speed multiplier</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Telemetry HUD</h4><p>GCS-style: altitude, speed, battery, GPS lock, status</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>MAVLink Stream</h4><p>HEARTBEAT, ATTITUDE, GPS, BATTERY at correct Hz</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Cameras</h4><p>FPV, follow-cam, free-look, gimbal simulation</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Environments</h4><p>Daytime, Sunset, Studio, Desert, Arctic, Night</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Obstacles</h4><p>Dynamic avoidance field with repulsion force physics</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Audio</h4><p>Spatial motor audio, RPM-scaled pitch, wind/crash cues</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>PID Tuning</h4><p>4-axis live panel, windup protection, derivative filter</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Joystick</h4><p>Gamepad API support, deadzone, axis mapping</p></div>
+      <div class="feature-card neu-raised fade-in"><span class="feat-icon"></span><h4>Config Panel</h4><p>KV, cell count, prop size, companion computer settings</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Pricing -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <h2 class="section-title">Plans Built for Every Builder</h2>
+    <div class="pricing-toggle-wrap">
+      <span class="toggle-label" id="labelMonthly">Monthly</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="pricingToggle" />
+        <span class="toggle-slider neu-inset"></span>
+      </label>
+      <span class="toggle-label" id="labelPayg">Pay-as-you-go</span>
+    </div>
+    <div class="pricing-cards">
+      <div class="pricing-card neu-raised fade-in">
+        <div class="plan-name">BASIS</div>
+        <div class="plan-price" data-monthly="$1 / 1 Hour" data-payg="$1 / 1 Hour">$1 <span>/ 1 Hour</span></div>
+        <ul class="plan-features">
+          <li><span class="feat-yes">✓</span> 1-hour access window</li>
+          <li><span class="feat-yes">✓</span> 1 drone profile</li>
+          <li><span class="feat-yes">✓</span> Normal flight only</li>
+          <li><span class="feat-yes">✓</span> Daytime environment</li>
+          <li><span class="feat-yes">✓</span> Basic HUD</li>
+          <li><span class="feat-no">✗</span> PID export</li>
+          <li><span class="feat-no">✗</span> MAVLink stream</li>
+        </ul>
+        <button class="btn-outlined plan-cta" onclick="openModal('register')">Start Here</button>
+      </div>
+      <div class="pricing-card neu-raised elevated fade-in">
+        <div class="plan-name">PRO</div>
+        <div class="plan-price" data-monthly="$5 / 1 Day" data-payg="$5 / 1 Day">$5 <span>/ 1 Day</span></div>
+        <ul class="plan-features">
+          <li><span class="feat-yes">✓</span> 24-hour access</li>
+          <li><span class="feat-yes">✓</span> 2 drone profiles</li>
+          <li><span class="feat-yes">✓</span> 2 scenarios</li>
+          <li><span class="feat-yes">✓</span> 3 environments</li>
+          <li><span class="feat-yes">✓</span> View-only PID</li>
+          <li><span class="feat-yes">✓</span> Read-only MAVLink</li>
+          <li><span class="feat-no">✗</span> Full data export</li>
+        </ul>
+        <button class="btn-outlined plan-cta" onclick="openModal('register')">Try Pro</button>
+      </div>
+      <div class="pricing-card neu-raised featured fade-in">
+        <div class="plan-badge">MOST POPULAR</div>
+        <div class="plan-name">MAX</div>
+        <div class="plan-price" data-monthly="$20 / Month" data-payg="$20 / Month">$20 <span>/ Month</span></div>
+        <ul class="plan-features">
+          <li><span class="feat-yes">✓</span> Unlimited 30 days</li>
+          <li><span class="feat-yes">✓</span> All 4 profiles + custom</li>
+          <li><span class="feat-yes">✓</span> All 5 scenarios</li>
+          <li><span class="feat-yes">✓</span> All 6 environments</li>
+          <li><span class="feat-yes">✓</span> Full PID tuning</li>
+          <li><span class="feat-yes">✓</span> Full data export</li>
+          <li><span class="feat-yes">✓</span> MAVLink logs + .tlog</li>
+          <li><span class="feat-yes">✓</span> Custom GLTF upload</li>
+          <li><span class="feat-yes">✓</span> Full HUD + joystick</li>
+          <li><span class="feat-yes">✓</span> Priority email support</li>
+        </ul>
+        <button class="btn-primary plan-cta" onclick="openModal('register')">Build for Real</button>
+        <p class="plan-callout">Less than one cup of coffee per day. Less than one cheap propeller set.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Telemetry Data -->
+<section class="data-section" id="data">
+  <div class="container">
+    <h2 class="section-title">Real Data. Real Engineering.</h2>
+    <p class="section-sub">Every simulated flight generates the same data structures as a real Pixhawk.</p>
+    <div class="data-table-wrap neu-raised fade-in">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Data Type</th>
+            <th>What It Contains</th>
+            <th>Update Rate</th>
+            <th>Real-World Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>ATTITUDE</strong></td><td>Roll, pitch, yaw angles + rates</td><td>50 Hz</td><td>Betaflight tuning, PX4 state estimation</td></tr>
+          <tr><td><strong>HEARTBEAT</strong></td><td>System type, autopilot, mode flags</td><td>1 Hz</td><td>QGroundControl connection health</td></tr>
+          <tr><td><strong>GPS_RAW_INT</strong></td><td>Lat, lon, alt, fix type, satellites</td><td>5 Hz</td><td>ROS localization, ArduPilot nav</td></tr>
+          <tr><td><strong>BATTERY_STATUS</strong></td><td>Voltage, current, consumed mAh</td><td>2 Hz</td><td>Mission planner battery alerts</td></tr>
+          <tr><td><strong>VISION_POSITION</strong></td><td>Local position estimate, covariance</td><td>30 Hz</td><td>Jetson-based visual odometry</td></tr>
+          <tr><td><strong>OBSTACLE_DISTANCE</strong></td><td>360° proximity sensor array</td><td>10 Hz</td><td>Collision avoidance systems</td></tr>
+          <tr><td><strong>PID TELEMETRY</strong></td><td>P, I, D gains + error + output per axis</td><td>50 Hz</td><td>PID optimization, Blackbox analysis</td></tr>
+          <tr><td><strong>FLIGHT LOG</strong></td><td>Full mission record, events, anomalies</td><td>On export</td><td>Post-flight analysis, debugging</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="compatible-row">
+      <span class="compat-label">Compatible With:</span>
+      <div class="compat-pills">
+        <span class="compat-pill neu-raised">Betaflight</span>
+        <span class="compat-pill neu-raised">ArduPilot</span>
+        <span class="compat-pill neu-raised">PX4</span>
+        <span class="compat-pill neu-raised">QGroundControl</span>
+        <span class="compat-pill neu-raised">ROS</span>
+        <span class="compat-pill neu-raised">Jetson</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Roadmap -->
+<section class="roadmap-section" id="roadmap">
+  <div class="container">
+    <h2 class="section-title">What's Coming Next</h2>
+    <div class="roadmap-grid">
+      <div class="roadmap-card neu-raised fade-in">
+        <span class="rm-tag high">HIGH · Q2 2025</span>
+        <h4>Multi-drone Swarm</h4>
+        <p>Coordinate 2–8 drones in formation with shared telemetry streams.</p>
+      </div>
+      <div class="roadmap-card neu-raised fade-in">
+        <span class="rm-tag high">HIGH · Q2 2025</span>
+        <h4>ROS2 Bridge</h4>
+        <p>Real-time topic publishing over WebSocket to your ROS2 environment.</p>
+      </div>
+      <div class="roadmap-card neu-raised fade-in">
+        <span class="rm-tag high">HIGH · Q3 2025</span>
+        <h4>Hardware-in-the-Loop (HITL)</h4>
+        <p>Connect a real flight controller to the browser sim for closed-loop testing.</p>
+      </div>
+      <div class="roadmap-card neu-raised fade-in">
+        <span class="rm-tag med">MED · Q3–Q4 2025</span>
+        <h4>Terrain Replay</h4>
+        <p>Import real-world satellite elevation data and replay missions over it.</p>
+      </div>
+      <div class="roadmap-card neu-raised fade-in">
+        <span class="rm-tag med">MED · Q3–Q4 2025</span>
+        <h4>AI Autopilot</h4>
+        <p>Train lightweight RL agents in-browser using simulated flight data.</p>
+      </div>
+      <div class="roadmap-card neu-raised fade-in">
+        <span class="rm-tag med">MED · Q3–Q4 2025</span>
+        <h4>Collaborative Sessions</h4>
+        <p>Multi-user simulation rooms with shared airspace and voice comms.</p>
+      </div>
+      <div class="roadmap-card neu-raised fade-in">
+        <span class="rm-tag med">MED · Q4 2025</span>
+        <h4>Custom Map Import</h4>
+        <p>Load custom terrain, city blocks, or warehouse layouts via GLB/GeoJSON.</p>
+      </div>
+      <div class="roadmap-card neu-raised fade-in">
+        <span class="rm-tag low">LOW · Q1–Q2 2026</span>
+        <h4>Battery Degradation</h4>
+        <p>Simulate aged cell chemistry and capacity fade for realistic endurance planning.</p>
+      </div>
+      <div class="roadmap-card neu-raised fade-in">
+        <span class="rm-tag low">LOW · Q1–Q2 2026</span>
+        <h4>Payload Drop</h4>
+        <p>Physics-accurate payload release with configurable mass and drop ballistics.</p>
+      </div>
+      <div class="roadmap-card neu-raised fade-in">
+        <span class="rm-tag low">LOW · Q2 2026</span>
+        <h4>AR Mode</h4>
+        <p>Overlay simulation HUD onto your real-world camera feed via WebXR.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Vision / About -->
+<section class="about-section" id="about">
+  <div class="container">
+    <blockquote class="vision-quote">"We believe the next generation of drone engineers should not be gatekept by geography or wealth. The simulation layer is the great equaliser."</blockquote>
+    <div class="pipeline-wrap">
+      <div class="pipeline-step">DREAM</div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">SIMULATE</div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">TUNE</div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">EXPORT</div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">BUILD</div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">FLY</div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">ITERATE</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-box neu-inset fade-in">
+        <div class="stat-number" data-target="1000">0</div>
+        <div class="stat-desc">Engineering colleges in India</div>
+      </div>
+      <div class="stat-box neu-inset fade-in">
+        <div class="stat-number" data-target="90">0</div>
+        <div class="stat-desc">Billion dollar drone market by 2030</div>
+      </div>
+      <div class="stat-box neu-inset fade-in">
+        <div class="stat-number" data-target="100">0</div>
+        <div class="stat-desc">Defence PSUs actively hiring</div>
+      </div>
+      <div class="stat-box neu-inset fade-in">
+        <div class="stat-number" data-target="50">0</div>
+        <div class="stat-desc">Drone startups in India ecosystem</div>
+      </div>
+    </div>
+    <p class="about-brands">ISRO · DRDO · Garuda Aerospace · ideaForge · Throttle Aerospace — all need sim-trained engineers.</p>
+  </div>
+</section>
+
+<!-- Section: Footer -->
+<footer class="site-footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo footer-logo">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="4" fill="#fff"/>
+          <rect x="6" y="14" width="8" height="4" rx="2" fill="#fff" opacity="0.7"/>
+          <rect x="18" y="14" width="8" height="4" rx="2" fill="#fff" opacity="0.7"/>
+          <rect x="14" y="6" width="4" height="8" rx="2" fill="#fff" opacity="0.7"/>
+          <rect x="14" y="18" width="4" height="8" rx="2" fill="#fff" opacity="0.7"/>
+          <circle cx="7" cy="7" r="3" fill="#EE9346"/>
+          <circle cx="25" cy="7" r="3" fill="#EE9346"/>
+          <circle cx="7" cy="25" r="3" fill="#EE9346"/>
+          <circle cx="25" cy="25" r="3" fill="#EE9346"/>
+        </svg>
+        <span style="color:#fff">SPACEBORN ROBOTICS</span>
+      </div>
+      <p class="footer-tagline">Build the future. Simulate it first.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#">Blog</a>
+      <a href="#">Docs</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+    <div class="footer-contact">
+      <p>partnerships@spacebornrobotics.com</p>
+      <div class="social-icons">
+        <a href="#" class="social-btn neu-inset" aria-label="LinkedIn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <a href="#" class="social-btn neu-inset" aria-label="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        </a>
+        <a href="#" class="social-btn neu-inset" aria-label="Twitter/X">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Spaceborn Robotics · All Rights Reserved</p>
+  </div>
+</footer>
+
+<!-- Login / Register Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-card neu-raised" id="modalCard">
+
+    <!-- Close button -->
+    <button class="modal-close" id="modalClose" aria-label="Close modal">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="modal-logo">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="4" fill="#10256D"/>
+          <rect x="6" y="14" width="8" height="4" rx="2" fill="#10256D" opacity="0.7"/>
+          <rect x="18" y="14" width="8" height="4" rx="2" fill="#10256D" opacity="0.7"/>
+          <rect x="14" y="6" width="4" height="8" rx="2" fill="#10256D" opacity="0.7"/>
+          <rect x="14" y="18" width="4" height="8" rx="2" fill="#10256D" opacity="0.7"/>
+          <circle cx="7" cy="7" r="3" fill="#EE9346"/>
+          <circle cx="25" cy="7" r="3" fill="#EE9346"/>
+          <circle cx="7" cy="25" r="3" fill="#EE9346"/>
+          <circle cx="25" cy="25" r="3" fill="#EE9346"/>
+        </svg>
+        <span class="modal-logo-text">SPACEBORN</span>
+      </div>
+      <p class="modal-tagline" id="modalTagline">Welcome back, pilot.</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Create Account</button>
+    </div>
+
+    <!-- Login Form -->
+    <form class="auth-form" id="loginForm" method="POST" action="auth/login.php">
+      <div class="form-group">
+        <label for="loginEmail">Email address</label>
+        <div class="input-wrap">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+          <input type="email" id="loginEmail" name="email" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <div class="input-wrap">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="loginPassword" name="password" placeholder="········" required autocomplete="current-password" />
+          <button type="button" class="pwd-toggle" onclick="togglePwd('loginPassword', this)" tabindex="-1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <a href="auth/forgot-password.php" class="forgot-link">Forgot password?</a>
+      <button type="submit" class="btn-primary btn-full">Sign In</button>
+      <div class="divider"><span>or continue with</span></div>
+      <button type="button" class="btn-google neu-raised" onclick="window.location.href='auth/google.php'">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google
+      </button>
+      <div class="form-msg" id="loginMsg"></div>
+    </form>
+
+    <!-- Register Form -->
+    <form class="auth-form hidden" id="registerForm" method="POST" action="auth/register.php">
+      <div class="form-group">
+        <label for="regName">Full Name</label>
+        <div class="input-wrap">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="regName" name="name" placeholder="Arjun Sharma" required autocomplete="name" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="regEmail">Email address</label>
+        <div class="input-wrap">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+          <input type="email" id="regEmail" name="email" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="regPassword">Password</label>
+        <div class="input-wrap">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="regPassword" name="password" placeholder="Min. 8 characters" required autocomplete="new-password" />
+          <button type="button" class="pwd-toggle" onclick="togglePwd('regPassword', this)" tabindex="-1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="pwd-strength" id="pwdStrength">
+          <div class="pwd-bar"></div><div class="pwd-bar"></div><div class="pwd-bar"></div><div class="pwd-bar"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="regConfirm">Confirm Password</label>
+        <div class="input-wrap">
+          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input type="password" id="regConfirm" name="confirm_password" placeholder="········" required autocomplete="new-password" />
+        </div>
+      </div>
+      <button type="submit" class="btn-primary btn-full">Create Account</button>
+      <div class="divider"><span>or continue with</span></div>
+      <button type="button" class="btn-google neu-raised" onclick="window.location.href='auth/google.php'">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google
+      </button>
+      <div class="form-msg" id="registerMsg"></div>
+    </form>
+
+  </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
