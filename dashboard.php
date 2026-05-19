@@ -7,6 +7,7 @@ if(!isset($_SESSION['id']) || !isset($_SESSION['email'])){
 
 $name = $_SESSION['name'];
 
+
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -552,7 +553,7 @@ $name = $_SESSION['name'];
     Team
   </a>
   <a class="nav-item" href="#">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentCgit olor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
     Settings
   </a>
 
@@ -561,7 +562,7 @@ $name = $_SESSION['name'];
       <div class="avatar">DP</div>
       <div class="user-info">
         <div class="user-name"><?php echo $name ?></div>
-        <div class="user-role">Pro Plan</div>
+        <div class="user-role"><?php  echo $_SESSION['user_sub']['plan_name'] . 'plan'?></div>
       </div>
     </div>
   </div>

@@ -1,42 +1,11 @@
 <?php
-/**
- * sessions.php — DroneSimSaaS
- * ─────────────────────────────────────────────────────────────
- * AUTH GUARD: Check session JSON before rendering anything.
- *
- * HOW LOGIN WORKS (PHP flow):
- *   1. login.php receives POST email+password
- *   2. Queries MongoDB users collection (via mongodb PHP driver)
- *   3. On success → writes  sessions/<user_id>.json  with:
- *        { "user_id", "name", "email", "plan", "wallet",
- *          "logged_in_at", "expires_at" }
- *   4. Sets $_SESSION['user_id'] and $_SESSION['token']
- *   5. Redirects to dashboard.php
- *
- * HOW PAGES GUARD:
- *   session_start();
- *   $sess_file = __DIR__.'/sessions/'.$_SESSION['user_id'].'.json';
- *   if (!isset($_SESSION['user_id']) || !file_exists($sess_file)) {
- *       header('Location: /login'); exit;
- *   }
- *   $user = json_decode(file_get_contents($sess_file), true);
- *
- * MONGODB COLLECTIONS USED HERE:
- *   - sessions  (flight simulation sessions per user)
- *     Fields: _id, user_id, name, drone_model, environment,
- *             weather, mode, duration_s, cost, status,
- *             created_at, log_file_path
- *
- * PHP DATA FETCH (replace mock $sessions below):
- *   $client   = new MongoDB\Client("mongodb://localhost:27017");
- *   $col      = $client->dronesim->sessions;
- *   $cursor   = $col->find(['user_id'=>$user['user_id']],
- *                  ['sort'=>['created_at'=>-1],'limit'=>50]);
- *   $sessions = iterator_to_array($cursor);
- * ─────────────────────────────────────────────────────────────
- */
 
-// ── Mock data (replace with MongoDB query) ──────────────────
+session_start();
+if(!isset($_SESSION['id']) || !isset($_SESSION['email'])){
+    header('Location: index.php');
+    exit;
+}
+
 $user = [
   'name'   => 'Dev Pilot',
   'initials'=> 'DP',
