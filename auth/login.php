@@ -45,6 +45,7 @@ $result = $sessCol ->insertOne(['email' => $email , "is_running" => true]);
 
 $_SESSION['id'] = (string)$result -> getInsertedId();
 
+error_log('Attempting to redirect to dashboard');
 header('Location: ../dashboard.php');
 exit();
 
