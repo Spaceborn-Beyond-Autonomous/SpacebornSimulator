@@ -30,6 +30,22 @@ if (!password_verify($password, $user['password'])) {
     die("Invalid password.");
 }
 
+if($user['is_verified'] === 0){
+    die('Please verify your email');
+}
 
+session_start();
+
+$_SESSION['email'] = $email;
+
+
+$sessCol = $db -> sessions;
+
+$result = $sessCol ->insertOne(['email' => $email , "is_running" => true]);
+
+$_SESSION['id'] = (string)$result -> getInsertedId();
+
+header('Location: ../dashboard.php');
+exit();
 
 ?>

@@ -1,3 +1,14 @@
+<?php 
+
+if(!isset($_SESSION['id']) || !isset($_SESSION['email'])){
+    header('Location: index.php');
+    exit;
+}
+
+$name = $_SESSION['name'];
+
+
+?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -550,7 +561,7 @@
     <div class="user-chip">
       <div class="avatar">DP</div>
       <div class="user-info">
-        <div class="user-name">Dev Pilot</div>
+        <div class="user-name"><?php echo $name ?></div>
         <div class="user-role">Pro Plan</div>
       </div>
     </div>
