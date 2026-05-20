@@ -510,7 +510,7 @@ $sessions = [
       </button>
       <div class="wallet-badge">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-        <?= htmlspecialchars($_SESSION['wallet']) ?>
+        <?= htmlspecialchars("$" . $_SESSION['wallet']) ?>
       </div>
       <button class="new-session-btn" onclick="location.href='new-session.php'">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
