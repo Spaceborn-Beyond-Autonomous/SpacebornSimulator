@@ -3,9 +3,9 @@ require 'auth/session_guard.php';
 
 // PHP variables (from session / DB)
 $wallet_balance   = $_SESSION['wallet'];           // e.g. 45.20
-$name             = $_SESSION['user_sub']['name'];  // e.g. "Dev Patel"
+$name             = $_SESSION['name'];  // e.g. "Dev Patel"
 $plan_name        = $_SESSION['user_sub']['plan_name'];
-$auto_topup       = $_SESSION['user_sub']['auto_topup'] ?? true;
+$auto_topup       = $_SESSION['user_sub']['auto_topup'] ?? false;
 $topup_threshold  = $_SESSION['user_sub']['topup_threshold'] ?? 10.00;
 
 // Initials from name
