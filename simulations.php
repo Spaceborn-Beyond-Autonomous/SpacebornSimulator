@@ -1,8 +1,17 @@
 <?php
 
-require 'auth/session_guard.php';
+session_start();
+if(!isset($_SESSION['id']) || !isset($_SESSION['email'])){
+    header('Location: index.php');
+    exit;
+}
 
-
+$user = [
+  'name'   => 'Dev Pilot',
+  'initials'=> 'DP',
+  'plan'   => 'Pro Plan',
+  'wallet' => '$45.20',
+];
 
 $sessions = [
   [
