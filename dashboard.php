@@ -535,7 +535,7 @@ $plan = $_SESSION['user_sub']['plan_name'] ?? 'Free';
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
     Dashboard
   </a>
-  <a class="nav-item" href="#">
+  <a class="nav-item" href="simulations.php">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>
     Simulations
   </a>
