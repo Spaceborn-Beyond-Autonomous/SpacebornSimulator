@@ -6,6 +6,7 @@ if(!isset($_SESSION['id']) || !isset($_SESSION['email'])){
 }
 
 $name = $_SESSION['name'];
+$plan = $_SESSION['user_sub']['plan_name'] ?? 'Free';
 
 
 ?>
