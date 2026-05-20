@@ -563,7 +563,7 @@ $plan = $_SESSION['user_sub']['plan_name'] ?? 'Free';
       <div class="avatar">DP</div>
       <div class="user-info">
         <div class="user-name"><?php echo $name ?></div>
-        <div class="user-role"><?php  echo $_SESSION['user_sub']['plan_name'] . 'plan'?></div>
+        <div class="user-role"><?php  echo $_SESSION['user_sub']['plan_name'] . ' plan'?></div>
       </div>
     </div>
   </div>
