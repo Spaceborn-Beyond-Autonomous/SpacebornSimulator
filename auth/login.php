@@ -48,7 +48,7 @@ $result = $sessCol ->insertOne(['email' => $email , "is_running" => true]);
 
 $_SESSION['id'] = (string)$result -> getInsertedId();
 $_SESSION['name'] = $user['name'];
-$_SESSION['wallet'] = $user['wallet'];
+$_SESSION['wallet'] = $user['wallet'] ?? 0.00;
 $_SESSION['user_sub'] = [
     'id'               => (string) ($user_sub['id'] ?? ''),
     'plan_name'        => (string) ($user_sub['plan_name'] ?? ''),
