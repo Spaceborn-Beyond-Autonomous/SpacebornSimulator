@@ -1,17 +1,8 @@
 <?php
 
-session_start();
-if(!isset($_SESSION['id']) || !isset($_SESSION['email'])){
-    header('Location: index.php');
-    exit;
-}
+require 'auth/session_guard.php';
 
-$user = [
-  'name'   => 'Dev Pilot',
-  'initials'=> 'DP',
-  'plan'   => 'Pro Plan',
-  'wallet' => '$45.20',
-];
+
 
 $sessions = [
   [
@@ -489,13 +480,13 @@ $sessions = [
   <div class="sidebar-bottom">
     <div class="wallet-side">
       <span>WALLET</span>
-      <strong><?= htmlspecialchars($user['wallet']) ?></strong>
+      <strong><?= htmlspecialchars() ?></strong>
     </div>
     <div class="user-chip">
-      <div class="avatar"><?= htmlspecialchars($user['initials']) ?></div>
+      <div class="avatar"><?= htmlspecialchars("HG") ?></div>
       <div>
-        <div class="user-name"><?= htmlspecialchars($user['name']) ?></div>
-        <div class="user-role"><?= htmlspecialchars($user['plan']) ?></div>
+        <div class="user-name"><?= htmlspecialchars($name) ?></div>
+        <div class="user-role"><?= htmlspecialchars($_SESSION['user_sub']['plan_name'] . ' plan') ?></div>
       </div>
     </div>
     <a class="logout-btn" href="auth/logout.php">
@@ -519,7 +510,7 @@ $sessions = [
       </button>
       <div class="wallet-badge">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-        <?= htmlspecialchars($user['wallet']) ?>
+        <?= htmlspecialchars($_SESSION['wallet']) ?>
       </div>
       <button class="new-session-btn" onclick="location.href='new-session.php'">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
