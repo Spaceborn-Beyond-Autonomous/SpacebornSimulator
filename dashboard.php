@@ -577,7 +577,7 @@ require "auth/session_guard.php";
       </button>
       <div class="wallet-badge">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-        $_SESSION['user_sub']['wallet'];
+        <?php echo htmlspecialchars( '$' . number_format($_SESSION['wallet'], 2)); ?>
       </div>
     </div>
   </header>
@@ -589,7 +589,7 @@ require "auth/session_guard.php";
     <div class="stat-row">
       <div class="stat-card fade-up delay-1">
         <div class="stat-label">Wallet Balance</div>
-        <div class="stat-value green">$45.20</div>
+        <div class="stat-value green"><?php echo htmlspecialchars( '$' . number_format($_SESSION['wallet'], 2)); ?></div>
         <div class="stat-sub">≈ 6.3 hrs remaining</div>
       </div>
       <div class="stat-card fade-up delay-2">

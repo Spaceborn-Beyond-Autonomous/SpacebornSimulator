@@ -480,7 +480,7 @@ $sessions = [
   <div class="sidebar-bottom">
     <div class="wallet-side">
       <span>WALLET</span>
-      <strong><?= htmlspecialchars($_SESSION['wallet']) ?></strong>
+      <strong><?= htmlspecialchars( '$' . number_format($_SESSION['wallet'], 2)) ?></strong>
     </div>
     <div class="user-chip">
       <div class="avatar"><?= htmlspecialchars("HG") ?></div>
