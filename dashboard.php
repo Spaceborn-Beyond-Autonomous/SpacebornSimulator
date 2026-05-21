@@ -543,7 +543,7 @@ require "auth/session_guard.php";
   <div class="sidebar-section-label">Account</div>
   <a class="nav-item" href="transactions.php">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-    Transactions
+    Billing
   </a>
   <a class="nav-item" href="team.php">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -607,9 +607,9 @@ require "auth/session_guard.php";
         <div class="stat-sub">Sessions launched</div>
       </div>
       <div class="stat-card fade-up delay-4">
-        <div class="stat-label">Total Spent</div>
-        <div class="stat-value orange">$135</div>
-        <div class="stat-sub">Lifetime usage</div>
+        <div class="stat-label">Plan Status</div>
+        <div class="stat-value" style="color:var(--accent)">Active</div>
+        <div class="stat-sub">Unlimited simulations</div>
       </div>
     </div>
 

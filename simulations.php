@@ -13,7 +13,6 @@ $sessions = [
     'weather'     => 'Clear',
     'mode'        => 'Autonomous',
     'duration'    => '24m 12s',
-    'cost'        => '$2.90',
     'status'      => 'completed',
     'date'        => 'Today, 10:45 AM',
     'log'         => 'logs/sess_001.zip',
@@ -26,7 +25,6 @@ $sessions = [
     'weather'     => 'Windy',
     'mode'        => 'Manual',
     'duration'    => '18m 05s',
-    'cost'        => '$2.17',
     'status'      => 'completed',
     'date'        => 'Yesterday',
     'log'         => 'logs/sess_002.zip',
@@ -39,7 +37,6 @@ $sessions = [
     'weather'     => 'Clear',
     'mode'        => 'FPV',
     'duration'    => '45m 38s',
-    'cost'        => '$5.46',
     'status'      => 'completed',
     'date'        => 'May 12',
     'log'         => 'logs/sess_003.zip',
@@ -52,7 +49,6 @@ $sessions = [
     'weather'     => 'Cloudy',
     'mode'        => 'Autonomous',
     'duration'    => '11m 50s',
-    'cost'        => '$1.42',
     'status'      => 'completed',
     'date'        => 'May 10',
     'log'         => 'logs/sess_004.zip',
@@ -65,7 +61,6 @@ $sessions = [
     'weather'     => 'Night',
     'mode'        => 'Autonomous',
     'duration'    => '33m 21s',
-    'cost'        => '$3.99',
     'status'      => 'failed',
     'date'        => 'May 8',
     'log'         => 'logs/sess_005.zip',
@@ -445,7 +440,7 @@ $sessions = [
   <div class="sidebar-sep">Account</div>
   <a class="nav-item" href="transactions.php">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-    Transactions
+    Billing
   </a>
   <a class="nav-item" href="team.php">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -521,12 +516,6 @@ $sessions = [
         <span><?= count($sessions) ?></span>
         <span class="summary-val">Total Sessions</span>
       </div>
-      <?php
-        $total_cost = array_sum(array_map(fn($s)=>floatval(ltrim($s['cost'],'$')), $sessions));
-      ?>
-      <div class="summary-item" style="margin-left:auto">
-        Total spent: <span class="summary-val" style="color:var(--accent)">$<?= number_format($total_cost,2) ?></span>
-      </div>
     </div>
 
     <!-- Filter bar -->
@@ -592,7 +581,6 @@ $sessions = [
           </div>
           <div class="session-row-right">
             <span class="s-duration"><?= $s['duration'] ?></span>
-            <span class="s-cost"><?= $s['cost'] ?></span>
             <span class="s-badge badge-<?= $s['status'] ?>"><?= ucfirst($s['status']) ?></span>
             <div class="expand-arrow">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg>
@@ -615,10 +603,6 @@ $sessions = [
               <div class="detail-field">
                 <div class="detail-label">Duration</div>
                 <div class="detail-value"><?= $s['duration'] ?></div>
-              </div>
-              <div class="detail-field">
-                <div class="detail-label">Total Cost</div>
-                <div class="detail-value cost"><?= $s['cost'] ?></div>
               </div>
               <div class="detail-field">
                 <div class="detail-label">Weather</div>

@@ -1,55 +1,57 @@
 <?php
 require 'auth/session_guard.php';
 
-$name    = $_SESSION['name'] ?? 'User';
-$plan    = $_SESSION['user_sub']['plan_name'] ?? 'Free';
+$name = $_SESSION['name'] ?? 'User';
+$plan = $_SESSION['user_sub']['plan_name'] ?? 'Pro';
 
-// Transaction history — replace with real MongoDB query
-$transactions = [
+// Subscription billing history — replace with real MongoDB query
+$invoices = [
   [
-    'date'        => '15/5/2026, 9:51:44 PM',
-    'type'        => 'top-up',
-    'description' => 'Wallet Top Up (Visa •••• 4242)',
-    'amount'      => '+$50.00',
-    'status'      => 'completed',
-    'amount_val'  => 50.00,
+    'date'        => '1 May 2026',
+    'description' => 'Spaceborn Pro — Monthly Subscription',
+    'amount'      => '$29.00',
+    'status'      => 'paid',
+    'invoice_id'  => 'INV-2026-005',
   ],
   [
-    'date'        => '18/5/2026, 9:51:44 PM',
-    'type'        => 'debit',
-    'description' => 'Session: FPV Racing Track 4',
-    'amount'      => '$5.46',
-    'status'      => 'completed',
-    'amount_val'  => -5.46,
+    'date'        => '1 Apr 2026',
+    'description' => 'Spaceborn Pro — Monthly Subscription',
+    'amount'      => '$29.00',
+    'status'      => 'paid',
+    'invoice_id'  => 'INV-2026-004',
   ],
   [
-    'date'        => '19/5/2026, 9:51:44 PM',
-    'type'        => 'debit',
-    'description' => 'Session: Wind Tolerance Test',
-    'amount'      => '$2.17',
-    'status'      => 'completed',
-    'amount_val'  => -2.17,
+    'date'        => '1 Mar 2026',
+    'description' => 'Spaceborn Pro — Monthly Subscription',
+    'amount'      => '$29.00',
+    'status'      => 'paid',
+    'invoice_id'  => 'INV-2026-003',
   ],
   [
-    'date'        => '20/5/2026, 9:51:44 PM',
-    'type'        => 'debit',
-    'description' => 'Session: Campus Mapping',
-    'amount'      => '$2.90',
-    'status'      => 'completed',
-    'amount_val'  => -2.90,
+    'date'        => '1 Feb 2026',
+    'description' => 'Spaceborn Pro — Monthly Subscription',
+    'amount'      => '$29.00',
+    'status'      => 'paid',
+    'invoice_id'  => 'INV-2026-002',
+  ],
+  [
+    'date'        => '1 Jan 2026',
+    'description' => 'Spaceborn Pro — Monthly Subscription',
+    'amount'      => '$1.00',
+    'status'      => 'paid',
+    'invoice_id'  => 'INV-2026-001',
   ],
 ];
 
-$total_spent    = array_sum(array_map(fn($t) => $t['amount_val'] < 0 ? abs($t['amount_val']) : 0, $transactions));
-$total_toppedup = array_sum(array_map(fn($t) => $t['amount_val'] > 0 ? $t['amount_val'] : 0, $transactions));
-$total_count    = count($transactions);
+$next_billing = '1 Jun 2026';
+$total_paid   = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DroneSimSaaS — Transactions</title>
+  <title>Spaceborn — Billing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -87,23 +89,10 @@ $total_count    = count($transactions);
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; transition: background 0.3s, color 0.3s; }
 
     /* ── SIDEBAR ── */
-    .sidebar {
-      width: var(--sidebar-w); background: var(--bg2);
-      display: flex; flex-direction: column;
-      padding: 24px 16px; gap: 4px;
-      position: fixed; top: 0; left: 0; bottom: 0;
-      box-shadow: 4px 0 20px rgba(0,0,0,0.25);
-      z-index: 20; transition: background 0.3s;
-    }
+    .sidebar { width: var(--sidebar-w); background: var(--bg2); display: flex; flex-direction: column; padding: 24px 16px; gap: 4px; position: fixed; top: 0; left: 0; bottom: 0; box-shadow: 4px 0 20px rgba(0,0,0,0.25); z-index: 20; transition: background 0.3s; }
     .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 6px 12px 20px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
     .sidebar-logo-text { font-family: 'Syne', sans-serif; font-size: 12.5px; font-weight: 700; letter-spacing: 0.05em; color: var(--primary); }
-    .nav-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px; border-radius: 10px;
-      color: var(--text2); font-size: 13.5px; font-weight: 500;
-      cursor: pointer; transition: all 0.18s;
-      text-decoration: none; border: none; background: transparent; width: 100%;
-    }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; color: var(--text2); font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.18s; text-decoration: none; border: none; background: transparent; width: 100%; }
     .nav-item svg { flex-shrink: 0; opacity: 0.65; transition: opacity 0.18s; }
     .nav-item:hover { background: var(--surface); color: var(--text); }
     .nav-item:hover svg { opacity: 1; }
@@ -133,6 +122,7 @@ $total_count    = count($transactions);
     [data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
     .topbar-icon-btn { width: 36px; height: 36px; border-radius: 10px; background: var(--surface); box-shadow: var(--neu-btn); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text2); transition: all 0.2s; }
     .topbar-icon-btn:hover { color: var(--text); box-shadow: var(--neu-out); }
+
     /* ── CONTENT ── */
     .content { padding: 28px 32px; display: flex; flex-direction: column; gap: 24px; flex: 1; }
 
@@ -140,117 +130,113 @@ $total_count    = count($transactions);
     .page-header h1 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
     .page-header p { font-size: 13px; color: var(--text2); }
 
+    /* ── PLAN BANNER ── */
+    .plan-banner {
+      background: var(--surface);
+      border-radius: var(--r);
+      box-shadow: var(--neu-out);
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-left: 3px solid var(--secondary);
+    }
+    .plan-banner-left { display: flex; flex-direction: column; gap: 4px; }
+    .plan-banner-label { font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); }
+    .plan-banner-name { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--secondary); }
+    .plan-banner-sub { font-size: 12.5px; color: var(--text2); margin-top: 2px; }
+    .plan-banner-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .plan-next-label { font-size: 11px; color: var(--text3); }
+    .plan-next-date { font-size: 14px; font-weight: 600; color: var(--text); }
+    .badge-active { display: inline-flex; align-items: center; gap: 5px; background: rgba(40,200,64,0.12); color: var(--accent); border-radius: 6px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; margin-top: 6px; }
+    .badge-active::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse-dot 1.5s ease-in-out infinite; }
+    @keyframes pulse-dot { 0%,100%{box-shadow:0 0 0 0 rgba(40,200,64,0.5);} 50%{box-shadow:0 0 0 5px rgba(40,200,64,0);} }
+
     /* ── SUMMARY CARDS ── */
     .summary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .summary-card { background: var(--surface); border-radius: var(--r); box-shadow: var(--neu-out); padding: 22px 24px; }
+    .summary-card { background: var(--surface); border-radius: var(--r); box-shadow: var(--neu-out); padding: 20px 22px; }
     .summary-label { font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
-    .summary-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+    .summary-value { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
     .summary-value.green  { color: var(--accent); }
     .summary-value.orange { color: var(--secondary); }
     .summary-value.blue   { color: var(--blue); }
 
-    /* ── TRANSACTION PANEL ── */
-    .tx-panel { background: var(--surface); border-radius: var(--r); box-shadow: var(--neu-out); overflow: hidden; }
-    .tx-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
-    .tx-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
-    .tx-filter-row { display: flex; gap: 6px; }
-    .tx-filter-btn { padding: 6px 14px; border-radius: 8px; border: none; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; background: var(--surface2); color: var(--text2); transition: all 0.18s; }
-    .tx-filter-btn.active { background: var(--secondary); color: #fff; box-shadow: 0 3px 10px rgba(238,147,70,0.3); }
-    .tx-filter-btn:hover:not(.active) { color: var(--text); background: var(--bg2); }
+    /* ── INVOICE TABLE ── */
+    .inv-panel { background: var(--surface); border-radius: var(--r); box-shadow: var(--neu-out); overflow: hidden; }
+    .inv-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
+    .inv-panel-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
 
-    /* Search bar */
-    .tx-search-wrap { padding: 14px 24px; border-bottom: 1px solid var(--border); }
-    .tx-search { width: 100%; padding: 10px 16px; border: none; border-radius: 8px; background: var(--bg2); box-shadow: var(--neu-in); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: box-shadow 0.2s; }
-    .tx-search::placeholder { color: var(--text3); }
-    .tx-search:focus { box-shadow: var(--neu-in), 0 0 0 2px rgba(238,147,70,0.2); }
+    .inv-search-wrap { padding: 12px 24px; border-bottom: 1px solid var(--border); }
+    .inv-search { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 9px 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; box-shadow: var(--neu-in); transition: border-color 0.18s; }
+    .inv-search::placeholder { color: var(--text3); }
+    .inv-search:focus { border-color: var(--secondary); }
 
-    /* Table */
-    .tx-table { width: 100%; border-collapse: collapse; }
-    .tx-table thead th { padding: 11px 24px; text-align: left; font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid var(--border); background: var(--bg2); }
-    .tx-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
-    .tx-table tbody tr:last-child { border-bottom: none; }
-    .tx-table tbody tr:hover { background: var(--surface2); }
-    .tx-table td { padding: 14px 24px; font-size: 13px; vertical-align: middle; }
-    .tx-type-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
-    .tx-type-badge.topup  { background: rgba(91,141,239,0.15); color: var(--blue); }
-    .tx-type-badge.debit  { background: rgba(238,147,70,0.12); color: var(--secondary); }
-    .tx-amount { font-weight: 600; font-variant-numeric: tabular-nums; font-size: 13.5px; }
-    .tx-amount.positive { color: var(--accent); }
-    .tx-amount.negative { color: var(--secondary); }
-    .tx-status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
-    .tx-status-badge.completed { background: rgba(40,200,64,0.12); color: var(--accent); }
-    .tx-status-badge.pending   { background: rgba(238,147,70,0.12); color: var(--secondary); }
-    .tx-status-badge.failed    { background: rgba(224,85,85,0.12);  color: var(--red); }
+    table.inv-table { width: 100%; border-collapse: collapse; }
+    .inv-table thead tr { border-bottom: 1px solid var(--border); }
+    .inv-table th { padding: 11px 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text3); text-align: left; }
+    .inv-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .inv-table tbody tr:last-child { border-bottom: none; }
+    .inv-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+    .inv-table td { padding: 14px 20px; font-size: 13px; vertical-align: middle; }
 
-    /* Empty state */
-    .tx-empty { padding: 48px 24px; text-align: center; color: var(--text3); font-size: 13px; }
-    .tx-empty svg { opacity: 0.3; margin-bottom: 12px; }
+    .inv-id { font-family: 'Syne', sans-serif; font-size: 11.5px; font-weight: 600; color: var(--text3); letter-spacing: 0.03em; }
+    .inv-desc { font-size: 13px; color: var(--text); font-weight: 500; }
+    .inv-amount { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); }
+    .inv-date { font-size: 12px; color: var(--text2); }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) { .summary-row { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 720px) { .sidebar { display: none; } .main { margin-left: 0; } .content { padding: 20px 16px; } .topbar { padding: 14px 16px; } .summary-row { grid-template-columns: 1fr 1fr; } .tx-table thead { display: none; } .tx-table td { display: block; padding: 6px 16px; } .tx-table tr { border-bottom: 1px solid var(--border); padding: 10px 0; display: block; } }
+    .status-badge { display: inline-flex; align-items: center; gap: 5px; border-radius: 6px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; }
+    .status-badge.paid { background: rgba(40,200,64,0.1); color: var(--accent); }
+    .status-badge.pending { background: rgba(238,147,70,0.1); color: var(--secondary); }
+    .status-badge.failed { background: rgba(224,85,85,0.1); color: var(--red); }
 
-    /* Fade in */
-    .fade-up { opacity: 0; transform: translateY(14px); animation: fadeUp 0.4s ease forwards; }
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-    .d1 { animation-delay: 0.04s; } .d2 { animation-delay: 0.10s; } .d3 { animation-delay: 0.17s; }
+    .btn-dl { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: var(--text2); border: 1px solid var(--border); border-radius: 7px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.18s, border-color 0.18s; text-decoration: none; }
+    .btn-dl:hover { color: var(--secondary); border-color: var(--secondary); }
+
+    .inv-empty { padding: 48px 24px; text-align: center; color: var(--text3); font-size: 13px; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
+    .fade-up { animation: fadeUp 0.4s cubic-bezier(.22,1,.36,1) both; }
+    .d1{animation-delay:.05s;} .d2{animation-delay:.1s;} .d3{animation-delay:.15s;} .d4{animation-delay:.2s;}
+
+    <br>
   </style>
-  <script>
-    /* Apply saved theme before first paint to avoid flash */
-    (function(){
-      var t = localStorage.getItem('sb_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', t);
-    })();
-  </script>
+  <script>(function(){var t=localStorage.getItem('sb_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-      <circle cx="16" cy="16" r="4" fill="#10256D"/>
-      <rect x="6" y="14" width="8" height="4" rx="2" fill="#10256D" opacity="0.7"/>
-      <rect x="18" y="14" width="8" height="4" rx="2" fill="#10256D" opacity="0.7"/>
-      <rect x="14" y="6" width="4" height="8" rx="2" fill="#10256D" opacity="0.7"/>
-      <rect x="14" y="18" width="4" height="8" rx="2" fill="#10256D" opacity="0.7"/>
-      <circle cx="7" cy="7" r="3" fill="#EE9346"/>
-      <circle cx="25" cy="7" r="3" fill="#EE9346"/>
-      <circle cx="7" cy="25" r="3" fill="#EE9346"/>
-      <circle cx="25" cy="25" r="3" fill="#EE9346"/>
-    </svg>
-    <span class="sidebar-logo-text">DRONESIM</span>
+    <svg width="26" height="26" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="4" fill="#10256D"/><rect x="6" y="14" width="8" height="4" rx="2" fill="#10256D" opacity=".7"/><rect x="18" y="14" width="8" height="4" rx="2" fill="#10256D" opacity=".7"/><rect x="14" y="6" width="4" height="8" rx="2" fill="#10256D" opacity=".7"/><rect x="14" y="18" width="4" height="8" rx="2" fill="#10256D" opacity=".7"/><circle cx="7" cy="7" r="3" fill="#EE9346"/><circle cx="25" cy="7" r="3" fill="#EE9346"/><circle cx="7" cy="25" r="3" fill="#EE9346"/><circle cx="25" cy="25" r="3" fill="#EE9346"/></svg>
+    <span class="sidebar-logo-text">SPACEBORN</span>
   </div>
-
   <a class="nav-item" href="dashboard.php">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-    Dashboard
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard
   </a>
   <a class="nav-item" href="simulations.php">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>
-    Simulations
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/><circle cx="4" cy="4" r="2"/><circle cx="20" cy="4" r="2"/><circle cx="4" cy="20" r="2"/><circle cx="20" cy="20" r="2"/></svg>Simulations
   </a>
-  <a class="nav-item" href="#">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    New Session
+  <a class="nav-item" href="new-session.php">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Session
   </a>
-
   <div class="sidebar-sep">Account</div>
   <a class="nav-item active" href="transactions.php">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-    Transactions
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Billing
   </a>
-  <a class="nav-item" href="#">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-    Team
+  <a class="nav-item" href="team.php">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Team
   </a>
-
+  <a class="nav-item" href="settings.php">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings
+  </a>
   <div class="sidebar-bottom">
     <div class="user-chip">
-      <div class="avatar"><?php echo strtoupper(substr(trim($name), 0, 1)); ?></div>
-      <div class="user-info">
-        <div class="user-name"><?php echo htmlspecialchars($name); ?></div>
-        <div class="user-role"><?php echo htmlspecialchars($plan . ' plan'); ?></div>
+      <div class="avatar"><?= strtoupper(substr(trim($name),0,1)) ?></div>
+      <div style="flex:1;min-width:0;">
+        <div class="user-name"><?= htmlspecialchars($name) ?></div>
+        <div class="user-role"><?= htmlspecialchars($plan) ?> plan</div>
       </div>
       <div class="user-actions">
         <a href="settings.php" class="user-action-btn" title="Settings">
@@ -267,7 +253,7 @@ $total_count    = count($transactions);
 <!-- MAIN -->
 <main class="main">
   <header class="topbar">
-    <div class="topbar-title">Transactions</div>
+    <div class="topbar-title">Billing</div>
     <div class="topbar-right">
       <span class="theme-icon" id="themeIcon">🌙</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
@@ -281,82 +267,86 @@ $total_count    = count($transactions);
 
     <!-- Page header -->
     <div class="page-header fade-up d1">
-      <h1>Transactions</h1>
-      <p>Your complete payment and session billing history</p>
+      <h1>Billing &amp; Subscription</h1>
+      <p>Your active plan and monthly payment history</p>
     </div>
 
-    <!-- Summary stats -->
-    <div class="summary-row fade-up d2">
-      <div class="summary-card">
-        <div class="summary-label">Total Topped Up</div>
-        <div class="summary-value green">$<?php echo number_format($total_toppedup, 2); ?></div>
+    <!-- Plan banner -->
+    <div class="plan-banner fade-up d2">
+      <div class="plan-banner-left">
+        <div class="plan-banner-label">Current Plan</div>
+        <div class="plan-banner-name"><?= htmlspecialchars($plan) ?></div>
+        <div class="plan-banner-sub">Unlimited simulations · All environments · MAVLink export</div>
+        <div class="badge-active">Active</div>
       </div>
-      <div class="summary-card">
-        <div class="summary-label">Total Spent</div>
-        <div class="summary-value orange">$<?php echo number_format($total_spent, 2); ?></div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-label">All Transactions</div>
-        <div class="summary-value blue"><?php echo $total_count; ?></div>
+      <div class="plan-banner-right">
+        <div class="plan-next-label">Next billing date</div>
+        <div class="plan-next-date"><?= $next_billing ?></div>
       </div>
     </div>
 
-    <!-- Transaction table -->
-    <div class="tx-panel fade-up d3">
-      <div class="tx-header">
-        <div class="tx-title">History</div>
-        <div class="tx-filter-row">
-          <button class="tx-filter-btn active" data-filter="all">All</button>
-          <button class="tx-filter-btn" data-filter="top-up">Top-ups</button>
-          <button class="tx-filter-btn" data-filter="debit">Debits</button>
-        </div>
+    <!-- Summary cards -->
+    <div class="summary-row fade-up d3">
+      <div class="summary-card">
+        <div class="summary-label">Plan</div>
+        <div class="summary-value orange"><?= htmlspecialchars($plan) ?></div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Payments Made</div>
+        <div class="summary-value blue"><?= $total_paid ?></div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-label">Next Renewal</div>
+        <div class="summary-value green"><?= $next_billing ?></div>
+      </div>
+    </div>
+
+    <!-- Invoice table -->
+    <div class="inv-panel fade-up d4">
+      <div class="inv-panel-header">
+        <div class="inv-panel-title">Payment History</div>
       </div>
 
-      <div class="tx-search-wrap">
-        <input class="tx-search" id="txSearch" type="text" placeholder="Search by description…" autocomplete="off"/>
+      <div class="inv-search-wrap">
+        <input class="inv-search" id="invSearch" type="text" placeholder="Search invoices…" autocomplete="off"/>
       </div>
 
-      <table class="tx-table" id="txTable">
+      <?php if (!empty($invoices)): ?>
+      <table class="inv-table" id="invTable">
         <thead>
           <tr>
+            <th>Invoice</th>
             <th>Date</th>
-            <th>Type</th>
             <th>Description</th>
             <th>Amount</th>
             <th>Status</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody id="txBody">
-          <?php foreach ($transactions as $tx): ?>
-          <tr data-type="<?php echo htmlspecialchars($tx['type']); ?>"
-              data-desc="<?php echo strtolower(htmlspecialchars($tx['description'])); ?>">
-            <td style="color:var(--text2);font-size:12px"><?php echo htmlspecialchars($tx['date']); ?></td>
+        <tbody id="invBody">
+          <?php foreach ($invoices as $inv): ?>
+          <tr data-desc="<?= strtolower(htmlspecialchars($inv['description'])) ?> <?= strtolower($inv['invoice_id']) ?>">
+            <td><span class="inv-id"><?= htmlspecialchars($inv['invoice_id']) ?></span></td>
+            <td><span class="inv-date"><?= htmlspecialchars($inv['date']) ?></span></td>
+            <td><span class="inv-desc"><?= htmlspecialchars($inv['description']) ?></span></td>
+            <td><span class="inv-amount"><?= htmlspecialchars($inv['amount']) ?></span></td>
             <td>
-              <span class="tx-type-badge <?php echo $tx['type'] === 'top-up' ? 'topup' : htmlspecialchars($tx['type']); ?>">
-                <?php echo strtoupper($tx['type']); ?>
-              </span>
-            </td>
-            <td><?php echo htmlspecialchars($tx['description']); ?></td>
-            <td>
-              <span class="tx-amount <?php echo $tx['amount_val'] > 0 ? 'positive' : 'negative'; ?>">
-                <?php echo htmlspecialchars($tx['amount']); ?>
+              <span class="status-badge <?= htmlspecialchars($inv['status']) ?>">
+                <?= ucfirst(htmlspecialchars($inv['status'])) ?>
               </span>
             </td>
             <td>
-              <span class="tx-status-badge <?php echo htmlspecialchars($tx['status']); ?>">
-                <?php echo ucfirst(htmlspecialchars($tx['status'])); ?>
-              </span>
+              <a class="btn-dl" href="invoices/<?= htmlspecialchars($inv['invoice_id']) ?>.pdf" download>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                PDF
+              </a>
             </td>
           </tr>
           <?php endforeach; ?>
         </tbody>
       </table>
-
-      <?php if (empty($transactions)): ?>
-      <div class="tx-empty">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" display="block" style="margin:0 auto 12px"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-        No transactions yet.
-      </div>
+      <?php else: ?>
+      <div class="inv-empty">No payments yet.</div>
       <?php endif; ?>
     </div>
 
@@ -364,53 +354,28 @@ $total_count    = count($transactions);
 </main>
 
 <script>
-  /* ── THEME TOGGLE ── */
+  /* ── THEME ── */
   (function() {
     var html = document.documentElement;
     var toggle = document.getElementById('themeToggle');
     var icon   = document.getElementById('themeIcon');
-
-    // Sync icon with current theme on load
-    function syncIcon() {
-      icon.textContent = html.getAttribute('data-theme') === 'dark' ? '🌙' : '☀';
-    }
+    function syncIcon() { icon.textContent = html.getAttribute('data-theme') === 'dark' ? '🌙' : '☀'; }
     syncIcon();
-
     toggle.addEventListener('click', function() {
-      var isDark = html.getAttribute('data-theme') === 'dark';
-      var next   = isDark ? 'light' : 'dark';
+      var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       html.setAttribute('data-theme', next);
       localStorage.setItem('sb_theme', next);
       syncIcon();
     });
   })();
 
-  /* Filter buttons */
-  let activeFilter = 'all';
-  let searchQuery  = '';
-
-  document.querySelectorAll('.tx-filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tx-filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
-      applyFilters();
+  /* ── SEARCH ── */
+  document.getElementById('invSearch').addEventListener('input', function() {
+    var q = this.value.toLowerCase();
+    document.querySelectorAll('#invBody tr').forEach(function(row) {
+      row.style.display = (!q || row.dataset.desc.includes(q)) ? '' : 'none';
     });
   });
-
-  /* Search */
-  document.getElementById('txSearch').addEventListener('input', function() {
-    searchQuery = this.value.toLowerCase();
-    applyFilters();
-  });
-
-  function applyFilters() {
-    document.querySelectorAll('#txBody tr').forEach(row => {
-      const typeMatch = activeFilter === 'all' || row.dataset.type === activeFilter;
-      const descMatch = !searchQuery || row.dataset.desc.includes(searchQuery);
-      row.style.display = (typeMatch && descMatch) ? '' : 'none';
-    });
-  }
 </script>
 </body>
 </html>
