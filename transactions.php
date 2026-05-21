@@ -111,18 +111,15 @@ $total_count    = count($transactions);
     .nav-item.active { box-shadow: var(--neu-out); color: var(--secondary); font-weight: 600; }
     .nav-item.active svg { opacity: 1; color: var(--secondary); }
     .sidebar-sep { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; color: var(--text3); padding: 12px 14px 2px; text-transform: uppercase; }
-    .sidebar-bottom {
-      margin-top: auto; padding-top: 14px;
-      border-top: 1px solid var(--border);
-      display: flex; flex-direction: column; gap: 4px;
-    }
-    .user-chip { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: var(--surface); box-shadow: var(--neu-in); }
     .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
     .user-name  { font-size: 12.5px; font-weight: 600; }
     .user-role  { font-size: 11px; color: var(--text3); }
-    .logout-btn { color: var(--red) !important; }
-    .logout-btn:hover { background: rgba(224,85,85,0.10) !important; color: var(--red) !important; }
-    .logout-btn svg { color: var(--red); opacity: 1 !important; }
+    .sidebar-bottom { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); }
+    .user-chip { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: var(--surface); box-shadow: var(--neu-in); }
+    .user-actions { margin-left: auto; display: flex; gap: 4px; flex-shrink: 0; }
+    .user-action-btn { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text3); text-decoration: none; transition: background 0.18s, color 0.18s; }
+    .user-action-btn:hover { background: var(--surface2); color: var(--text); }
+    .user-action-btn.logout:hover { background: rgba(224,85,85,0.12); color: #e05555; }
 
     /* ── MAIN ── */
     .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
@@ -233,10 +230,6 @@ $total_count    = count($transactions);
   </a>
 
   <div class="sidebar-sep">Account</div>
-  <a class="nav-item" href="telemetry.php">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
-    Telemetry
-  </a>
   <a class="nav-item active" href="transactions.php">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
     Transactions
@@ -249,19 +242,19 @@ $total_count    = count($transactions);
   <div class="sidebar-bottom">
     <div class="user-chip">
       <div class="avatar"><?php echo htmlspecialchars($initials); ?></div>
-      <div>
+      <div class="user-info">
         <div class="user-name"><?php echo htmlspecialchars($name); ?></div>
         <div class="user-role"><?php echo htmlspecialchars($plan . ' plan'); ?></div>
       </div>
+      <div class="user-actions">
+        <a href="settings.php" class="user-action-btn" title="Settings">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </a>
+        <a href="auth/logout.php" class="user-action-btn logout" title="Logout">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </a>
+      </div>
     </div>
-    <a class="nav-item" href="settings.php">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Settings
-    </a>
-    <a class="nav-item logout-btn" href="auth/logout.php">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Logout
-    </a>
   </div>
 </aside>
 
