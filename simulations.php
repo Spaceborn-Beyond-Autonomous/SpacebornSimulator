@@ -175,22 +175,13 @@ $sessions = [
       letter-spacing: 0.1em; color: var(--text3);
       padding: 12px 14px 2px; text-transform: uppercase;
     }
-    .sidebar-bottom {
-      margin-top: auto; padding-top: 14px;
-      border-top: 1px solid var(--border);
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    .user-chip {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 12px; border-radius: 10px;
-      background: var(--surface); box-shadow: var(--neu-in);
-    }
-    .avatar {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
-    }
+    .sidebar-bottom { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border); }
+    .user-chip { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: var(--surface); box-shadow: var(--neu-in); }
+    .user-actions { margin-left: auto; display: flex; gap: 4px; flex-shrink: 0; }
+    .user-action-btn { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text3); text-decoration: none; transition: background 0.18s, color 0.18s; }
+    .user-action-btn:hover { background: var(--surface2); color: var(--text); }
+    .user-action-btn.logout:hover { background: rgba(224,85,85,0.12); color: #e05555; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
     .user-name { font-size: 12.5px; font-weight: 600; }
     .user-role { font-size: 11px; color: var(--text3); }
 
@@ -411,6 +402,13 @@ $sessions = [
       .detail-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
+  <script>
+    /* Apply saved theme before first paint to avoid flash */
+    (function(){
+      var t = localStorage.getItem('sb_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
 
@@ -660,15 +658,20 @@ $sessions = [
 </main>
 
 <script>
-  /* ── DARK / LIGHT TOGGLE ── */
-  const html  = document.documentElement;
-  const tog   = document.getElementById('themeToggle');
-  const icon  = document.getElementById('themeIcon');
-  tog.addEventListener('click', () => {
-    const dark = html.dataset.theme === 'dark';
-    html.dataset.theme = dark ? 'light' : 'dark';
-    icon.textContent   = dark ? '☀' : '🌙';
-  });
+  /* ── THEME TOGGLE ── */
+  (function() {
+    var html = document.documentElement;
+    var toggle = document.getElementById('themeToggle');
+    var icon   = document.getElementById('themeIcon');
+    function syncIcon() { icon.textContent = html.getAttribute('data-theme') === 'dark' ? '🌙' : '☀'; }
+    syncIcon();
+    toggle.addEventListener('click', function() {
+      var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('sb_theme', next);
+      syncIcon();
+    });
+  })();
 
   /* ── EXPAND / COLLAPSE ── */
   function toggleCard(row) {

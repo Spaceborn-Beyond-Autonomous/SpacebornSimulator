@@ -500,6 +500,13 @@ require "auth/session_guard.php";
     .delay-5 { animation-delay: 0.33s; }
     .delay-6 { animation-delay: 0.40s; }
   </style>
+  <script>
+    /* Apply saved theme before first paint to avoid flash */
+    (function(){
+      var t = localStorage.getItem('sb_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
 
@@ -765,15 +772,26 @@ require "auth/session_guard.php";
 </main>
 
 <script>
-  const toggle = document.getElementById('themeToggle');
-  const icon   = document.getElementById('themeIcon');
-  const html   = document.documentElement;
+  /* ── THEME TOGGLE ── */
+  (function() {
+    var html = document.documentElement;
+    var toggle = document.getElementById('themeToggle');
+    var icon   = document.getElementById('themeIcon');
 
-  toggle.addEventListener('click', () => {
-    const isDark = html.getAttribute('data-theme') === 'dark';
-    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-    icon.textContent = isDark ? '☀' : '🌙';
-  });
+    // Sync icon with current theme on load
+    function syncIcon() {
+      icon.textContent = html.getAttribute('data-theme') === 'dark' ? '🌙' : '☀';
+    }
+    syncIcon();
+
+    toggle.addEventListener('click', function() {
+      var isDark = html.getAttribute('data-theme') === 'dark';
+      var next   = isDark ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('sb_theme', next);
+      syncIcon();
+    });
+  })();
 </script>
 </body>
 </html>

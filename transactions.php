@@ -195,6 +195,13 @@ $total_count    = count($transactions);
     @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
     .d1 { animation-delay: 0.04s; } .d2 { animation-delay: 0.10s; } .d3 { animation-delay: 0.17s; }
   </style>
+  <script>
+    /* Apply saved theme before first paint to avoid flash */
+    (function(){
+      var t = localStorage.getItem('sb_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
 
@@ -357,13 +364,26 @@ $total_count    = count($transactions);
 </main>
 
 <script>
-  /* Theme toggle */
-  const html = document.documentElement;
-  document.getElementById('themeToggle').addEventListener('click', () => {
-    const dark = html.dataset.theme === 'dark';
-    html.dataset.theme = dark ? 'light' : 'dark';
-    document.getElementById('themeIcon').textContent = dark ? '☀' : '🌙';
-  });
+  /* ── THEME TOGGLE ── */
+  (function() {
+    var html = document.documentElement;
+    var toggle = document.getElementById('themeToggle');
+    var icon   = document.getElementById('themeIcon');
+
+    // Sync icon with current theme on load
+    function syncIcon() {
+      icon.textContent = html.getAttribute('data-theme') === 'dark' ? '🌙' : '☀';
+    }
+    syncIcon();
+
+    toggle.addEventListener('click', function() {
+      var isDark = html.getAttribute('data-theme') === 'dark';
+      var next   = isDark ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('sb_theme', next);
+      syncIcon();
+    });
+  })();
 
   /* Filter buttons */
   let activeFilter = 'all';
