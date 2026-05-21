@@ -134,7 +134,19 @@ require "auth/session_guard.php";
       margin-top: auto;
       padding-top: 16px;
       border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
+
+    .logout-btn {
+      color: #e05555 !important;
+    }
+    .logout-btn:hover {
+      background: rgba(224,85,85,0.10) !important;
+      color: #e05555 !important;
+    }
+    .logout-btn svg { color: #e05555; opacity: 1 !important; }
 
     .user-chip {
       display: flex;
@@ -221,17 +233,6 @@ require "auth/session_guard.php";
       transition: all 0.2s;
     }
     .topbar-icon-btn:hover { color: var(--text); box-shadow: var(--neu-shadow-out); }
-
-    .wallet-badge {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--surface);
-      box-shadow: var(--neu-shadow-out);
-      border-radius: 10px;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent);
-    }
 
     /* ── CONTENT ── */
     .content {
@@ -537,27 +538,34 @@ require "auth/session_guard.php";
   </a>
 
   <div class="sidebar-section-label">Account</div>
-  <a class="nav-item" href="#">
+  <a class="nav-item" href="transactions.php">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-    Wallet
+    Transactions
   </a>
   <a class="nav-item" href="#">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
     Team
   </a>
-  <a class="nav-item" href="#">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentCgit olor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-    Settings
-  </a>
 
   <div class="sidebar-bottom">
     <div class="user-chip">
-      <div class="avatar">DP</div>
+      <div class="avatar"><?php
+        $name = $_SESSION['name'] ?? 'User';
+        echo implode('', array_map(fn($w) => strtoupper($w[0]), array_slice(explode(' ', trim($name)), 0, 2)));
+      ?></div>
       <div class="user-info">
-        <div class="user-name"><?php echo $name ?></div>
-        <div class="user-role"><?php  echo $_SESSION['user_sub']['plan_name'] . ' plan'?></div>
+        <div class="user-name"><?php echo htmlspecialchars($name); ?></div>
+        <div class="user-role"><?php echo htmlspecialchars(($_SESSION['user_sub']['plan_name'] ?? 'Free') . ' plan'); ?></div>
       </div>
     </div>
+    <a class="nav-item" href="settings.php">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+    <a class="nav-item logout-btn" href="auth/logout.php">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </a>
   </div>
 </aside>
 
@@ -575,10 +583,6 @@ require "auth/session_guard.php";
       <button class="topbar-icon-btn" aria-label="Notifications">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       </button>
-      <div class="wallet-badge">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-        <?php echo htmlspecialchars( '$' . number_format($_SESSION['wallet'], 2)); ?>
-      </div>
     </div>
   </header>
 
@@ -588,9 +592,9 @@ require "auth/session_guard.php";
     <!-- STAT CARDS -->
     <div class="stat-row">
       <div class="stat-card fade-up delay-1">
-        <div class="stat-label">Wallet Balance</div>
-        <div class="stat-value green"><?php echo htmlspecialchars( '$' . number_format($_SESSION['wallet'], 2)); ?></div>
-        <div class="stat-sub">≈ 6.3 hrs remaining</div>
+        <div class="stat-label">Active Sessions</div>
+        <div class="stat-value green">3</div>
+        <div class="stat-sub">Running right now</div>
       </div>
       <div class="stat-card fade-up delay-2">
         <div class="stat-label">Total Flight Hours</div>
@@ -715,7 +719,7 @@ require "auth/session_guard.php";
               <div class="check-circle done">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>
               </div>
-              Add funds to wallet
+              Configure drone profile
             </div>
             <div class="checklist-item done">
               <div class="check-circle done">
@@ -731,17 +735,6 @@ require "auth/session_guard.php";
               <div class="check-circle todo"></div>
               Export session data
             </div>
-          </div>
-        </div>
-
-        <!-- Low balance warning -->
-        <div class="warn-box">
-          <div class="warn-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </div>
-          <div class="warn-text">
-            <strong>Low balance warning</strong>
-            Balance below $50. <span class="warn-link">Top up now</span>
           </div>
         </div>
 

@@ -180,11 +180,6 @@ $sessions = [
       border-top: 1px solid var(--border);
       display: flex; flex-direction: column; gap: 8px;
     }
-    .wallet-side {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 6px 12px; font-size: 11.5px; color: var(--text3);
-    }
-    .wallet-side strong { color: var(--accent); font-size: 13px; }
     .user-chip {
       display: flex; align-items: center; gap: 10px;
       padding: 10px 12px; border-radius: 10px;
@@ -242,12 +237,6 @@ $sessions = [
       color: var(--text2); transition: all 0.18s;
     }
     .icon-btn:hover { color: var(--text); box-shadow: var(--neu-out); }
-    .wallet-badge {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--surface); box-shadow: var(--neu-out);
-      border-radius: 10px; padding: 8px 14px;
-      font-size: 13px; font-weight: 600; color: var(--accent);
-    }
     .new-session-btn {
       display: flex; align-items: center; gap: 7px;
       background: var(--secondary); color: #fff;
@@ -464,9 +453,9 @@ $sessions = [
   </a>
 
   <div class="sidebar-sep">Account</div>
-  <a class="nav-item" href="wallet.php">
+  <a class="nav-item" href="transactions.php">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-    Wallet
+    Transactions
   </a>
   <a class="nav-item" href="team.php">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -478,10 +467,6 @@ $sessions = [
   </a>
 
   <div class="sidebar-bottom">
-    <div class="wallet-side">
-      <span>WALLET</span>
-      <strong><?= htmlspecialchars( '$' . number_format($_SESSION['wallet'], 2)) ?></strong>
-    </div>
     <div class="user-chip">
       <div class="avatar"><?= htmlspecialchars("HG") ?></div>
       <div>
@@ -508,10 +493,6 @@ $sessions = [
       <button class="icon-btn" aria-label="Notifications">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       </button>
-      <div class="wallet-badge">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-        <?= htmlspecialchars("$" . $_SESSION['wallet']) ?>
-      </div>
       <button class="new-session-btn" onclick="location.href='new-session.php'">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         New Session
