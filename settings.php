@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   elseif (isset($_POST['save_password']))  { $password_saved=true; }
   elseif (isset($_POST['save_notifications'])) { $notif_saved=true; }
 }
-$notif=['low_balance'=>false,'session_start'=>false,'session_end'=>false,'weekly_report'=>false,'team_invite'=>false];
+$notif=['session_start'=>false,'session_end'=>false,'weekly_report'=>false,'team_invite'=>false];
 foreach($notif as $k=>$v) if(isset($_SESSION['notif_'.$k])) $notif[$k]=(bool)$_SESSION['notif_'.$k];
 $active_tab=$_GET['tab']??'profile';
 if(!in_array($active_tab,['profile','notifications'])) $active_tab='profile';
@@ -185,7 +185,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);dis
       <?php if ($notif_saved): ?><div class="toast"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>Preferences saved.</div><?php endif; ?>
       <form method="POST" action="?tab=notifications">
         <div class="notif-list"><?php
-          $rows=[['low_balance','Low balance alert','Get notified when your wallet drops below threshold'],['session_start','Session started','Confirmation when a session begins'],['session_end','Session ended','Summary after each session ends'],['weekly_report','Weekly usage report','Weekly email with usage analytics'],['team_invite','Team invitations','When someone invites you to a team']];
+          $rows=[['session_start','Session started','Confirmation when a session begins'],['session_end','Session ended','Summary after each session ends'],['weekly_report','Weekly usage report','Weekly email with usage analytics'],['team_invite','Team invitations','When someone invites you to a team']];
           foreach($rows as [$k,$l,$d]): ?>
           <div class="notif-row">
             <div><div class="notif-label"><?= $l ?></div><div class="notif-desc"><?= $d ?></div></div>
