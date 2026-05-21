@@ -3,7 +3,6 @@ require 'auth/session_guard.php';
 
 $name    = $_SESSION['name'] ?? 'User';
 $plan    = $_SESSION['user_sub']['plan_name'] ?? 'Free';
-$initials = implode('', array_map(fn($w) => strtoupper($w[0]), array_slice(explode(' ', trim($name)), 0, 2)));
 
 // Transaction history — replace with real MongoDB query
 $transactions = [
@@ -241,7 +240,7 @@ $total_count    = count($transactions);
 
   <div class="sidebar-bottom">
     <div class="user-chip">
-      <div class="avatar"><?php echo htmlspecialchars($initials); ?></div>
+      <div class="avatar"><?php echo strtoupper(substr(trim($name), 0, 1)); ?></div>
       <div class="user-info">
         <div class="user-name"><?php echo htmlspecialchars($name); ?></div>
         <div class="user-role"><?php echo htmlspecialchars($plan . ' plan'); ?></div>

@@ -545,10 +545,7 @@ require "auth/session_guard.php";
 
   <div class="sidebar-bottom">
     <div class="user-chip">
-      <div class="avatar"><?php
-        $name = $_SESSION['name'] ?? 'User';
-        echo implode('', array_map(fn($w) => strtoupper($w[0]), array_slice(explode(' ', trim($name)), 0, 2)));
-      ?></div>
+      <div class="avatar"><?php echo strtoupper(substr(trim($_SESSION['name'] ?? 'U'), 0, 1)); ?></div>
       <div class="user-info">
         <div class="user-name"><?php echo htmlspecialchars($name); ?></div>
         <div class="user-role"><?php echo htmlspecialchars(($_SESSION['user_sub']['plan_name'] ?? 'Free') . ' plan'); ?></div>

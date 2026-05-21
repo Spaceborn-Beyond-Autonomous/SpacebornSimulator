@@ -455,7 +455,7 @@ $sessions = [
   </a>
   <div class="sidebar-bottom">
     <div class="user-chip">
-      <div class="avatar"><?= htmlspecialchars($initials) ?></div>
+      <div class="avatar"><?= strtoupper(substr(trim($name), 0, 1)) ?></div>
       <div class="user-info">
         <div class="user-name"><?= htmlspecialchars($name) ?></div>
         <div class="user-role"><?= htmlspecialchars($_SESSION['user_sub']['plan_name'] . ' plan') ?></div>
