@@ -190,8 +190,7 @@ $total_paid   = count(array_filter($invoices, fn($i) => $i['status'] === 'paid')
     .status-badge.pending { background: rgba(238,147,70,0.1); color: var(--secondary); }
     .status-badge.failed { background: rgba(224,85,85,0.1); color: var(--red); }
 
-    .btn-dl { display: inline-flex; align-items: center; gap: 6px; background: transparent; color: var(--text2); border: 1px solid var(--border); border-radius: 7px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: color 0.18s, border-color 0.18s; text-decoration: none; }
-    .btn-dl:hover { color: var(--secondary); border-color: var(--secondary); }
+
 
     .inv-empty { padding: 48px 24px; text-align: center; color: var(--text3); font-size: 13px; }
 
@@ -313,7 +312,6 @@ $total_paid   = count(array_filter($invoices, fn($i) => $i['status'] === 'paid')
             <th>Description</th>
             <th>Amount</th>
             <th>Status</th>
-            <th></th>
           </tr>
         </thead>
         <tbody id="invBody">
@@ -327,12 +325,6 @@ $total_paid   = count(array_filter($invoices, fn($i) => $i['status'] === 'paid')
               <span class="status-badge <?= htmlspecialchars($inv['status']) ?>">
                 <?= ucfirst(htmlspecialchars($inv['status'])) ?>
               </span>
-            </td>
-            <td>
-              <a class="btn-dl" href="invoices/<?= htmlspecialchars($inv['invoice_id']) ?>.pdf" download>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                PDF
-              </a>
             </td>
           </tr>
           <?php endforeach; ?>
