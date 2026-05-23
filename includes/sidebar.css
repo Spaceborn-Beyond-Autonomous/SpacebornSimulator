@@ -1,33 +1,30 @@
 <?php
 require 'auth/session_guard.php';
-require 'includes/sidebar.php';
 
 $sidebar_active = 'simulations';
 
 $sessions = [
   ['id'=>'sess_001','name'=>'Campus Mapping',           'drone'=>'DJI Mavic 3 Enterprise','environment'=>'Urban',    'weather'=>'Clear',  'mode'=>'Autonomous','duration'=>'24m 12s','status'=>'completed','date'=>'Today, 10:45 AM','log'=>'logs/sess_001.zip'],
-  ['id'=>'sess_002','name'=>'Wind Tolerance Test',      'drone'=>'Autel EVO II',           'environment'=>'Mountain', 'weather'=>'Windy',  'mode'=>'Manual',    'duration'=>'18m 05s','status'=>'completed','date'=>'Yesterday',       'log'=>'logs/sess_002.zip'],
-  ['id'=>'sess_003','name'=>'FPV Racing Track 4',       'drone'=>'DJI FPV',                'environment'=>'Stadium',  'weather'=>'Clear',  'mode'=>'FPV',       'duration'=>'45m 38s','status'=>'completed','date'=>'May 12',          'log'=>'logs/sess_003.zip'],
-  ['id'=>'sess_004','name'=>'Precision Landing — Urban','drone'=>'DJI Mini 4 Pro',         'environment'=>'Urban',    'weather'=>'Cloudy', 'mode'=>'Autonomous','duration'=>'11m 50s','status'=>'completed','date'=>'May 10',          'log'=>'logs/sess_004.zip'],
-  ['id'=>'sess_005','name'=>'Night Forest Patrol',      'drone'=>'Autel EVO II Pro',       'environment'=>'Forest',   'weather'=>'Night',  'mode'=>'Autonomous','duration'=>'33m 21s','status'=>'failed',   'date'=>'May 8',           'log'=>'logs/sess_005.zip'],
+  ['id'=>'sess_002','name'=>'Wind Tolerance Test',      'drone'=>'Autel EVO II',           'environment'=>'Mountain', 'weather'=>'Windy',  'mode'=>'Manual',     'duration'=>'18m 05s','status'=>'completed','date'=>'Yesterday',      'log'=>'logs/sess_002.zip'],
+  ['id'=>'sess_003','name'=>'FPV Racing Track 4',        'drone'=>'DJI FPV',               'environment'=>'Stadium',  'weather'=>'Clear',  'mode'=>'FPV',        'duration'=>'45m 38s','status'=>'completed','date'=>'May 12',         'log'=>'logs/sess_003.zip'],
+  ['id'=>'sess_004','name'=>'Precision Landing — Urban', 'drone'=>'DJI Mini 4 Pro',        'environment'=>'Urban',    'weather'=>'Cloudy', 'mode'=>'Autonomous', 'duration'=>'11m 50s','status'=>'completed','date'=>'May 10',         'log'=>'logs/sess_004.zip'],
+  ['id'=>'sess_005','name'=>'Night Forest Patrol',       'drone'=>'Autel EVO II Pro',      'environment'=>'Forest',   'weather'=>'Night',  'mode'=>'Autonomous', 'duration'=>'33m 21s','status'=>'failed',   'date'=>'May 8',          'log'=>'logs/sess_005.zip'],
 ];
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Spaceborn — Simulations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
-    /* ── Design tokens ── */
     :root{--primary:#10256D;--secondary:#EE9346;--accent:#28c840;--red:#e05555;--bg:#0e1117;--bg2:#141820;--surface:#1a1f2e;--surface2:#212637;--border:rgba(255,255,255,0.06);--text:#e8eaf0;--text2:#8b92a8;--text3:#5a6078;--neu-out:6px 6px 14px #080b12,-4px -4px 10px #222840;--neu-in:inset 4px 4px 10px #080b12,inset -3px -3px 8px #222840;--neu-btn:3px 3px 8px #080b12,-2px -2px 6px #222840;--sidebar-w:220px;--r:14px;}
     [data-theme="light"]{--bg:#e8eaf0;--bg2:#dde0ea;--surface:#eaecf4;--surface2:#f0f2f8;--border:rgba(0,0,0,0.06);--text:#1a1f35;--text2:#5a6078;--text3:#9099b8;--neu-out:6px 6px 14px #c8cad4,-4px -4px 10px #ffffff;--neu-in:inset 4px 4px 10px #c8cad4,inset -3px -3px 8px #ffffff;--neu-btn:3px 3px 8px #c8cad4,-2px -2px 6px #ffffff;}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;transition:background .3s,color .3s;}
 
-    /* ── Shared sidebar CSS (single copy) ── */
+    /* Sidebar */
     .sidebar{width:var(--sidebar-w);background:var(--bg2);display:flex;flex-direction:column;padding:24px 16px;gap:4px;position:fixed;top:0;left:0;bottom:0;box-shadow:4px 0 20px rgba(0,0,0,.25);z-index:20;transition:background .3s;}
     .sidebar-logo{display:flex;align-items:center;gap:10px;padding:6px 12px 20px;border-bottom:1px solid var(--border);margin-bottom:6px;}
     .sidebar-logo-text{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;letter-spacing:.05em;color:var(--primary);}
@@ -43,13 +40,12 @@ $sessions = [
     .user-action-btn{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text3);text-decoration:none;transition:background .18s,color .18s;}
     .user-action-btn:hover{background:var(--surface2);color:var(--text);}
     .user-action-btn.logout:hover{background:rgba(224,85,85,.12);color:#e05555;}
-    .user-action-btn.active-icon{color:var(--secondary);}
     .avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
     .user-info{flex:1;min-width:0;}
     .user-name{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .user-role{font-size:11px;color:var(--text3);}
 
-    /* ── Main layout ── */
+    /* Main */
     .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
     .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;background:var(--bg);transition:background .3s;}
     .topbar-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;}
@@ -62,19 +58,9 @@ $sessions = [
     .new-session-btn{display:flex;align-items:center;gap:7px;background:var(--secondary);color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 14px rgba(238,147,70,.35);transition:opacity .18s,transform .15s;}
     .new-session-btn:hover{opacity:.9;transform:translateY(-1px);}
     .content{padding:28px 32px;flex:1;display:flex;flex-direction:column;gap:20px;}
-
-    /* ── Page header ── */
     .page-header{display:flex;align-items:flex-end;justify-content:space-between;}
     .page-header h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;letter-spacing:-.03em;}
     .page-header p{font-size:13px;color:var(--text3);margin-top:4px;}
-
-    /* ── Summary bar ── */
-    .summary-bar{display:flex;align-items:center;gap:20px;padding:12px 20px;border-radius:var(--r);background:var(--surface);box-shadow:var(--neu-in);font-size:12.5px;color:var(--text2);flex-wrap:wrap;}
-    .summary-item{display:flex;align-items:center;gap:6px;}
-    .summary-dot{width:7px;height:7px;border-radius:50%;}
-    .summary-val{font-weight:600;color:var(--text);}
-
-    /* ── Filter bar ── */
     .filter-bar{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:var(--r);box-shadow:var(--neu-in);padding:12px 18px;}
     .search-wrap{flex:1;display:flex;align-items:center;gap:10px;}
     .search-wrap svg{color:var(--text3);flex-shrink:0;}
@@ -85,8 +71,10 @@ $sessions = [
     .filter-select option{background:var(--surface2);}
     .select-wrap{display:flex;align-items:center;gap:4px;}
     .select-wrap svg{color:var(--text3);pointer-events:none;}
-
-    /* ── Session cards ── */
+    .summary-bar{display:flex;align-items:center;gap:20px;padding:12px 20px;border-radius:var(--r);background:var(--surface);box-shadow:var(--neu-in);font-size:12.5px;color:var(--text2);flex-wrap:wrap;}
+    .summary-item{display:flex;align-items:center;gap:6px;}
+    .summary-dot{width:7px;height:7px;border-radius:50%;}
+    .summary-val{font-weight:600;color:var(--text);}
     .sessions-list{display:flex;flex-direction:column;gap:10px;}
     .session-card{background:var(--surface);border-radius:var(--r);box-shadow:var(--neu-out);overflow:hidden;transition:box-shadow .2s;}
     .session-card:hover{box-shadow:8px 8px 20px #050810,-5px -5px 14px #252d48;}
@@ -107,8 +95,6 @@ $sessions = [
     .badge-running{background:rgba(238,147,70,.12);color:var(--secondary);}
     .expand-arrow{width:26px;height:26px;border-radius:8px;background:var(--surface2);box-shadow:var(--neu-in);display:flex;align-items:center;justify-content:center;color:var(--text3);transition:transform .25s,color .18s;flex-shrink:0;}
     .session-card.open .expand-arrow{transform:rotate(180deg);color:var(--secondary);}
-
-    /* Expandable detail */
     .session-detail{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);border-top:1px solid transparent;}
     .session-card.open .session-detail{max-height:300px;border-top-color:var(--border);}
     .detail-inner{padding:20px 22px;display:flex;flex-direction:column;gap:16px;}
@@ -121,18 +107,13 @@ $sessions = [
     .btn-outline:hover{color:var(--text);border-color:var(--secondary);box-shadow:var(--neu-out);}
     .btn-solid{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:10px;background:var(--secondary);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 12px rgba(238,147,70,.3);transition:opacity .18s;text-decoration:none;}
     .btn-solid:hover{opacity:.88;}
-
-    /* Empty state */
     .empty-state{text-align:center;padding:60px 20px;background:var(--surface);border-radius:var(--r);box-shadow:var(--neu-in);display:none;}
     .empty-state svg{color:var(--text3);margin-bottom:14px;}
     .empty-state h3{font-family:'Syne',sans-serif;font-size:16px;margin-bottom:6px;}
     .empty-state p{font-size:13px;color:var(--text3);}
-
-    /* Animations */
     .fade-up{opacity:0;transform:translateY(14px);animation:fu .4s ease forwards;}
     @keyframes fu{to{opacity:1;transform:translateY(0);}}
     .d1{animation-delay:.04s}.d2{animation-delay:.10s}.d3{animation-delay:.16s}.d4{animation-delay:.22s}
-
     @media(max-width:900px){.detail-grid{grid-template-columns:repeat(2,1fr);}}
     @media(max-width:720px){.sidebar{display:none;}.main{margin-left:0;}.content{padding:18px 14px;}.topbar{padding:14px 16px;}}
   </style>
@@ -149,15 +130,10 @@ $sessions = [
       <span id="themeIcon" style="font-size:13px">🌙</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
       <button class="icon-btn" aria-label="Notifications">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-        </svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       </button>
       <button class="new-session-btn" onclick="location.href='new-session.php'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         New Session
       </button>
     </div>
@@ -170,9 +146,7 @@ $sessions = [
         <p>All your simulation runs in one place</p>
       </div>
       <button class="new-session-btn" onclick="location.href='new-session.php'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         + New Session
       </button>
     </div>
@@ -180,12 +154,12 @@ $sessions = [
     <div class="summary-bar fade-up d2">
       <div class="summary-item">
         <div class="summary-dot" style="background:var(--accent)"></div>
-        <span><?= count(array_filter($sessions, fn($s) => $s['status']==='completed')) ?></span>
+        <span><?= count(array_filter($sessions,fn($s)=>$s['status']==='completed')) ?></span>
         <span class="summary-val">Completed</span>
       </div>
       <div class="summary-item">
         <div class="summary-dot" style="background:var(--red)"></div>
-        <span><?= count(array_filter($sessions, fn($s) => $s['status']==='failed')) ?></span>
+        <span><?= count(array_filter($sessions,fn($s)=>$s['status']==='failed')) ?></span>
         <span class="summary-val">Failed</span>
       </div>
       <div class="summary-item">
@@ -197,11 +171,8 @@ $sessions = [
 
     <div class="filter-bar fade-up d3">
       <div class="search-wrap">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input class="search-input" id="searchInput" type="text"
-               placeholder="Search sessions…" autocomplete="off"/>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" id="searchInput" type="text" placeholder="Search sessions…" autocomplete="off"/>
       </div>
       <div class="filter-divider"></div>
       <div class="select-wrap">
@@ -211,41 +182,30 @@ $sessions = [
           <option value="failed">Failed</option>
           <option value="running">Running</option>
         </select>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="6,9 12,15 18,9"/>
-        </svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
       </div>
       <div class="filter-divider"></div>
       <div class="select-wrap">
         <select class="filter-select" id="droneFilter">
           <option value="">All Drones</option>
-          <?php foreach (array_unique(array_column($sessions, 'drone')) as $d): ?>
+          <?php foreach(array_unique(array_column($sessions,'drone')) as $d): ?>
           <option value="<?= htmlspecialchars($d) ?>"><?= htmlspecialchars($d) ?></option>
           <?php endforeach; ?>
         </select>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="6,9 12,15 18,9"/>
-        </svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
       </div>
     </div>
 
     <div class="sessions-list fade-up d4" id="sessionsList">
-      <?php foreach ($sessions as $s): ?>
+      <?php foreach($sessions as $s): ?>
       <div class="session-card status-<?= $s['status'] ?>"
            data-name="<?= strtolower(htmlspecialchars($s['name'])) ?>"
            data-drone="<?= htmlspecialchars($s['drone']) ?>"
            data-status="<?= $s['status'] ?>">
-
         <div class="session-row" onclick="toggleCard(this)">
           <div class="session-row-left">
             <div class="session-drone-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="2"/>
-                <line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/>
-                <line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/>
-                <circle cx="4" cy="4" r="2"/><circle cx="20" cy="4" r="2"/>
-                <circle cx="4" cy="20" r="2"/><circle cx="20" cy="20" r="2"/>
-              </svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/><circle cx="4" cy="4" r="2"/><circle cx="20" cy="4" r="2"/><circle cx="4" cy="20" r="2"/><circle cx="20" cy="20" r="2"/></svg>
             </div>
             <div>
               <div class="s-name"><?= htmlspecialchars($s['name']) ?></div>
@@ -260,13 +220,10 @@ $sessions = [
             <span class="s-duration"><?= $s['duration'] ?></span>
             <span class="s-badge badge-<?= $s['status'] ?>"><?= ucfirst($s['status']) ?></span>
             <div class="expand-arrow">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polyline points="6,9 12,15 18,9"/>
-              </svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg>
             </div>
           </div>
         </div>
-
         <div class="session-detail">
           <div class="detail-inner">
             <div class="detail-grid">
@@ -274,25 +231,15 @@ $sessions = [
               <div><div class="detail-label">Environment</div><div class="detail-value"><?= htmlspecialchars($s['environment']) ?></div></div>
               <div><div class="detail-label">Duration</div><div class="detail-value"><?= $s['duration'] ?></div></div>
               <div><div class="detail-label">Weather</div><div class="detail-value"><?= htmlspecialchars($s['weather']) ?></div></div>
-              <div>
-                <div class="detail-label">Mode</div>
-                <div class="detail-value <?= $s['status']==='failed'?'failed':'' ?>"><?= htmlspecialchars($s['mode']) ?></div>
-              </div>
+              <div><div class="detail-label">Mode</div><div class="detail-value <?= $s['status']==='failed'?'failed':'' ?>"><?= htmlspecialchars($s['mode']) ?></div></div>
             </div>
             <div class="detail-actions">
               <a class="btn-outline" href="session-detail.php?id=<?= $s['id'] ?>">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 View Details
               </a>
               <a class="btn-solid" href="<?= htmlspecialchars($s['log']) ?>" download>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7,10 12,15 17,10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 Download Logs
               </a>
             </div>
@@ -303,9 +250,7 @@ $sessions = [
     </div>
 
     <div class="empty-state" id="emptyState">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      </svg>
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <h3>No sessions found</h3>
       <p>Try adjusting your search or filter.</p>
     </div>
@@ -316,34 +261,20 @@ $sessions = [
 (function(){
   var h=document.documentElement,t=document.getElementById('themeToggle'),i=document.getElementById('themeIcon');
   function s(){i.textContent=h.getAttribute('data-theme')==='dark'?'🌙':'☀️';}s();
-  t.addEventListener('click',function(){
-    var n=h.getAttribute('data-theme')==='dark'?'light':'dark';
-    h.setAttribute('data-theme',n);localStorage.setItem('sb_theme',n);s();
-  });
+  t.addEventListener('click',function(){var n=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',n);localStorage.setItem('sb_theme',n);s();});
 })();
-
 function toggleCard(row){
   var card=row.closest('.session-card'),isOpen=card.classList.contains('open');
   document.querySelectorAll('.session-card.open').forEach(function(c){c.classList.remove('open');});
-  if(!isOpen) card.classList.add('open');
+  if(!isOpen)card.classList.add('open');
 }
-
-var searchInput=document.getElementById('searchInput'),
-    statusFilter=document.getElementById('statusFilter'),
-    droneFilter=document.getElementById('droneFilter'),
-    emptyState=document.getElementById('emptyState');
-
+var searchInput=document.getElementById('searchInput'),statusFilter=document.getElementById('statusFilter'),droneFilter=document.getElementById('droneFilter'),emptyState=document.getElementById('emptyState');
 function filterSessions(){
-  var q=searchInput.value.toLowerCase().trim(),
-      status=statusFilter.value,
-      drone=droneFilter.value,
-      visible=0;
+  var q=searchInput.value.toLowerCase().trim(),status=statusFilter.value,drone=droneFilter.value,visible=0;
   document.querySelectorAll('.session-card').forEach(function(card){
-    var show=(!q||card.dataset.name.includes(q))
-           &&(!status||card.dataset.status===status)
-           &&(!drone||card.dataset.drone===drone);
+    var show=(!q||card.dataset.name.includes(q))&&(!status||card.dataset.status===status)&&(!drone||card.dataset.drone===drone);
     card.style.display=show?'':'none';
-    if(show) visible++;
+    if(show)visible++;
   });
   emptyState.style.display=visible===0?'block':'none';
 }
