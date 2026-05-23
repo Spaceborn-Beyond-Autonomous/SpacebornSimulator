@@ -125,7 +125,9 @@ if ($has_active_subscription) {
         $_SESSION['sub_started']      = true;
         $_SESSION['sub_activated_at'] = $now;
         $_SESSION['sub_expires_at']   = $now + ($base_minutes * 60);
-        
+        $sub_expires_at = $_SESSION['sub_expires_at'];
+        $sub_started = true;
+
         $remaining_seconds = $base_minutes * 60;
     } else {
         $now = time();
@@ -136,7 +138,10 @@ if ($has_active_subscription) {
     $remaining_seconds = 0;
 }
 
-$max_seconds = $remaining_seconds + (($wallet / $ppm) * 60);
+$wallet_seconds = (int) (($wallet / $ppm) * 60);
+$max_seconds = $remaining_seconds + $wallet_seconds;
+$now = time();
+$access_expires_at = $max_seconds > 0 ? $now + $max_seconds : 0;
 
 echo json_encode([
     'wallet_balance'      => $wallet,
@@ -144,5 +149,9 @@ echo json_encode([
     'base_minutes'        => $base_minutes,
     'ppm'                 => $ppm,
     'max_session_seconds' => $max_seconds,
-    'sub_active'          => $has_active_subscription
+    'sub_active'          => $has_active_subscription,
+    'sub_expires_at'      => $has_active_subscription && $sub_started ? $sub_expires_at : 0,
+    'sub_remaining_seconds' => $remaining_seconds,
+    'wallet_seconds'      => $wallet_seconds,
+    'access_expires_at'   => $access_expires_at,
 ]);

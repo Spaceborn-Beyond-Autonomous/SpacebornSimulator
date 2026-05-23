@@ -62,11 +62,16 @@ $result = $users->insertOne([
 ]);
 
 if ($result->getInsertedCount() > 0) {
-    // Generate the verification link based on the current host
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'];
-    $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    $verifyLink = "$protocol://$host$uri/verify.php?token=$verificationToken";
+    // Generate the verification link using APP_URL if set, else fallback to current host
+    $appUrl = $_ENV['APP_URL'] ?? '';
+    if (!empty($appUrl)) {
+        $verifyLink = rtrim($appUrl, '/') . "/auth/verify.php?token=" . $verificationToken;
+    } else {
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];
+        $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+        $verifyLink = "$protocol://$host$uri/verify.php?token=$verificationToken";
+    }
     
     // Log it to the console/error log as requested
     error_log("VERIFICATION LINK FOR $email: " . $verifyLink);

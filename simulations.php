@@ -20,6 +20,7 @@ foreach ($flights as $f) {
         'duration'    => gmdate("i\m s\s", $f['duration'] ?? 0),
         'status'      => $f['status'] ?? 'completed',
         'date'        => $f['created_at'] ? $f['created_at']->toDateTime()->format('M d, g:i A') : 'Unknown',
+        'telemetry_url'=> $f['telemetry_url'] ?? null,
         'log'         => 'logs/' . ((string)$f['_id']) . '.zip'
     ];
 }
@@ -300,8 +301,18 @@ foreach ($flights as $f) {
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                   <circle cx="12" cy="12" r="3"/>
                 </svg>
-                View Details
+                View Replay
               </a>
+              <?php if (!empty($s['telemetry_url'])): ?>
+              <a class="btn-solid" href="<?= htmlspecialchars($s['telemetry_url']) ?>" target="_blank" download>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Download Telemetry
+              </a>
+              <?php endif; ?>
               <a class="btn-solid" href="<?= htmlspecialchars($s['log']) ?>" download>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>

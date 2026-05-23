@@ -3,25 +3,25 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SPACEBORN · Aerospace Drone Simulator</title>
+<title>CERTANITY · Aerospace Drone Simulator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --p:#10256D;--p2:#1a3580;--p3:#0a1a50;--p4:#e8edf8;
+  --p:#4F8EF7;--p2:#3a7aee;--p3:#2563d4;--p4:#1e2d4a;
   --s:#EE9346;--s2:#f4aa6a;--s3:#c97830;
   --t:#607D8B;--t2:#78909C;--t3:#455A64;
-  --n:#F0F2F5;--n2:#E4E8EE;--n3:#D0D6E0;--n4:#C4CADA;
-  --bg:#E8ECF2;
-  --surf:#EEF1F7;
-  --txt:#0D1B3E;--txt2:#3A4E6B;--txt3:#607D8B;--txt4:#90A4AE;
-  --sh-out:5px 5px 10px #C2C8D4,-5px -5px 10px #FFFFFF;
-  --sh-in:inset 4px 4px 8px #C2C8D4,inset -4px -4px 8px #FFFFFF;
-  --sh-sm:3px 3px 6px #C8CDD8,-3px -3px 6px #FFFFFF;
-  --sh-in-sm:inset 2px 2px 5px #C2C8D4,inset -2px -2px 5px #FFFFFF;
-  --sh-lg:8px 8px 20px #BABFC9,-8px -8px 20px #FFFFFF;
-  --sh-btn:4px 4px 8px #C0C6D4,-3px -3px 7px #FFFFFF;
-  --sh-btn-press:inset 3px 3px 6px #C0C6D4,inset -2px -2px 5px #FFFFFF;
+  --n:#1a1f2e;--n2:#222736;--n3:#2c3245;--n4:#363d52;
+  --bg:#141720;
+  --surf:#1c2130;
+  --txt:#e2e8f4;--txt2:#a8b8d0;--txt3:#6e84a0;--txt4:#475c72;
+  --sh-out:5px 5px 10px #0d1018,-5px -5px 10px #232a3a;
+  --sh-in:inset 4px 4px 8px #0d1018,inset -4px -4px 8px #232a3a;
+  --sh-sm:3px 3px 6px #0d1018,-3px -3px 6px #232a3a;
+  --sh-in-sm:inset 2px 2px 5px #0d1018,inset -2px -2px 5px #232a3a;
+  --sh-lg:8px 8px 20px #0a0d14,-8px -8px 20px #242b3d;
+  --sh-btn:4px 4px 8px #0d1018,-3px -3px 7px #232a3a;
+  --sh-btn-press:inset 3px 3px 6px #0d1018,inset -2px -2px 5px #232a3a;
   --r1:10px;--r2:16px;--r3:22px;--r4:32px;
   --fh:'Space Grotesk',system-ui,sans-serif;
   --fb:'Inter',system-ui,sans-serif;
@@ -34,7 +34,7 @@ button{cursor:pointer;border:none;background:none;font-family:var(--fb)}
 input,select{font-family:var(--fb)}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--n3);border-radius:2px}
+::-webkit-scrollbar-thumb{background:var(--n4);border-radius:2px}
 
 /* ── Startup ── */
 #startup{
@@ -58,7 +58,7 @@ input,select{font-family:var(--fb)}
 #topbar{
   grid-column:1/-1;
   background:var(--surf);
-  box-shadow:0 2px 12px rgba(16,37,109,.07),0 1px 0 var(--n3);
+  box-shadow:0 2px 12px rgba(0,0,0,.3),0 1px 0 var(--n3);
   display:flex;align-items:center;padding:0 18px;gap:14px;z-index:100;
 }
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
@@ -147,10 +147,10 @@ input,select{font-family:var(--fb)}
 /* ── Neumorphic Button ── */
 .nbtn{border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-btn);padding:8px 14px;font-size:12px;font-weight:500;color:var(--txt2);transition:all .15s var(--ease);display:inline-flex;align-items:center;gap:6px}
 .nbtn:active,.nbtn.active-btn{box-shadow:var(--sh-btn-press);transform:translateY(1px)}
-.nbtn.primary{background:var(--p);color:white;box-shadow:3px 3px 7px rgba(16,37,109,.3),-2px -2px 6px rgba(255,255,255,.8)}
+.nbtn.primary{background:var(--p);color:white;box-shadow:3px 3px 7px rgba(0,0,0,.4),-2px -2px 6px rgba(79,142,247,.15)}
 .nbtn.primary:active{box-shadow:inset 2px 2px 5px rgba(0,0,0,.25),inset -1px -1px 4px rgba(255,255,255,.1)}
-.nbtn.accent{background:var(--s);color:white;box-shadow:3px 3px 7px rgba(238,147,70,.3),-2px -2px 6px rgba(255,255,255,.8)}
-.nbtn.danger{background:#F44336;color:white;box-shadow:3px 3px 7px rgba(244,67,54,.3),-2px -2px 6px rgba(255,255,255,.8)}
+.nbtn.accent{background:var(--s);color:white;box-shadow:3px 3px 7px rgba(238,147,70,.3),-2px -2px 6px rgba(255,255,255,.08)}
+.nbtn.danger{background:#F44336;color:white;box-shadow:3px 3px 7px rgba(244,67,54,.3),-2px -2px 6px rgba(255,255,255,.08)}
 .nbtn.sm{padding:5px 10px;font-size:11px;border-radius:8px}
 .nbtn.icon{padding:8px;border-radius:var(--r1);width:34px;height:34px;justify-content:center}
 .nbtn.icon.sm{width:28px;height:28px;padding:5px}
@@ -221,19 +221,19 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 /* ── Map / Minimap ── */
 .minimap{border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh-in);height:120px;position:relative;background:#1a2744}
 .minimap canvas{width:100%;height:100%;display:block}
-.minimap-badge{position:absolute;bottom:6px;left:6px;background:rgba(16,37,109,.8);color:rgba(255,255,255,.9);font-size:9px;padding:2px 7px;border-radius:10px;font-weight:600;letter-spacing:.5px}
+.minimap-badge{position:absolute;bottom:6px;left:6px;background:rgba(30,45,100,.9);color:rgba(255,255,255,.9);font-size:9px;padding:2px 7px;border-radius:10px;font-weight:600;letter-spacing:.5px}
 
 /* ── Flight Modes ── */
 .fmode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .fmode-btn{padding:7px 4px;border-radius:var(--r1);font-size:10px;font-weight:600;text-align:center;color:var(--txt3);background:var(--surf);box-shadow:var(--sh-sm);transition:all .2s var(--ease);letter-spacing:.3px;display:flex;flex-direction:column;align-items:center;gap:3px}
 .fmode-btn .fm-icon{font-size:14px}
-.fmode-btn.on{background:var(--p);color:white;box-shadow:3px 3px 7px rgba(16,37,109,.3),-2px -2px 6px rgba(255,255,255,.8)}
+.fmode-btn.on{background:var(--p);color:white;box-shadow:3px 3px 7px rgba(0,0,0,.4),-2px -2px 6px rgba(79,142,247,.15)}
 .fmode-btn:not(.on):hover{background:var(--n2)}
 
 /* ── Camera Selector ── */
 .cam-row{display:flex;gap:6px}
 .cam-btn{flex:1;padding:6px;border-radius:var(--r1);font-size:10px;font-weight:600;text-align:center;color:var(--txt3);background:var(--surf);box-shadow:var(--sh-sm);transition:all .2s}
-.cam-btn.on{background:var(--s);color:white;box-shadow:3px 3px 7px rgba(238,147,70,.3),-2px -2px 6px rgba(255,255,255,.8)}
+.cam-btn.on{background:var(--s);color:white;box-shadow:3px 3px 7px rgba(238,147,70,.3),-2px -2px 6px rgba(255,255,255,.08)}
 
 /* ── Graph ── */
 .graph-canvas{border-radius:var(--r1);width:100%;box-shadow:var(--sh-in-sm)}
@@ -284,7 +284,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 /* Arm status */
 #arm-status{font-size:10px;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:10px;font-weight:700;background:#F44336;color:white;margin-left:4px}
 #arm-status.armed{background:#4CAF50}
-#pause-btn.paused{background:var(--s);color:white;box-shadow:3px 3px 7px rgba(238,147,70,.3),-2px -2px 6px rgba(255,255,255,.8);}
+#pause-btn.paused{background:var(--s);color:white;box-shadow:3px 3px 7px rgba(238,147,70,.3),-2px -2px 6px rgba(255,255,255,.08);}
 .export-panel{display:flex;flex-direction:column;gap:7px;}
 .export-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
 .export-stat{padding:5px 8px;border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in-sm);font-size:10px;}
@@ -303,7 +303,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .profile-field{display:flex;flex-direction:column;gap:3px}
 .profile-field label{font-size:10px;color:var(--txt3);font-weight:500}
 .profile-field input[type=number]{width:100%;border-radius:7px;background:var(--surf);box-shadow:var(--sh-in-sm);padding:5px 8px;font-size:12px;color:var(--txt);font-weight:600;border:none;outline:none;font-family:var(--fb)}
-.profile-field input[type=number]:focus{box-shadow:var(--sh-in),0 0 0 2px rgba(16,37,109,.15)}
+.profile-field input[type=number]:focus{box-shadow:var(--sh-in),0 0 0 2px rgba(79,142,247,.2)}
 .profile-color-row{display:flex;align-items:center;gap:8px;margin-top:2px}
 .profile-color-row label{font-size:10px;color:var(--txt3);font-weight:500;flex:1}
 .profile-color-row input[type=color]{width:34px;height:28px;border-radius:7px;border:none;cursor:pointer;padding:2px;background:var(--surf);box-shadow:var(--sh-sm)}
@@ -311,7 +311,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 /* ── Custom Profile Modal ── */
 #custom-profile-modal{
   position:fixed;inset:0;z-index:900;
-  background:rgba(13,27,62,.45);backdrop-filter:blur(6px);
+  background:rgba(0,0,0,.65);backdrop-filter:blur(6px);
   display:none;align-items:center;justify-content:center;
 }
 #custom-profile-modal.open{display:flex}
@@ -332,7 +332,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .modal-field{display:flex;flex-direction:column;gap:4px}
 .modal-field label{font-size:11px;color:var(--txt3);font-weight:500}
 .modal-field input[type=text],.modal-field input[type=number]{width:100%;border-radius:8px;background:var(--bg);box-shadow:var(--sh-in-sm);padding:7px 10px;font-size:12px;color:var(--txt);font-weight:600;border:none;outline:none;font-family:var(--fb)}
-.modal-field input:focus{box-shadow:var(--sh-in),0 0 0 2px rgba(16,37,109,.18)}
+.modal-field input:focus{box-shadow:var(--sh-in),0 0 0 2px rgba(79,142,247,.22)}
 .modal-field.full{grid-column:1/-1}
 .modal-hint{font-size:10px;color:var(--txt4);margin-top:2px}
 .profile-card-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
@@ -382,15 +382,55 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .stick-meter-fill.accent{background:var(--s)}
 .stick-meter-fill.primary{background:var(--p)}
 
-/* ── Stick Visualizer Canvas ── */
-.stick-viz-canvas{border-radius:var(--r1);box-shadow:var(--sh-in-sm);display:block}
+/* ── Obstacle Radar ── */
+.obstacle-radar{position:relative;display:flex;align-items:center;justify-content:center;padding:6px}
+.obs-ring{stroke:rgba(96,125,139,0.25);fill:none}
+.obs-sector-label{font-size:8px;fill:var(--txt4);font-family:'Inter',sans-serif;font-weight:600}
+.obs-bar-row{display:grid;grid-template-columns:28px 1fr 28px;gap:4px;align-items:center}
+.obs-bar-lbl{font-size:9px;color:var(--txt4);font-weight:700;text-align:center}
+.obs-bar-track{height:5px;border-radius:3px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden}
+.obs-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#F44336,#EE9346,#4CAF50);transition:width .1s}
+
+/* ── GPS Panel ── */
+.gps-fix-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.gps-fix-3d{background:#4CAF50;color:white}
+.gps-fix-2d{background:var(--s);color:white}
+.gps-fix-none{background:#F44336;color:white}
+.gps-coord{font-family:var(--fh);font-size:11px;font-weight:600;color:var(--txt);letter-spacing:.3px}
+.gps-sat-row{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
+.gps-sat-dot{width:6px;height:6px;border-radius:50%;background:var(--n3);transition:background .3s}
+.gps-sat-dot.on{background:#4CAF50}
+.gps-sat-dot.dim{background:var(--s);opacity:.5}
+
+/* ── VSLAM Panel ── */
+.vslam-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.vslam-active{background:var(--p);color:white;animation:bp 1.2s ease infinite}
+.vslam-idle{background:var(--n2);color:var(--txt4)}
+.vslam-quality{height:4px;border-radius:2px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden;margin-top:5px}
+.vslam-quality-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--p),var(--s));transition:width .2s}
+
+/* ── PID Telemetry Panel ── */
+.pid-telem-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.pid-axis-card{border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in-sm);padding:7px}
+.pid-axis-title{font-size:9px;font-weight:700;color:var(--txt4);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between}
+.pid-axis-live{font-size:8px;font-family:var(--fh);font-weight:600;color:var(--s)}
+.pid-gains-row{display:flex;gap:3px;margin-bottom:5px}
+.pid-gain{flex:1;text-align:center;padding:3px 2px;border-radius:5px;background:var(--n);box-shadow:var(--sh-in-sm)}
+.pid-gain-lbl{font-size:8px;color:var(--txt4);font-weight:600}
+.pid-gain-val{font-size:10px;font-family:var(--fh);font-weight:700;color:var(--p)}
+.pid-err-track{height:4px;border-radius:2px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden;position:relative}
+.pid-err-track::before{content:'';position:absolute;left:50%;top:0;width:1px;height:100%;background:var(--n4);z-index:1}
+.pid-err-fill{position:absolute;height:100%;border-radius:2px;background:var(--s);transition:width .06s,left .06s}
+
+/* ── Rate Hz badges ── */
+.hz-badge{display:inline-block;font-size:8px;font-weight:700;padding:1px 5px;border-radius:6px;background:var(--n);box-shadow:var(--sh-in-sm);color:var(--txt4);letter-spacing:.3px;margin-left:4px;vertical-align:middle}
 
 </style>
 <body>
 
 <!-- Startup -->
 <div id="startup">
-  <div class="sl">SPACE<span>BORN</span></div>
+  <div class="sl">CERTANITY</div>
   <div class="ss">Aerospace Drone Simulator · v2.0</div>
   <div class="sbw"><div class="sb" id="sbar"></div></div>
   <div class="st" id="sstat">Initializing physics engine…</div>
@@ -402,7 +442,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
   <!-- Topbar -->
   <div id="topbar">
     <a class="brand" href="#">
-      <div class="brand-name">SPACE<span>BORN</span></div>
+      <div class="brand-name">CERTANITY</div>
       <div class="brand-tag">SIM</div>
     </a>
     <div class="vsep"></div>
@@ -427,8 +467,9 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <span id="arm-status">DISARMED</span>
     <div class="top-stat"><span>⚡</span><span id="batt-top">100%</span></div>
     <div class="top-stat"><span>🌡</span><span id="fps-val">60fps</span></div>
-    <div class="top-clock" id="top-clock">00:00</div>
-    <button class="nbtn danger sm" onclick="exitSimulation()" title="Exit Simulation" style="font-weight:600; margin-left: 8px;">🚪 Exit</button>
+    <div class="top-clock" id="top-clock" title="Subscription time remaining">00:00</div>
+    <button class="nbtn primary sm" onclick="exportSimulationData()" title="Save Data to Cloud" style="font-weight:600;margin-left:8px">☁️ Save to Cloud</button>
+    <button class="nbtn danger sm" onclick="exitSimulation()" title="Exit Simulation" style="font-weight:600;margin-left:8px">🚪 Exit</button>
   </div>
 
   <!-- Left Panel -->
@@ -668,7 +709,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <!-- Primary Telemetry -->
     <div class="card card-sm">
-      <div class="card-title"><span class="ct-dot"></span>TELEMETRY</div>
+      <div class="card-title"><span class="ct-dot"></span>ATTITUDE <span class="hz-badge">50 Hz</span></div>
       <div class="tval-row" style="margin-bottom:7px">
         <div class="tval"><div class="tval-label">ALT</div><div class="tval-num" id="t-alt">0.0</div><div class="tval-unit">m AGL</div></div>
         <div class="tval"><div class="tval-label">VEL</div><div class="tval-num" id="t-vel">0.0</div><div class="tval-unit">m/s</div></div>
@@ -691,15 +732,37 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <!-- Battery -->
     <div class="card card-sm">
-      <div class="card-title"><span class="ct-dot"></span>POWER</div>
+      <div class="card-title"><span class="ct-dot"></span>POWER <span class="hz-badge">2 Hz</span></div>
       <div style="display:flex;flex-direction:column;gap:7px">
         <div class="bgauge-wrap">
           <div class="bgauge-label"><span>Battery</span><span id="batt-pct">100%</span></div>
           <div class="bgauge-track"><div class="bgauge-fill green" id="batt-bar" style="width:100%"></div></div>
         </div>
-        <div class="tval-row2">
+        <div class="tval-row">
           <div class="tval"><div class="tval-label">VOLT</div><div class="tval-num" id="t-volt">16.8</div><div class="tval-unit">V</div></div>
           <div class="tval"><div class="tval-label">CURR</div><div class="tval-num" id="t-curr">0.0</div><div class="tval-unit">A</div></div>
+          <div class="tval"><div class="tval-label">ETA</div><div class="tval-num" id="t-batt-eta">--</div><div class="tval-unit">min</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GPS_RAW_INT -->
+    <div class="card card-sm">
+      <div class="card-title"><span class="ct-dot"></span>GPS_RAW_INT <span class="hz-badge">5 Hz</span></div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+          <span class="gps-fix-badge gps-fix-3d" id="gps-fix-badge">3D FIX</span>
+          <span style="font-size:10px;color:var(--txt3)">SATS: <span class="gps-coord" id="gps-sat-count">14</span></span>
+          <span style="font-size:10px;color:var(--txt3)">HDOP: <span class="gps-coord" id="gps-hdop">0.9</span></span>
+        </div>
+        <div class="gps-sat-row" id="gps-sat-row"></div>
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:9px;color:var(--txt4);font-weight:600;letter-spacing:.6px;text-transform:uppercase">Coordinates</div>
+          <div style="display:flex;gap:4px">
+            <div class="tval" style="flex:1"><div class="tval-label">LAT</div><div class="tval-num" style="font-size:12px" id="gps-lat">17.0005</div><div class="tval-unit">°N</div></div>
+            <div class="tval" style="flex:1"><div class="tval-label">LON</div><div class="tval-num" style="font-size:12px" id="gps-lon">82.2458</div><div class="tval-unit">°E</div></div>
+          </div>
+          <div class="tval"><div class="tval-label">ALT MSL</div><div class="tval-num" id="gps-alt">12.0</div><div class="tval-unit">m</div></div>
         </div>
       </div>
     </div>
@@ -713,6 +776,103 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         <div class="motor-item"><div class="motor-header"><span class="motor-label">BL M3</span><span class="motor-rpm" id="m2-rpm">0</span></div><div class="motor-bar-wrap"><div class="motor-bar" id="m2-bar" style="width:0%"></div></div></div>
         <div class="motor-item"><div class="motor-header"><span class="motor-label">BR M4</span><span class="motor-rpm" id="m3-rpm">0</span></div><div class="motor-bar-wrap"><div class="motor-bar" id="m3-bar" style="width:0%"></div></div></div>
       </div>
+    </div>
+
+    <!-- VISION_POSITION (VSLAM) -->
+    <div class="card card-sm">
+      <div class="card-title"><span class="ct-dot"></span>VISION_POSITION <span class="hz-badge">30 Hz</span></div>
+      <div>
+        <span class="vslam-badge vslam-idle" id="vslam-badge">GPS ACTIVE</span>
+        <div class="tval-row" style="margin-top:6px">
+          <div class="tval"><div class="tval-label">V-X</div><div class="tval-num" id="vslam-x">0.00</div><div class="tval-unit">m</div></div>
+          <div class="tval"><div class="tval-label">V-Y</div><div class="tval-num" id="vslam-y">0.00</div><div class="tval-unit">m</div></div>
+          <div class="tval"><div class="tval-label">V-Z</div><div class="tval-num" id="vslam-z">0.00</div><div class="tval-unit">m</div></div>
+        </div>
+        <div style="margin-top:5px">
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--txt4)"><span>VSLAM Quality</span><span id="vslam-quality-val">100%</span></div>
+          <div class="vslam-quality"><div class="vslam-quality-fill" id="vslam-quality" style="width:100%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBSTACLE_DISTANCE -->
+    <div class="card card-sm">
+      <div class="card-title"><span class="ct-dot"></span>OBSTACLE_DISTANCE <span class="hz-badge">10 Hz</span></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <!-- Radar SVG -->
+        <svg id="obs-radar-svg" width="80" height="80" viewBox="-40 -40 80 80" style="flex-shrink:0">
+          <circle class="obs-ring" cx="0" cy="0" r="35"/>
+          <circle class="obs-ring" cx="0" cy="0" r="22"/>
+          <circle class="obs-ring" cx="0" cy="0" r="10"/>
+          <line x1="0" y1="-35" x2="0" y2="35" stroke="rgba(96,125,139,0.15)" stroke-width="1"/>
+          <line x1="-35" y1="0" x2="35" y2="0" stroke="rgba(96,125,139,0.15)" stroke-width="1"/>
+          <!-- Sector arcs (will be animated by JS) -->
+          <g id="obs-sectors"></g>
+          <!-- Drone dot -->
+          <circle cx="0" cy="0" r="3" fill="var(--s)"/>
+          <!-- Labels -->
+          <text class="obs-sector-label" x="0" y="-37" text-anchor="middle">F</text>
+          <text class="obs-sector-label" x="37" y="3" text-anchor="start">R</text>
+          <text class="obs-sector-label" x="0" y="41" text-anchor="middle">B</text>
+          <text class="obs-sector-label" x="-37" y="3" text-anchor="end">L</text>
+        </svg>
+        <!-- Sector bars -->
+        <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+          <div class="obs-bar-row"><div class="obs-bar-lbl">FWD</div><div class="obs-bar-track"><div class="obs-bar-fill" id="obs-fwd" style="width:100%"></div></div><div class="obs-bar-lbl" id="obs-fwd-v">12m</div></div>
+          <div class="obs-bar-row"><div class="obs-bar-lbl">RGT</div><div class="obs-bar-track"><div class="obs-bar-fill" id="obs-right" style="width:100%"></div></div><div class="obs-bar-lbl" id="obs-right-v">12m</div></div>
+          <div class="obs-bar-row"><div class="obs-bar-lbl">BCK</div><div class="obs-bar-track"><div class="obs-bar-fill" id="obs-back" style="width:100%"></div></div><div class="obs-bar-lbl" id="obs-back-v">12m</div></div>
+          <div class="obs-bar-row"><div class="obs-bar-lbl">LFT</div><div class="obs-bar-track"><div class="obs-bar-fill" id="obs-left" style="width:100%"></div></div><div class="obs-bar-lbl" id="obs-left-v">12m</div></div>
+          <div class="obs-bar-row"><div class="obs-bar-lbl"> UP</div><div class="obs-bar-track"><div class="obs-bar-fill" id="obs-up" style="width:100%"></div></div><div class="obs-bar-lbl" id="obs-up-v">--m</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PID TELEMETRY -->
+    <div class="card card-sm">
+      <div class="card-title"><span class="ct-dot"></span>PID TELEMETRY <span class="hz-badge">Live</span></div>
+      <div class="pid-telem-grid">
+        <!-- Roll axis -->
+        <div class="pid-axis-card">
+          <div class="pid-axis-title">ROLL <span class="pid-axis-live" id="pid-roll-err-lbl">±0.000</span></div>
+          <div class="pid-gains-row">
+            <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-roll-kp">0.042</div></div>
+            <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-roll-ki">0.000</div></div>
+            <div class="pid-gain"><div class="pid-gain-lbl">Kd</div><div class="pid-gain-val" id="pid-roll-kd">0.002</div></div>
+          </div>
+          <div class="pid-err-track"><div class="pid-err-fill" id="pid-roll-err" style="width:0%;left:50%"></div></div>
+        </div>
+        <!-- Pitch axis -->
+        <div class="pid-axis-card">
+          <div class="pid-axis-title">PITCH <span class="pid-axis-live" id="pid-pitch-err-lbl">±0.000</span></div>
+          <div class="pid-gains-row">
+            <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-pitch-kp">0.042</div></div>
+            <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-pitch-ki">0.000</div></div>
+            <div class="pid-gain"><div class="pid-gain-lbl">Kd</div><div class="pid-gain-val" id="pid-pitch-kd">0.002</div></div>
+          </div>
+          <div class="pid-err-track"><div class="pid-err-fill" id="pid-pitch-err" style="width:0%;left:50%"></div></div>
+        </div>
+        <!-- Yaw axis -->
+        <div class="pid-axis-card">
+          <div class="pid-axis-title">YAW <span class="pid-axis-live" id="pid-yaw-err-lbl">±0.000</span></div>
+          <div class="pid-gains-row">
+            <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-yaw-kp">0.065</div></div>
+            <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-yaw-ki">0.012</div></div>
+            <div class="pid-gain"><div class="pid-gain-lbl">Kd</div><div class="pid-gain-val" id="pid-yaw-kd">0.000</div></div>
+          </div>
+          <div class="pid-err-track"><div class="pid-err-fill" id="pid-yaw-err" style="width:0%;left:50%"></div></div>
+        </div>
+        <!-- Throttle/Alt axis -->
+        <div class="pid-axis-card">
+          <div class="pid-axis-title">THR/ALT <span class="pid-axis-live" id="pid-thr-err-lbl">±0.000</span></div>
+          <div class="pid-gains-row">
+            <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-thr-kp">1.6</div></div>
+            <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-thr-ki">0.10</div></div>
+            <div class="pid-gain"><div class="pid-gain-lbl">Kd</div><div class="pid-gain-val" id="pid-thr-kd">0.06</div></div>
+          </div>
+          <div class="pid-err-track"><div class="pid-err-fill" id="pid-thr-err" style="width:0%;left:50%"></div></div>
+        </div>
+      </div>
+      <div style="margin-top:6px;font-size:9px;color:var(--txt4);text-align:center">Error signal ← centre=0 →  |  copy Kp/Ki/Kd directly to Betaflight/ArduPilot/PX4</div>
     </div>
 
     <!-- Minimap -->
@@ -747,7 +907,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <!-- Warnings -->
     <div class="card card-sm">
-      <div class="card-title"><span class="ct-dot"></span>SYSTEM</div>
+      <div class="card-title"><span class="ct-dot"></span>HEARTBEAT / SYSTEM <span class="hz-badge">1 Hz</span></div>
       <div class="warn-list" id="warn-list">
         <div class="warn-item"><div class="warn-dot ok"></div><span>Systems Nominal</span></div>
       </div>
@@ -771,7 +931,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <!-- Export / Blackbox -->
     <div class="card card-sm" id="export-card">
-      <div class="card-title"><span class="ct-dot"></span>BLACKBOX &amp; EXPORT</div>
+      <div class="card-title"><span class="ct-dot"></span>FLIGHT LOG · BLACKBOX <span class="hz-badge">Physics tick</span></div>
       <div class="export-panel">
         <div class="nbtn-row">
           <button class="nbtn sm accent" id="rec-btn" onclick="toggleRecording()">⏺ Record</button>
@@ -962,8 +1122,10 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
 <!-- Three.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<!-- Sim Engine -->
+
+<!-- Sim Engine (external) -->
 <script src="sim-engine.js"></script>
+
 
 <script>
 'use strict';
@@ -2265,10 +2427,21 @@ const MINIMAP = {
       });
     }
 
-    // Home marker
+    // Home marker — [FIX-6.23] clamp to minimap bounds if drone flew far
     if (PHYS.homePos) {
-      const hx = cx + (PHYS.homePos.x-px)*scale, hy = cy + (PHYS.homePos.z-pz)*scale;
+      const rawHx = cx + (PHYS.homePos.x-px)*scale;
+      const rawHy = cy + (PHYS.homePos.z-pz)*scale;
+      const margin = 8;
+      const hx = Math.max(margin, Math.min(W-margin, rawHx));
+      const hy = Math.max(margin, Math.min(H-margin, rawHy));
       ctx.fillStyle = '#4CAF50'; ctx.font = '12px Arial'; ctx.fillText('⌂', hx-6, hy+4);
+      // Draw arrow pointing toward true home if it's off-screen
+      if(rawHx !== hx || rawHy !== hy){
+        ctx.strokeStyle='#4CAF50'; ctx.lineWidth=1;
+        ctx.setLineDash([2,2]);
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(hx,hy); ctx.stroke();
+        ctx.setLineDash([]);
+      }
     }
 
     // Drone
@@ -2295,6 +2468,8 @@ const MINIMAP = {
 
 /* ══════════════════════════════════════════════════════════════════════
    ATTITUDE INDICATOR
+   [FIX-6.22] Correct sign convention: positive roll = right bank (CW from pilot POV)
+   [FIX-6.22] Horizon drawn using actual roll quaternion, not Euler-only
 ══════════════════════════════════════════════════════════════════════ */
 function drawAttitude() {
   const canvas = document.getElementById('attCanvas');
@@ -2302,15 +2477,23 @@ function drawAttitude() {
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const cx = W/2, cy = H/2, r = W/2 - 2;
-  const pitch = PHYS.euler.pitch, roll = PHYS.euler.roll;
+  // [FIX-6.22] Use quaternion directly for roll to avoid gimbal lock at ±90° pitch
+  // Extract roll from quaternion: avoids Euler singularity
+  const q = PHYS.quat;
+  const pitch = PHYS.euler.pitch;
+  // Roll angle from quat (rotation about Z in body frame)
+  const sinr = 2*(q.w*q.z + q.x*q.y);
+  const cosr = 1 - 2*(q.y*q.y + q.z*q.z);
+  const roll = Math.atan2(sinr, cosr); // positive = right bank ✓
 
   ctx.clearRect(0, 0, W, H);
   ctx.save();
   ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.clip();
 
-  // Sky/ground split rotated by roll
   ctx.save();
   ctx.translate(cx, cy);
+  // [FIX-6.22] Positive roll = right bank = clockwise rotation from pilot POV
+  // In canvas: negative rotation = counterclockwise = left; we negate roll for canvas
   ctx.rotate(-roll);
   const pitchPx = pitch * (H * 0.9);
   // Sky
@@ -2337,13 +2520,13 @@ function drawAttitude() {
   ctx.save(); ctx.translate(cx, cy);
   ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.arc(0, 0, r-4, -Math.PI, 0, false); ctx.stroke();
-  // Roll indicator
+  // Roll indicator (triangle pointing toward roll angle)
   ctx.rotate(-roll);
   ctx.fillStyle = 'rgba(255,200,50,0.9)';
   ctx.beginPath(); ctx.moveTo(0, -(r-6)); ctx.lineTo(-4, -(r+2)); ctx.lineTo(4, -(r+2)); ctx.closePath(); ctx.fill();
   ctx.restore();
 
-  // Fixed aircraft symbol
+  // Fixed aircraft symbol (centre reticle)
   ctx.strokeStyle = 'rgba(255,210,60,0.95)'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(cx-18, cy); ctx.lineTo(cx-6, cy); ctx.lineTo(cx-4, cy-3); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(cx+18, cy); ctx.lineTo(cx+6, cy); ctx.lineTo(cx+4, cy-3); ctx.stroke();
@@ -2541,6 +2724,43 @@ const State = {
 
 const SIM = {
   _last: 0, _running: false, _paused: false, _speed: 1.0,
+  _sessionEnded: false,
+
+  _getAccessRemainingSec() {
+    if (!window.ACCESS_EXPIRES_AT_MS) return Infinity;
+    return Math.max(0, (window.ACCESS_EXPIRES_AT_MS - Date.now()) / 1000);
+  },
+
+  _tickAccessTimer() {
+    if (!window.ACCESS_EXPIRES_AT_MS || this._sessionEnded) return;
+    const remaining = this._getAccessRemainingSec();
+    const mm = Math.floor(remaining / 60);
+    const ss = Math.floor(remaining % 60);
+    const clk = document.getElementById('top-clock');
+    if (clk) {
+      clk.textContent = mm.toString().padStart(2, '0') + ':' + ss.toString().padStart(2, '0');
+      clk.style.color = remaining < 60 ? '#f44336' : '';
+    }
+    if (remaining <= 0) this._endSession('limit');
+  },
+
+  _endSession(reason) {
+    if (this._sessionEnded) return;
+    this._sessionEnded = true;
+    if (State.armed) {
+      emergStop();
+      UI.toast('Session limit reached!');
+    }
+    if (!this._paused) this.pause();
+    if (reason === 'limit' && !document.getElementById('session-limit-overlay')) {
+      const ov = document.createElement('div');
+      ov.id = 'session-limit-overlay';
+      ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;color:white;font-family:sans-serif;';
+      ov.innerHTML = '<h1 style="color:#f44336;margin-bottom:10px;">Session Limit Reached</h1><p style="font-size:16px;">Your subscription access window has ended.</p><button onclick="window.close()" style="margin-top:20px;padding:10px 20px;background:#EE9346;border:none;border-radius:10px;color:white;cursor:pointer;font-size:14px;font-weight:bold;">Close Simulator</button>';
+      document.body.appendChild(ov);
+    }
+  },
+
   start() {
     this._running = true;
     this._paused = false;
@@ -2572,11 +2792,16 @@ const SIM = {
   _loop() {
     if (!this._running) return;
     requestAnimationFrame(() => this._loop());
+    this._tickAccessTimer();
     if (this._paused) return;
     const now = performance.now();
+    // [FIX-Bug-26b] rawDt = real wall time (unscaled) for clock display
     const rawDt = Math.min(0.05, (now - this._last) / 1000);
     this._last = now;
     const dt = rawDt * this._speed;
+
+    // [FIX-Bug-26c] Absolute sim time always advances (not only when armed)
+    _simClock.t += dt;
 
     // Sub-step for higher speeds to keep physics stable
     const substeps = this._speed > 1 ? Math.ceil(this._speed) : 1;
@@ -2584,32 +2809,27 @@ const SIM = {
     INPUT.update(dt);
     const inp = INPUT.get();
     for (let s = 0; s < substeps; s++) {
-      // Update groundY to actual terrain height under the drone each substep
+      // Update groundY to actual terrain height each substep
       PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
-      const motorCmds = FC.update(subDt, inp);
-      PHYS.motorCmd = motorCmds;
+      // [FIX-2.1] FC.update() runs the OUTER angle loop only (stores rate cmd).
+      // The inner rate PID runs inside PHYS._substep() at full substep rate.
+      FC.update(subDt, inp);
       PHYS.step(subDt);
     }
     MISSION.update();
 
-    if (State.armed) State.flightTime += dt;
+    if (State.armed) State.flightTime += rawDt;  // [FIX-Bug-26b] use real time for clock
 
-    if (window.MAX_SESSION_TIME && State.flightTime >= window.MAX_SESSION_TIME) {
-        if (State.armed) {
-            emergStop();
-            UI.toast('Session limit reached!');
-        }
-        if (!this._paused) {
-            this.pause();
-            const ov = document.createElement('div');
-            ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;color:white;font-family:sans-serif;';
-            ov.innerHTML = '<h1 style="color:#f44336;margin-bottom:10px;">Session Limit Reached</h1><p style="font-size:16px;">Your wallet balance or plan time limit has been exhausted.</p><button onclick="window.close()" style="margin-top:20px;padding:10px 20px;background:#EE9346;border:none;border-radius:10px;color:white;cursor:pointer;font-size:14px;font-weight:bold;">Close Simulator</button>';
-            document.body.appendChild(ov);
-        }
-    }
+    // Update telemetry systems
+    GPS_SIM.update(dt);
+    VISION_POS.update(dt);
+    OBSTACLE_DIST.update();
+    PID_TELEM.capture();
 
-    this._updateUI(dt);
-    BLACKBOX.tick(State.flightTime);
+    // [FIX-Bug-26b] Pass rawDt to _updateUI so wall clock runs at real time
+    this._updateUI(rawDt);
+    // [FIX-Bug-26c] Use shared sim clock (same reference as sim-engine.js)
+    BLACKBOX.tick(_simClock.t);
     TELEM_GRAPH.push(PHYS);
     TELEM_GRAPH.draw();
     DEBUG.draw();
@@ -2677,21 +2897,94 @@ const SIM = {
       }
     }
 
-    // Clock (Running in reverse)
-    let displayTime = State.flightTime;
-    if (window.MAX_SESSION_TIME && window.MAX_SESSION_TIME !== Infinity) {
-        displayTime = Math.max(0, window.MAX_SESSION_TIME - State.flightTime);
+    // Subscription countdown is updated in _tickAccessTimer (runs even while paused)
+
+    // Battery ETA
+    const etaSec = getBattEstimatedFlightTime();
+    const etaMin = etaSec < 9999 ? (etaSec/60).toFixed(1) : '--';
+    set('t-batt-eta', etaMin);
+
+    // ── GPS_RAW_INT (5 Hz) ────────────────────────────────────────────
+    const gps = GPS_SIM;
+    const fixType = gps.getFixType();
+    const satCount = gps.getSatCount();
+    const hdop = gps.getHdop();
+    set('gps-lat', gps.getLat().toFixed(5));
+    set('gps-lon', gps.getLon().toFixed(5));
+    set('gps-alt', gps.getAltMSL().toFixed(1));
+    set('gps-sat-count', satCount);
+    set('gps-hdop', hdop.toFixed(2));
+    const fixBadge = $('gps-fix-badge');
+    if (fixBadge) {
+      const fixLabels = { 0:'NO FIX', 1:'NO FIX', 2:'2D FIX', 3:'3D FIX', 4:'DGPS', 5:'RTK' };
+      const fixClasses= { 0:'gps-fix-none', 1:'gps-fix-none', 2:'gps-fix-2d', 3:'gps-fix-3d', 4:'gps-fix-3d', 5:'gps-fix-3d' };
+      fixBadge.textContent = fixLabels[fixType]||'NO FIX';
+      fixBadge.className = 'gps-fix-badge '+(fixClasses[fixType]||'gps-fix-none');
     }
-    const mm = Math.floor(displayTime/60), ss = Math.floor(displayTime%60);
-    const clk = $('top-clock');
-    if (clk) {
-        clk.textContent = mm.toString().padStart(2,'0')+':'+ss.toString().padStart(2,'0');
-        if (displayTime < 60 && window.MAX_SESSION_TIME !== Infinity) {
-            clk.style.color = '#f44336';
-        } else {
-            clk.style.color = '';
-        }
+    // Satellite dots
+    const satRow = $('gps-sat-row');
+    if (satRow && satRow.children.length !== 16) {
+      satRow.innerHTML = Array(16).fill(0).map((_,i)=>`<div class="gps-sat-dot" id="sat-dot-${i}"></div>`).join('');
     }
+    for (let i = 0; i < 16; i++) {
+      const dot = $('sat-dot-'+i);
+      if (dot) dot.className = 'gps-sat-dot'+(i<satCount?' on':i<satCount+2?' dim':'');
+    }
+
+    // ── VISION_POSITION (30 Hz VSLAM) ────────────────────────────────
+    const vp = VISION_POS.get();
+    set('vslam-x', vp.x);
+    set('vslam-y', vp.y);
+    set('vslam-z', vp.z);
+    set('vslam-quality-val', vp.quality+'%');
+    const vslamBadge = $('vslam-badge');
+    if (vslamBadge) {
+      vslamBadge.textContent = vp.active ? 'VSLAM ACTIVE' : 'GPS ACTIVE';
+      vslamBadge.className = 'vslam-badge '+(vp.active ? 'vslam-active' : 'vslam-idle');
+    }
+    const vslamQ = $('vslam-quality');
+    if (vslamQ) vslamQ.style.width = vp.quality+'%';
+
+    // ── OBSTACLE_DISTANCE (10 Hz) ─────────────────────────────────────
+    const obs = OBSTACLE_DIST.get();
+    const obsMax = OBSTACLE_DIST.SENSOR_RANGE;
+    const obsIds = ['fwd','right','back','left','up'];
+    const obsSectors = ['FWD','RIGHT','BACK','LEFT','UP'];
+    obs.forEach((d, i) => {
+      const pct = Math.min(100, (d/obsMax)*100);
+      const barEl = $(('obs-'+obsIds[i]));
+      const valEl = $(('obs-'+obsIds[i]+'-v'));
+      if (barEl) barEl.style.width = pct+'%';
+      if (valEl) valEl.textContent = d.toFixed(1)+'m';
+    });
+    // Update radar SVG sectors
+    _updateObstacleRadar(obs, obsMax);
+
+    // ── PID TELEMETRY (Live) ─────────────────────────────────────────
+    const pt = PID_TELEM.axes;
+    const pidAxes = [
+      { key:'roll',  id:'roll' },
+      { key:'pitch', id:'pitch' },
+      { key:'yaw',   id:'yaw' },
+      { key:'throttle', id:'thr' },
+    ];
+    const errScale = { roll:5, pitch:5, yaw:3, throttle:20 };
+    pidAxes.forEach(({ key, id }) => {
+      const ax = pt[key];
+      set(`pid-${id}-kp`, ax.kp.toFixed(3));
+      set(`pid-${id}-ki`, ax.ki.toFixed(3));
+      set(`pid-${id}-kd`, ax.kd.toFixed(3));
+      set(`pid-${id}-err-lbl`, (ax.error >= 0 ? '+' : '') + ax.error.toFixed(3));
+      const errEl = $(`pid-${id}-err`);
+      if (errEl) {
+        const scale = errScale[key] || 5;
+        const norm = Math.max(-1, Math.min(1, ax.error / scale));
+        const w = Math.abs(norm) * 50;
+        errEl.style.width = w+'%';
+        errEl.style.left = (norm >= 0 ? 50 : 50-w)+'%';
+        errEl.style.background = w > 35 ? 'var(--s)' : 'var(--p)';
+      }
+    });
 
     // FPS
     const fpsEl = $('fps-val');
@@ -2715,6 +3008,45 @@ const SIM = {
 /* ══════════════════════════════════════════════════════════════════════
    UI CALLBACKS (called from HTML onclick / oninput)
 ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Obstacle Radar SVG updater ──
+ * [FIX-6.25] Line length ∝ INVERSE of distance (close=long, far=short)
+ * [FIX-6.25] UP sector shown as separate vertical bar gauge (can't show on plan-view radar)
+ */
+function _updateObstacleRadar(obs, maxRange) {
+  const svg = document.getElementById('obs-sectors');
+  if (!svg) return;
+  const R = 35;
+  const dirs = [
+    { idx:0, angle:-Math.PI/2 },   // FWD → up
+    { idx:1, angle:0 },            // RIGHT → right
+    { idx:2, angle:Math.PI/2 },    // BACK → down
+    { idx:3, angle:Math.PI },      // LEFT → left
+  ];
+  svg.innerHTML = '';
+  dirs.forEach(({ idx, angle }) => {
+    const d = obs[idx];
+    // [FIX-6.25] Inverse: close obstacle = long line, far = short line
+    const invNorm = Math.min(1, 1 - d / maxRange); // 0=far, 1=very close
+    const len = Math.max(2, invNorm * R); // minimum 2px to always be visible
+    const x = Math.cos(angle) * len;
+    const y = Math.sin(angle) * len;
+    // Color: close=red (long line), far=green (short line)
+    const hue = invNorm > 0.7 ? '#F44336' : invNorm > 0.4 ? '#EE9346' : '#4CAF50';
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1','0'); line.setAttribute('y1','0');
+    line.setAttribute('x2', x.toFixed(2)); line.setAttribute('y2', y.toFixed(2));
+    line.setAttribute('stroke', hue); line.setAttribute('stroke-width','3.5');
+    line.setAttribute('stroke-linecap','round'); line.setAttribute('opacity','0.85');
+    svg.appendChild(line);
+    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx', x.toFixed(2)); circle.setAttribute('cy', y.toFixed(2));
+    circle.setAttribute('r','2.5'); circle.setAttribute('fill', hue);
+    svg.appendChild(circle);
+  });
+  // [FIX-6.25] UP sector: separate vertical bar gauge (right of radar, already in HTML as obs-up bar)
+  // The obs-up bar in the right-side table already handles this — no SVG needed for up/down
+}
 
 function updateArmUI() {
   const el = document.getElementById('arm-status');
@@ -2860,6 +3192,8 @@ function toggleArm() {
     FC.resetPIDs();
   } else {
     PHYS.saveHome();
+    PHYS._gyroBias={x:0,y:0,z:0}; // [FIX-H] zero gyro bias on arm
+    FC.resetPIDs();
   }
   updateArmUI();
   UI.toast(State.armed ? '✅ Armed' : '🔴 Disarmed');
@@ -2870,6 +3204,7 @@ function takeoff() {
   if (!State.armed) {
     State.armed = true;
     PHYS.saveHome();
+    PHYS._gyroBias={x:0,y:0,z:0}; // [FIX-H] zero gyro bias on takeoff
     FC.resetPIDs();
     FC.setMode('althold');
     FC.altTarget = 3.0;
@@ -3294,41 +3629,38 @@ const STARTUP_STEPS = [
 ];
 
 window.MAX_SESSION_TIME = Infinity;
+window.ACCESS_EXPIRES_AT_MS = 0;
 
 function runStartup() {
   const bar = document.getElementById('sbar');
   const stat= document.getElementById('sstat');
   let i = 0;
-  
-  // Fetch limits first
+
   function loadLimits(runPlan) {
     let url = '../auth/get_limits.php';
-    if (runPlan) {
-      url += '?run_plan=' + runPlan;
-    }
-    
+    if (runPlan) url += '?run_plan=' + runPlan;
+
     fetch(url)
       .then(r => r.json())
       .then(data => {
-          if (data.requires_plan_selection) {
-              showPlanSelectionModal(data.wallet_balance);
-              return;
-          }
-          
-          window.SIM_LIMITS = data;
-          if (data.max_session_seconds > 0) {
-              window.MAX_SESSION_TIME = data.max_session_seconds;
-          }
-          
-          // Calculate initial subscription remaining time
-          const walletTime = (data.wallet_balance / data.ppm) * 60;
-          window.SUB_REMAINING_SECONDS = data.sub_active ? Math.max(0, data.max_session_seconds - walletTime) : 0;
-          
-          step();
+        if (data.requires_plan_selection) {
+          showPlanSelectionModal(data.wallet_balance);
+          return;
+        }
+        window.SIM_LIMITS = data;
+        if (data.max_session_seconds > 0) window.MAX_SESSION_TIME = data.max_session_seconds;
+        if (data.access_expires_at) {
+          window.ACCESS_EXPIRES_AT_MS = data.access_expires_at * 1000;
+        } else if (data.max_session_seconds > 0) {
+          window.ACCESS_EXPIRES_AT_MS = Date.now() + data.max_session_seconds * 1000;
+        }
+        window.SUB_REMAINING_SECONDS = data.sub_remaining_seconds
+          ?? (data.sub_active ? Math.max(0, (data.sub_expires_at || 0) - Math.floor(Date.now() / 1000)) : 0);
+        step();
       })
       .catch(e => {
-          console.log('Could not fetch limits', e);
-          step();
+        console.log('Could not fetch limits', e);
+        step();
       });
   }
 
@@ -3338,69 +3670,58 @@ function runStartup() {
       overlay = document.createElement('div');
       overlay.id = 'plan-select-overlay';
       overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,15,30,0.85);backdrop-filter:blur(8px);z-index:10000;display:flex;align-items:center;justify-content:center;font-family:\'Inter\',sans-serif;color:#e8edf8;';
-      
+
       const modal = document.createElement('div');
       modal.style.cssText = 'background:#1a233d;border:1px solid rgba(255,255,255,0.08);border-radius:18px;width:90%;max-width:650px;padding:35px;box-shadow:0 20px 50px rgba(0,0,0,0.5);display:flex;flex-direction:column;gap:20px;';
-      
+
       const header = document.createElement('div');
       header.innerHTML = '<h2 style="font-family:\'Space Grotesk\',sans-serif;font-size:26px;color:#EE9346;margin-bottom:8px;letter-spacing:-0.5px;">Select Simulation Tier</h2>' +
-                         '<p style="font-size:13px;color:#90A4AE;line-height:1.5;">You do not have an active subscription. Choose a tier to run the simulator using your wallet balance. Your balance will be charged per minute based on the selected tier\'s PPM rate.</p>';
+        '<p style="font-size:13px;color:#90A4AE;line-height:1.5;">You do not have an active subscription. Choose a tier to run the simulator using your wallet balance. Your balance will be charged per minute based on the selected tier\'s PPM rate.</p>';
       modal.appendChild(header);
 
       const grid = document.createElement('div');
       grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:10px 0;';
-      
+
       const plans = [
         { id: 'BASIS', name: 'BASIS', desc: '1 Hour Limits', rate: '$0.10/min' },
         { id: 'PRO', name: 'PRO', desc: '1 Day Limits', rate: '$0.05/min' },
         { id: 'MAX', name: 'MAX', desc: 'Unlimited Limits', rate: '$0.01/min' }
       ];
-      
+
       plans.forEach(p => {
         const card = document.createElement('div');
         card.style.cssText = 'background:#11182c;border:1.5px solid rgba(255,255,255,0.04);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;transition:border-color 0.2s, transform 0.2s;';
         card.onmouseover = () => { card.style.borderColor = '#EE9346'; card.style.transform = 'translateY(-2px)'; };
         card.onmouseout = () => { card.style.borderColor = 'rgba(255,255,255,0.04)'; card.style.transform = 'translateY(0)'; };
-        
         card.innerHTML = '<div style="font-family:\'Space Grotesk\',sans-serif;font-size:18px;font-weight:700;color:#e8edf8;">' + p.name + '</div>' +
-                         '<div style="font-size:11px;color:#90A4AE;">' + p.desc + '</div>' +
-                         '<div style="font-size:16px;font-weight:700;color:#4CAF50;margin:6px 0;">' + p.rate + '</div>';
-        
+          '<div style="font-size:11px;color:#90A4AE;">' + p.desc + '</div>' +
+          '<div style="font-size:16px;font-weight:700;color:#4CAF50;margin:6px 0;">' + p.rate + '</div>';
         const btn = document.createElement('button');
         btn.textContent = 'Select Plan';
         btn.style.cssText = 'width:100%;padding:8px 0;border-radius:8px;background:#EE9346;color:white;font-size:12px;font-weight:600;cursor:pointer;border:none;box-shadow:0 4px 10px rgba(238,147,70,0.2);';
-        
         if (walletBalance <= 0) {
           btn.style.opacity = '0.4';
           btn.style.cursor = 'not-allowed';
           btn.disabled = true;
         } else {
-          btn.onclick = () => {
-            overlay.remove();
-            loadLimits(p.id);
-          };
+          btn.onclick = () => { overlay.remove(); loadLimits(p.id); };
         }
         card.appendChild(btn);
         grid.appendChild(card);
       });
       modal.appendChild(grid);
-      
+
       const footer = document.createElement('div');
       footer.style.cssText = 'display:flex;align-items:center;justify-content:between;margin-top:10px;padding-top:15px;border-top:1px solid rgba(255,255,255,0.05);width:100%;';
-      
       const balSpan = document.createElement('span');
       balSpan.style.cssText = 'font-size:13px;font-weight:600;';
       balSpan.innerHTML = '💰 Wallet Balance: <span style="color:#4CAF50;">$' + walletBalance.toFixed(2) + '</span>';
       footer.appendChild(balSpan);
-      
       const billingBtn = document.createElement('button');
       billingBtn.textContent = 'Go to Billing';
       billingBtn.style.cssText = 'padding:6px 14px;border-radius:8px;background:#1a3580;color:white;font-size:12px;font-weight:500;cursor:pointer;border:none;margin-left:auto;';
-      billingBtn.onclick = () => {
-        window.location.href = '../billing.php';
-      };
+      billingBtn.onclick = () => { window.location.href = '../billing.php'; };
       footer.appendChild(billingBtn);
-      
       modal.appendChild(footer);
       overlay.appendChild(modal);
       document.body.appendChild(overlay);
@@ -3420,8 +3741,98 @@ function runStartup() {
     }
     const s = STARTUP_STEPS[i++];
     if (stat) stat.textContent = s.msg;
-    if (bar)  bar.style.width  = s.pct+'%';
-    setTimeout(step, 200 + Math.random()*150);
+    if (bar) bar.style.width = s.pct + '%';
+    setTimeout(step, 200 + Math.random() * 150);
+  }
+}
+
+function exitSimulation() {
+  if (confirm('Are you sure you want to exit the simulation?')) {
+    let modeLabel = 'Manual';
+    const activeModeBtn = document.querySelector('.fmode-btn.on');
+    if (activeModeBtn) {
+      modeLabel = activeModeBtn.textContent.trim().replace(/^[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/g, '').trim();
+    }
+    let droneName = 'Unknown Drone';
+    const sel = document.getElementById('drone-profile-select');
+    if (sel && sel.selectedIndex >= 0) droneName = sel.options[sel.selectedIndex].text;
+    let weatherLabel = 'Clear';
+    if (document.getElementById('rain-track')?.classList.contains('on')) weatherLabel = 'Rain';
+    else if (document.getElementById('fog-track')?.classList.contains('on')) weatherLabel = 'Fog';
+    let envName = 'Unknown';
+    if (typeof ENV !== 'undefined') {
+      const envMap = { field: 'Grasslands', mountains: 'Mountains', urban: 'Urban Ruins', indoor: 'Indoor Arena', desert: 'Desert Valley', windy: 'Windy Coast' };
+      envName = envMap[ENV._name] || ENV._name;
+    }
+    const flightData = {
+      name: 'Flight ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      drone: droneName,
+      environment: envName,
+      weather: weatherLabel,
+      mode: modeLabel,
+      duration: Math.round(State.flightTime || 0),
+      status: 'completed',
+      plan: window.SIM_LIMITS ? window.SIM_LIMITS.plan : 'FREE',
+      ppm: window.SIM_LIMITS ? window.SIM_LIMITS.ppm : 0.10,
+      sub_active: window.SIM_LIMITS ? window.SIM_LIMITS.sub_active : false,
+      sub_remaining_seconds: window.SUB_REMAINING_SECONDS || 0,
+      telemetry_url: window.LAST_TELEMETRY_URL || null
+    };
+    fetch('../api/save_flight.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(flightData)
+    }).finally(() => {
+      window.close();
+      setTimeout(() => { window.location.href = '../dashboard.php'; }, 100);
+    });
+  }
+}
+
+function showToast(msg) { UI.toast(msg); }
+
+async function exportSimulationData() {
+  if (!PHYS.telemetryLog || PHYS.telemetryLog.length === 0) {
+    showToast('No telemetry data collected yet!');
+    return;
+  }
+  showToast('Preparing upload...');
+  try {
+    const urlRes = await fetch('../api/get_r2_upload_url.php', { method: 'POST' });
+    const urlData = await urlRes.json();
+    if (!urlData.success) throw new Error(urlData.error);
+    const exportData = {
+      profile: PHYS.droneProfile,
+      environment: typeof ENV !== 'undefined' ? ENV._name : 'unknown',
+      date: new Date().toISOString(),
+      duration: Math.round(State.flightTime || 0),
+      telemetry: PHYS.telemetryLog
+    };
+    const jsonBlob = new Blob([JSON.stringify(exportData)], { type: 'application/json' });
+    showToast('Uploading telemetry to Cloudflare R2...');
+    const uploadRes = await fetch(urlData.uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: jsonBlob
+    });
+    if (!uploadRes.ok) throw new Error('Upload to R2 failed');
+    window.LAST_TELEMETRY_URL = urlData.publicUrl;
+    const saveRes = await fetch('../api/save_simulation_record.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        telemetry_url: urlData.publicUrl,
+        duration: Math.round(State.flightTime || 0),
+        size_bytes: jsonBlob.size,
+        drone_profile: PHYS.droneProfile
+      })
+    });
+    const saveData = await saveRes.json();
+    if (!saveData.success) throw new Error(saveData.error);
+    showToast('✅ Saved to Cloud Successfully!');
+  } catch (err) {
+    console.error(err);
+    showToast('❌ Export Failed: ' + err.message);
   }
 }
 
@@ -3523,7 +3934,7 @@ function _drawStickCanvas(canvasId, x, y, label, accentColor) {
   ctx.clearRect(0, 0, W, H);
 
   // Background
-  ctx.fillStyle = 'rgba(238,241,247,0.95)';
+  ctx.fillStyle = 'rgba(28,33,48,0.97)';
   ctx.beginPath(); ctx.roundRect(0,0,W,H,8); ctx.fill();
 
   // Grid lines
@@ -3586,65 +3997,6 @@ function _updateStickViz() {
 
 // Position readouts (t-px, t-py, t-pz) — update in SIM loop via existing _updateUI
 
-function exitSimulation() {
-  if (confirm("Are you sure you want to exit the simulation?")) {
-    let modeLabel = 'Manual';
-    const activeModeBtn = document.querySelector('.fmode-btn.on');
-    if (activeModeBtn) {
-      modeLabel = activeModeBtn.textContent.trim().replace(/^[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/g, '').trim(); // Remove emoji
-    }
-    
-    let droneName = 'Unknown Drone';
-    const sel = document.getElementById('drone-profile-select');
-    if (sel && sel.selectedIndex >= 0) {
-      droneName = sel.options[sel.selectedIndex].text;
-    }
-    
-    let weatherLabel = 'Clear';
-    if (document.getElementById('rain-track')?.classList.contains('on')) weatherLabel = 'Rain';
-    else if (document.getElementById('fog-track')?.classList.contains('on')) weatherLabel = 'Fog';
-    
-    let envName = 'Unknown';
-    if (typeof ENV !== 'undefined') {
-      const envMap = {
-        field: 'Grasslands',
-        mountains: 'Mountains',
-        urban: 'Urban Ruins',
-        indoor: 'Indoor Arena',
-        desert: 'Desert Valley',
-        windy: 'Windy Coast'
-      };
-      envName = envMap[ENV._name] || ENV._name;
-    }
-
-    const flightData = {
-      name: "Flight " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-      drone: droneName,
-      environment: envName,
-      weather: weatherLabel,
-      mode: modeLabel,
-      duration: Math.round(State.flightTime || 0),
-      status: 'completed',
-      plan: window.SIM_LIMITS ? window.SIM_LIMITS.plan : 'FREE',
-      ppm: window.SIM_LIMITS ? window.SIM_LIMITS.ppm : 0.10,
-      sub_active: window.SIM_LIMITS ? window.SIM_LIMITS.sub_active : false,
-      sub_remaining_seconds: window.SUB_REMAINING_SECONDS || 0
-    };
-
-    fetch('../api/save_flight.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(flightData)
-    })
-    .finally(() => {
-      window.close();
-      setTimeout(() => {
-        window.location.href = "../dashboard.php";
-      }, 100);
-    });
-  }
-}
-
 /* ══════════════════════════════════════════════════════════════════════
    DOM INIT
 ══════════════════════════════════════════════════════════════════════ */
@@ -3653,7 +4005,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (!document.getElementById('toast')) {
     const t = document.createElement('div');
     t.id='toast';
-    t.style.cssText='position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--p);color:#fff;padding:7px 20px;border-radius:20px;font-family:var(--fh);font-size:12px;font-weight:600;box-shadow:0 4px 14px rgba(16,37,109,.4);opacity:0;transition:opacity .3s;pointer-events:none;z-index:500;';
+    t.style.cssText='position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--p);color:#fff;padding:7px 20px;border-radius:20px;font-family:var(--fh);font-size:12px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.5);opacity:0;transition:opacity .3s;pointer-events:none;z-index:500;';
     document.body.appendChild(t);
   }
 
@@ -3680,6 +4032,7 @@ window.addEventListener('DOMContentLoaded', () => {
   INPUT.init();
   PHYS.groundY = 0;
   PHYS.reset({x:0, y:0.15, z:0});
+  // [FIX-Bug-26c] Shared sim clock already initialised in sim-engine.js as _simClock = {t:0}
   rebuildProfileSelect('racing5');
   updateDroneProfileUI('racing5');
   FC.autoTuneFromPhysics();
