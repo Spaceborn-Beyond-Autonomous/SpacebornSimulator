@@ -2,7 +2,7 @@
 
 require '../vendor/autoload.php';
 try{
-$client = new MongoDB\Client("mongodb://localhost:27017/");
+$client = new MongoDB\Client("mongodb+srv://spar123:Hello%40123@testing.hnrldbw.mongodb.net/?appName=Testing");
 $db = $client -> spaceborn;
 }
 catch(Exception $e) {
