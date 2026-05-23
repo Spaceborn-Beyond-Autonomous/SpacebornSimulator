@@ -428,6 +428,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <div class="top-stat"><span>⚡</span><span id="batt-top">100%</span></div>
     <div class="top-stat"><span>🌡</span><span id="fps-val">60fps</span></div>
     <div class="top-clock" id="top-clock">00:00</div>
+    <button class="nbtn danger sm" onclick="exitSimulation()" title="Exit Simulation" style="font-weight:600; margin-left: 8px;">🚪 Exit</button>
   </div>
 
   <!-- Left Panel -->
@@ -3488,6 +3489,15 @@ function _updateStickViz() {
 }
 
 // Position readouts (t-px, t-py, t-pz) — update in SIM loop via existing _updateUI
+
+function exitSimulation() {
+  if (confirm("Are you sure you want to exit the simulation? Any unsaved flight data will be lost.")) {
+    window.close();
+    setTimeout(() => {
+      window.location.href = "../dashboard.php";
+    }, 100);
+  }
+}
 
 /* ══════════════════════════════════════════════════════════════════════
    DOM INIT
