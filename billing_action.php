@@ -54,8 +54,8 @@ if ($action === 'upgrade') {
     // Deduct price from wallet
     $new_balance = $wallet - $target_price;
     $now = time();
-    $activated_at = new MongoDB\BSON\UTCDateTime($now * 1000);
-    $expires_at = new MongoDB\BSON\UTCDateTime(($now + ($target_minutes * 60)) * 1000);
+    $activated_at = new MongoDB\BSON\UTCDateTime((int)($now * 1000));
+    $expires_at = new MongoDB\BSON\UTCDateTime((int)(($now + ($target_minutes * 60)) * 1000));
     
     $usersCol->updateOne(
         ['email' => $email],
@@ -63,8 +63,9 @@ if ($action === 'upgrade') {
             '$set' => [
                 'sub_id' => $plan_id,
                 'wallet_balance' => $new_balance,
-                'sub_activated_at' => $activated_at,
-                'sub_expires_at' => $expires_at
+                'sub_started' => false,
+                'sub_activated_at' => null,
+                'sub_expires_at' => null
             ]
         ]
     );
@@ -72,7 +73,7 @@ if ($action === 'upgrade') {
     // Insert invoice record
     $db->invoices->insertOne([
         'email' => $email,
-        'created_at' => new MongoDB\BSON\UTCDateTime($now * 1000),
+        'created_at' => new MongoDB\BSON\UTCDateTime((int)($now * 1000)),
         'description' => 'Plan Upgrade to ' . $target_name,
         'amount' => $target_price,
         'status' => 'paid',
@@ -84,8 +85,9 @@ if ($action === 'upgrade') {
     $user_sub = $subCol->findOne(['id' => $plan_id]);
     
     $_SESSION['wallet_balance'] = $new_balance;
-    $_SESSION['sub_activated_at'] = $now;
-    $_SESSION['sub_expires_at'] = $now + ($target_minutes * 60);
+    $_SESSION['sub_started'] = false;
+    $_SESSION['sub_activated_at'] = null;
+    $_SESSION['sub_expires_at'] = null;
     $_SESSION['user_sub'] = [
         'id'               => (string) ($user_sub['id'] ?? ''),
         'plan_id'          => (int)    ($user_sub['id'] ?? 0),

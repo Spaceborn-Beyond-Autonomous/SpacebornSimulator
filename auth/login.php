@@ -46,41 +46,64 @@ $sessCol = $db -> sessions;
 
 $result = $sessCol ->insertOne(['email' => $email , "is_running" => true]);
 
+$sub_started = isset($user['sub_started']) ? (bool)$user['sub_started'] : false;
 $sub_activated_at = null;
-if (isset($user['sub_activated_at']) && $user['sub_activated_at'] instanceof MongoDB\BSON\UTCDateTime) {
-    $sub_activated_at = $user['sub_activated_at']->toDateTime()->getTimestamp();
-} else {
-    $sub_activated_at = time();
-    $db->users->updateOne(['email' => $email], ['$set' => ['sub_activated_at' => new MongoDB\BSON\UTCDateTime($sub_activated_at * 1000)]]);
-}
-
 $sub_expires_at = null;
-if (isset($user['sub_expires_at']) && $user['sub_expires_at'] instanceof MongoDB\BSON\UTCDateTime) {
-    $sub_expires_at = $user['sub_expires_at']->toDateTime()->getTimestamp();
-} else {
-    $plan_name = strtoupper($user_sub['plan_name'] ?? 'BASIS');
-    $minutes = 60;
-    if ($plan_name === 'PRO') $minutes = (float)($_ENV['PLAN_PRO_MINUTES'] ?? 1440);
-    elseif ($plan_name === 'MAX') $minutes = (float)($_ENV['PLAN_MAX_MINUTES'] ?? 43200);
-    else $minutes = (float)($_ENV['PLAN_BASIS_MINUTES'] ?? 60);
+
+if ($sub_started) {
+    if (isset($user['sub_activated_at']) && $user['sub_activated_at'] instanceof MongoDB\BSON\UTCDateTime) {
+        $sub_activated_at = $user['sub_activated_at']->toDateTime()->getTimestamp();
+    }
+    if (isset($user['sub_expires_at']) && $user['sub_expires_at'] instanceof MongoDB\BSON\UTCDateTime) {
+        $sub_expires_at = $user['sub_expires_at']->toDateTime()->getTimestamp();
+    }
     
-    $sub_expires_at = $sub_activated_at + ((int)$minutes * 60);
-    $db->users->updateOne(['email' => $email], ['$set' => ['sub_expires_at' => new MongoDB\BSON\UTCDateTime($sub_expires_at * 1000)]]);
+    // Auto-revert if expired
+    if ($sub_expires_at && time() > $sub_expires_at) {
+        $db->users->updateOne(
+            ['email' => $email],
+            [
+                '$set' => [
+                    'sub_id'           => 0,
+                    'sub_started'      => false,
+                    'sub_activated_at' => null,
+                    'sub_expires_at'   => null
+                ]
+            ]
+        );
+        $sub_started = false;
+        $sub_activated_at = null;
+        $sub_expires_at = null;
+        
+        // Fetch FREE subscription profile
+        $user_sub = $sub->findOne(['id' => 0]);
+        if (!$user_sub) {
+            $user_sub = [
+                'id' => 0,
+                'plan_name' => 'FREE',
+                'ppm' => 0.50,
+                'drone_profile' => ['Research F450'],
+                'flight_scenarios' => ['Normal Flight'],
+                'env' => ['Daytime']
+            ];
+        }
+    }
 }
 
 $_SESSION['id'] = (string)$result -> getInsertedId();
 $_SESSION['name'] = $user['name'];
 $_SESSION['wallet_balance'] = (float)($user['wallet_balance'] ?? 50.0);
+$_SESSION['sub_started'] = $sub_started;
 $_SESSION['sub_activated_at'] = $sub_activated_at;
 $_SESSION['sub_expires_at'] = $sub_expires_at;
 $_SESSION['user_sub'] = [
-    'id'               => (string) ($user_sub['id'] ?? ''),
-    'plan_id'          => (int)    ($user_sub['id'] ?? 0),
-    'plan_name'        => (string) ($user_sub['plan_name'] ?? ''),
-    'ppm'              => (float)  ($user_sub['ppm'] ?? 0),
-    '3ds_hours'        => (int)    ($user_sub['3ds_hours'] ?? 0),
-    'drone_profile'    => (array)  ($user_sub['drone_profile'] ?? []),
-    'flight_scenarios' => (array)  ($user_sub['flight_scenarios'] ?? []),
+    'id'               => (string) ($user_sub['id'] ?? '1'),
+    'plan_id'          => (int)    ($user_sub['id'] ?? 1),
+    'plan_name'        => (string) ($user_sub['plan_name'] ?? 'BASIS'),
+    'ppm'              => (float)  ($user_sub['ppm'] ?? 0.10),
+    '3ds_hours'        => (int)    ($user_sub['3ds_hours'] ?? 1),
+    'drone_profile'    => (array)  ($user_sub['drone_profile'] ?? ['Research F450']),
+    'flight_scenarios' => (array)  ($user_sub['flight_scenarios'] ?? ['Normal Flight']),
     'wpm'              => (float)  ($user_sub['wpm'] ?? 0),
     'PID_tuning'       => (bool)   ($user_sub['PID_tuning'] ?? false),
     'export'           => (bool)   ($user_sub['export'] ?? false),
@@ -89,7 +112,7 @@ $_SESSION['user_sub'] = [
     'JS'               => (bool)   ($user_sub['JS'] ?? false),
     'CS'               => (bool)   ($user_sub['CS'] ?? false),
     'TM_HUD'           => (bool)   ($user_sub['TM_HUD'] ?? false),
-    'env'              => (array)  ($user_sub['env'] ?? []),
+    'env'              => (array)  ($user_sub['env'] ?? ['Daytime']),
 ];
 
 error_log('Attempting to redirect to dashboard');

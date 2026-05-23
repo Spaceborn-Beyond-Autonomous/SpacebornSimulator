@@ -3301,17 +3301,113 @@ function runStartup() {
   let i = 0;
   
   // Fetch limits first
-  fetch('../auth/get_limits.php')
-    .then(r => r.json())
-    .then(data => {
-        if (data.max_session_seconds > 0) {
-            window.MAX_SESSION_TIME = data.max_session_seconds;
+  function loadLimits(runPlan) {
+    let url = '../auth/get_limits.php';
+    if (runPlan) {
+      url += '?run_plan=' + runPlan;
+    }
+    
+    fetch(url)
+      .then(r => r.json())
+      .then(data => {
+          if (data.requires_plan_selection) {
+              showPlanSelectionModal(data.wallet_balance);
+              return;
+          }
+          
+          window.SIM_LIMITS = data;
+          if (data.max_session_seconds > 0) {
+              window.MAX_SESSION_TIME = data.max_session_seconds;
+          }
+          
+          // Calculate initial subscription remaining time
+          const walletTime = (data.wallet_balance / data.ppm) * 60;
+          window.SUB_REMAINING_SECONDS = data.sub_active ? Math.max(0, data.max_session_seconds - walletTime) : 0;
+          
+          step();
+      })
+      .catch(e => {
+          console.log('Could not fetch limits', e);
+          step();
+      });
+  }
+
+  function showPlanSelectionModal(walletBalance) {
+    let overlay = document.getElementById('plan-select-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'plan-select-overlay';
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,15,30,0.85);backdrop-filter:blur(8px);z-index:10000;display:flex;align-items:center;justify-content:center;font-family:\'Inter\',sans-serif;color:#e8edf8;';
+      
+      const modal = document.createElement('div');
+      modal.style.cssText = 'background:#1a233d;border:1px solid rgba(255,255,255,0.08);border-radius:18px;width:90%;max-width:650px;padding:35px;box-shadow:0 20px 50px rgba(0,0,0,0.5);display:flex;flex-direction:column;gap:20px;';
+      
+      const header = document.createElement('div');
+      header.innerHTML = '<h2 style="font-family:\'Space Grotesk\',sans-serif;font-size:26px;color:#EE9346;margin-bottom:8px;letter-spacing:-0.5px;">Select Simulation Tier</h2>' +
+                         '<p style="font-size:13px;color:#90A4AE;line-height:1.5;">You do not have an active subscription. Choose a tier to run the simulator using your wallet balance. Your balance will be charged per minute based on the selected tier\'s PPM rate.</p>';
+      modal.appendChild(header);
+
+      const grid = document.createElement('div');
+      grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:10px 0;';
+      
+      const plans = [
+        { id: 'BASIS', name: 'BASIS', desc: '1 Hour Limits', rate: '$0.10/min' },
+        { id: 'PRO', name: 'PRO', desc: '1 Day Limits', rate: '$0.05/min' },
+        { id: 'MAX', name: 'MAX', desc: 'Unlimited Limits', rate: '$0.01/min' }
+      ];
+      
+      plans.forEach(p => {
+        const card = document.createElement('div');
+        card.style.cssText = 'background:#11182c;border:1.5px solid rgba(255,255,255,0.04);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;transition:border-color 0.2s, transform 0.2s;';
+        card.onmouseover = () => { card.style.borderColor = '#EE9346'; card.style.transform = 'translateY(-2px)'; };
+        card.onmouseout = () => { card.style.borderColor = 'rgba(255,255,255,0.04)'; card.style.transform = 'translateY(0)'; };
+        
+        card.innerHTML = '<div style="font-family:\'Space Grotesk\',sans-serif;font-size:18px;font-weight:700;color:#e8edf8;">' + p.name + '</div>' +
+                         '<div style="font-size:11px;color:#90A4AE;">' + p.desc + '</div>' +
+                         '<div style="font-size:16px;font-weight:700;color:#4CAF50;margin:6px 0;">' + p.rate + '</div>';
+        
+        const btn = document.createElement('button');
+        btn.textContent = 'Select Plan';
+        btn.style.cssText = 'width:100%;padding:8px 0;border-radius:8px;background:#EE9346;color:white;font-size:12px;font-weight:600;cursor:pointer;border:none;box-shadow:0 4px 10px rgba(238,147,70,0.2);';
+        
+        if (walletBalance <= 0) {
+          btn.style.opacity = '0.4';
+          btn.style.cursor = 'not-allowed';
+          btn.disabled = true;
+        } else {
+          btn.onclick = () => {
+            overlay.remove();
+            loadLimits(p.id);
+          };
         }
-    })
-    .catch(e => console.log('Could not fetch limits', e))
-    .finally(() => {
-        step();
-    });
+        card.appendChild(btn);
+        grid.appendChild(card);
+      });
+      modal.appendChild(grid);
+      
+      const footer = document.createElement('div');
+      footer.style.cssText = 'display:flex;align-items:center;justify-content:between;margin-top:10px;padding-top:15px;border-top:1px solid rgba(255,255,255,0.05);width:100%;';
+      
+      const balSpan = document.createElement('span');
+      balSpan.style.cssText = 'font-size:13px;font-weight:600;';
+      balSpan.innerHTML = '💰 Wallet Balance: <span style="color:#4CAF50;">$' + walletBalance.toFixed(2) + '</span>';
+      footer.appendChild(balSpan);
+      
+      const billingBtn = document.createElement('button');
+      billingBtn.textContent = 'Go to Billing';
+      billingBtn.style.cssText = 'padding:6px 14px;border-radius:8px;background:#1a3580;color:white;font-size:12px;font-weight:500;cursor:pointer;border:none;margin-left:auto;';
+      billingBtn.onclick = () => {
+        window.location.href = '../billing.php';
+      };
+      footer.appendChild(billingBtn);
+      
+      modal.appendChild(footer);
+      overlay.appendChild(modal);
+      document.body.appendChild(overlay);
+    }
+  }
+
+  loadLimits();
 
   function step() {
     if (i >= STARTUP_STEPS.length) {
@@ -3491,11 +3587,61 @@ function _updateStickViz() {
 // Position readouts (t-px, t-py, t-pz) — update in SIM loop via existing _updateUI
 
 function exitSimulation() {
-  if (confirm("Are you sure you want to exit the simulation? Any unsaved flight data will be lost.")) {
-    window.close();
-    setTimeout(() => {
-      window.location.href = "../dashboard.php";
-    }, 100);
+  if (confirm("Are you sure you want to exit the simulation?")) {
+    let modeLabel = 'Manual';
+    const activeModeBtn = document.querySelector('.fmode-btn.on');
+    if (activeModeBtn) {
+      modeLabel = activeModeBtn.textContent.trim().replace(/^[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/g, '').trim(); // Remove emoji
+    }
+    
+    let droneName = 'Unknown Drone';
+    const sel = document.getElementById('drone-profile-select');
+    if (sel && sel.selectedIndex >= 0) {
+      droneName = sel.options[sel.selectedIndex].text;
+    }
+    
+    let weatherLabel = 'Clear';
+    if (document.getElementById('rain-track')?.classList.contains('on')) weatherLabel = 'Rain';
+    else if (document.getElementById('fog-track')?.classList.contains('on')) weatherLabel = 'Fog';
+    
+    let envName = 'Unknown';
+    if (typeof ENV !== 'undefined') {
+      const envMap = {
+        field: 'Grasslands',
+        mountains: 'Mountains',
+        urban: 'Urban Ruins',
+        indoor: 'Indoor Arena',
+        desert: 'Desert Valley',
+        windy: 'Windy Coast'
+      };
+      envName = envMap[ENV._name] || ENV._name;
+    }
+
+    const flightData = {
+      name: "Flight " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+      drone: droneName,
+      environment: envName,
+      weather: weatherLabel,
+      mode: modeLabel,
+      duration: Math.round(State.flightTime || 0),
+      status: 'completed',
+      plan: window.SIM_LIMITS ? window.SIM_LIMITS.plan : 'FREE',
+      ppm: window.SIM_LIMITS ? window.SIM_LIMITS.ppm : 0.10,
+      sub_active: window.SIM_LIMITS ? window.SIM_LIMITS.sub_active : false,
+      sub_remaining_seconds: window.SUB_REMAINING_SECONDS || 0
+    };
+
+    fetch('../api/save_flight.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(flightData)
+    })
+    .finally(() => {
+      window.close();
+      setTimeout(() => {
+        window.location.href = "../dashboard.php";
+      }, 100);
+    });
   }
 }
 

@@ -79,8 +79,8 @@ if ($target_plan_id === 3) {
     $target_plan_name = 'BASIS';
 }
 
-$new_activated_at = new MongoDB\BSON\UTCDateTime($now * 1000);
-$new_expires_at = new MongoDB\BSON\UTCDateTime(($now + ($target_minutes * 60)) * 1000);
+$new_activated_at = new MongoDB\BSON\UTCDateTime((int)($now * 1000));
+$new_expires_at = new MongoDB\BSON\UTCDateTime((int)(($now + ($target_minutes * 60)) * 1000));
 
 // Update database user document
 $new_wallet_balance = (float)($user['wallet_balance'] ?? 0.0) + $refund_amount;
@@ -90,8 +90,9 @@ $usersCol->updateOne(
         '$set' => [
             'sub_id' => $target_plan_id,
             'wallet_balance' => $new_wallet_balance,
-            'sub_activated_at' => $new_activated_at,
-            'sub_expires_at' => $new_expires_at
+            'sub_started' => false,
+            'sub_activated_at' => null,
+            'sub_expires_at' => null
         ]
     ]
 );
@@ -100,7 +101,7 @@ $usersCol->updateOne(
 if ($refund_amount > 0) {
     $db->invoices->insertOne([
         'email' => $email,
-        'created_at' => new MongoDB\BSON\UTCDateTime($now * 1000),
+        'created_at' => new MongoDB\BSON\UTCDateTime((int)($now * 1000)),
         'description' => 'Prorated Downgrade Refund (' . $current_plan_name . ' -> ' . $target_plan_name . ')',
         'amount' => -$refund_amount, // Negative represent money returned/refunded
         'status' => 'paid',
@@ -114,8 +115,9 @@ $user_sub = $subCol->findOne(['id' => $target_plan_id]);
 
 // Update PHP Session variables
 $_SESSION['wallet_balance'] = $new_wallet_balance;
-$_SESSION['sub_activated_at'] = $now;
-$_SESSION['sub_expires_at'] = $now + ($target_minutes * 60);
+$_SESSION['sub_started'] = false;
+$_SESSION['sub_activated_at'] = null;
+$_SESSION['sub_expires_at'] = null;
 $_SESSION['user_sub'] = [
     'id'               => (string) ($user_sub['id'] ?? ''),
     'plan_id'          => (int)    ($user_sub['id'] ?? 0),

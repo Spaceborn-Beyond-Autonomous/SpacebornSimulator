@@ -78,24 +78,105 @@ $plan_catalog = [
   ],
 ];
 
-// ── Resolve current plan from DB plan_id in session ─────────────────────
-$current_plan_id = (int)($_SESSION['user_sub']['plan_id'] ?? 0);
+// ── Refresh user subscription state from database ─────────────────────────
+$email = $_SESSION['email'] ?? '';
+$user = $db->users->findOne(['email' => $email]);
+if ($user) {
+    // 1. Expiration check & automatic revert to FREE during load
+    $current_plan_id = (int)($user['sub_id'] ?? 0);
+    $sub_started = isset($user['sub_started']) ? (bool)$user['sub_started'] : false;
+    $sub_expires_at = 0;
+    if (isset($user['sub_expires_at']) && $user['sub_expires_at'] instanceof MongoDB\BSON\UTCDateTime) {
+        $sub_expires_at = $user['sub_expires_at']->toDateTime()->getTimestamp();
+    }
+    
+    if ($current_plan_id > 0 && $sub_started && $sub_expires_at > 0 && time() > $sub_expires_at) {
+        $db->users->updateOne(
+            ['email' => $email],
+            [
+                '$set' => [
+                    'sub_id'           => 0,
+                    'sub_started'      => false,
+                    'sub_activated_at' => null,
+                    'sub_expires_at'   => null
+                ]
+            ]
+        );
+        $user = $db->users->findOne(['email' => $email]);
+        
+        $_SESSION['sub_activated_at'] = null;
+        $_SESSION['sub_expires_at']   = null;
+        $_SESSION['sub_started']      = false;
+        $_SESSION['user_sub'] = [
+            'id'               => '0',
+            'plan_id'          => 0,
+            'plan_name'        => 'FREE',
+            'ppm'              => 0.50,
+            '3ds_hours'        => 0,
+            'drone_profile'    => ['Research F450'],
+            'flight_scenarios' => ['Normal Flight'],
+            'wpm'              => 0,
+            'PID_tuning'       => false,
+            'export'           => false,
+            'MV_logs'          => false,
+            'GLB_cust'         => false,
+            'JS'               => false,
+            'CS'               => false,
+            'TM_HUD'           => false,
+            'env'              => ['Daytime'],
+        ];
+    } else {
+        $_SESSION['sub_started'] = $sub_started;
+        $_SESSION['sub_expires_at'] = $sub_expires_at;
+    }
+}
+
+// ── Resolve current plan from DB plan_id ─────────────────────────────────
+$current_plan_id = (int)($user['sub_id'] ?? 0);
 // Fallback: derive from plan_name string if plan_id not yet in session
 if (!$current_plan_id) {
     $name_map        = ['BASIS' => 1, 'PRO' => 2, 'MAX' => 3];
-    $current_plan_id = $name_map[$_SESSION['user_sub']['plan_name'] ?? ''] ?? 3;
+    $current_plan_id = $name_map[$_SESSION['user_sub']['plan_name'] ?? ''] ?? 1;
 }
-// Clamp to valid range
-if (!isset($plan_catalog[$current_plan_id])) $current_plan_id = 3;
 
-$current_plan  = $plan_catalog[$current_plan_id];
+if ($current_plan_id <= 0) {
+    // Free plan definition
+    $current_plan = [
+        'id'       => 0,
+        'name'     => 'FREE',
+        'label'    => 'Free Plan',
+        'price'    => 0,
+        'period'   => 'session',
+        'color'    => 'blue',
+        'best_for' => 'Try out standard drone flights',
+        'recurring'=> false,
+        'features' => [
+            ['yes', '5-minute session time limit'],
+            ['yes', '1 drone profile (Research F450)'],
+            ['yes', 'Normal Flight only'],
+            ['yes', 'Daytime environment'],
+            ['no',  'Waypoint Missions'],
+            ['no',  'PID Tuning Panel'],
+        ],
+    ];
+} else {
+    // Clamp to valid range
+    if (!isset($plan_catalog[$current_plan_id])) $current_plan_id = 1;
+    $current_plan = $plan_catalog[$current_plan_id];
+}
 $current_price = $current_plan['price'];
 $current_name  = $current_plan['name'];
 
-$razorpay_sub_id = $_SESSION['user_sub']['razorpay_subscription_id'] ?? null;
-$next_billing    = isset($_SESSION['sub_expires_at']) ? date('j M Y, H:i', $_SESSION['sub_expires_at']) : '1 Jun 2026';
-
+$sub_started = $_SESSION['sub_started'] ?? false;
 $sub_expires_at = $_SESSION['sub_expires_at'] ?? 0;
+
+$next_billing = 'Starts on first simulation';
+if ($sub_started && $sub_expires_at > 0) {
+    $next_billing = date('j M Y, H:i', $sub_expires_at);
+}
+
+$razorpay_sub_id = $user['razorpay_subscription_id'] ?? null;
+
 $current_plan_duration_sec = 0;
 if ($current_plan_id === 3) {
     $current_plan_duration_sec = (float)($_ENV['PLAN_MAX_MINUTES'] ?? 43200) * 60;
@@ -329,6 +410,10 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
           <div class="toast error">
             <span>❌ Insufficient wallet balance to upgrade. Please top up your wallet first.</span>
           </div>
+        <?php elseif ($_GET['msg'] === 'payment_failed'): ?>
+          <div class="toast error">
+            <span>❌ Razorpay payment failed or was cancelled by the user.</span>
+          </div>
         <?php endif; ?>
       </div>
     <?php endif; ?>
@@ -342,12 +427,20 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
           $<?= $current_price ?> / <?= $current_plan['period'] ?>
           <?php if ($current_plan['recurring']): ?>&nbsp;· Renews automatically<?php endif; ?>
         </div>
-        <div class="badge-active">Active</div>
+        <?php if ($current_plan_id > 0): ?>
+          <?php if ($sub_started): ?>
+            <div class="badge-active">Active</div>
+          <?php else: ?>
+            <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(51,149,255,0.12);color:var(--blue);border-radius:6px;padding:4px 10px;font-size:11.5px;font-weight:600;margin-top:6px;width:fit-content;">Pending Activation</div>
+          <?php endif; ?>
+        <?php else: ?>
+          <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);color:var(--text3);border-radius:6px;padding:4px 10px;font-size:11.5px;font-weight:600;margin-top:6px;width:fit-content;">No Active Plan</div>
+        <?php endif; ?>
       </div>
       <div class="plan-banner-right">
-        <?php if ($current_plan['recurring']): ?>
+        <?php if ($current_plan_id > 0): ?>
         <div class="renewal-info">
-          <div class="plan-next-label">Next billing date</div>
+          <div class="plan-next-label"><?= $sub_started ? 'Next billing date' : 'Access Expiration' ?></div>
           <div class="plan-next-date"><?= $next_billing ?></div>
         </div>
         <?php endif; ?>
@@ -381,8 +474,8 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
       </div>
       <div class="summary-card">
         <div class="summary-label"><?= $current_plan['recurring'] ? 'Next Renewal' : 'Access Window' ?></div>
-        <div class="summary-value green">
-          <?= $current_plan['recurring'] ? $next_billing : $current_plan['label'] ?>
+        <div class="summary-value green" style="font-size:13.5px;">
+          <?= $current_plan_id > 0 ? ($sub_started ? ($current_plan['recurring'] ? $next_billing : $current_plan['label']) : 'Starts on first simulation') : 'No active plan' ?>
         </div>
       </div>
     </div>
@@ -542,16 +635,37 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
 <div class="modal-bg" id="upgradeModal">
   <div class="modal">
     <h3>Upgrade to <span id="upgradePlanName"></span></h3>
-    <p>You'll be charged <strong id="upgradePrice"></strong> starting today.
-       Your current access is prorated automatically via Razorpay.</p>
+    <p style="margin-bottom: 12px;">You'll be charged <strong id="upgradePrice"></strong> starting today.</p>
+    
+    <div class="payment-method-selector" style="margin: 15px 0; display: flex; flex-direction: column; gap: 10px;">
+      <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text3); font-weight: 600;">Choose Payment Method</label>
+      
+      <label class="pm-option" id="pm-option-razorpay" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; transition: all 0.2s;">
+        <input type="radio" name="payment_method" value="razorpay" checked onclick="updateUpgradeFormAction('razorpay')">
+        <div style="flex: 1;">
+          <div style="font-size: 13px; font-weight: 600;">Razorpay Gateway</div>
+          <div style="font-size: 11px; color: var(--text2);">Pay via Card, UPI, or Netbanking</div>
+        </div>
+      </label>
+
+      <label class="pm-option" id="pm-option-wallet" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; transition: all 0.2s;">
+        <input type="radio" name="payment_method" value="wallet" id="walletRadio" onclick="updateUpgradeFormAction('wallet')">
+        <div style="flex: 1;">
+          <div style="font-size: 13px; font-weight: 600;">Wallet Balance</div>
+          <div style="font-size: 11px; color: var(--text2);" id="walletOptionSubtext">Available: $<?= number_format($_SESSION['wallet_balance'] ?? 0, 2) ?></div>
+        </div>
+      </label>
+    </div>
+
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('upgradeModal')">Cancel</button>
-      <form method="POST" action="billing_action.php" style="display:inline">
-        <input type="hidden" name="action" value="upgrade">
+      <form method="GET" action="razorpay_mock.php" id="upgradeForm" style="display:inline">
+        <input type="hidden" name="action" value="upgrade" id="upgradeFormAction" disabled>
         <input type="hidden" name="plan_id" id="upgradeFormPlanId">
         <button type="submit" class="btn btn-primary">Confirm Upgrade</button>
       </form>
     </div>
+  </div>
 </div>
 
 <!-- DOWNGRADE MODAL -->
@@ -612,17 +726,65 @@ function openUpgradeModal(name, price, planId, period){
   document.getElementById('upgradePlanName').textContent = name;
   document.getElementById('upgradePrice').textContent = '$' + price + ' / ' + period;
   document.getElementById('upgradeFormPlanId').value = planId;
+  
+  const walletBalance = parseFloat(<?= (float)($_SESSION['wallet_balance'] ?? 0) ?>);
+  const planPrice = parseFloat(price);
+  const walletRadio = document.getElementById('walletRadio');
+  const pmOptionWallet = document.getElementById('pm-option-wallet');
+  const walletOptionSubtext = document.getElementById('walletOptionSubtext');
+  
+  if (walletBalance < planPrice) {
+    walletRadio.disabled = true;
+    walletRadio.checked = false;
+    pmOptionWallet.style.opacity = '0.4';
+    pmOptionWallet.style.cursor = 'not-allowed';
+    walletOptionSubtext.innerHTML = 'Insufficient Balance: $' + walletBalance.toFixed(2) + ' (Requires $' + planPrice.toFixed(2) + ')';
+    
+    // Force select Razorpay option
+    document.querySelector('input[value="razorpay"]').checked = true;
+    updateUpgradeFormAction('razorpay');
+  } else {
+    walletRadio.disabled = false;
+    pmOptionWallet.style.opacity = '1';
+    pmOptionWallet.style.cursor = 'pointer';
+    walletOptionSubtext.innerHTML = 'Available: $' + walletBalance.toFixed(2);
+    
+    // Default to Razorpay
+    document.querySelector('input[value="razorpay"]').checked = true;
+    updateUpgradeFormAction('razorpay');
+  }
+  
   document.getElementById('upgradeModal').classList.add('open');
+}
+
+function updateUpgradeFormAction(method) {
+  const form = document.getElementById('upgradeForm');
+  const actionInput = document.getElementById('upgradeFormAction');
+  if (method === 'razorpay') {
+    form.method = 'GET';
+    form.action = 'razorpay_mock.php';
+    actionInput.disabled = true;
+  } else {
+    form.method = 'POST';
+    form.action = 'billing_action.php';
+    actionInput.disabled = false;
+  }
 }
 
 // Downgrade calculations and modal
 const subExpiresAt = <?= (int)$sub_expires_at ?>;
+const subStarted = <?= $sub_started ? 'true' : 'false' ?>;
 const currentPlanPrice = <?= (float)$current_price ?>;
 const currentPlanDurationSec = <?= (int)$current_plan_duration_sec ?>;
 
 function openDowngradeModal(name, price, planId, period) {
   const now = Math.floor(Date.now() / 1000);
-  const remainingSec = Math.max(0, subExpiresAt - now);
+  let remainingSec = 0;
+  if (!subStarted) {
+    remainingSec = currentPlanDurationSec;
+  } else {
+    remainingSec = Math.max(0, subExpiresAt - now);
+  }
   let refundAmt = 0;
   if (currentPlanDurationSec > 0) {
     refundAmt = (remainingSec / currentPlanDurationSec) * currentPlanPrice;
