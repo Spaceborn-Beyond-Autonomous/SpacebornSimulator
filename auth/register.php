@@ -36,6 +36,7 @@ if ($existingUser) {
 }
 
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+$verificationToken = bin2hex(random_bytes(32));
 
 $result = $users->insertOne([
     'name' => $name,
@@ -46,11 +47,22 @@ $result = $users->insertOne([
     'auth_provid' => 0,
     'sub_id' => 1,
     'expires_at' => '',
-    'is_verified' => 0
+    'is_verified' => false,
+    'verification_token' => $verificationToken
 ]);
 
 if ($result->getInsertedCount() > 0) {
-    echo "Account created successfully , Check your email for verification link";
+    // Generate the verification link based on the current host
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+    $verifyLink = "$protocol://$host$uri/verify.php?token=$verificationToken";
+    
+    // Log it to the console/error log as requested
+    error_log("VERIFICATION LINK FOR $email: " . $verifyLink);
+    
+    // Output it in the response for easy access
+    echo "Account created successfully. \n\nVerification Link (pasted below for testing):\n" . $verifyLink;
     
 } else {
     die("Registration failed.");

@@ -30,7 +30,7 @@ if (!password_verify($pass, $user['password'])) {
     die("Invalid password.");
 }
 
-if($user['is_verified'] !== true){
+if(empty($user['is_verified'])){
     die('Please verify your email');
 }
 

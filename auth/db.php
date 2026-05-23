@@ -1,8 +1,12 @@
 <?php 
 
 require '../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
+
 try{
-$client = new MongoDB\Client("mongodb+srv://spar123:Hello%40123@testing.hnrldbw.mongodb.net/?appName=Testing");
+$client = new MongoDB\Client($_ENV['MONGODB_URI']);
 $db = $client -> spaceborn;
 }
 catch(Exception $e) {

@@ -51,7 +51,7 @@ $_ic_billing   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
 
   <!-- Nav links -->
   <?= _nav_item('dashboard.php',   'Dashboard',          $_ic_dashboard, 'dashboard',      $_active) ?>
-  <?= _nav_item('new-session.php', 'New Simulation',     $_ic_new,       'new-simulation', $_active) ?>
+  <?= _nav_item('simulator/index.html" target="_blank', 'New Simulation',     $_ic_new,       'new-simulation', $_active) ?>
   <?= _nav_item('simulations.php', 'Simulations',        $_ic_sims,      'simulations',    $_active) ?>
   <?= _nav_item('billing.php',     'My Plan &amp; Billing', $_ic_billing, 'billing',        $_active) ?>
 

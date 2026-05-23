@@ -167,7 +167,7 @@ $sidebar_active = 'dashboard';
         <h3>Ready for your next flight?</h3>
         <p>Configure a new simulation session with your choice of drone, environment, and weather.</p>
       </div>
-      <button class="btn-primary" onclick="location.href='new-session.php'">+ Start New Session</button>
+      <button class="btn-primary" onclick="window.open('simulator/index.html', '_blank')">+ Start New Session</button>
     </div>
 
     <div class="lower-row fade-up delay-6">

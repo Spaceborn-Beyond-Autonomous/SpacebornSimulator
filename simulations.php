@@ -154,7 +154,7 @@ $sessions = [
           <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
         </svg>
       </button>
-      <button class="new-session-btn" onclick="location.href='new-session.php'">
+      <button class="new-session-btn" onclick="window.open('simulator/index.html', '_blank')">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
@@ -169,7 +169,7 @@ $sessions = [
         <h2>Simulations</h2>
         <p>All your simulation runs in one place</p>
       </div>
-      <button class="new-session-btn" onclick="location.href='new-session.php'">
+      <button class="new-session-btn" onclick="window.open('simulator/index.html', '_blank')">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
