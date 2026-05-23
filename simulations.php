@@ -1,16 +1,28 @@
 <?php
 require 'auth/session_guard.php';
-
+require 'auth/db.php';
 
 $sidebar_active = 'simulations';
+$email = $_SESSION['email'] ?? '';
 
-$sessions = [
-  ['id'=>'sess_001','name'=>'Campus Mapping',           'drone'=>'DJI Mavic 3 Enterprise','environment'=>'Urban',    'weather'=>'Clear',  'mode'=>'Autonomous','duration'=>'24m 12s','status'=>'completed','date'=>'Today, 10:45 AM','log'=>'logs/sess_001.zip'],
-  ['id'=>'sess_002','name'=>'Wind Tolerance Test',      'drone'=>'Autel EVO II',           'environment'=>'Mountain', 'weather'=>'Windy',  'mode'=>'Manual',    'duration'=>'18m 05s','status'=>'completed','date'=>'Yesterday',       'log'=>'logs/sess_002.zip'],
-  ['id'=>'sess_003','name'=>'FPV Racing Track 4',       'drone'=>'DJI FPV',                'environment'=>'Stadium',  'weather'=>'Clear',  'mode'=>'FPV',       'duration'=>'45m 38s','status'=>'completed','date'=>'May 12',          'log'=>'logs/sess_003.zip'],
-  ['id'=>'sess_004','name'=>'Precision Landing — Urban','drone'=>'DJI Mini 4 Pro',         'environment'=>'Urban',    'weather'=>'Cloudy', 'mode'=>'Autonomous','duration'=>'11m 50s','status'=>'completed','date'=>'May 10',          'log'=>'logs/sess_004.zip'],
-  ['id'=>'sess_005','name'=>'Night Forest Patrol',      'drone'=>'Autel EVO II Pro',       'environment'=>'Forest',   'weather'=>'Night',  'mode'=>'Autonomous','duration'=>'33m 21s','status'=>'failed',   'date'=>'May 8',           'log'=>'logs/sess_005.zip'],
-];
+// Fetch from db
+$flights = $db->flights->find(['email' => $email], ['sort' => ['created_at' => -1]])->toArray();
+
+$sessions = [];
+foreach ($flights as $f) {
+    $sessions[] = [
+        'id'          => (string) $f['_id'],
+        'name'        => $f['name'] ?? 'Simulation',
+        'drone'       => $f['drone'] ?? 'Unknown Drone',
+        'environment' => $f['environment'] ?? 'Unknown',
+        'weather'     => $f['weather'] ?? 'Clear',
+        'mode'        => $f['mode'] ?? 'Manual',
+        'duration'    => gmdate("i\m s\s", $f['duration'] ?? 0),
+        'status'      => $f['status'] ?? 'completed',
+        'date'        => $f['created_at'] ? $f['created_at']->toDateTime()->format('M d, g:i A') : 'Unknown',
+        'log'         => 'logs/' . ((string)$f['_id']) . '.zip'
+    ];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -146,6 +158,9 @@ $sessions = [
   <header class="topbar">
     <div class="topbar-title">Simulations</div>
     <div class="topbar-right">
+      <div class="wallet-chip" style="display:flex; align-items:center; gap:6px; background:var(--surface); padding:6px 12px; border-radius:12px; box-shadow:var(--neu-btn); font-size:13px; font-weight:600; color:var(--text); margin-right:4px;">
+        <span style="color:var(--accent);">💰</span> $<?= number_format($_SESSION['wallet_balance'] ?? 0, 2) ?>
+      </div>
       <span id="themeIcon" style="font-size:13px">🌙</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
       <button class="icon-btn" aria-label="Notifications">

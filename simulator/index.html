@@ -2593,6 +2593,20 @@ const SIM = {
 
     if (State.armed) State.flightTime += dt;
 
+    if (window.MAX_SESSION_TIME && State.flightTime >= window.MAX_SESSION_TIME) {
+        if (State.armed) {
+            emergStop();
+            UI.toast('Session limit reached!');
+        }
+        if (!this._paused) {
+            this.pause();
+            const ov = document.createElement('div');
+            ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;color:white;font-family:sans-serif;';
+            ov.innerHTML = '<h1 style="color:#f44336;margin-bottom:10px;">Session Limit Reached</h1><p style="font-size:16px;">Your wallet balance or plan time limit has been exhausted.</p><button onclick="window.close()" style="margin-top:20px;padding:10px 20px;background:#EE9346;border:none;border-radius:10px;color:white;cursor:pointer;font-size:14px;font-weight:bold;">Close Simulator</button>';
+            document.body.appendChild(ov);
+        }
+    }
+
     this._updateUI(dt);
     BLACKBOX.tick(State.flightTime);
     TELEM_GRAPH.push(PHYS);
@@ -2662,11 +2676,21 @@ const SIM = {
       }
     }
 
-    // Clock
-    const ft = State.flightTime;
-    const mm = Math.floor(ft/60), ss = Math.floor(ft%60);
+    // Clock (Running in reverse)
+    let displayTime = State.flightTime;
+    if (window.MAX_SESSION_TIME && window.MAX_SESSION_TIME !== Infinity) {
+        displayTime = Math.max(0, window.MAX_SESSION_TIME - State.flightTime);
+    }
+    const mm = Math.floor(displayTime/60), ss = Math.floor(displayTime%60);
     const clk = $('top-clock');
-    if (clk) clk.textContent = mm.toString().padStart(2,'0')+':'+ss.toString().padStart(2,'0');
+    if (clk) {
+        clk.textContent = mm.toString().padStart(2,'0')+':'+ss.toString().padStart(2,'0');
+        if (displayTime < 60 && window.MAX_SESSION_TIME !== Infinity) {
+            clk.style.color = '#f44336';
+        } else {
+            clk.style.color = '';
+        }
+    }
 
     // FPS
     const fpsEl = $('fps-val');
@@ -3268,10 +3292,26 @@ const STARTUP_STEPS = [
   {msg:'Systems nominal — launching…',    pct:100},
 ];
 
+window.MAX_SESSION_TIME = Infinity;
+
 function runStartup() {
   const bar = document.getElementById('sbar');
   const stat= document.getElementById('sstat');
   let i = 0;
+  
+  // Fetch limits first
+  fetch('../auth/get_limits.php')
+    .then(r => r.json())
+    .then(data => {
+        if (data.max_session_seconds > 0) {
+            window.MAX_SESSION_TIME = data.max_session_seconds;
+        }
+    })
+    .catch(e => console.log('Could not fetch limits', e))
+    .finally(() => {
+        step();
+    });
+
   function step() {
     if (i >= STARTUP_STEPS.length) {
       setTimeout(() => {
@@ -3286,7 +3326,6 @@ function runStartup() {
     if (bar)  bar.style.width  = s.pct+'%';
     setTimeout(step, 200 + Math.random()*150);
   }
-  step();
 }
 
 /* ══════════════════════════════════════════════════════════════════════

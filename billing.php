@@ -1,5 +1,6 @@
 <?php
 require 'auth/session_guard.php';
+require_once 'auth/db.php';
 
 $sidebar_active = 'billing';
 $name           = htmlspecialchars($_SESSION['name'] ?? 'User');
@@ -13,7 +14,7 @@ $plan_catalog = [
     'id'       => 1,
     'name'     => 'BASIS',
     'label'    => '1 Hour',
-    'price'    => 1,
+    'price'    => (float)($_ENV['PLAN_BASIS_PRICE'] ?? 1),
     'period'   => '1 hr',
     'color'    => 'blue',
     'best_for' => 'Quick test, first look',
@@ -34,7 +35,7 @@ $plan_catalog = [
     'id'       => 2,
     'name'     => 'PRO',
     'label'    => '1 Day',
-    'price'    => 5,
+    'price'    => (float)($_ENV['PLAN_PRO_PRICE'] ?? 5),
     'period'   => '1 day',
     'color'    => 'orange',
     'best_for' => 'A focused one-off session',
@@ -55,7 +56,7 @@ $plan_catalog = [
     'id'       => 3,
     'name'     => 'MAX',
     'label'    => '1 Month',
-    'price'    => 20,
+    'price'    => (float)($_ENV['PLAN_MAX_PRICE'] ?? 20),
     'period'   => 'mo',
     'color'    => 'accent',
     'best_for' => 'Serious builders &amp; learners',
@@ -95,13 +96,18 @@ $razorpay_sub_id = $_SESSION['user_sub']['razorpay_subscription_id'] ?? null;
 $next_billing    = '1 Jun 2026'; // replace with live Razorpay data
 
 // ── Billing history (replace with DB / Razorpay API query) ──────────────
-$invoices = [
-  ['date' => '1 May 2026',  'description' => 'Spaceborn MAX — Monthly',   'amount' => '$20.00', 'status' => 'paid',    'payment_id' => 'pay_Abc001'],
-  ['date' => '1 Apr 2026',  'description' => 'Spaceborn MAX — Monthly',   'amount' => '$20.00', 'status' => 'paid',    'payment_id' => 'pay_Abc002'],
-  ['date' => '1 Mar 2026',  'description' => 'Spaceborn MAX — Monthly',   'amount' => '$20.00', 'status' => 'paid',    'payment_id' => 'pay_Abc003'],
-  ['date' => '1 Feb 2026',  'description' => 'Spaceborn PRO — 1 Day',     'amount' => '$5.00',  'status' => 'paid',    'payment_id' => 'pay_Abc004'],
-  ['date' => '15 Jan 2026', 'description' => 'Spaceborn BASIS — 1 Hour',  'amount' => '$1.00',  'status' => 'paid',    'payment_id' => 'pay_Abc005'],
-];
+$invoices = [];
+$email = $_SESSION['email'] ?? '';
+$db_invoices = $db->invoices->find(['email' => $email], ['sort' => ['created_at' => -1]])->toArray();
+foreach($db_invoices as $inv) {
+    $invoices[] = [
+        'date' => $inv['created_at'] ? $inv['created_at']->toDateTime()->format('j M Y') : 'Unknown',
+        'description' => $inv['description'] ?? 'Invoice',
+        'amount' => '$' . number_format($inv['amount'] ?? 0, 2),
+        'status' => $inv['status'] ?? 'paid',
+        'payment_id' => $inv['payment_id'] ?? 'N/A'
+    ];
+}
 $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
 ?>
 <!DOCTYPE html>
@@ -276,8 +282,11 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
   <header class="topbar">
     <div class="topbar-title">My Plan &amp; Billing</div>
     <div class="topbar-right">
+      <div class="wallet-chip" style="display:flex; align-items:center; gap:6px; background:var(--surface); padding:6px 12px; border-radius:12px; box-shadow:var(--neu-btn); font-size:13px; font-weight:600; color:var(--text); margin-right:4px;">
+        <span style="color:var(--accent);">💰</span> $<?= number_format($_SESSION['wallet_balance'] ?? 0, 2) ?>
+      </div>
       <span id="themeIcon" style="font-size:13px">🌙</span>
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode"></button>
       <button class="topbar-icon-btn" aria-label="Notifications">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -314,6 +323,12 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
         </div>
         <?php endif; ?>
         <div class="plan-banner-actions">
+          <button onclick="document.getElementById('topup-modal').style.display='flex'" class="btn btn-ghost">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            Top Up Wallet
+          </button>
           <a href="billing_portal.php" class="btn btn-primary">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -505,6 +520,24 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
         <button type="submit" class="btn btn-primary">Confirm Upgrade</button>
       </form>
     </div>
+  </div>
+</div>
+
+<!-- Top Up Modal -->
+<div id="topup-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:100; align-items:center; justify-content:center;">
+  <div style="background:var(--surface); padding:30px; border-radius:var(--r); width:400px; box-shadow:var(--neu-out);">
+    <h2 style="margin-bottom:10px; font-family:'Syne';">Top Up Wallet</h2>
+    <p style="font-size:13px; color:var(--text2); margin-bottom:20px;">Enter the amount you wish to add to your balance.</p>
+    <form action="api/topup.php" method="POST">
+      <div style="display:flex; align-items:center; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px; margin-bottom:20px;">
+        <span style="color:var(--text2); margin-right:8px; font-weight:bold;">$</span>
+        <input type="number" name="amount" min="1" step="0.01" placeholder="10.00" style="background:transparent; border:none; color:var(--text); width:100%; outline:none; font-family:'DM Sans'; font-size:16px;" required>
+      </div>
+      <div style="display:flex; gap:10px; justify-content:flex-end;">
+        <button type="button" onclick="document.getElementById('topup-modal').style.display='none'" class="btn btn-ghost">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add Funds</button>
+      </div>
+    </form>
   </div>
 </div>
 

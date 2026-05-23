@@ -1,8 +1,42 @@
 <?php
 require 'auth/session_guard.php';
+require 'auth/db.php';
 
 $name           = htmlspecialchars($_SESSION['name'] ?? 'User');
+$email          = $_SESSION['email'] ?? '';
 $sidebar_active = 'dashboard';
+
+// Fetch user's flights
+$flights = $db->flights->find(['email' => $email], ['sort' => ['created_at' => -1]])->toArray();
+
+$total_seconds = 0;
+$this_week_count = 0;
+$seven_days_ago = new DateTime('-7 days');
+$usage_seconds = [0,0,0,0,0,0,0]; // Mon to Sun
+
+foreach($flights as $f) {
+    $dur = $f['duration'] ?? 0;
+    $total_seconds += $dur;
+    
+    $dt = $f['created_at']->toDateTime();
+    if ($dt >= $seven_days_ago) {
+        $this_week_count++;
+        // 1 (Mon) - 7 (Sun)
+        $day_idx = (int)$dt->format('N') - 1;
+        $usage_seconds[$day_idx] += $dur;
+    }
+}
+
+$total_hours = round($total_seconds / 3600, 1);
+$max_usage = max($usage_seconds);
+$usage_pct = [];
+foreach($usage_seconds as $s) {
+    $usage_pct[] = $max_usage > 0 ? round(($s / $max_usage) * 100) : 0;
+}
+
+$plan_name = $_SESSION['user_sub']['plan_name'] ?? 'Free';
+if (!$plan_name) $plan_name = 'Active';
+
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -126,6 +160,9 @@ $sidebar_active = 'dashboard';
   <header class="topbar">
     <div class="topbar-title">Dashboard</div>
     <div class="topbar-right">
+      <div class="wallet-chip" style="display:flex; align-items:center; gap:6px; background:var(--surface); padding:6px 12px; border-radius:12px; box-shadow:var(--neu-btn); font-size:13px; font-weight:600; color:var(--text); margin-right:4px;">
+        <span style="color:var(--accent);">💰</span> $<?= number_format($_SESSION['wallet_balance'] ?? 0, 2) ?>
+      </div>
       <span id="themeIcon" style="font-size:13px">🌙</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode"></button>
       <button class="topbar-icon-btn" aria-label="Notifications">
@@ -142,23 +179,23 @@ $sidebar_active = 'dashboard';
     <div class="stat-row">
       <div class="stat-card fade-up delay-1">
         <div class="stat-label">Active Sessions</div>
-        <div class="stat-value green">3</div>
+        <div class="stat-value green">0</div>
         <div class="stat-sub">Running right now</div>
       </div>
       <div class="stat-card fade-up delay-2">
         <div class="stat-label">Total Flight Hours</div>
-        <div class="stat-value blue">124.5h</div>
-        <div class="stat-sub">Across 42 sessions</div>
+        <div class="stat-value blue"><?= $total_hours ?>h</div>
+        <div class="stat-sub">Across <?= count($flights) ?> sessions</div>
       </div>
       <div class="stat-card fade-up delay-3">
         <div class="stat-label">This Week</div>
-        <div class="stat-value" style="color:var(--text)">8</div>
+        <div class="stat-value" style="color:var(--text)"><?= $this_week_count ?></div>
         <div class="stat-sub">Sessions launched</div>
       </div>
       <div class="stat-card fade-up delay-4">
         <div class="stat-label">Plan Status</div>
-        <div class="stat-value green">Active</div>
-        <div class="stat-sub">Unlimited simulations</div>
+        <div class="stat-value green"><?= htmlspecialchars($plan_name) ?></div>
+        <div class="stat-sub">Access level</div>
       </div>
     </div>
 
@@ -167,7 +204,8 @@ $sidebar_active = 'dashboard';
         <h3>Ready for your next flight?</h3>
         <p>Configure a new simulation session with your choice of drone, environment, and weather.</p>
       </div>
-      <button class="btn-primary" onclick="window.open('simulator/index.html', '_blank')">+ Start New Session</button>
+      <?php $can_launch = ($_SESSION['wallet_balance'] ?? 0) > 0 || strtolower($plan_name) !== 'free'; ?>
+      <button class="btn-primary" <?= $can_launch ? 'onclick="window.open(\'simulator/index.html\', \'_blank\')"' : 'style="opacity: 0.5; cursor: not-allowed;" onclick="alert(\'Please top up your wallet or upgrade your plan to start a new session.\')"' ?>>+ Start New Session</button>
     </div>
 
     <div class="lower-row fade-up delay-6">
@@ -177,12 +215,16 @@ $sidebar_active = 'dashboard';
           <a class="view-all" href="simulations.php">View all →</a>
         </div>
         <?php
-        $recent = [
-          ['Campus Mapping',            'DJI Mavic 3 Enterprise', 'Today, 10:45 AM', '24m 12s'],
-          ['Wind Tolerance Test',       'Autel EVO II',           'Yesterday',        '18m 05s'],
-          ['FPV Racing Track 4',        'DJI FPV',                'May 12',           '45m 38s'],
-          ['Precision Landing — Urban', 'DJI Mini 4 Pro',         'May 10',           '11m 50s'],
-        ];
+        $recent = [];
+        $recent_flights = array_slice($flights, 0, 4);
+        foreach ($recent_flights as $f) {
+          $dur = gmdate("i\m s\s", $f['duration'] ?? 0);
+          $date = $f['created_at'] ? $f['created_at']->toDateTime()->format('M d, g:i A') : 'Unknown';
+          $recent[] = [ $f['name'] ?? 'Simulation', $f['drone'] ?? 'Unknown Drone', $date, $dur ];
+        }
+        if (empty($recent)) {
+            echo '<div style="padding: 20px 22px; font-size: 13px; color: var(--text3);">No recent sessions. Launch the simulator to get started!</div>';
+        }
         foreach ($recent as $r): ?>
         <div class="session-item">
           <div class="session-left">
@@ -241,8 +283,8 @@ $sidebar_active = 'dashboard';
           <div class="panel-header"><div class="panel-title">Weekly Usage</div></div>
           <div class="panel-body">
             <div class="usage-grid">
-              <?php foreach ([55,80,100,40,70,65,30] as $h): ?>
-              <div class="usage-bar" style="height:<?= $h ?>%;<?= $h===30?' opacity:.3':'' ?>"></div>
+              <?php foreach ($usage_pct as $h): ?>
+              <div class="usage-bar" style="height:<?= max(5, $h) ?>%;<?= $h===0?' opacity:.3':'' ?>"></div>
               <?php endforeach; ?>
             </div>
             <div class="usage-labels">

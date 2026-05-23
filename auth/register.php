@@ -47,6 +47,7 @@ $result = $users->insertOne([
     'auth_provid' => 0,
     'sub_id' => 1,
     'expires_at' => '',
+    'wallet_balance' => 50.0,
     'is_verified' => false,
     'verification_token' => $verificationToken
 ]);
