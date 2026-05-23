@@ -1,6 +1,6 @@
 <?php
 require 'auth/session_guard.php';
-require 'includes/sidebar.php';
+
 
 $sidebar_active = 'simulations';
 

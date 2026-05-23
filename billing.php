@@ -1,6 +1,5 @@
 <?php
 require 'auth/session_guard.php';
-require 'includes/sidebar.php';
 
 $sidebar_active = 'billing';
 $name           = htmlspecialchars($_SESSION['name'] ?? 'User');

@@ -1,6 +1,6 @@
 <?php
 require 'auth/session_guard.php';
-require 'includes/sidebar.php'; // sets $sidebar_active and user info variables
+
 $name           = htmlspecialchars($_SESSION['name'] ?? 'User');
 $sidebar_active = 'dashboard';
 ?>
