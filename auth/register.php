@@ -38,6 +38,13 @@ if ($existingUser) {
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 $verificationToken = bin2hex(random_bytes(32));
 
+$basis_minutes = (float)($_ENV['PLAN_BASIS_MINUTES'] ?? 60);
+$now = new DateTime();
+$activated_at = new MongoDB\BSON\UTCDateTime($now);
+$now_expires = clone $now;
+$now_expires->modify("+" . (int)$basis_minutes . " minutes");
+$expires_at = new MongoDB\BSON\UTCDateTime($now_expires);
+
 $result = $users->insertOne([
     'name' => $name,
     'email' => $email,
@@ -46,7 +53,8 @@ $result = $users->insertOne([
     'org_id' => '',
     'auth_provid' => 0,
     'sub_id' => 1,
-    'expires_at' => '',
+    'sub_activated_at' => $activated_at,
+    'sub_expires_at' => $expires_at,
     'wallet_balance' => 50.0,
     'is_verified' => false,
     'verification_token' => $verificationToken

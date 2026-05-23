@@ -93,7 +93,17 @@ $current_price = $current_plan['price'];
 $current_name  = $current_plan['name'];
 
 $razorpay_sub_id = $_SESSION['user_sub']['razorpay_subscription_id'] ?? null;
-$next_billing    = '1 Jun 2026'; // replace with live Razorpay data
+$next_billing    = isset($_SESSION['sub_expires_at']) ? date('j M Y, H:i', $_SESSION['sub_expires_at']) : '1 Jun 2026';
+
+$sub_expires_at = $_SESSION['sub_expires_at'] ?? 0;
+$current_plan_duration_sec = 0;
+if ($current_plan_id === 3) {
+    $current_plan_duration_sec = (float)($_ENV['PLAN_MAX_MINUTES'] ?? 43200) * 60;
+} elseif ($current_plan_id === 2) {
+    $current_plan_duration_sec = (float)($_ENV['PLAN_PRO_MINUTES'] ?? 1440) * 60;
+} else {
+    $current_plan_duration_sec = (float)($_ENV['PLAN_BASIS_MINUTES'] ?? 60) * 60;
+}
 
 // ── Billing history (replace with DB / Razorpay API query) ──────────────
 $invoices = [];
@@ -265,9 +275,10 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
     .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
     .modal-bg.open{display:flex;}
     .modal{background:var(--surface);border-radius:16px;box-shadow:var(--neu-out);padding:28px;max-width:400px;width:90%;}
-    .modal h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:10px;}
-    .modal p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;}
-    .modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+    .toast-container{margin-bottom:16px;width:100%;}
+    .toast{display:flex;align-items:center;gap:8px;border-radius:8px;padding:12px 18px;font-size:13px;font-weight:600;width:100%;box-shadow:var(--neu-out);}
+    .toast.success{background:rgba(40,200,64,.08);border:1.5px solid rgba(40,200,64,.2);color:var(--accent);}
+    .toast.error{background:rgba(224,85,85,.08);border:1.5px solid rgba(224,85,85,.2);color:var(--red);}
 
     @media(max-width:1100px){.plans-grid{grid-template-columns:1fr 1fr;}.summary-row{grid-template-columns:1fr 1fr;}}
     @media(max-width:720px){.sidebar{display:none;}.main{margin-left:0;}.content{padding:20px 16px;}.topbar{padding:14px 16px;}.plans-grid{grid-template-columns:1fr;}.summary-row{grid-template-columns:1fr 1fr;}}
@@ -303,6 +314,24 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
       <h1>My Plan &amp; Billing</h1>
       <p>View your current plan, upgrade anytime, and track your payment history</p>
     </div>
+
+    <?php if (isset($_GET['msg'])): ?>
+      <div class="toast-container fade-up d1">
+        <?php if ($_GET['msg'] === 'upgrade_success'): ?>
+          <div class="toast success">
+            <span>🎉 Plan successfully upgraded! Your new limits have been applied.</span>
+          </div>
+        <?php elseif ($_GET['msg'] === 'downgrade_success'): ?>
+          <div class="toast success">
+            <span>📉 Plan successfully downgraded. A prorated refund has been added to your wallet.</span>
+          </div>
+        <?php elseif ($_GET['msg'] === 'insufficient_funds'): ?>
+          <div class="toast error">
+            <span>❌ Insufficient wallet balance to upgrade. Please top up your wallet first.</span>
+          </div>
+        <?php endif; ?>
+      </div>
+    <?php endif; ?>
 
     <!-- Current plan banner -->
     <div class="plan-banner fade-up d2">
@@ -401,8 +430,11 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
               Upgrade to <?= $plan['name'] ?> →
             </button>
 
-          <?php else: /* lower tier — no action, no downgrade button */ ?>
-            <button class="btn plan-action lower-tier" disabled>Lower Tier</button>
+          <?php else: /* lower tier — downgrade button */ ?>
+            <button class="btn plan-action btn-ghost" style="background:transparent; border:1px solid var(--secondary); color:var(--secondary); cursor:pointer;"
+                    onclick="openDowngradeModal('<?= $plan['name'] ?>','<?= $plan['price'] ?>',<?= $pid ?>,'<?= $plan['period'] ?>')">
+              Downgrade to <?= $plan['name'] ?>
+            </button>
           <?php endif; ?>
 
         </div>
@@ -520,6 +552,21 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
         <button type="submit" class="btn btn-primary">Confirm Upgrade</button>
       </form>
     </div>
+</div>
+
+<!-- DOWNGRADE MODAL -->
+<div class="modal-bg" id="downgradeModal">
+  <div class="modal">
+    <h3>Downgrade to <span id="downgradePlanName"></span></h3>
+    <p>You are about to downgrade to the <span id="downgradePrice"></span> plan.</p>
+    <p>Based on your remaining time, you will receive an estimated prorated refund of <strong id="downgradeRefund" style="color:var(--accent);"></strong> credited to your wallet.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('downgradeModal')">Cancel</button>
+      <form method="POST" action="api/downgrade.php" style="display:inline">
+        <input type="hidden" name="plan_id" id="downgradeFormPlanId">
+        <button type="submit" class="btn btn-primary" style="background:var(--secondary);">Confirm Downgrade</button>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -567,6 +614,29 @@ function openUpgradeModal(name, price, planId, period){
   document.getElementById('upgradeFormPlanId').value = planId;
   document.getElementById('upgradeModal').classList.add('open');
 }
+
+// Downgrade calculations and modal
+const subExpiresAt = <?= (int)$sub_expires_at ?>;
+const currentPlanPrice = <?= (float)$current_price ?>;
+const currentPlanDurationSec = <?= (int)$current_plan_duration_sec ?>;
+
+function openDowngradeModal(name, price, planId, period) {
+  const now = Math.floor(Date.now() / 1000);
+  const remainingSec = Math.max(0, subExpiresAt - now);
+  let refundAmt = 0;
+  if (currentPlanDurationSec > 0) {
+    refundAmt = (remainingSec / currentPlanDurationSec) * currentPlanPrice;
+  }
+  if (refundAmt < 0) refundAmt = 0;
+  if (refundAmt > currentPlanPrice) refundAmt = currentPlanPrice;
+
+  document.getElementById('downgradePlanName').textContent = name;
+  document.getElementById('downgradePrice').textContent = '$' + price + ' / ' + period;
+  document.getElementById('downgradeRefund').textContent = '$' + refundAmt.toFixed(2);
+  document.getElementById('downgradeFormPlanId').value = planId;
+  document.getElementById('downgradeModal').classList.add('open');
+}
+
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-bg').forEach(function(bg){
   bg.addEventListener('click',function(e){ if(e.target===bg) bg.classList.remove('open'); });

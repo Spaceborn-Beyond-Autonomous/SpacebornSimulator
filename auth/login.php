@@ -46,11 +46,36 @@ $sessCol = $db -> sessions;
 
 $result = $sessCol ->insertOne(['email' => $email , "is_running" => true]);
 
+$sub_activated_at = null;
+if (isset($user['sub_activated_at']) && $user['sub_activated_at'] instanceof MongoDB\BSON\UTCDateTime) {
+    $sub_activated_at = $user['sub_activated_at']->toDateTime()->getTimestamp();
+} else {
+    $sub_activated_at = time();
+    $db->users->updateOne(['email' => $email], ['$set' => ['sub_activated_at' => new MongoDB\BSON\UTCDateTime($sub_activated_at * 1000)]]);
+}
+
+$sub_expires_at = null;
+if (isset($user['sub_expires_at']) && $user['sub_expires_at'] instanceof MongoDB\BSON\UTCDateTime) {
+    $sub_expires_at = $user['sub_expires_at']->toDateTime()->getTimestamp();
+} else {
+    $plan_name = strtoupper($user_sub['plan_name'] ?? 'BASIS');
+    $minutes = 60;
+    if ($plan_name === 'PRO') $minutes = (float)($_ENV['PLAN_PRO_MINUTES'] ?? 1440);
+    elseif ($plan_name === 'MAX') $minutes = (float)($_ENV['PLAN_MAX_MINUTES'] ?? 43200);
+    else $minutes = (float)($_ENV['PLAN_BASIS_MINUTES'] ?? 60);
+    
+    $sub_expires_at = $sub_activated_at + ((int)$minutes * 60);
+    $db->users->updateOne(['email' => $email], ['$set' => ['sub_expires_at' => new MongoDB\BSON\UTCDateTime($sub_expires_at * 1000)]]);
+}
+
 $_SESSION['id'] = (string)$result -> getInsertedId();
 $_SESSION['name'] = $user['name'];
 $_SESSION['wallet_balance'] = (float)($user['wallet_balance'] ?? 50.0);
+$_SESSION['sub_activated_at'] = $sub_activated_at;
+$_SESSION['sub_expires_at'] = $sub_expires_at;
 $_SESSION['user_sub'] = [
     'id'               => (string) ($user_sub['id'] ?? ''),
+    'plan_id'          => (int)    ($user_sub['id'] ?? 0),
     'plan_name'        => (string) ($user_sub['plan_name'] ?? ''),
     'ppm'              => (float)  ($user_sub['ppm'] ?? 0),
     '3ds_hours'        => (int)    ($user_sub['3ds_hours'] ?? 0),

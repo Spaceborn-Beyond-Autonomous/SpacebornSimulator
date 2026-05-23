@@ -1,6 +1,6 @@
 <?php
 require 'auth/session_guard.php';
-
+require_once 'auth/db.php';
 
 $sidebar_active = 'settings';
 $name     = htmlspecialchars($_SESSION['name']  ?? 'Demo Pilot');
@@ -8,11 +8,94 @@ $email    = htmlspecialchars($_SESSION['email'] ?? 'pilot@example.com');
 $initials = strtoupper(substr(trim($_SESSION['name'] ?? 'U'), 0, 1));
 $plan     = htmlspecialchars($_SESSION['user_sub']['plan_name'] ?? 'Free');
 
-$profile_saved = $password_saved = $notif_saved = false;
+$profile_saved = $password_saved = $notif_saved = $plans_saved = false;
+
+function updateEnv(array $data) {
+    $envPath = __DIR__ . '/.env';
+    if (!file_exists($envPath)) {
+        return false;
+    }
+    $lines = file($envPath, FILE_IGNORE_NEW_LINES);
+    $newLines = [];
+    $updatedKeys = [];
+    foreach ($lines as $line) {
+        if (trim($line) === '' || strpos(trim($line), '#') === 0) {
+            $newLines[] = $line;
+            continue;
+        }
+        $parts = explode('=', $line, 2);
+        if (count($parts) === 2) {
+            $key = trim($parts[0]);
+            if (array_key_exists($key, $data)) {
+                $newLines[] = $key . '=' . $data[$key];
+                $updatedKeys[$key] = true;
+            } else {
+                $newLines[] = $line;
+            }
+        } else {
+            $newLines[] = $line;
+        }
+    }
+    foreach ($data as $key => $val) {
+        if (!isset($updatedKeys[$key])) {
+            $newLines[] = $key . '=' . $val;
+        }
+    }
+    return file_put_contents($envPath, implode("\n", $newLines) . "\n") !== false;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['save_profile']))           { $name = htmlspecialchars($_POST['full_name'] ?? $name); $profile_saved = true; }
-    elseif (isset($_POST['save_password']))      { $password_saved = true; }
-    elseif (isset($_POST['save_notifications'])) { $notif_saved = true; }
+    if (isset($_POST['save_profile'])) { 
+        $name = htmlspecialchars($_POST['full_name'] ?? $name); 
+        $profile_saved = true; 
+    }
+    elseif (isset($_POST['save_password'])) { 
+        $password_saved = true; 
+    }
+    elseif (isset($_POST['save_notifications'])) { 
+        $notif_saved = true; 
+    }
+    elseif (isset($_POST['save_plans'])) {
+        $basis_min = (float)($_POST['basis_minutes'] ?? 60);
+        $basis_price = (float)($_POST['basis_price'] ?? 1);
+        $basis_ppm = (float)($_POST['basis_ppm'] ?? 0.10);
+
+        $pro_min = (float)($_POST['pro_minutes'] ?? 1440);
+        $pro_price = (float)($_POST['pro_price'] ?? 5);
+        $pro_ppm = (float)($_POST['pro_ppm'] ?? 0.05);
+
+        $max_min = (float)($_POST['max_minutes'] ?? 43200);
+        $max_price = (float)($_POST['max_price'] ?? 20);
+        $max_ppm = (float)($_POST['max_ppm'] ?? 0.01);
+
+        $envData = [
+            'PLAN_BASIS_MINUTES' => $basis_min,
+            'PLAN_BASIS_PRICE' => $basis_price,
+            'PLAN_BASIS_PPM' => $basis_ppm,
+
+            'PLAN_PRO_MINUTES' => $pro_min,
+            'PLAN_PRO_PRICE' => $pro_price,
+            'PLAN_PRO_PPM' => $pro_ppm,
+
+            'PLAN_MAX_MINUTES' => $max_min,
+            'PLAN_MAX_PRICE' => $max_price,
+            'PLAN_MAX_PPM' => $max_ppm,
+        ];
+
+        if (updateEnv($envData)) {
+            // Update MongoDB subscriptions collection
+            $db->subscriptions->updateOne(['id' => 1], ['$set' => ['ppm' => $basis_ppm]]);
+            $db->subscriptions->updateOne(['id' => 2], ['$set' => ['ppm' => $pro_ppm]]);
+            $db->subscriptions->updateOne(['id' => 3], ['$set' => ['ppm' => $max_ppm]]);
+            
+            // Reload into $_ENV and $_SERVER for current request context
+            foreach ($envData as $k => $v) {
+                $_ENV[$k] = $v;
+                $_SERVER[$k] = $v;
+            }
+            $plans_saved = true;
+        }
+    }
 }
 
 $notif = ['session_start' => false, 'session_end' => false, 'weekly_report' => false, 'team_invite' => false];
@@ -21,7 +104,7 @@ foreach ($notif as $k => $v) {
 }
 
 $active_tab = $_GET['tab'] ?? 'profile';
-if (!in_array($active_tab, ['profile', 'notifications'])) $active_tab = 'profile';
+if (!in_array($active_tab, ['profile', 'notifications', 'plans'])) $active_tab = 'profile';
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -157,6 +240,7 @@ if (!in_array($active_tab, ['profile', 'notifications'])) $active_tab = 'profile
     <nav class="tabs">
       <a class="tab-btn <?= $active_tab==='profile'?'active':'' ?>" href="?tab=profile">Profile</a>
       <a class="tab-btn <?= $active_tab==='notifications'?'active':'' ?>" href="?tab=notifications">Notifications</a>
+      <a class="tab-btn <?= $active_tab==='plans'?'active':'' ?>" href="?tab=plans">Plans Config</a>
     </nav>
 
     <?php if ($active_tab === 'profile'): ?>
@@ -264,6 +348,86 @@ if (!in_array($active_tab, ['profile', 'notifications'])) $active_tab = 'profile
         </div>
         <div style="margin-top:24px;">
           <button class="btn-primary" type="submit" name="save_notifications">Save Preferences</button>
+        </div>
+      </form>
+    </div>
+    <?php elseif ($active_tab === 'plans'): ?>
+    <div class="settings-card">
+      <div class="card-section-title">Plan Configurations (Global Settings)</div>
+      <?php if ($plans_saved): ?>
+      <div class="toast">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20,6 9,17 4,12"/>
+        </svg>
+        Plan configurations successfully saved to .env and database.
+      </div>
+      <?php endif; ?>
+      <form method="POST" action="?tab=plans">
+        <div style="display:flex; flex-direction:column; gap:28px;">
+          <!-- BASIS PLAN -->
+          <div>
+            <h4 style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--secondary); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.04em;">Basis Plan</h4>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Time Allotted (Minutes)</label>
+                <input class="form-input" type="number" name="basis_minutes" value="<?= htmlspecialchars($_ENV['PLAN_BASIS_MINUTES'] ?? 60) ?>" required min="1"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Price ($)</label>
+                <input class="form-input" type="number" step="0.01" name="basis_price" value="<?= htmlspecialchars($_ENV['PLAN_BASIS_PRICE'] ?? 1) ?>" required min="0"/>
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Price Per Minute (PPM) Rate ($)</label>
+                <input class="form-input" type="number" step="0.0001" name="basis_ppm" value="<?= htmlspecialchars($_ENV['PLAN_BASIS_PPM'] ?? 0.10) ?>" required min="0.0001"/>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-divider"></div>
+
+          <!-- PRO PLAN -->
+          <div>
+            <h4 style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--secondary); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.04em;">Pro Plan</h4>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Time Allotted (Minutes)</label>
+                <input class="form-input" type="number" name="pro_minutes" value="<?= htmlspecialchars($_ENV['PLAN_PRO_MINUTES'] ?? 1440) ?>" required min="1"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Price ($)</label>
+                <input class="form-input" type="number" step="0.01" name="pro_price" value="<?= htmlspecialchars($_ENV['PLAN_PRO_PRICE'] ?? 5) ?>" required min="0"/>
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Price Per Minute (PPM) Rate ($)</label>
+                <input class="form-input" type="number" step="0.0001" name="pro_ppm" value="<?= htmlspecialchars($_ENV['PLAN_PRO_PPM'] ?? 0.05) ?>" required min="0.0001"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-divider"></div>
+
+          <!-- MAX PLAN -->
+          <div>
+            <h4 style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--secondary); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.04em;">Max Plan</h4>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Time Allotted (Minutes)</label>
+                <input class="form-input" type="number" name="max_minutes" value="<?= htmlspecialchars($_ENV['PLAN_MAX_MINUTES'] ?? 43200) ?>" required min="1"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Price ($)</label>
+                <input class="form-input" type="number" step="0.01" name="max_price" value="<?= htmlspecialchars($_ENV['PLAN_MAX_PRICE'] ?? 20) ?>" required min="0"/>
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Price Per Minute (PPM) Rate ($)</label>
+                <input class="form-input" type="number" step="0.0001" name="max_ppm" value="<?= htmlspecialchars($_ENV['PLAN_MAX_PPM'] ?? 0.01) ?>" required min="0.0001"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:28px;">
+          <button class="btn-primary" type="submit" name="save_plans">Save Plan Settings</button>
         </div>
       </form>
     </div>
