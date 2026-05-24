@@ -91,11 +91,26 @@ if ($user && isset($user['sub_expires_at']) && $user['sub_expires_at'] instanceo
 
 // ── Resolve current plan from DB ────────────────────────────────────────
 $current_plan_id = $db_plan_id;
-if (!isset($plan_catalog[$current_plan_id])) $current_plan_id = 1;
 
-$current_plan  = $plan_catalog[$current_plan_id];
-$current_price = $current_plan['price'];
-$current_name  = $current_plan['name'];
+if ($current_plan_id === 0) {
+    $current_plan = [
+        'id'       => 0,
+        'name'     => 'FREE',
+        'label'    => 'Pay-As-You-Go',
+        'price'    => 0,
+        'period'   => 'min',
+        'color'    => 'gray',
+        'best_for' => 'Wallet balance users',
+        'recurring'=> false,
+    ];
+    $current_price = 0;
+    $current_name  = 'FREE';
+} else {
+    if (!isset($plan_catalog[$current_plan_id])) $current_plan_id = 1;
+    $current_plan  = $plan_catalog[$current_plan_id];
+    $current_price = $current_plan['price'];
+    $current_name  = $current_plan['name'];
+}
 
 $payment_status = $_GET['payment'] ?? '';
 $payment_id     = $_GET['payment_id'] ?? '';
@@ -109,6 +124,8 @@ if ($sub_started && $sub_expires_at_ts) {
     $next_billing = date('j M Y, g:i A', $sub_expires_at_ts);
 } elseif (!$sub_started && $current_plan_id > 0) {
     $next_billing = 'Starts on first flight';
+} elseif ($current_plan_id === 0) {
+    $next_billing = 'N/A';
 }
 
 // ── Billing history from MongoDB invoices collection ────────────────────
