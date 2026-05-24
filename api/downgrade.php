@@ -39,7 +39,7 @@ $remaining_sec = max(0, $sub_expires_at - $now);
 
 $current_plan_duration_sec = 0;
 $current_plan_price = 0;
-$current_plan_name = 'BASIS';
+$current_plan_name = 'BASIC';
 
 if ($current_plan_id === 3) {
     $current_plan_duration_sec = (float)($_ENV['PLAN_MAX_MINUTES'] ?? 43200) * 60;
@@ -50,9 +50,9 @@ if ($current_plan_id === 3) {
     $current_plan_price = (float)($_ENV['PLAN_PRO_PRICE'] ?? 5);
     $current_plan_name = 'PRO';
 } elseif ($current_plan_id === 1) {
-    $current_plan_duration_sec = (float)($_ENV['PLAN_BASIS_MINUTES'] ?? 60) * 60;
-    $current_plan_price = (float)($_ENV['PLAN_BASIS_PRICE'] ?? 1);
-    $current_plan_name = 'BASIS';
+    $current_plan_duration_sec = (float)($_ENV['PLAN_BASIC_MINUTES'] ?? 60) * 60;
+    $current_plan_price = (float)($_ENV['PLAN_BASIC_PRICE'] ?? 1);
+    $current_plan_name = 'BASIC';
 }
 
 $refund_amount = 0.0;
@@ -67,7 +67,7 @@ $refund_amount = round($refund_amount, 2);
 
 // Target plan settings
 $target_minutes = 60;
-$target_plan_name = 'BASIS';
+$target_plan_name = 'BASIC';
 if ($target_plan_id === 3) {
     $target_minutes = (float)($_ENV['PLAN_MAX_MINUTES'] ?? 43200);
     $target_plan_name = 'MAX';
@@ -75,8 +75,8 @@ if ($target_plan_id === 3) {
     $target_minutes = (float)($_ENV['PLAN_PRO_MINUTES'] ?? 1440);
     $target_plan_name = 'PRO';
 } else {
-    $target_minutes = (float)($_ENV['PLAN_BASIS_MINUTES'] ?? 60);
-    $target_plan_name = 'BASIS';
+    $target_minutes = (float)($_ENV['PLAN_BASIC_MINUTES'] ?? 60);
+    $target_plan_name = 'BASIC';
 }
 
 $new_activated_at = new MongoDB\BSON\UTCDateTime((int)($now * 1000));

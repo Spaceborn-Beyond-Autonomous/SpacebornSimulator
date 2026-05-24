@@ -3917,7 +3917,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ─ 2. SESSION TIMER ───────────────────────────────────────── */
-  // [PLAN-SESSION] Enforce time-limited access (BASIS=1h, PRO=24h, MAX=∞)
+  // [PLAN-SESSION] Enforce time-limited access (BASIC=1h, PRO=24h, MAX=∞)
   if (isFinite(PLAN.sessionMinutes)) {
     const SESSION_MS = PLAN.sessionMinutes * 60000;
     const t0 = Date.now();
@@ -3965,7 +3965,7 @@ window.addEventListener('DOMContentLoaded', () => {
         overlay.style.display = 'flex';
         return;
       }
-      setTimeout(tick, 1000);
+      setTimeout(tick, 100);
     }
     tick();
   }
@@ -4020,7 +4020,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (t && t.textContent.includes('RATE PID TUNING')) pidCard = c;
   });
   if (PLAN.pidTuning === false) {
-    // [PLAN-PID-BASIS] Hide entirely
+    // [PLAN-PID-BASIC] Hide entirely
     if (pidCard) _hideEl(pidCard);
   } else if (PLAN.pidTuning === 'view') {
     // [PLAN-PID-PRO] Show values but disable all sliders
@@ -4107,8 +4107,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ─ 10. NIGHT MODE RESTRICTION (BASIS) ─────────────────────── */
-  // [PLAN-NIGHT] Disable night toggle for BASIS tier
+  /* ─ 10. NIGHT MODE RESTRICTION (BASIC) ─────────────────────── */
+  // [PLAN-NIGHT] Disable night toggle for BASIC tier
   if (!PLAN.nightMode) {
     const nightToggle = document.querySelector('[onclick*="toggleDayNight"]');
     if (nightToggle) {
@@ -4118,8 +4118,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ─ 11. WIND CONTROLS RESTRICTION (BASIS) ───────────────────── */
-  // [PLAN-WIND] Lock wind/weather controls for BASIS tier
+  /* ─ 11. WIND CONTROLS RESTRICTION (BASIC) ───────────────────── */
+  // [PLAN-WIND] Lock wind/weather controls for BASIC tier
   if (!PLAN.windScenario) {
     ['wind-speed','turbulence','wind-dir'].forEach(id => {
       const el = document.getElementById(id);

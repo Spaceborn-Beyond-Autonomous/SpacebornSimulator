@@ -11,7 +11,7 @@ $_user_name = htmlspecialchars($_SESSION['name'] ?? 'User');
 $_initial   = strtoupper(substr(trim($_SESSION['name'] ?? 'U'), 0, 1));
 
 // Map plan_id → display label (matches DB plan_id values)
-$_plan_id_map = [1 => 'BASIS', 2 => 'PRO', 3 => 'MAX'];
+$_plan_id_map = [1 => 'BASIC', 2 => 'PRO', 3 => 'MAX'];
 $_plan_id     = $_SESSION['user_sub']['plan_id'] ?? null;
 $_plan_label  = isset($_plan_id, $_plan_id_map[$_plan_id])
     ? $_plan_id_map[$_plan_id]

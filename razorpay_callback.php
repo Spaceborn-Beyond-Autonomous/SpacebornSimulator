@@ -33,7 +33,7 @@ if ($plan_id <= $current_plan_id) {
 // Retrieve target plan limits and pricing
 $target_price   = 0.0;
 $target_minutes = 60.0;
-$target_name    = 'BASIS';
+$target_name    = 'BASIC';
 
 if ($plan_id === 3) {
     $target_price   = (float)($_ENV['PLAN_MAX_PRICE'] ?? 20);

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CERTANITY · Drone Simulator — BASIS</title>
+<title>CERTANITY · Drone Simulator — BASIC</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -1124,13 +1124,13 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <!-- Sim Engine (external) -->
 <script src="sim-engine.js"></script>
 
-<!-- ══ TIER: BASIS ══ -->
+<!-- ══ TIER: BASIC ══ -->
 <script>
-/* PLAN FLAGS — BASIS tier
+/* PLAN FLAGS — BASIC tier
    Duration: 1h | 1 profile | Normal/Daytime | Basic HUD
    No: waypoints, PID tune, export, MAVLink, GLTF, gamepad */
 const PLAN = {
-  tier: 'BASIS',
+  tier: 'BASIC',
   sessionMinutes: 60,
   droneProfiles: ['racing5'],
   environments: ['field'],
@@ -1144,7 +1144,7 @@ const PLAN = {
   nightMode: false,
   windScenario: false,
   support: 'community',
-  tierLabel: 'BASIS',
+  tierLabel: 'BASIC',
   tierColor: '#4F8EF7',
 };
 </script>
@@ -3916,7 +3916,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ─ 2. SESSION TIMER ───────────────────────────────────────── */
-  // [PLAN-SESSION] Enforce time-limited access (BASIS=1h, PRO=24h, MAX=∞)
+  // [PLAN-SESSION] Enforce time-limited access (BASIC=1h, PRO=24h, MAX=∞)
   if (isFinite(PLAN.sessionMinutes)) {
     const SESSION_MS = PLAN.sessionMinutes * 60000;
     const t0 = Date.now();
@@ -3964,7 +3964,7 @@ window.addEventListener('DOMContentLoaded', () => {
         overlay.style.display = 'flex';
         return;
       }
-      setTimeout(tick, 1000);
+      setTimeout(tick, 100);
     }
     tick();
   }
@@ -4019,7 +4019,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (t && t.textContent.includes('RATE PID TUNING')) pidCard = c;
   });
   if (PLAN.pidTuning === false) {
-    // [PLAN-PID-BASIS] Hide entirely
+    // [PLAN-PID-BASIC] Hide entirely
     if (pidCard) _hideEl(pidCard);
   } else if (PLAN.pidTuning === 'view') {
     // [PLAN-PID-PRO] Show values but disable all sliders
@@ -4106,8 +4106,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ─ 10. NIGHT MODE RESTRICTION (BASIS) ─────────────────────── */
-  // [PLAN-NIGHT] Disable night toggle for BASIS tier
+  /* ─ 10. NIGHT MODE RESTRICTION (BASIC) ─────────────────────── */
+  // [PLAN-NIGHT] Disable night toggle for BASIC tier
   if (!PLAN.nightMode) {
     const nightToggle = document.querySelector('[onclick*="toggleDayNight"]');
     if (nightToggle) {
@@ -4117,8 +4117,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ─ 11. WIND CONTROLS RESTRICTION (BASIS) ───────────────────── */
-  // [PLAN-WIND] Lock wind/weather controls for BASIS tier
+  /* ─ 11. WIND CONTROLS RESTRICTION (BASIC) ───────────────────── */
+  // [PLAN-WIND] Lock wind/weather controls for BASIC tier
   if (!PLAN.windScenario) {
     ['wind-speed','turbulence','wind-dir'].forEach(id => {
       const el = document.getElementById(id);

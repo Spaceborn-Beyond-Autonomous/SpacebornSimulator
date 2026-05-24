@@ -6,13 +6,13 @@ $sidebar_active = 'billing';
 $name           = htmlspecialchars($_SESSION['name'] ?? 'User');
 
 // ── Plan catalog — matches DB plan_id exactly ───────────────────────────
-// plan_id 1 = BASIS  ($1 / 1 hr)
+// plan_id 1 = BASIC  ($1 / 1 hr)
 // plan_id 2 = PRO    ($5 / 1 day)
 // plan_id 3 = MAX    ($20 / mo, recurring)
 $plan_catalog = [
   1 => [
     'id'       => 1,
-    'name'     => 'BASIS',
+    'name'     => 'BASIC',
     'label'    => '1 Hour',
     'price'    => 1,
     'period'   => '1 hr',
@@ -81,7 +81,7 @@ $plan_catalog = [
 // ── Fetch user from MongoDB for real-time data ──────────────────────────
 $user = $db->users->findOne(['email' => $_SESSION['email']]);
 $wallet_balance = $user ? (float)($user['wallet_balance'] ?? 0.0) : 0.0;
-$db_plan_id     = $user ? (int)($user['sub_id'] ?? 1) : 1;
+$db_plan_id     = $user ? (int)($user['sub_id'] ?? 0) : 0;
 
 $sub_started = $user && isset($user['sub_started']) ? (bool)$user['sub_started'] : false;
 $sub_expires_at_ts = null;

@@ -78,16 +78,16 @@ if (!$has_active_subscription) {
     $plan = strtoupper($run_plan);
 } else {
     // Running on active subscription
-    $plan_catalog_names = [1 => 'BASIS', 2 => 'PRO', 3 => 'MAX'];
+    $plan_catalog_names = [1 => 'BASIC', 2 => 'PRO', 3 => 'MAX'];
     $plan = $plan_catalog_names[$current_plan_id] ?? 'FREE';
 }
 
 $base_minutes = 0;
 $ppm = 0.10; // default safe ppm
 
-if ($plan === 'BASIS') {
-    $base_minutes = (float)($_ENV['PLAN_BASIS_MINUTES'] ?? 60);
-    $ppm = (float)($_ENV['PLAN_BASIS_PPM'] ?? 0.10);
+if ($plan === 'BASIC') {
+    $base_minutes = (float)($_ENV['PLAN_BASIC_MINUTES'] ?? 60);
+    $ppm = (float)($_ENV['PLAN_BASIC_PPM'] ?? 0.10);
 } elseif ($plan === 'PRO') {
     $base_minutes = (float)($_ENV['PLAN_PRO_MINUTES'] ?? 1440);
     $ppm = (float)($_ENV['PLAN_PRO_PPM'] ?? 0.05);

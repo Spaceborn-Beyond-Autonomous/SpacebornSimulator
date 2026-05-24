@@ -260,7 +260,7 @@
     </div>
     <div class="pricing-cards">
       <div class="pricing-card neu-raised fade-in">
-        <div class="plan-name">BASIS</div>
+        <div class="plan-name">BASIC</div>
         <div class="plan-price" data-monthly="$1 / 1 Hour" data-payg="$1 / 1 Hour">$1 <span>/ 1 Hour</span></div>
         <ul class="plan-features">
           <li><span class="feat-yes">✓</span> 1-hour access window</li>

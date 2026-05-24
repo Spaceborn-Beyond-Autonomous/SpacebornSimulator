@@ -17,13 +17,13 @@ $wallet = (float) ($user['wallet_balance'] ?? 0.0);
 $runPlan = strtoupper(trim((string) ($_GET['plan'] ?? '')));
 
 $planFiles = [
-    'BASIS' => 'basis.html',
+    'BASIC' => 'basic.html',
     'PRO'   => 'pro.html',
     'MAX'   => 'max.html',
 ];
 
 $planIdFiles = [
-    1 => 'basis.html',
+    1 => 'basic.html',
     2 => 'pro.html',
     3 => 'max.html',
 ];
@@ -48,7 +48,7 @@ if ($planId <= 0 && $wallet <= 0) {
 
 // Wallet balance but no plan chosen yet — show picker
 $pickerPlans = [
-    ['id' => 'BASIS', 'name' => 'BASIS', 'desc' => '1 hour access', 'rate' => '$0.10/min', 'file' => 'basis.html'],
+    ['id' => 'BASIC', 'name' => 'BASIC', 'desc' => '1 hour access', 'rate' => '$0.10/min', 'file' => 'basic.html'],
     ['id' => 'PRO',   'name' => 'PRO',   'desc' => '1 day access',  'rate' => '$0.05/min', 'file' => 'pro.html'],
     ['id' => 'MAX',   'name' => 'MAX',   'desc' => 'Unlimited access', 'rate' => '$0.01/min', 'file' => 'max.html'],
 ];

@@ -99,7 +99,7 @@ try {
             // Sync with invoices collection
             $catalog = sb_plan_catalog();
             $catalog_plan = $catalog[$planId] ?? null;
-            $target_name = $catalog_plan ? $catalog_plan['name'] : 'BASIS';
+            $target_name = $catalog_plan ? $catalog_plan['name'] : 'BASIC';
             
             $target_price = 1.0;
             if ($planId === 3) {
@@ -107,7 +107,7 @@ try {
             } elseif ($planId === 2) {
                 $target_price = (float)($_ENV['PLAN_PRO_PRICE'] ?? 5);
             } else {
-                $target_price = (float)($_ENV['PLAN_BASIS_PRICE'] ?? 1);
+                $target_price = (float)($_ENV['PLAN_BASIC_PRICE'] ?? 1);
             }
             
             $db->invoices->insertOne([

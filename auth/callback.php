@@ -50,10 +50,10 @@ if (isset($_GET['code'])) {
         $user = $db->users->findOne(['email' => $userEmail]);
 
         if (!$user) {
-            $basis_minutes = (float)($_ENV['PLAN_BASIS_MINUTES'] ?? 60);
+            $basic_minutes = (float)($_ENV['PLAN_BASIC_MINUTES'] ?? 60);
             $now = new DateTime();
             $now_expires = clone $now;
-            $now_expires->modify("+" . (int)$basis_minutes . " minutes");
+            $now_expires->modify("+" . (int)$basic_minutes . " minutes");
 
             $insertResult = $db->users->insertOne([
                 'name' => $data['name'],
@@ -62,11 +62,11 @@ if (isset($_GET['code'])) {
                 'created_at' => new MongoDB\BSON\UTCDateTime(),
                 'org_id' => '',
                 'auth_provid' => 1, 
-                'sub_id' => 1,
+                'sub_id' => 0,
                 'sub_started' => false,
                 'sub_activated_at' => null,
                 'sub_expires_at' => null,
-                'wallet_balance' => 0.0,
+                'wallet_balance' => 4.0,
                 'is_verified' => true,
                 'verification_token' => ''
             ]);
@@ -125,14 +125,14 @@ if (isset($_GET['code'])) {
 
         $_SESSION['id'] = (string)$result->getInsertedId();
         $_SESSION['name'] = $user['name'];
-        $_SESSION['wallet_balance'] = (float)($user['wallet_balance'] ?? 0.0);
+        $_SESSION['wallet_balance'] = (float)($user['wallet_balance'] ?? 1.0);
         $_SESSION['sub_started'] = $sub_started;
         $_SESSION['sub_activated_at'] = $sub_activated_at;
         $_SESSION['sub_expires_at'] = $sub_expires_at;
         $_SESSION['user_sub'] = [
-            'id'               => (string) ($user_sub['id'] ?? '1'),
-            'plan_id'          => (int)    ($user_sub['id'] ?? 1),
-            'plan_name'        => (string) ($user_sub['plan_name'] ?? 'BASIS'),
+            'id'               => (string) ($user_sub['id'] ?? '0'),
+            'plan_id'          => (int)    ($user_sub['id'] ?? 0),
+            'plan_name'        => (string) ($user_sub['plan_name'] ?? 'FREE'),
             'ppm'              => (float)  ($user_sub['ppm'] ?? 0.10),
             '3ds_hours'        => (int)    ($user_sub['3ds_hours'] ?? 1),
             'drone_profile'    => (array)  ($user_sub['drone_profile'] ?? ['Research F450']),

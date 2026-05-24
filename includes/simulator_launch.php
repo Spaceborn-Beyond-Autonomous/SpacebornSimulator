@@ -21,7 +21,7 @@ function sb_simulator_launch_info(array|object|null $user = null): array
     }
 
     $byId = [
-        1 => ['file' => 'basis.html', 'name' => 'BASIS'],
+        1 => ['file' => 'basic.html', 'name' => 'BASIC'],
         2 => ['file' => 'pro.html',   'name' => 'PRO'],
         3 => ['file' => 'max.html',   'name' => 'MAX'],
     ];

@@ -9,8 +9,8 @@ $subCol->deleteMany([]);
 $plans = [
     [
         'id'               => 1,
-        'plan_name'        => 'BASIS',
-        'ppm'              => (float)($_ENV['PLAN_BASIS_PPM'] ?? 0.10),
+        'plan_name'        => 'BASIC',
+        'ppm'              => (float)($_ENV['PLAN_BASIC_PPM'] ?? 0.10),
         '3ds_hours'        => 1,
         'drone_profile'    => ['Research F450'],
         'flight_scenarios' => ['Normal Flight'],

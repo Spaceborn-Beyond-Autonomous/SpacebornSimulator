@@ -130,7 +130,7 @@ function sb_plan_catalog(): array
     $to_paise = 100;
     
     return [
-        1 => ['name' => 'BASIS', 'amount_usd' => 1,  'amount_inr' => (int)(1 * $usd_to_inr * $to_paise),  'description' => 'BASIS 1 Hour access'],
+        1 => ['name' => 'BASIC', 'amount_usd' => 1,  'amount_inr' => (int)(1 * $usd_to_inr * $to_paise),  'description' => 'BASIC 1 Hour access'],
         2 => ['name' => 'PRO',   'amount_usd' => 5,  'amount_inr' => (int)(5 * $usd_to_inr * $to_paise),  'description' => 'PRO 1 Day access'],
         3 => ['name' => 'MAX',   'amount_usd' => 20, 'amount_inr' => (int)(20 * $usd_to_inr * $to_paise), 'description' => 'MAX 1 Month access'],
     ];
