@@ -3,11 +3,172 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="title" content="Certanity Robotics — Browser-Based 3D Drone Simulator" />
-  <meta name="description" content="India's first browser-based drone simulator. Physics-accurate, MAVLink-compatible, zero install. Start for $1." />
+
+  <!-- =====================================================
+       PRIMARY SEO META TAGS
+  ====================================================== -->
+  <title>Certanity Robotics — Browser-Based Drone Simulator | MAVLink, PID Tuning, Zero Install</title>
+  <meta name="description" content="India's first browser-based 3D drone simulator. Physics-accurate flight dynamics, MAVLink-compatible telemetry, PID tuning, and 5 real-world scenarios. No install needed. Start for $1." />
+  <meta name="keywords" content="drone simulator, browser drone simulator, MAVLink simulator, PID tuning drone, drone engineering India, UAV simulator online, certanity robotics, drone flight simulator, free drone simulator India" />
+  <meta name="author" content="Certanity Robotics" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
+  <!-- Canonical URL — prevents duplicate content penalties -->
+  <link rel="canonical" href="https://certanity.com/" />
+
+  <!-- =====================================================
+       OPEN GRAPH (Facebook, LinkedIn, WhatsApp, Discord)
+  ====================================================== -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Certanity Robotics" />
   <meta property="og:title" content="Certanity Robotics — Build. Simulate. Fly." />
-  <meta property="og:description" content="Democratising drone engineering for India & the world. No install. No hardware. Start for $1." />
-  <title>Certanity Robotics — Build · Simulate · Fly</title>
+  <meta property="og:description" content="Democratising drone engineering for India &amp; the world. Physics-accurate, MAVLink-compatible, browser-native. No install. No hardware. Start for $1." />
+  <meta property="og:url" content="https://certanity.com/" />
+  <meta property="og:image" content="https://certanity.com/assets/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Certanity Robotics — Browser-Based Drone Simulator" />
+  <meta property="og:locale" content="en_IN" />
+
+  <!-- =====================================================
+       TWITTER / X CARD
+  ====================================================== -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@certanity" />
+  <meta name="twitter:creator" content="@certanity" />
+  <meta name="twitter:title" content="Certanity Robotics — Browser-Based Drone Simulator" />
+  <meta name="twitter:description" content="India's first browser-based drone simulator. Physics-accurate, MAVLink-compatible, zero install. Start for $1." />
+  <meta name="twitter:image" content="https://certanity.com/assets/og-image.jpg" />
+  <meta name="twitter:image:alt" content="Certanity Robotics Drone Simulator Screenshot" />
+
+  <!-- =====================================================
+       FAVICON (add your actual favicon files to /assets/)
+  ====================================================== -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#10256D" />
+
+  <!-- =====================================================
+       GEO / REGIONAL TAGS (India-first product)
+  ====================================================== -->
+  <meta name="geo.region" content="IN" />
+  <meta name="geo.placename" content="India" />
+
+  <!-- =====================================================
+       STRUCTURED DATA — JSON-LD
+       WebApplication schema for rich search results
+  ====================================================== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Certanity Robotics",
+    "url": "https://certanity.com",
+    "description": "India's first browser-based drone simulator. Physics-accurate flight dynamics, MAVLink-compatible telemetry, PID tuning, and 5 real-world scenarios. No install required.",
+    "applicationCategory": "EducationalApplication",
+    "applicationSubCategory": "EngineeringSimulation",
+    "operatingSystem": "Web Browser",
+    "browserRequirements": "Requires JavaScript. Works on Chrome, Firefox, Edge, Safari.",
+    "inLanguage": "en-IN",
+    "offers": {
+      "@type": "Offer",
+      "price": "1.00",
+      "priceCurrency": "USD",
+      "description": "Pay-as-you-go hourly access to the drone simulator",
+      "availability": "https://schema.org/InStock"
+    },
+    "creator": {
+      "@type": "Organization",
+      "name": "Certanity Robotics",
+      "url": "https://certanity.com",
+      "email": "partnerships@certanityrobotics.com",
+      "sameAs": [
+        "https://www.linkedin.com/company/certanity-robotics",
+        "https://twitter.com/certanity",
+        "https://github.com/certanity"
+      ]
+    },
+    "featureList": [
+      "Physics-accurate flight dynamics",
+      "MAVLink protocol support (6 streams at 50Hz)",
+      "PID tuning with real-time feedback",
+      "JSON, CSV and .tlog export",
+      "5 simulated scenarios",
+      "15+ learning modules",
+      "Zero installation required"
+    ]
+  }
+  </script>
+
+  <!-- Organization schema for Knowledge Panel -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Certanity Robotics",
+    "url": "https://certanity.com",
+    "logo": "https://certanity.com/assets/logo.png",
+    "description": "Certanity Robotics builds browser-based drone simulation tools to democratise drone engineering education across India.",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "partnerships@certanityrobotics.com",
+      "contactType": "customer support"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/company/certanity-robotics",
+      "https://twitter.com/certanity",
+      "https://github.com/certanity"
+    ]
+  }
+  </script>
+
+  <!-- FAQPage schema — earns rich accordion results in Google -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is Certanity Robotics?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Certanity Robotics is India's first browser-based drone simulator. It offers physics-accurate flight dynamics, MAVLink-compatible telemetry at 50Hz, PID tuning, and 5 simulated scenarios — all without any installation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Certanity require installation?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Certanity runs entirely in your web browser. No downloads, no plugins, no hardware required. Just open the website and start flying."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does Certanity cost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Certanity starts at $1 per hour on a pay-as-you-go basis. Monthly subscription plans are also available."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Certanity support MAVLink?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Certanity supports full MAVLink protocol with 6 simultaneous data streams running at 50Hz, compatible with ArduPilot and PX4 workflows."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- =====================================================
+       PERFORMANCE & FONTS
+  ====================================================== -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -260,7 +421,7 @@
     </div>
     <div class="pricing-cards">
       <div class="pricing-card neu-raised fade-in">
-        <div class="plan-name">BASIC</div>
+        <div class="plan-name">BASIS</div>
         <div class="plan-price" data-monthly="$1 / 1 Hour" data-payg="$1 / 1 Hour">$1 <span>/ 1 Hour</span></div>
         <ul class="plan-features">
           <li><span class="feat-yes">✓</span> 1-hour access window</li>
