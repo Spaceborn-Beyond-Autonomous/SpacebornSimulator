@@ -66,7 +66,7 @@ if (isset($_GET['code'])) {
                 'sub_started' => false,
                 'sub_activated_at' => null,
                 'sub_expires_at' => null,
-                'wallet_balance' => 50.0,
+                'wallet_balance' => 0.0,
                 'is_verified' => true,
                 'verification_token' => ''
             ]);
@@ -125,7 +125,7 @@ if (isset($_GET['code'])) {
 
         $_SESSION['id'] = (string)$result->getInsertedId();
         $_SESSION['name'] = $user['name'];
-        $_SESSION['wallet_balance'] = (float)($user['wallet_balance'] ?? 50.0);
+        $_SESSION['wallet_balance'] = (float)($user['wallet_balance'] ?? 0.0);
         $_SESSION['sub_started'] = $sub_started;
         $_SESSION['sub_activated_at'] = $sub_activated_at;
         $_SESSION['sub_expires_at'] = $sub_expires_at;
