@@ -1,5 +1,5 @@
 /* ============================================================
-   SPACEBORN ROBOTICS — styles.css
+   CERTANITY ROBOTICS — styles.css
    Neumorphism UI · Space Grotesk + Inter
    ============================================================ */
 
@@ -444,8 +444,8 @@ img, svg { display: block; }
   color: var(--tertiary);
   background: var(--bg-dark);
 }
-.col-spaceborn { background: rgba(16, 37, 109, 0.04) !important; }
-.spaceborn-col {
+.col-certanity { background: rgba(16, 37, 109, 0.04) !important; }
+.certanity-col {
   color: var(--primary);
   font-weight: 600;
   background: rgba(16, 37, 109, 0.04);

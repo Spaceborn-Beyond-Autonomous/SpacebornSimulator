@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CERTANITY · Aerospace Drone Simulator</title>
+<title>CERTANITY · Drone Simulator — PRO</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -467,9 +467,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <span id="arm-status">DISARMED</span>
     <div class="top-stat"><span>⚡</span><span id="batt-top">100%</span></div>
     <div class="top-stat"><span>🌡</span><span id="fps-val">60fps</span></div>
-    <div class="top-clock" id="top-clock" title="Subscription time remaining">00:00</div>
-    <button class="nbtn primary sm" onclick="exportSimulationData()" title="Save Data to Cloud" style="font-weight:600;margin-left:8px">☁️ Save to Cloud</button>
-    <button class="nbtn danger sm" onclick="exitSimulation()" title="Exit Simulation" style="font-weight:600;margin-left:8px">🚪 Exit</button>
+    <div class="top-clock" id="top-clock">00:00</div>
   </div>
 
   <!-- Left Panel -->
@@ -1125,6 +1123,32 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
 <!-- Sim Engine (external) -->
 <script src="sim-engine.js"></script>
+
+<!-- ══ TIER: PRO ══ -->
+<script>
+/* PLAN FLAGS — PRO tier
+   Duration: 24h | 2 profiles | 3 envs | Basic HUD
+   PID: view-only | MAVLink: read-only
+   No: waypoints, export, GLTF, gamepad */
+const PLAN = {
+  tier: 'PRO',
+  sessionMinutes: 1440,
+  droneProfiles: ['racing5', 'micro2'],
+  environments: ['field', 'mountains', 'urban'],
+  waypointMissions: false,
+  pidTuning: 'view',
+  dataExport: false,
+  mavlinkLogs: 'readonly',
+  customGLTF: false,
+  joystickGamepad: false,
+  hudLevel: 'basic',
+  nightMode: true,
+  windScenario: true,
+  support: 'community',
+  tierLabel: 'PRO',
+  tierColor: '#607D8B',
+};
+</script>
 
 
 <script>
@@ -2724,43 +2748,6 @@ const State = {
 
 const SIM = {
   _last: 0, _running: false, _paused: false, _speed: 1.0,
-  _sessionEnded: false,
-
-  _getAccessRemainingSec() {
-    if (!window.ACCESS_EXPIRES_AT_MS) return Infinity;
-    return Math.max(0, (window.ACCESS_EXPIRES_AT_MS - Date.now()) / 1000);
-  },
-
-  _tickAccessTimer() {
-    if (!window.ACCESS_EXPIRES_AT_MS || this._sessionEnded) return;
-    const remaining = this._getAccessRemainingSec();
-    const mm = Math.floor(remaining / 60);
-    const ss = Math.floor(remaining % 60);
-    const clk = document.getElementById('top-clock');
-    if (clk) {
-      clk.textContent = mm.toString().padStart(2, '0') + ':' + ss.toString().padStart(2, '0');
-      clk.style.color = remaining < 60 ? '#f44336' : '';
-    }
-    if (remaining <= 0) this._endSession('limit');
-  },
-
-  _endSession(reason) {
-    if (this._sessionEnded) return;
-    this._sessionEnded = true;
-    if (State.armed) {
-      emergStop();
-      UI.toast('Session limit reached!');
-    }
-    if (!this._paused) this.pause();
-    if (reason === 'limit' && !document.getElementById('session-limit-overlay')) {
-      const ov = document.createElement('div');
-      ov.id = 'session-limit-overlay';
-      ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;color:white;font-family:sans-serif;';
-      ov.innerHTML = '<h1 style="color:#f44336;margin-bottom:10px;">Session Limit Reached</h1><p style="font-size:16px;">Your subscription access window has ended.</p><button onclick="window.close()" style="margin-top:20px;padding:10px 20px;background:#EE9346;border:none;border-radius:10px;color:white;cursor:pointer;font-size:14px;font-weight:bold;">Close Simulator</button>';
-      document.body.appendChild(ov);
-    }
-  },
-
   start() {
     this._running = true;
     this._paused = false;
@@ -2792,7 +2779,6 @@ const SIM = {
   _loop() {
     if (!this._running) return;
     requestAnimationFrame(() => this._loop());
-    this._tickAccessTimer();
     if (this._paused) return;
     const now = performance.now();
     // [FIX-Bug-26b] rawDt = real wall time (unscaled) for clock display
@@ -2897,7 +2883,12 @@ const SIM = {
       }
     }
 
-    // Subscription countdown is updated in _tickAccessTimer (runs even while paused)
+    // Clock — [FIX-Bug-26b] flightTime increments at real-time rate when armed
+    // Wall clock shows State.flightTime which is incremented by rawDt (unscaled) in _loop
+    const ft = State.flightTime;
+    const mm = Math.floor(ft/60), ss = Math.floor(ft%60);
+    const clk = $('top-clock');
+    if (clk) clk.textContent = mm.toString().padStart(2,'0')+':'+ss.toString().padStart(2,'0');
 
     // Battery ETA
     const etaSec = getBattEstimatedFlightTime();
@@ -3628,108 +3619,10 @@ const STARTUP_STEPS = [
   {msg:'Systems nominal — launching…',    pct:100},
 ];
 
-window.MAX_SESSION_TIME = Infinity;
-window.ACCESS_EXPIRES_AT_MS = 0;
-
 function runStartup() {
   const bar = document.getElementById('sbar');
   const stat= document.getElementById('sstat');
   let i = 0;
-
-  function loadLimits(runPlan) {
-    let url = '../auth/get_limits.php';
-    if (runPlan) url += '?run_plan=' + runPlan;
-
-    fetch(url)
-      .then(r => r.json())
-      .then(data => {
-        if (data.requires_plan_selection) {
-          showPlanSelectionModal(data.wallet_balance);
-          return;
-        }
-        window.SIM_LIMITS = data;
-        if (data.max_session_seconds > 0) window.MAX_SESSION_TIME = data.max_session_seconds;
-        if (data.access_expires_at) {
-          window.ACCESS_EXPIRES_AT_MS = data.access_expires_at * 1000;
-        } else if (data.max_session_seconds > 0) {
-          window.ACCESS_EXPIRES_AT_MS = Date.now() + data.max_session_seconds * 1000;
-        }
-        window.SUB_REMAINING_SECONDS = data.sub_remaining_seconds
-          ?? (data.sub_active ? Math.max(0, (data.sub_expires_at || 0) - Math.floor(Date.now() / 1000)) : 0);
-        step();
-      })
-      .catch(e => {
-        console.log('Could not fetch limits', e);
-        step();
-      });
-  }
-
-  function showPlanSelectionModal(walletBalance) {
-    let overlay = document.getElementById('plan-select-overlay');
-    if (!overlay) {
-      overlay = document.createElement('div');
-      overlay.id = 'plan-select-overlay';
-      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,15,30,0.85);backdrop-filter:blur(8px);z-index:10000;display:flex;align-items:center;justify-content:center;font-family:\'Inter\',sans-serif;color:#e8edf8;';
-
-      const modal = document.createElement('div');
-      modal.style.cssText = 'background:#1a233d;border:1px solid rgba(255,255,255,0.08);border-radius:18px;width:90%;max-width:650px;padding:35px;box-shadow:0 20px 50px rgba(0,0,0,0.5);display:flex;flex-direction:column;gap:20px;';
-
-      const header = document.createElement('div');
-      header.innerHTML = '<h2 style="font-family:\'Space Grotesk\',sans-serif;font-size:26px;color:#EE9346;margin-bottom:8px;letter-spacing:-0.5px;">Select Simulation Tier</h2>' +
-        '<p style="font-size:13px;color:#90A4AE;line-height:1.5;">You do not have an active subscription. Choose a tier to run the simulator using your wallet balance. Your balance will be charged per minute based on the selected tier\'s PPM rate.</p>';
-      modal.appendChild(header);
-
-      const grid = document.createElement('div');
-      grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:10px 0;';
-
-      const plans = [
-        { id: 'BASIS', name: 'BASIS', desc: '1 Hour Limits', rate: '$0.10/min' },
-        { id: 'PRO', name: 'PRO', desc: '1 Day Limits', rate: '$0.05/min' },
-        { id: 'MAX', name: 'MAX', desc: 'Unlimited Limits', rate: '$0.01/min' }
-      ];
-
-      plans.forEach(p => {
-        const card = document.createElement('div');
-        card.style.cssText = 'background:#11182c;border:1.5px solid rgba(255,255,255,0.04);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;transition:border-color 0.2s, transform 0.2s;';
-        card.onmouseover = () => { card.style.borderColor = '#EE9346'; card.style.transform = 'translateY(-2px)'; };
-        card.onmouseout = () => { card.style.borderColor = 'rgba(255,255,255,0.04)'; card.style.transform = 'translateY(0)'; };
-        card.innerHTML = '<div style="font-family:\'Space Grotesk\',sans-serif;font-size:18px;font-weight:700;color:#e8edf8;">' + p.name + '</div>' +
-          '<div style="font-size:11px;color:#90A4AE;">' + p.desc + '</div>' +
-          '<div style="font-size:16px;font-weight:700;color:#4CAF50;margin:6px 0;">' + p.rate + '</div>';
-        const btn = document.createElement('button');
-        btn.textContent = 'Select Plan';
-        btn.style.cssText = 'width:100%;padding:8px 0;border-radius:8px;background:#EE9346;color:white;font-size:12px;font-weight:600;cursor:pointer;border:none;box-shadow:0 4px 10px rgba(238,147,70,0.2);';
-        if (walletBalance <= 0) {
-          btn.style.opacity = '0.4';
-          btn.style.cursor = 'not-allowed';
-          btn.disabled = true;
-        } else {
-          btn.onclick = () => { overlay.remove(); loadLimits(p.id); };
-        }
-        card.appendChild(btn);
-        grid.appendChild(card);
-      });
-      modal.appendChild(grid);
-
-      const footer = document.createElement('div');
-      footer.style.cssText = 'display:flex;align-items:center;justify-content:between;margin-top:10px;padding-top:15px;border-top:1px solid rgba(255,255,255,0.05);width:100%;';
-      const balSpan = document.createElement('span');
-      balSpan.style.cssText = 'font-size:13px;font-weight:600;';
-      balSpan.innerHTML = '💰 Wallet Balance: <span style="color:#4CAF50;">$' + walletBalance.toFixed(2) + '</span>';
-      footer.appendChild(balSpan);
-      const billingBtn = document.createElement('button');
-      billingBtn.textContent = 'Go to Billing';
-      billingBtn.style.cssText = 'padding:6px 14px;border-radius:8px;background:#1a3580;color:white;font-size:12px;font-weight:500;cursor:pointer;border:none;margin-left:auto;';
-      billingBtn.onclick = () => { window.location.href = '../billing.php'; };
-      footer.appendChild(billingBtn);
-      modal.appendChild(footer);
-      overlay.appendChild(modal);
-      document.body.appendChild(overlay);
-    }
-  }
-
-  loadLimits();
-
   function step() {
     if (i >= STARTUP_STEPS.length) {
       setTimeout(() => {
@@ -3741,99 +3634,10 @@ function runStartup() {
     }
     const s = STARTUP_STEPS[i++];
     if (stat) stat.textContent = s.msg;
-    if (bar) bar.style.width = s.pct + '%';
-    setTimeout(step, 200 + Math.random() * 150);
+    if (bar)  bar.style.width  = s.pct+'%';
+    setTimeout(step, 200 + Math.random()*150);
   }
-}
-
-function exitSimulation() {
-  if (confirm('Are you sure you want to exit the simulation?')) {
-    let modeLabel = 'Manual';
-    const activeModeBtn = document.querySelector('.fmode-btn.on');
-    if (activeModeBtn) {
-      modeLabel = activeModeBtn.textContent.trim().replace(/^[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/g, '').trim();
-    }
-    let droneName = 'Unknown Drone';
-    const sel = document.getElementById('drone-profile-select');
-    if (sel && sel.selectedIndex >= 0) droneName = sel.options[sel.selectedIndex].text;
-    let weatherLabel = 'Clear';
-    if (document.getElementById('rain-track')?.classList.contains('on')) weatherLabel = 'Rain';
-    else if (document.getElementById('fog-track')?.classList.contains('on')) weatherLabel = 'Fog';
-    let envName = 'Unknown';
-    if (typeof ENV !== 'undefined') {
-      const envMap = { field: 'Grasslands', mountains: 'Mountains', urban: 'Urban Ruins', indoor: 'Indoor Arena', desert: 'Desert Valley', windy: 'Windy Coast' };
-      envName = envMap[ENV._name] || ENV._name;
-    }
-    const flightData = {
-      name: 'Flight ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      drone: droneName,
-      environment: envName,
-      weather: weatherLabel,
-      mode: modeLabel,
-      duration: Math.round(State.flightTime || 0),
-      status: 'completed',
-      plan: window.SIM_LIMITS ? window.SIM_LIMITS.plan : 'FREE',
-      ppm: window.SIM_LIMITS ? window.SIM_LIMITS.ppm : 0.10,
-      sub_active: window.SIM_LIMITS ? window.SIM_LIMITS.sub_active : false,
-      sub_remaining_seconds: window.SUB_REMAINING_SECONDS || 0,
-      telemetry_url: window.LAST_TELEMETRY_URL || null
-    };
-    fetch('../api/save_flight.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(flightData)
-    }).finally(() => {
-      window.close();
-      setTimeout(() => { window.location.href = '../dashboard.php'; }, 100);
-    });
-  }
-}
-
-function showToast(msg) { UI.toast(msg); }
-
-async function exportSimulationData() {
-  if (!PHYS.telemetryLog || PHYS.telemetryLog.length === 0) {
-    showToast('No telemetry data collected yet!');
-    return;
-  }
-  showToast('Preparing upload...');
-  try {
-    const urlRes = await fetch('../api/get_r2_upload_url.php', { method: 'POST' });
-    const urlData = await urlRes.json();
-    if (!urlData.success) throw new Error(urlData.error);
-    const exportData = {
-      profile: PHYS.droneProfile,
-      environment: typeof ENV !== 'undefined' ? ENV._name : 'unknown',
-      date: new Date().toISOString(),
-      duration: Math.round(State.flightTime || 0),
-      telemetry: PHYS.telemetryLog
-    };
-    const jsonBlob = new Blob([JSON.stringify(exportData)], { type: 'application/json' });
-    showToast('Uploading telemetry to Cloudflare R2...');
-    const uploadRes = await fetch(urlData.uploadUrl, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: jsonBlob
-    });
-    if (!uploadRes.ok) throw new Error('Upload to R2 failed');
-    window.LAST_TELEMETRY_URL = urlData.publicUrl;
-    const saveRes = await fetch('../api/save_simulation_record.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        telemetry_url: urlData.publicUrl,
-        duration: Math.round(State.flightTime || 0),
-        size_bytes: jsonBlob.size,
-        drone_profile: PHYS.droneProfile
-      })
-    });
-    const saveData = await saveRes.json();
-    if (!saveData.success) throw new Error(saveData.error);
-    showToast('✅ Saved to Cloud Successfully!');
-  } catch (err) {
-    console.error(err);
-    showToast('❌ Export Failed: ' + err.message);
-  }
+  step();
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -4082,5 +3886,291 @@ window.addEventListener('DOMContentLoaded', () => {
   runStartup();
 });
 </script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   PLAN ENFORCEMENT ENGINE  — runs after DOMContentLoaded
+   Reads PLAN constant above; applies all tier restrictions.
+   Flight mechanics in sim-engine.js are NEVER modified.
+══════════════════════════════════════════════════════════════════ */
+
+function _hideEl(el) { if (el) el.style.display = 'none'; }
+function _lockEl(el, tip) {
+  if (!el) return;
+  el.style.pointerEvents = 'none';
+  el.style.opacity = '0.32';
+  el.title = tip || 'Not available on your plan';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+
+  /* ─ 1. TIER BADGE ──────────────────────────────────────────── */
+  // [PLAN-BADGE] Inject tier badge beside SIM tag in topbar
+  const simTag = document.querySelector('.brand-tag');
+  if (simTag) {
+    const badge = document.createElement('span');
+    badge.style.cssText = `font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+      color:white;background:${PLAN.tierColor};padding:2px 8px;border-radius:20px;
+      font-weight:700;font-family:var(--fh);margin-left:6px;`;
+    badge.textContent = PLAN.tierLabel;
+    simTag.parentNode.insertBefore(badge, simTag.nextSibling);
+  }
+
+  /* ─ 2. SESSION TIMER ───────────────────────────────────────── */
+  // [PLAN-SESSION] Enforce time-limited access (BASIS=1h, PRO=24h, MAX=∞)
+  if (isFinite(PLAN.sessionMinutes)) {
+    const SESSION_MS = PLAN.sessionMinutes * 60000;
+    const t0 = Date.now();
+
+    // Countdown badge
+    const cdBadge = document.createElement('div');
+    cdBadge.style.cssText = `display:flex;align-items:center;gap:5px;padding:4px 11px;
+      border-radius:20px;background:var(--n);box-shadow:inset 4px 4px 8px #0d1018,inset -4px -4px 8px #232a3a;
+      font-size:11px;font-weight:600;font-family:var(--fh);color:var(--txt2);`;
+    cdBadge.innerHTML = `<span style="color:var(--s)">⏱</span><span id="ses-left">--:--</span>`;
+    const tb = document.getElementById('topbar');
+    if (tb) { const tsp = tb.querySelector('.tsp'); if (tsp) tb.insertBefore(cdBadge, tsp.nextSibling); }
+
+    // Expired overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `position:fixed;inset:0;z-index:9999;background:rgba(10,12,20,0.97);
+      display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;`;
+    const durationLabel = PLAN.sessionMinutes >= 60
+      ? Math.round(PLAN.sessionMinutes/60) + 'h'
+      : PLAN.sessionMinutes + 'min';
+    overlay.innerHTML = `
+      <div style="font-family:var(--fh);font-size:32px;font-weight:700;color:var(--p)">⏱ Session Ended</div>
+      <div style="font-size:14px;color:var(--txt2);text-align:center;max-width:380px;line-height:1.7">
+        Your <strong>${PLAN.tierLabel}</strong> session (${durationLabel}) has expired.<br>
+        Upgrade to <strong style="color:var(--s)">MAX</strong> for unlimited access.
+      </div>
+      <button onclick="location.reload()" style="background:var(--p);color:#fff;border:none;
+        padding:10px 28px;border-radius:20px;font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer;">
+        🔄 Start New Session
+      </button>`;
+    document.body.appendChild(overlay);
+
+    function tick() {
+      const rem = Math.max(0, SESSION_MS - (Date.now() - t0));
+      const el = document.getElementById('ses-left');
+      if (el) {
+        const m = String(Math.floor(rem/60000)).padStart(2,'0');
+        const s = String(Math.floor((rem%60000)/1000)).padStart(2,'0');
+        el.textContent = `${m}:${s}`;
+      }
+      if (rem < 300000) cdBadge.style.color = '#EE9346';
+      if (rem < 60000)  cdBadge.style.color = '#F44336';
+      if (rem <= 0) {
+        try { if (typeof SIM !== 'undefined' && !SIM._paused && typeof toggleSimPause === 'function') toggleSimPause(); } catch(e){}
+        overlay.style.display = 'flex';
+        return;
+      }
+      setTimeout(tick, 1000);
+    }
+    tick();
+  }
+
+  /* ─ 3. ENVIRONMENT RESTRICTIONS ────────────────────────────── */
+  // [PLAN-ENV] Disable environment buttons not in plan
+  const ALL_ENVS = ['field','mountains','urban','indoor','desert','windy'];
+  ALL_ENVS.forEach(env => {
+    if (!PLAN.environments.includes(env)) {
+      const btn = document.querySelector(`[data-env="${env}"]`);
+      if (btn) {
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.28';
+        btn.title = `Upgrade to unlock ${env} environment`;
+        // Add lock icon without changing flight mechanics
+        const icon = btn.querySelector('.fm-icon');
+        if (icon) icon.textContent = '🔒';
+      }
+    }
+  });
+
+  /* ─ 4. DRONE PROFILE RESTRICTIONS ──────────────────────────── */
+  // [PLAN-DRONE] Restrict profile dropdown to allowed profiles
+  setTimeout(() => {
+    const sel = document.getElementById('drone-profile-select');
+    if (sel) {
+      Array.from(sel.options).forEach(opt => {
+        if (opt.value && !PLAN.droneProfiles.includes(opt.value)) opt.remove();
+      });
+      if (sel.options.length > 0 && !PLAN.droneProfiles.includes(sel.value)) {
+        sel.value = sel.options[0].value;
+        if (typeof setDroneProfile === 'function') setDroneProfile(sel.value);
+      }
+    }
+
+    // [PLAN-GLTF] Hide custom profile buttons if no GLTF support
+    if (!PLAN.customGLTF) {
+      const newBtn = document.querySelector('[onclick="openCustomProfileModal()"]');
+      if (newBtn) _hideEl(newBtn);
+      const custToggle = document.getElementById('customize-toggle-btn');
+      if (custToggle) _hideEl(custToggle);
+      const custPanel = document.getElementById('profile-customize-panel');
+      if (custPanel) _hideEl(custPanel);
+    }
+  }, 600);
+
+  /* ─ 5. PID TUNING PANEL ─────────────────────────────────────── */
+  // [PLAN-PID] Manage PID panel access: false=hide, 'view'=read-only, 'full'=unrestricted
+  let pidCard = null;
+  document.querySelectorAll('.card-sm').forEach(c => {
+    const t = c.querySelector('.card-title');
+    if (t && t.textContent.includes('RATE PID TUNING')) pidCard = c;
+  });
+  if (PLAN.pidTuning === false) {
+    // [PLAN-PID-BASIS] Hide entirely
+    if (pidCard) _hideEl(pidCard);
+  } else if (PLAN.pidTuning === 'view') {
+    // [PLAN-PID-PRO] Show values but disable all sliders
+    if (pidCard) {
+      pidCard.querySelectorAll('input[type=range]').forEach(s => {
+        s.disabled = true;
+        s.style.pointerEvents = 'none';
+        s.style.opacity = '0.45';
+      });
+      const notice = document.createElement('div');
+      notice.style.cssText = 'font-size:10px;color:var(--s);font-weight:700;text-align:center;padding:5px 0 2px;letter-spacing:.4px;';
+      notice.textContent = '👁 VIEW ONLY — Upgrade to MAX to live-tune';
+      pidCard.appendChild(notice);
+    }
+  }
+  // PLAN.pidTuning === 'full': no changes (MAX)
+
+  /* ─ 6. EXPORT / BLACKBOX ────────────────────────────────────── */
+  // [PLAN-EXPORT] Replace export card content for non-MAX tiers
+  if (!PLAN.dataExport) {
+    const exportCard = document.getElementById('export-card');
+    if (exportCard) {
+      exportCard.innerHTML = `
+        <div class="card-title"><span class="ct-dot"></span>FLIGHT LOG · BLACKBOX</div>
+        <div style="text-align:center;padding:16px 8px;color:var(--txt4);">
+          <div style="font-size:18px;margin-bottom:6px">🔒</div>
+          <div style="font-size:11px;font-weight:700;color:var(--txt3)">Data Export (JSON / CSV / MAVLog)</div>
+          <div style="font-size:10px;margin-top:4px;color:var(--txt4)">Available on MAX plan only</div>
+        </div>`;
+    }
+  }
+
+  /* ─ 7. MAVLINK BUTTONS ──────────────────────────────────────── */
+  // [PLAN-MAVLINK] Handle MAVLink export access
+  document.querySelectorAll('button').forEach(btn => {
+    if (!btn.textContent.includes('MAVLink')) return;
+    if (PLAN.mavlinkLogs === false) {
+      _hideEl(btn);
+    } else if (PLAN.mavlinkLogs === 'readonly') {
+      btn.textContent = '📡 MAVLink (Read)';
+      btn.title = 'Read-only on PRO — upgrade to MAX to download';
+      btn.onclick = (e) => {
+        e.preventDefault();
+        if (typeof UI !== 'undefined') UI.toast('📡 MAVLink view-only on PRO — upgrade to MAX');
+      };
+    }
+    // 'download' = MAX, no change
+  });
+
+  /* ─ 8. WAYPOINT MISSION NAV ─────────────────────────────────── */
+  // [PLAN-MISSION] Lock mission planner nav for non-MAX
+  if (!PLAN.waypointMissions) {
+    const mNav = document.getElementById('nav-mission');
+    if (mNav) {
+      mNav.textContent = '🔒 Mission';
+      mNav.style.pointerEvents = 'none';
+      mNav.style.opacity = '0.32';
+      mNav.title = 'Waypoint missions available on MAX plan';
+    }
+  }
+
+  /* ─ 9. GAMEPAD / JOYSTICK ───────────────────────────────────── */
+  // [PLAN-GAMEPAD] Block gamepad API for non-MAX tiers
+  if (!PLAN.joystickGamepad) {
+    window.addEventListener('gamepadconnected', e => {
+      e.stopImmediatePropagation();
+      if (typeof UI !== 'undefined') UI.toast('🎮 Gamepad/Joystick requires MAX plan');
+    }, true);
+    // Update hint text in controls card
+    document.querySelectorAll('.card-sm').forEach(card => {
+      Array.from(card.childNodes).forEach(node => {
+        if (node.nodeType === 3) return;
+        if (node.textContent && node.textContent.includes('Gamepad supported')) {
+          node.textContent = '🎮 Gamepad support: MAX plan only 🔒';
+          node.style.color = 'var(--txt4)';
+        }
+      });
+    });
+    // Target the specific div
+    document.querySelectorAll('div').forEach(div => {
+      if (div.textContent && div.textContent.trim() === '🎮 Gamepad supported — plug in for analog input') {
+        div.textContent = '🎮 Gamepad: MAX plan only 🔒';
+      }
+    });
+  }
+
+  /* ─ 10. NIGHT MODE RESTRICTION (BASIS) ─────────────────────── */
+  // [PLAN-NIGHT] Disable night toggle for BASIS tier
+  if (!PLAN.nightMode) {
+    const nightToggle = document.querySelector('[onclick*="toggleDayNight"]');
+    if (nightToggle) {
+      _lockEl(nightToggle, 'Night mode requires PRO or MAX plan');
+      const lbl = nightToggle.querySelector('.ntoggle-text');
+      if (lbl) lbl.textContent = 'Night 🔒';
+    }
+  }
+
+  /* ─ 11. WIND CONTROLS RESTRICTION (BASIS) ───────────────────── */
+  // [PLAN-WIND] Lock wind/weather controls for BASIS tier
+  if (!PLAN.windScenario) {
+    ['wind-speed','turbulence','wind-dir'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.disabled = true;
+        el.style.pointerEvents = 'none';
+        el.style.opacity = '0.28';
+        el.title = 'Wind scenarios require PRO or MAX plan';
+      }
+    });
+    // Lock rain/fog/night weather toggles
+    ['toggleWeather', 'toggleDayNight'].forEach(fn => {
+      document.querySelectorAll(`[onclick*="${fn}"]`).forEach(el => _lockEl(el, 'Weather requires PRO or MAX plan'));
+    });
+  }
+
+  /* ─ 12. BASIC HUD — hide advanced panels ────────────────────── */
+  // [PLAN-HUD] For hudLevel='basic': hide advanced telemetry panels
+  if (PLAN.hudLevel === 'basic') {
+    const HIDE_TITLES = ['GPS_RAW_INT','VISION_POSITION','OBSTACLE_DISTANCE','PID TELEMETRY','LIVE TELEMETRY GRAPH'];
+    document.querySelectorAll('.card-sm').forEach(card => {
+      const title = card.querySelector('.card-title');
+      if (!title) return;
+      const t = title.textContent.toUpperCase();
+      if (HIDE_TITLES.some(k => t.includes(k))) _hideEl(card);
+    });
+    // Hide attitude angle rows (keep only ALT + VEL for basic HUD)
+    document.querySelectorAll('.tval-row').forEach(row => {
+      const labels = Array.from(row.querySelectorAll('.tval-label')).map(l => l.textContent.trim());
+      if (labels.some(l => ['PITCH','ROLL','YAW','HDNG'].includes(l))) _hideEl(row);
+    });
+  }
+
+  /* ─ 13. SUPPORT LABEL ───────────────────────────────────────── */
+  // [PLAN-SUPPORT] Inject support info into controls card
+  document.querySelectorAll('.card-sm').forEach(card => {
+    const title = card.querySelector('.card-title');
+    if (!title || !title.textContent.includes('CONTROLS')) return;
+    const sEl = document.createElement('div');
+    sEl.style.cssText = 'font-size:10px;color:var(--txt4);margin-top:8px;padding-top:8px;border-top:1px solid var(--n3);';
+    if (PLAN.support === 'priority') {
+      sEl.innerHTML = '✅ <strong style="color:var(--s)">Priority email support</strong> included with your MAX plan';
+    } else {
+      sEl.innerHTML = '💬 Support: <a href="#" style="color:var(--p)">Community Forum</a>';
+    }
+    card.appendChild(sEl);
+  });
+
+  console.log(`[CERTANITY SIM] Plan: ${PLAN.tierLabel} | Session: ${isFinite(PLAN.sessionMinutes) ? PLAN.sessionMinutes+'min' : 'Unlimited'}`);
+});
+</script>
+
 </body>
 </html>

@@ -310,8 +310,6 @@ const PHYS = {
   motorCmd:[0,0,0,0],
   motorCmdFiltered:[0,0,0,0],
 
-  telemetryLog: [], _lastLogTime: 0, _sessionStart: 0,
-
   // [FIX-2.1] FC rate commands stored per substep
   _fcRateCmd:{pitch:0, roll:0, yaw:0, thr:0},
 
@@ -372,7 +370,6 @@ const PHYS = {
     this.quat=Q.id(); this._prevQuat=Q.id();
     this.angVel=V3.zero(); this.gyro=V3.zero(); this.accelBody=V3.zero();
     this.motorRPM=[0,0,0,0]; this.motorCmd=[0,0,0,0]; this.motorCmdFiltered=[0,0,0,0];
-    this.telemetryLog=[]; this._lastLogTime=0; this._sessionStart=0;
     this._fcRateCmd={pitch:0,roll:0,yaw:0,thr:0};
     this.grounded=true; this.crashed=false;
     this.euler={roll:0,pitch:0,yaw:0};
@@ -441,20 +438,6 @@ const PHYS = {
     const SUB=4, dt=dtFull/SUB;
     for(let s=0;s<SUB;s++) this._substep(dt);
     this._updateSensors(dtFull);
-
-    const now = performance.now();
-    if (this._sessionStart === 0) this._sessionStart = now;
-    if (now - this._lastLogTime >= 100 && typeof State !== 'undefined' && State.armed) {
-      this._lastLogTime = now;
-      this.telemetryLog.push({
-        t: Math.round(now - this._sessionStart) / 1000,
-        pos: {x: +this.pos.x.toFixed(2), y: +this.pos.y.toFixed(2), z: +this.pos.z.toFixed(2)},
-        eul: {p: +(this.euler.pitch*180/Math.PI).toFixed(1), r: +(this.euler.roll*180/Math.PI).toFixed(1), y: +(this.euler.yaw*180/Math.PI).toFixed(1)},
-        vel: {x: +this.vel.x.toFixed(2), y: +this.vel.y.toFixed(2), z: +this.vel.z.toFixed(2)},
-        rpm: [Math.round(this.motorRPM[0]), Math.round(this.motorRPM[1]), Math.round(this.motorRPM[2]), Math.round(this.motorRPM[3])],
-        bat: {v: +this.battVoltage.toFixed(2), i: +this.currentDraw.toFixed(2), p: Math.round(this.battPct)}
-      });
-    }
   },
 
   _substep(dt){
@@ -1219,7 +1202,7 @@ const BLACKBOX = {
     const blob=new Blob([csv],{type:'text/csv'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='spaceborn-blackbox-'+Date.now()+'.csv';
+    a.download='certanity-blackbox-'+Date.now()+'.csv';
     a.click();
   },
   getLog(){ return this._log.slice(); },
@@ -1605,7 +1588,7 @@ const MAVLINK = {
     const blob=new Blob([data],{type:'application/octet-stream'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='spaceborn-'+Date.now()+'.tlog';
+    a.download='certanity-'+Date.now()+'.tlog';
     a.click(); URL.revokeObjectURL(a.href);
     return true;
   },
@@ -1617,7 +1600,7 @@ const MAVLINK = {
     const blob=new Blob([json],{type:'application/json'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='spaceborn-telem-'+Date.now()+'.json';
+    a.download='certanity-telem-'+Date.now()+'.json';
     a.click(); URL.revokeObjectURL(a.href);
     return true;
   },

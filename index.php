@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="title" content="Spaceborn Robotics — Browser-Based 3D Drone Simulator" />
+  <meta name="title" content="Certanity Robotics — Browser-Based 3D Drone Simulator" />
   <meta name="description" content="India's first browser-based drone simulator. Physics-accurate, MAVLink-compatible, zero install. Start for $1." />
-  <meta property="og:title" content="Spaceborn Robotics — Build. Simulate. Fly." />
+  <meta property="og:title" content="Certanity Robotics — Build. Simulate. Fly." />
   <meta property="og:description" content="Democratising drone engineering for India & the world. No install. No hardware. Start for $1." />
-  <title>Spaceborn Robotics — Build · Simulate · Fly</title>
+  <title>Certanity Robotics — Build · Simulate · Fly</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -30,7 +30,7 @@
         <circle cx="7" cy="25" r="3" fill="#EE9346"/>
         <circle cx="25" cy="25" r="3" fill="#EE9346"/>
       </svg>
-      <span>SPACEBORN ROBOTICS</span>
+      <span>CERTANITY ROBOTICS</span>
     </div>
     <nav class="nav-links" id="navLinks">
       <a href="#features">Features</a>
@@ -40,7 +40,7 @@
       <a href="#about">About</a>
     </nav>
     <div class="nav-cta">
-      <button class="btn-outlined" id="loginBtn">Login</button>
+      <button class="btn-outlined" id="loginBtn">Sign In</button>
       <button class="btn-primary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Get Started</button>
     </div>
     <button class="hamburger" id="hamburger" aria-label="Toggle menu">
@@ -68,7 +68,7 @@
           <span class="sim-dot red"></span>
           <span class="sim-dot yellow"></span>
           <span class="sim-dot green"></span>
-          <span class="sim-title">Spaceborn Simulator — v2.4</span>
+          <span class="sim-title">Certanity Simulator — v2.4</span>
         </div>
         <div class="sim-viewport">
           <canvas id="droneCanvas" width="400" height="220"></canvas>
@@ -142,34 +142,34 @@
           <tr>
             <th class="col-gap">THE GAP</th>
             <th class="col-others">OTHERS</th>
-            <th class="col-spaceborn">SPACEBORN</th>
+            <th class="col-certanity">CERTANITY</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Physics Accuracy</td>
             <td><span class="tbl-no">✗</span> Simplified</td>
-            <td class="spaceborn-col"><span class="tbl-yes">✓</span> Per-tick integrator</td>
+            <td class="certanity-col"><span class="tbl-yes">✓</span> Per-tick integrator</td>
           </tr>
           <tr>
             <td>MAVLink Support</td>
             <td><span class="tbl-no">✗</span> None</td>
-            <td class="spaceborn-col"><span class="tbl-yes">✓</span> Full 6-stream</td>
+            <td class="certanity-col"><span class="tbl-yes">✓</span> Full 6-stream</td>
           </tr>
           <tr>
             <td>Real PID Export</td>
             <td><span class="tbl-no">✗</span> View-only</td>
-            <td class="spaceborn-col"><span class="tbl-yes">✓</span> JSON + CSV + .tlog</td>
+            <td class="certanity-col"><span class="tbl-yes">✓</span> JSON + CSV + .tlog</td>
           </tr>
           <tr>
             <td>Price Barrier</td>
             <td><span class="tbl-no">✗</span> $200–$1,000/yr</td>
-            <td class="spaceborn-col"><span class="tbl-yes">✓</span> From $1/hr</td>
+            <td class="certanity-col"><span class="tbl-yes">✓</span> From $1/hr</td>
           </tr>
           <tr>
             <td>India-First Design</td>
             <td><span class="tbl-no">✗</span> Western-centric</td>
-            <td class="spaceborn-col"><span class="tbl-yes">✓</span> Built for India</td>
+            <td class="certanity-col"><span class="tbl-yes">✓</span> Built for India</td>
           </tr>
         </tbody>
       </table>
@@ -271,7 +271,7 @@
           <li><span class="feat-no">✗</span> PID export</li>
           <li><span class="feat-no">✗</span> MAVLink stream</li>
         </ul>
-        <button class="btn-outlined plan-cta" onclick="openModal('register')">Start Here</button>
+        <button class="btn-outlined plan-cta" onclick="openModal('login')">Start Here</button>
       </div>
       <div class="pricing-card neu-raised elevated fade-in">
         <div class="plan-name">PRO</div>
@@ -285,7 +285,7 @@
           <li><span class="feat-yes">✓</span> Read-only MAVLink</li>
           <li><span class="feat-no">✗</span> Full data export</li>
         </ul>
-        <button class="btn-outlined plan-cta" onclick="openModal('register')">Try Pro</button>
+        <button class="btn-outlined plan-cta" onclick="openModal('login')">Get Started</button>
       </div>
       <div class="pricing-card neu-raised featured fade-in">
         <div class="plan-badge">MOST POPULAR</div>
@@ -303,7 +303,7 @@
           <li><span class="feat-yes">✓</span> Full HUD + joystick</li>
           <li><span class="feat-yes">✓</span> Priority email support</li>
         </ul>
-        <button class="btn-primary plan-cta" onclick="openModal('register')">Build for Real</button>
+        <button class="btn-primary plan-cta" onclick="openModal('login')">Get Started</button>
         <p class="plan-callout">Less than one cup of coffee per day. Less than one cheap propeller set.</p>
       </div>
     </div>
@@ -467,7 +467,7 @@
           <circle cx="7" cy="25" r="3" fill="#EE9346"/>
           <circle cx="25" cy="25" r="3" fill="#EE9346"/>
         </svg>
-        <span style="color:#fff">SPACEBORN ROBOTICS</span>
+        <span style="color:#fff">CERTANITY ROBOTICS</span>
       </div>
       <p class="footer-tagline">Build the future. Simulate it first.</p>
     </div>
@@ -481,7 +481,7 @@
       <a href="#">Terms</a>
     </div>
     <div class="footer-contact">
-      <p>partnerships@spacebornrobotics.com</p>
+      <p>partnerships@certanityrobotics.com</p>
       <div class="social-icons">
         <a href="#" class="social-btn neu-inset" aria-label="LinkedIn">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
@@ -496,7 +496,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2025 Spaceborn Robotics · All Rights Reserved</p>
+    <p>© 2025 Certanity Robotics · All Rights Reserved</p>
   </div>
 </footer>
 
@@ -525,90 +525,18 @@
           <circle cx="7" cy="25" r="3" fill="#EE9346"/>
           <circle cx="25" cy="25" r="3" fill="#EE9346"/>
         </svg>
-        <span class="modal-logo-text">SPACEBORN</span>
+        <span class="modal-logo-text">CERTANITY</span>
       </div>
-      <p class="modal-tagline" id="modalTagline">Welcome back, pilot.</p>
+      <p class="modal-tagline" id="modalTagline">Sign in or create an account to continue.</p>
     </div>
 
-    <!-- Tabs -->
-    <div class="modal-tabs">
-      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Sign In</button>
-      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Create Account</button>
+    <!-- Auth Form -->
+    <div class="auth-form" style="padding-top: 1rem; padding-bottom: 2rem;">
+      <button type="button" class="btn-google neu-raised" onclick="window.location.href='auth/google.php'" style="margin-top: 1rem;">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
     </div>
-
-    <!-- Login Form -->
-    <form class="auth-form" id="loginForm" method="POST" action="auth/login.php">
-      <div class="form-group">
-        <label for="loginEmail">Email address</label>
-        <div class="input-wrap">
-          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
-          <input type="email" id="loginEmail" name="email" placeholder="you@example.com" required autocomplete="email" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="loginPassword">Password</label>
-        <div class="input-wrap">
-          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <input type="password" id="loginPassword" name="password" placeholder="········" required autocomplete="current-password" />
-          <button type="button" class="pwd-toggle" onclick="togglePwd('loginPassword', this)" tabindex="-1">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </div>
-      </div>
-      <a href="auth/forgot-password.php" class="forgot-link">Forgot password?</a>
-      <button type="submit" class="btn-primary btn-full">Sign In</button>
-      <div class="divider"><span>or continue with</span></div>
-      <button type="button" class="btn-google neu-raised" onclick="window.location.href='auth/google.php'">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Google
-      </button>
-      <div class="form-msg" id="loginMsg"></div>
-    </form>
-
-    <!-- Register Form -->
-    <form class="auth-form hidden" id="registerForm" method="POST" action="auth/register.php">
-      <div class="form-group">
-        <label for="regName">Full Name</label>
-        <div class="input-wrap">
-          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <input type="text" id="regName" name="name" placeholder="Arjun Sharma" required autocomplete="name" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="regEmail">Email address</label>
-        <div class="input-wrap">
-          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
-          <input type="email" id="regEmail" name="email" placeholder="you@example.com" required autocomplete="email" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="regPassword">Password</label>
-        <div class="input-wrap">
-          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <input type="password" id="regPassword" name="password" placeholder="Min. 8 characters" required autocomplete="new-password" />
-          <button type="button" class="pwd-toggle" onclick="togglePwd('regPassword', this)" tabindex="-1">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
-        </div>
-        <div class="pwd-strength" id="pwdStrength">
-          <div class="pwd-bar"></div><div class="pwd-bar"></div><div class="pwd-bar"></div><div class="pwd-bar"></div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="regConfirm">Confirm Password</label>
-        <div class="input-wrap">
-          <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <input type="password" id="regConfirm" name="confirm_password" placeholder="········" required autocomplete="new-password" />
-        </div>
-      </div>
-      <button type="submit" class="btn-primary btn-full">Create Account</button>
-      <div class="divider"><span>or continue with</span></div>
-      <button type="button" class="btn-google neu-raised" onclick="window.location.href='auth/google.php'">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Google
-      </button>
-      <div class="form-msg" id="registerMsg"></div>
-    </form>
 
   </div>
 </div>

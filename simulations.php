@@ -1,9 +1,12 @@
 <?php
 require 'auth/session_guard.php';
 require 'auth/db.php';
+require_once 'includes/simulator_launch.php';
 
 $sidebar_active = 'simulations';
 $email = $_SESSION['email'] ?? '';
+$user_row = $db->users->findOne(['email' => $email]);
+$simulator_url = htmlspecialchars(sb_simulator_launch_info($user_row ?: null)['url'], ENT_QUOTES, 'UTF-8');
 
 // Fetch from db
 $flights = $db->flights->find(['email' => $email], ['sort' => ['created_at' => -1]])->toArray();
@@ -30,7 +33,7 @@ foreach ($flights as $f) {
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Spaceborn — Simulations</title>
+  <title>Certanity — Simulations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -170,7 +173,7 @@ foreach ($flights as $f) {
           <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
         </svg>
       </button>
-      <button class="new-session-btn" onclick="window.open('simulator/index.html', '_blank')">
+      <button class="new-session-btn" onclick="window.open('<?= $simulator_url ?>', '_blank')">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
@@ -185,7 +188,7 @@ foreach ($flights as $f) {
         <h2>Simulations</h2>
         <p>All your simulation runs in one place</p>
       </div>
-      <button class="new-session-btn" onclick="window.open('simulator/index.html', '_blank')">
+      <button class="new-session-btn" onclick="window.open('<?= $simulator_url ?>', '_blank')">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>

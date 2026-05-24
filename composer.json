@@ -1,9 +1,9 @@
 {
-    "name": "hg/spaceborn",
+    "name": "hg/certanity",
     "description": "Drone Simulator",
     "autoload": {
         "psr-4": {
-            "Hg\\Spaceborn\\": "src/"
+            "Hg\\Certanity\\": "src/"
         }
     },
     "authors": [

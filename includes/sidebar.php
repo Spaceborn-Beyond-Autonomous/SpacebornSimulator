@@ -1,6 +1,6 @@
 <?php
 /**
- * Shared sidebar include — Spaceborn Robotics Dashboard
+ * Shared sidebar include — Certanity Robotics Dashboard
  * Usage: require 'includes/sidebar.php';
  * Expects $sidebar_active to be set before including:
  *   'dashboard' | 'new-simulation' | 'simulations' | 'billing' | 'settings'
@@ -16,6 +16,11 @@ $_plan_id     = $_SESSION['user_sub']['plan_id'] ?? null;
 $_plan_label  = isset($_plan_id, $_plan_id_map[$_plan_id])
     ? $_plan_id_map[$_plan_id]
     : htmlspecialchars($_SESSION['user_sub']['plan_name'] ?? 'Free');
+
+if (!function_exists('sb_simulator_launch_info')) {
+    require_once __DIR__ . '/simulator_launch.php';
+}
+$_sim_launch_url = htmlspecialchars(sb_simulator_launch_info()['url'], ENT_QUOTES, 'UTF-8');
 
 function _nav_item(string $href, string $label, string $icon_svg, string $key, string $active): string {
     $cls = $key === $active ? 'nav-item active' : 'nav-item';
@@ -46,12 +51,12 @@ $_ic_billing   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
       <circle cx="7"  cy="25" r="3" fill="#EE9346"/>
       <circle cx="25" cy="25" r="3" fill="#EE9346"/>
     </svg>
-    <span class="sidebar-logo-text">SPACEBORN</span>
+    <span class="sidebar-logo-text">CERTANITY</span>
   </div>
 
   <!-- Nav links -->
   <?= _nav_item('dashboard.php',   'Dashboard',          $_ic_dashboard, 'dashboard',      $_active) ?>
-  <?= _nav_item('simulator/index.html" target="_blank', 'New Simulation',     $_ic_new,       'new-simulation', $_active) ?>
+  <?= _nav_item($_sim_launch_url . '" target="_blank', 'New Simulation',     $_ic_new,       'new-simulation', $_active) ?>
   <?= _nav_item('simulations.php', 'Simulations',        $_ic_sims,      'simulations',    $_active) ?>
   <?= _nav_item('billing.php',     'My Plan &amp; Billing', $_ic_billing, 'billing',        $_active) ?>
 

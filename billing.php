@@ -142,7 +142,7 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Spaceborn — My Plan &amp; Billing</title>
+  <title>Certanity — My Plan &amp; Billing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -222,6 +222,7 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
     .summary-value.green{color:var(--accent);}
 
     /* ── Plan cards ── */
+    #available-plans{scroll-margin-top:88px;}
     .plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
     .plan-card{background:var(--surface);border-radius:var(--r);box-shadow:var(--neu-out);padding:22px;display:flex;flex-direction:column;gap:14px;position:relative;border:1.5px solid transparent;transition:border-color .2s,transform .2s;}
     .plan-card:hover{transform:translateY(-2px);}
@@ -395,7 +396,7 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
         </div>
         <?php endif; ?>
         <div class="plan-banner-actions">
-          <button class="btn btn-primary" type="button" onclick="startRazorpayCheckout(<?= (int) $current_plan_id ?>, 'billing')">
+          <button class="btn btn-primary" type="button" onclick="scrollToPlans()">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -425,7 +426,7 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
     </div>
 
     <!-- Plan cards — upgrade only, no downgrade/pause/cancel -->
-    <div class="fade-up d4">
+    <div class="fade-up d4" id="available-plans">
       <div class="section-title">Available Plans <span>Upgrade anytime</span></div>
       <div class="plans-grid">
         <?php foreach ($plan_catalog as $pid => $plan):
@@ -617,6 +618,11 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
 <script src="payments/razorpay-checkout.js"></script>
 
 <script>
+function scrollToPlans() {
+  var el = document.getElementById('available-plans');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // Theme toggle
 (function(){
   var h=document.documentElement,t=document.getElementById('themeToggle'),i=document.getElementById('themeIcon');

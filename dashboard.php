@@ -1,6 +1,7 @@
 <?php
 require 'auth/session_guard.php';
 require 'auth/db.php';
+require_once 'includes/simulator_launch.php';
 
 $name           = htmlspecialchars($_SESSION['name'] ?? 'User');
 $email          = $_SESSION['email'] ?? '';
@@ -37,13 +38,18 @@ foreach($usage_seconds as $s) {
 $plan_name = $_SESSION['user_sub']['plan_name'] ?? 'Free';
 if (!$plan_name) $plan_name = 'Active';
 
+$user_row = $db->users->findOne(['email' => $email]);
+$sim_launch = sb_simulator_launch_info($user_row ?: null);
+$can_launch = sb_can_launch_simulator($user_row ?: null);
+$simulator_url = htmlspecialchars($sim_launch['url'], ENT_QUOTES, 'UTF-8');
+
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Spaceborn — Dashboard</title>
+  <title>Certanity — Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -204,8 +210,7 @@ if (!$plan_name) $plan_name = 'Active';
         <h3>Ready for your next flight?</h3>
         <p>Configure a new simulation session with your choice of drone, environment, and weather.</p>
       </div>
-      <?php $can_launch = ($_SESSION['wallet_balance'] ?? 0) > 0 || strtolower($plan_name) !== 'free'; ?>
-      <button class="btn-primary" <?= $can_launch ? 'onclick="window.open(\'simulator/index.html\', \'_blank\')"' : 'style="opacity: 0.5; cursor: not-allowed;" onclick="alert(\'Please top up your wallet or upgrade your plan to start a new session.\')"' ?>>+ Start New Session</button>
+      <button class="btn-primary" <?= $can_launch ? 'onclick="window.open(\'' . $simulator_url . '\', \'_blank\')"' : 'style="opacity: 0.5; cursor: not-allowed;" onclick="alert(\'Please top up your wallet or upgrade your plan to start a new session.\')"' ?>>+ Start New Session</button>
     </div>
 
     <div class="lower-row fade-up delay-6">

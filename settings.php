@@ -1,6 +1,5 @@
 <?php
 require 'auth/session_guard.php';
-require_once 'auth/db.php';
 
 $sidebar_active = 'settings';
 $name     = htmlspecialchars($_SESSION['name']  ?? 'Demo Pilot');
@@ -8,110 +7,23 @@ $email    = htmlspecialchars($_SESSION['email'] ?? 'pilot@example.com');
 $initials = strtoupper(substr(trim($_SESSION['name'] ?? 'U'), 0, 1));
 $plan     = htmlspecialchars($_SESSION['user_sub']['plan_name'] ?? 'Free');
 
-$profile_saved = $password_saved = $notif_saved = $plans_saved = false;
-
-function updateEnv(array $data) {
-    $envPath = __DIR__ . '/.env';
-    if (!file_exists($envPath)) {
-        return false;
-    }
-    $lines = file($envPath, FILE_IGNORE_NEW_LINES);
-    $newLines = [];
-    $updatedKeys = [];
-    foreach ($lines as $line) {
-        if (trim($line) === '' || strpos(trim($line), '#') === 0) {
-            $newLines[] = $line;
-            continue;
-        }
-        $parts = explode('=', $line, 2);
-        if (count($parts) === 2) {
-            $key = trim($parts[0]);
-            if (array_key_exists($key, $data)) {
-                $newLines[] = $key . '=' . $data[$key];
-                $updatedKeys[$key] = true;
-            } else {
-                $newLines[] = $line;
-            }
-        } else {
-            $newLines[] = $line;
-        }
-    }
-    foreach ($data as $key => $val) {
-        if (!isset($updatedKeys[$key])) {
-            $newLines[] = $key . '=' . $val;
-        }
-    }
-    return file_put_contents($envPath, implode("\n", $newLines) . "\n") !== false;
-}
+$profile_saved = $password_saved = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['save_profile'])) { 
-        $name = htmlspecialchars($_POST['full_name'] ?? $name); 
-        $profile_saved = true; 
-    }
-    elseif (isset($_POST['save_password'])) { 
-        $password_saved = true; 
-    }
-    elseif (isset($_POST['save_notifications'])) { 
-        $notif_saved = true; 
-    }
-    elseif (isset($_POST['save_plans'])) {
-        $basis_min = (float)($_POST['basis_minutes'] ?? 60);
-        $basis_price = (float)($_POST['basis_price'] ?? 1);
-        $basis_ppm = (float)($_POST['basis_ppm'] ?? 0.10);
-
-        $pro_min = (float)($_POST['pro_minutes'] ?? 1440);
-        $pro_price = (float)($_POST['pro_price'] ?? 5);
-        $pro_ppm = (float)($_POST['pro_ppm'] ?? 0.05);
-
-        $max_min = (float)($_POST['max_minutes'] ?? 43200);
-        $max_price = (float)($_POST['max_price'] ?? 20);
-        $max_ppm = (float)($_POST['max_ppm'] ?? 0.01);
-
-        $envData = [
-            'PLAN_BASIS_MINUTES' => $basis_min,
-            'PLAN_BASIS_PRICE' => $basis_price,
-            'PLAN_BASIS_PPM' => $basis_ppm,
-
-            'PLAN_PRO_MINUTES' => $pro_min,
-            'PLAN_PRO_PRICE' => $pro_price,
-            'PLAN_PRO_PPM' => $pro_ppm,
-
-            'PLAN_MAX_MINUTES' => $max_min,
-            'PLAN_MAX_PRICE' => $max_price,
-            'PLAN_MAX_PPM' => $max_ppm,
-        ];
-
-        if (updateEnv($envData)) {
-            // Update MongoDB subscriptions collection
-            $db->subscriptions->updateOne(['id' => 1], ['$set' => ['ppm' => $basis_ppm]]);
-            $db->subscriptions->updateOne(['id' => 2], ['$set' => ['ppm' => $pro_ppm]]);
-            $db->subscriptions->updateOne(['id' => 3], ['$set' => ['ppm' => $max_ppm]]);
-            
-            // Reload into $_ENV and $_SERVER for current request context
-            foreach ($envData as $k => $v) {
-                $_ENV[$k] = $v;
-                $_SERVER[$k] = $v;
-            }
-            $plans_saved = true;
-        }
+    if (isset($_POST['save_profile'])) {
+        $name = htmlspecialchars($_POST['full_name'] ?? $name);
+        $profile_saved = true;
+    } elseif (isset($_POST['save_password'])) {
+        $password_saved = true;
     }
 }
-
-$notif = ['session_start' => false, 'session_end' => false, 'weekly_report' => false, 'team_invite' => false];
-foreach ($notif as $k => $v) {
-    if (isset($_SESSION['notif_' . $k])) $notif[$k] = (bool)$_SESSION['notif_' . $k];
-}
-
-$active_tab = $_GET['tab'] ?? 'profile';
-if (!in_array($active_tab, ['profile', 'notifications', 'plans'])) $active_tab = 'profile';
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Spaceborn — Settings</title>
+  <title>Certanity — Settings</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -157,12 +69,6 @@ if (!in_array($active_tab, ['profile', 'notifications', 'plans'])) $active_tab =
     .content{padding:32px;flex:1;display:flex;flex-direction:column;gap:24px;}
     .page-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.03em;}
 
-    /* ── Tabs ── */
-    .tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);}
-    .tab-btn{background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--text3);padding:10px 20px;transition:color .18s;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none;display:inline-block;}
-    .tab-btn:hover{color:var(--text2);}
-    .tab-btn.active{color:var(--secondary);border-bottom-color:var(--secondary);font-weight:600;}
-
     /* ── Settings card ── */
     .settings-card{background:var(--surface);border-radius:var(--r);box-shadow:var(--neu-out);padding:28px 32px;display:flex;flex-direction:column;gap:24px;animation:fadeUp .4s cubic-bezier(.22,1,.36,1) both;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
@@ -192,19 +98,6 @@ if (!in_array($active_tab, ['profile', 'notifications', 'plans'])) $active_tab =
 
     /* ── Toast ── */
     .toast{display:inline-flex;align-items:center;gap:8px;background:rgba(40,200,64,.1);border:1px solid rgba(40,200,64,.25);border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:500;color:var(--accent);animation:fadeUp .3s ease both;}
-
-    /* ── Notifications ── */
-    .notif-list{display:flex;flex-direction:column;}
-    .notif-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);}
-    .notif-row:last-child{border-bottom:none;}
-    .notif-label{font-size:13.5px;font-weight:600;margin-bottom:3px;}
-    .notif-desc{font-size:12px;color:var(--text3);}
-    .toggle-wrap{flex-shrink:0;margin-left:20px;}
-    .toggle-input{display:none;}
-    .toggle-track{width:42px;height:23px;background:var(--surface2);box-shadow:var(--neu-in);border-radius:12px;position:relative;cursor:pointer;transition:background .25s;display:block;}
-    .toggle-track::after{content:'';position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:var(--text3);box-shadow:1px 1px 4px rgba(0,0,0,.35);transition:transform .25s,background .25s;}
-    .toggle-input:checked+.toggle-track{background:rgba(238,147,70,.2);}
-    .toggle-input:checked+.toggle-track::after{transform:translateX(19px);background:var(--secondary);}
 
     /* ── Password strength ── */
     .pw-strength-bar{height:3px;border-radius:2px;background:var(--border);margin-top:6px;overflow:hidden;}
@@ -237,13 +130,6 @@ if (!in_array($active_tab, ['profile', 'notifications', 'plans'])) $active_tab =
   <div class="content">
     <div class="page-title">Settings</div>
 
-    <nav class="tabs">
-      <a class="tab-btn <?= $active_tab==='profile'?'active':'' ?>" href="?tab=profile">Profile</a>
-      <a class="tab-btn <?= $active_tab==='notifications'?'active':'' ?>" href="?tab=notifications">Notifications</a>
-      <a class="tab-btn <?= $active_tab==='plans'?'active':'' ?>" href="?tab=plans">Plans Config</a>
-    </nav>
-
-    <?php if ($active_tab === 'profile'): ?>
     <div class="settings-card">
       <div class="card-section-title">Profile Information</div>
       <div class="profile-head">
@@ -261,7 +147,7 @@ if (!in_array($active_tab, ['profile', 'notifications', 'plans'])) $active_tab =
         Profile saved.
       </div>
       <?php endif; ?>
-      <form method="POST" action="?tab=profile">
+      <form method="POST">
         <div class="form-grid-2" style="margin-bottom:20px;">
           <div class="form-group">
             <label class="form-label">Full Name</label>
@@ -295,7 +181,7 @@ if (!in_array($active_tab, ['profile', 'notifications', 'plans'])) $active_tab =
         Password updated.
       </div>
       <?php endif; ?>
-      <form method="POST" action="?tab=profile">
+      <form method="POST">
         <div class="form-grid-2" style="margin-bottom:20px;">
           <div class="form-group">
             <label class="form-label">Current Password</label>
@@ -311,127 +197,6 @@ if (!in_array($active_tab, ['profile', 'notifications', 'plans'])) $active_tab =
         <button class="btn-outline" type="submit" name="save_password">Update Password</button>
       </form>
     </div>
-
-    <?php elseif ($active_tab === 'notifications'): ?>
-    <div class="settings-card">
-      <div class="card-section-title">Notification Preferences</div>
-      <?php if ($notif_saved): ?>
-      <div class="toast">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="20,6 9,17 4,12"/>
-        </svg>
-        Preferences saved.
-      </div>
-      <?php endif; ?>
-      <form method="POST" action="?tab=notifications">
-        <div class="notif-list">
-          <?php
-          $rows = [
-            ['session_start',  'Session started',     'Confirmation when a session begins'],
-            ['session_end',    'Session ended',        'Summary after each session ends'],
-            ['weekly_report',  'Weekly usage report',  'Weekly email with usage analytics'],
-            ['team_invite',    'Team invitations',     'When someone invites you to a team'],
-          ];
-          foreach ($rows as [$k, $l, $d]): ?>
-          <div class="notif-row">
-            <div>
-              <div class="notif-label"><?= $l ?></div>
-              <div class="notif-desc"><?= $d ?></div>
-            </div>
-            <div class="toggle-wrap">
-              <input class="toggle-input" type="checkbox"
-                     id="n_<?= $k ?>" name="<?= $k ?>" <?= $notif[$k] ? 'checked' : '' ?>/>
-              <label class="toggle-track" for="n_<?= $k ?>"></label>
-            </div>
-          </div>
-          <?php endforeach; ?>
-        </div>
-        <div style="margin-top:24px;">
-          <button class="btn-primary" type="submit" name="save_notifications">Save Preferences</button>
-        </div>
-      </form>
-    </div>
-    <?php elseif ($active_tab === 'plans'): ?>
-    <div class="settings-card">
-      <div class="card-section-title">Plan Configurations (Global Settings)</div>
-      <?php if ($plans_saved): ?>
-      <div class="toast">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="20,6 9,17 4,12"/>
-        </svg>
-        Plan configurations successfully saved to .env and database.
-      </div>
-      <?php endif; ?>
-      <form method="POST" action="?tab=plans">
-        <div style="display:flex; flex-direction:column; gap:28px;">
-          <!-- BASIS PLAN -->
-          <div>
-            <h4 style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--secondary); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.04em;">Basis Plan</h4>
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label class="form-label">Time Allotted (Minutes)</label>
-                <input class="form-input" type="number" name="basis_minutes" value="<?= htmlspecialchars($_ENV['PLAN_BASIS_MINUTES'] ?? 60) ?>" required min="1"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Price ($)</label>
-                <input class="form-input" type="number" step="0.01" name="basis_price" value="<?= htmlspecialchars($_ENV['PLAN_BASIS_PRICE'] ?? 1) ?>" required min="0"/>
-              </div>
-              <div class="form-group full">
-                <label class="form-label">Price Per Minute (PPM) Rate ($)</label>
-                <input class="form-input" type="number" step="0.0001" name="basis_ppm" value="<?= htmlspecialchars($_ENV['PLAN_BASIS_PPM'] ?? 0.10) ?>" required min="0.0001"/>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card-divider"></div>
-
-          <!-- PRO PLAN -->
-          <div>
-            <h4 style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--secondary); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.04em;">Pro Plan</h4>
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label class="form-label">Time Allotted (Minutes)</label>
-                <input class="form-input" type="number" name="pro_minutes" value="<?= htmlspecialchars($_ENV['PLAN_PRO_MINUTES'] ?? 1440) ?>" required min="1"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Price ($)</label>
-                <input class="form-input" type="number" step="0.01" name="pro_price" value="<?= htmlspecialchars($_ENV['PLAN_PRO_PRICE'] ?? 5) ?>" required min="0"/>
-              </div>
-              <div class="form-group full">
-                <label class="form-label">Price Per Minute (PPM) Rate ($)</label>
-                <input class="form-input" type="number" step="0.0001" name="pro_ppm" value="<?= htmlspecialchars($_ENV['PLAN_PRO_PPM'] ?? 0.05) ?>" required min="0.0001"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="card-divider"></div>
-
-          <!-- MAX PLAN -->
-          <div>
-            <h4 style="font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--secondary); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.04em;">Max Plan</h4>
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label class="form-label">Time Allotted (Minutes)</label>
-                <input class="form-input" type="number" name="max_minutes" value="<?= htmlspecialchars($_ENV['PLAN_MAX_MINUTES'] ?? 43200) ?>" required min="1"/>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Price ($)</label>
-                <input class="form-input" type="number" step="0.01" name="max_price" value="<?= htmlspecialchars($_ENV['PLAN_MAX_PRICE'] ?? 20) ?>" required min="0"/>
-              </div>
-              <div class="form-group full">
-                <label class="form-label">Price Per Minute (PPM) Rate ($)</label>
-                <input class="form-input" type="number" step="0.0001" name="max_ppm" value="<?= htmlspecialchars($_ENV['PLAN_MAX_PPM'] ?? 0.01) ?>" required min="0.0001"/>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style="margin-top:28px;">
-          <button class="btn-primary" type="submit" name="save_plans">Save Plan Settings</button>
-        </div>
-      </form>
-    </div>
-    <?php endif; ?>
 
   </div><!-- /content -->
 </main>

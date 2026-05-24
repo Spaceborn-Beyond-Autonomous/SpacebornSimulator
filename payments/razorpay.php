@@ -92,12 +92,47 @@ function sb_env_bool(string $name, bool $default = false): bool
     return in_array($value, ['1', 'true', 'yes', 'on'], true);
 }
 
+function sb_get_usd_to_inr_rate(): float
+{
+    $cacheFile = sys_get_temp_dir() . '/sb_usd_inr_rate.json';
+    $cacheTime = 3600 * 12; // Cache for 12 hours
+    $defaultRate = 96.0;
+
+    if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTime) {
+        $data = json_decode(file_get_contents($cacheFile), true);
+        if (isset($data['rate']) && is_numeric($data['rate'])) {
+            return (float) $data['rate'];
+        }
+    }
+
+    try {
+        // Fetch dynamically from open ExchangeRate-API (no API key required)
+        $ctx = stream_context_create(['http' => ['timeout' => 3]]);
+        $response = @file_get_contents('https://open.er-api.com/v6/latest/USD', false, $ctx);
+        if ($response) {
+            $json = json_decode($response, true);
+            if (isset($json['rates']['INR']) && is_numeric($json['rates']['INR'])) {
+                $rate = (float) $json['rates']['INR'];
+                @file_put_contents($cacheFile, json_encode(['rate' => $rate]));
+                return $rate;
+            }
+        }
+    } catch (Throwable $e) {
+        // Ignore and fallback
+    }
+
+    return $defaultRate;
+}
+
 function sb_plan_catalog(): array
 {
+    $usd_to_inr = sb_get_usd_to_inr_rate();
+    $to_paise = 100;
+    
     return [
-        1 => ['name' => 'BASIS', 'amount_inr' => 100,  'description' => 'BASIS 1 Hour access'],
-        2 => ['name' => 'PRO',   'amount_inr' => 500,  'description' => 'PRO 1 Day access'],
-        3 => ['name' => 'MAX',   'amount_inr' => 2000, 'description' => 'MAX 1 Month access'],
+        1 => ['name' => 'BASIS', 'amount_usd' => 1,  'amount_inr' => (int)(1 * $usd_to_inr * $to_paise),  'description' => 'BASIS 1 Hour access'],
+        2 => ['name' => 'PRO',   'amount_usd' => 5,  'amount_inr' => (int)(5 * $usd_to_inr * $to_paise),  'description' => 'PRO 1 Day access'],
+        3 => ['name' => 'MAX',   'amount_usd' => 20, 'amount_inr' => (int)(20 * $usd_to_inr * $to_paise), 'description' => 'MAX 1 Month access'],
     ];
 }
 

@@ -1,5 +1,5 @@
 /* ============================================================
-   SPACEBORN ROBOTICS — main.js
+   CERTANITY ROBOTICS — main.js
    Vanilla JS — No jQuery
    ============================================================ */
 
@@ -100,18 +100,22 @@ function switchTab(tab) {
   const tabRegister  = document.getElementById('tabRegister');
   const tagline      = document.getElementById('modalTagline');
 
-  if (tab === 'login') {
-    loginForm.classList.remove('hidden');
-    registerForm.classList.add('hidden');
-    tabLogin.classList.add('active');
-    tabRegister.classList.remove('active');
-    if (tagline) tagline.textContent = 'Welcome back, pilot.';
+  if (loginForm) {
+    if (tab === 'login') {
+      loginForm.classList.remove('hidden');
+      if (registerForm) registerForm.classList.add('hidden');
+      if (tabLogin) tabLogin.classList.add('active');
+      if (tabRegister) tabRegister.classList.remove('active');
+      if (tagline) tagline.textContent = 'Welcome back, pilot.';
+    } else {
+      loginForm.classList.add('hidden');
+      if (registerForm) registerForm.classList.remove('hidden');
+      if (tabLogin) tabLogin.classList.remove('active');
+      if (tabRegister) tabRegister.classList.add('active');
+      if (tagline) tagline.textContent = 'Join thousands of drone engineers.';
+    }
   } else {
-    loginForm.classList.add('hidden');
-    registerForm.classList.remove('hidden');
-    tabLogin.classList.remove('active');
-    tabRegister.classList.add('active');
-    if (tagline) tagline.textContent = 'Join thousands of drone engineers.';
+    if (tagline) tagline.textContent = 'Welcome back, pilot.';
   }
 }
 window.switchTab = switchTab;
@@ -130,17 +134,19 @@ function showMsg(el, msg, type = 'success') {
 }
 
 // Client-side password match validation before PHP submission
-document.getElementById('registerForm').addEventListener('submit', e => {
-  const fd   = new FormData(e.target);
-  const pwd  = fd.get('password');
-  const cpwd = fd.get('confirm_password');
-  const msgEl = document.getElementById('registerMsg');
-  if (pwd !== cpwd) {
-    e.preventDefault();
-    showMsg(msgEl, 'Passwords do not match.', 'error');
-  }
-  // If passwords match, form submits normally to /register.php
-});
+const regFormEl = document.getElementById('registerForm');
+if (regFormEl) {
+  regFormEl.addEventListener('submit', e => {
+    const fd   = new FormData(e.target);
+    const pwd  = fd.get('password');
+    const cpwd = fd.get('confirm_password');
+    const msgEl = document.getElementById('registerMsg');
+    if (pwd !== cpwd) {
+      e.preventDefault();
+      showMsg(msgEl, 'Passwords do not match.', 'error');
+    }
+  });
+}
 
 /* -------------------------------------------------------
    5b. PASSWORD SHOW / HIDE TOGGLE
