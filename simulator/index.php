@@ -17,15 +17,15 @@ $wallet = (float) ($user['wallet_balance'] ?? 0.0);
 $runPlan = strtoupper(trim((string) ($_GET['plan'] ?? '')));
 
 $planFiles = [
-    'BASIC' => 'basic.html',
-    'PRO'   => 'pro.html',
-    'MAX'   => 'max.html',
+    'BASIC' => 'basic.php',
+    'PRO'   => 'pro.php',
+    'MAX'   => 'max.php',
 ];
 
 $planIdFiles = [
-    1 => 'basic.html',
-    2 => 'pro.html',
-    3 => 'max.html',
+    1 => 'basic.php',
+    2 => 'pro.php',
+    3 => 'max.php',
 ];
 
 // Active subscription → open matching tier simulator
@@ -47,6 +47,6 @@ if ($planId <= 0 && $wallet <= 0) {
 }
 
 // Wallet balance but no plan chosen yet — Free zone (bypasses picker)
-header('Location: basic.html?run_plan=FREE&ppm=0.10');
+header('Location: basic.php?run_plan=FREE&ppm=0.10');
 exit;
 

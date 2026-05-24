@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../auth/session_guard.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -4210,7 +4211,17 @@ window.addEventListener('DOMContentLoaded', () => {
     if (modal) modal.style.display = 'flex';
   };
 
+  let isExiting = false;
   window.exitSimulation = function() {
+    if (isExiting) return;
+    isExiting = true;
+    
+    const btn = document.getElementById('exit-sim-btn');
+    if (btn) {
+      btn.innerHTML = '⏳ Exiting...';
+      btn.disabled = true;
+    }
+    
     let droneName = 'Unknown Drone';
     const profileEl = document.getElementById('drone-profile-label');
     if (profileEl) droneName = profileEl.innerText;
@@ -4268,16 +4279,25 @@ window.addEventListener('DOMContentLoaded', () => {
                  cloudTelemetryUrl = data.publicUrl;
                  if (typeof UI !== 'undefined' && UI.toast) UI.toast('✅ Telemetry saved to Cloudflare!');
                  else alert('✅ Telemetry saved to Cloudflare!');
+              } else {
+                 res.text().then(errText => {
+                   console.error('R2 upload failed:', errText);
+                   alert('R2 Upload failed: ' + res.status + ' ' + res.statusText + '\nDetails: ' + errText);
+                 });
               }
+           }).catch(err => {
+              console.error('Upload network error:', err);
+              alert('Network/CORS error uploading to R2. Please check CORS settings on your bucket.');
            }).finally(() => {
               if (btn) btn.innerHTML = '☁️ Cloud Save';
            });
         } else {
            if (btn) btn.innerHTML = '☁️ Cloud Save';
-           alert('Failed to get Cloudflare URL');
+           alert('Failed to get Cloudflare URL: ' + (data.message || data.error));
         }
-      }).catch(() => {
+      }).catch(err => {
          if (btn) btn.innerHTML = '☁️ Cloud Save';
+         alert('Error fetching pre-signed URL: ' + err.message);
       });
   };
 

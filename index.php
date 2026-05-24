@@ -1,3 +1,9 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$isLoggedIn = isset($_SESSION['id']) && isset($_SESSION['email']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -201,8 +207,13 @@
       <a href="#about">About</a>
     </nav>
     <div class="nav-cta">
-      <button class="btn-outlined" id="loginBtn">Sign In</button>
-      <button class="btn-primary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Get Started</button>
+      <?php if ($isLoggedIn): ?>
+        <a href="dashboard.php" class="btn-primary" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">Go to Dashboard</a>
+        <a href="auth/logout.php" class="btn-outlined" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">Sign Out</a>
+      <?php else: ?>
+        <button class="btn-outlined" id="loginBtn">Sign In</button>
+        <button class="btn-primary" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Get Started</button>
+      <?php endif; ?>
     </div>
     <button class="hamburger" id="hamburger" aria-label="Toggle menu">
       <span></span><span></span><span></span>
@@ -421,7 +432,7 @@
     </div>
     <div class="pricing-cards">
       <div class="pricing-card neu-raised fade-in">
-        <div class="plan-name">BASIS</div>
+        <div class="plan-name">BASIC</div>
         <div class="plan-price" data-monthly="$1 / 1 Hour" data-payg="$1 / 1 Hour">$1 <span>/ 1 Hour</span></div>
         <ul class="plan-features">
           <li><span class="feat-yes">✓</span> 1-hour access window</li>
@@ -432,7 +443,11 @@
           <li><span class="feat-no">✗</span> PID export</li>
           <li><span class="feat-no">✗</span> MAVLink stream</li>
         </ul>
-        <button class="btn-outlined plan-cta" onclick="openModal('login')">Start Here</button>
+        <?php if ($isLoggedIn): ?>
+          <a href="billing.php" class="btn-outlined plan-cta" style="text-decoration:none; display:block; text-align:center;">Select Plan</a>
+        <?php else: ?>
+          <button class="btn-outlined plan-cta" onclick="openModal('login')">Start Here</button>
+        <?php endif; ?>
       </div>
       <div class="pricing-card neu-raised elevated fade-in">
         <div class="plan-name">PRO</div>
@@ -446,7 +461,11 @@
           <li><span class="feat-yes">✓</span> Read-only MAVLink</li>
           <li><span class="feat-no">✗</span> Full data export</li>
         </ul>
-        <button class="btn-outlined plan-cta" onclick="openModal('login')">Get Started</button>
+        <?php if ($isLoggedIn): ?>
+          <a href="billing.php" class="btn-outlined plan-cta" style="text-decoration:none; display:block; text-align:center;">Select Plan</a>
+        <?php else: ?>
+          <button class="btn-outlined plan-cta" onclick="openModal('login')">Get Started</button>
+        <?php endif; ?>
       </div>
       <div class="pricing-card neu-raised featured fade-in">
         <div class="plan-badge">MOST POPULAR</div>
@@ -464,7 +483,11 @@
           <li><span class="feat-yes">✓</span> Full HUD + joystick</li>
           <li><span class="feat-yes">✓</span> Priority email support</li>
         </ul>
-        <button class="btn-primary plan-cta" onclick="openModal('login')">Get Started</button>
+        <?php if ($isLoggedIn): ?>
+          <a href="billing.php" class="btn-primary plan-cta" style="text-decoration:none; display:block; text-align:center;">Select Plan</a>
+        <?php else: ?>
+          <button class="btn-primary plan-cta" onclick="openModal('login')">Get Started</button>
+        <?php endif; ?>
         <p class="plan-callout">Less than one cup of coffee per day. Less than one cheap propeller set.</p>
       </div>
     </div>

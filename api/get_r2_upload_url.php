@@ -18,6 +18,7 @@ try {
     $s3Client = new S3Client([
         'region' => 'auto',
         'endpoint' => $_ENV['R2_ENDPOINT'],
+        'use_path_style_endpoint' => true,
         'version' => 'latest',
         'credentials' => [
             'key' => $_ENV['R2_ACCESS_KEY_ID'],
