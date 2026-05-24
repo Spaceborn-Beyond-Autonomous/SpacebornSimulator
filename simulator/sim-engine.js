@@ -42,39 +42,39 @@
 
 /* ─── Vector3 Math ─── */
 const V3 = {
-  add:   (a, b) => ({ x: a.x+b.x, y: a.y+b.y, z: a.z+b.z }),
-  sub:   (a, b) => ({ x: a.x-b.x, y: a.y-b.y, z: a.z-b.z }),
-  scale: (a, s) => ({ x: a.x*s,   y: a.y*s,   z: a.z*s   }),
-  dot:   (a, b) => a.x*b.x + a.y*b.y + a.z*b.z,
-  cross: (a, b) => ({ x: a.y*b.z-a.z*b.y, y: a.z*b.x-a.x*b.z, z: a.x*b.y-a.y*b.x }),
-  len:   (a)    => Math.hypot(a.x, a.y, a.z),
-  len2:  (a)    => a.x*a.x + a.y*a.y + a.z*a.z,
-  norm:  (a)    => { const l=Math.hypot(a.x,a.y,a.z)||1; return {x:a.x/l,y:a.y/l,z:a.z/l}; },
-  clone: (a)    => ({ x: a.x, y: a.y, z: a.z }),
-  zero:  ()     => ({ x: 0, y: 0, z: 0 }),
-  lerp:  (a,b,t)=> ({ x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t, z:a.z+(b.z-a.z)*t }),
+  add: (a, b) => ({ x: a.x + b.x, y: a.y + b.y, z: a.z + b.z }),
+  sub: (a, b) => ({ x: a.x - b.x, y: a.y - b.y, z: a.z - b.z }),
+  scale: (a, s) => ({ x: a.x * s, y: a.y * s, z: a.z * s }),
+  dot: (a, b) => a.x * b.x + a.y * b.y + a.z * b.z,
+  cross: (a, b) => ({ x: a.y * b.z - a.z * b.y, y: a.z * b.x - a.x * b.z, z: a.x * b.y - a.y * b.x }),
+  len: (a) => Math.hypot(a.x, a.y, a.z),
+  len2: (a) => a.x * a.x + a.y * a.y + a.z * a.z,
+  norm: (a) => { const l = Math.hypot(a.x, a.y, a.z) || 1; return { x: a.x / l, y: a.y / l, z: a.z / l }; },
+  clone: (a) => ({ x: a.x, y: a.y, z: a.z }),
+  zero: () => ({ x: 0, y: 0, z: 0 }),
+  lerp: (a, b, t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, z: a.z + (b.z - a.z) * t }),
 };
 
 /* ─── Quaternion Math ─── */
 const Q = {
-  id:   () => ({ w:1, x:0, y:0, z:0 }),
+  id: () => ({ w: 1, x: 0, y: 0, z: 0 }),
   // [FIX-1.1] norm called every substep not just on overflow
-  norm: (q) => { const l=Math.hypot(q.w,q.x,q.y,q.z)||1; return {w:q.w/l,x:q.x/l,y:q.y/l,z:q.z/l}; },
-  conj: (q) => ({ w:q.w, x:-q.x, y:-q.y, z:-q.z }),
+  norm: (q) => { const l = Math.hypot(q.w, q.x, q.y, q.z) || 1; return { w: q.w / l, x: q.x / l, y: q.y / l, z: q.z / l }; },
+  conj: (q) => ({ w: q.w, x: -q.x, y: -q.y, z: -q.z }),
   // Hamilton product — verified sign convention
-  mul:  (a,b) => ({
-    w: a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z,
-    x: a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
-    y: a.w*b.y - a.x*b.z + a.y*b.w + a.z*b.x,
-    z: a.w*b.z + a.x*b.y - a.y*b.x + a.z*b.w,
+  mul: (a, b) => ({
+    w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,
+    x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+    y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+    z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,
   }),
   /** Rotate vector v by quaternion q (body→world): v' = q⊗[0,v]⊗q* */
   rotVec: (q, v) => {
     // Rodrigues formula: v' = v + 2w(q×v) + 2(q×(q×v))
-    const u  = { x:q.x, y:q.y, z:q.z };
+    const u = { x: q.x, y: q.y, z: q.z };
     const uv = V3.cross(u, v);
-    const uuv= V3.cross(u, uv);
-    return { x:v.x+2*(q.w*uv.x+uuv.x), y:v.y+2*(q.w*uv.y+uuv.y), z:v.z+2*(q.w*uv.z+uuv.z) };
+    const uuv = V3.cross(u, uv);
+    return { x: v.x + 2 * (q.w * uv.x + uuv.x), y: v.y + 2 * (q.w * uv.y + uuv.y), z: v.z + 2 * (q.w * uv.z + uuv.z) };
   },
   /** Rotate vector v by conjugate of q (world→body) */
   invRotVec: (q, v) => Q.rotVec(Q.conj(q), v),
@@ -85,12 +85,12 @@ const Q = {
    */
   integrate: (q, omega, dt) => {
     // First-order Euler: q_new = q + q̇·dt = q + ½(q⊗ω_quat)·dt
-    const wx=omega.x*dt*0.5, wy=omega.y*dt*0.5, wz=omega.z*dt*0.5;
+    const wx = omega.x * dt * 0.5, wy = omega.y * dt * 0.5, wz = omega.z * dt * 0.5;
     return Q.norm({
-      w: q.w - q.x*wx - q.y*wy - q.z*wz,
-      x: q.x + q.w*wx + q.y*wz - q.z*wy,
-      y: q.y + q.w*wy + q.z*wx - q.x*wz,
-      z: q.z + q.w*wz + q.x*wy - q.y*wx,
+      w: q.w - q.x * wx - q.y * wy - q.z * wz,
+      x: q.x + q.w * wx + q.y * wz - q.z * wy,
+      y: q.y + q.w * wy + q.z * wx - q.x * wz,
+      z: q.z + q.w * wz + q.x * wy - q.y * wx,
     });
   },
   /**
@@ -100,15 +100,15 @@ const Q = {
    */
   toEuler: (q) => {
     // Roll (rotation about Z-axis in body frame)
-    const sinr_cosp = 2*(q.w*q.z + q.x*q.y);
-    const cosr_cosp = 1 - 2*(q.y*q.y + q.z*q.z);
+    const sinr_cosp = 2 * (q.w * q.z + q.x * q.y);
+    const cosr_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
     const roll = Math.atan2(sinr_cosp, cosr_cosp);
     // Pitch (rotation about X-axis)
-    const sinp = 2*(q.w*q.x - q.y*q.z);
-    const pitch = Math.abs(sinp)>=1 ? Math.sign(sinp)*(Math.PI/2) : Math.asin(sinp);
+    const sinp = 2 * (q.w * q.x - q.y * q.z);
+    const pitch = Math.abs(sinp) >= 1 ? Math.sign(sinp) * (Math.PI / 2) : Math.asin(sinp);
     // Yaw (rotation about Y-axis)
-    const siny_cosp = 2*(q.w*q.y + q.z*q.x);
-    const cosy_cosp = 1 - 2*(q.x*q.x + q.z*q.z);
+    const siny_cosp = 2 * (q.w * q.y + q.z * q.x);
+    const cosy_cosp = 1 - 2 * (q.x * q.x + q.z * q.z);
     const yaw = Math.atan2(siny_cosp, cosy_cosp);
     return { roll, pitch, yaw };
   },
@@ -118,30 +118,30 @@ const Q = {
 const Noise = {
   _p: [],
   _init() {
-    const arr=[]; for(let i=0;i<256;i++) arr.push(i);
-    for(let i=255;i>0;i--){const j=(Math.random()*(i+1))|0;[arr[i],arr[j]]=[arr[j],arr[i]];}
-    this._p=[...arr,...arr];
+    const arr = []; for (let i = 0; i < 256; i++) arr.push(i);
+    for (let i = 255; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0;[arr[i], arr[j]] = [arr[j], arr[i]]; }
+    this._p = [...arr, ...arr];
   },
-  _fade(t){return t*t*t*(t*(t*6-15)+10);},
-  _lerp(a,b,t){return a+t*(b-a);},
-  _grad(h,x,y,z){h&=15;const u=h<8?x:y,v=h<4?y:(h===12||h===14)?x:z;return((h&1)?-u:u)+((h&2)?-v:v);},
-  n(x,y,z){
-    if(!this._p.length)this._init();
-    const p=this._p;
-    const xi=Math.floor(x)&255,yi=Math.floor(y)&255,zi=Math.floor(z)&255;
-    const xf=x-Math.floor(x),yf=y-Math.floor(y),zf=z-Math.floor(z);
-    const u=this._fade(xf),v=this._fade(yf),w=this._fade(zf);
-    const A=p[xi]+yi,AA=p[A]+zi,AB=p[A+1]+zi,B=p[xi+1]+yi,BA=p[B]+zi,BB=p[B+1]+zi;
+  _fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); },
+  _lerp(a, b, t) { return a + t * (b - a); },
+  _grad(h, x, y, z) { h &= 15; const u = h < 8 ? x : y, v = h < 4 ? y : (h === 12 || h === 14) ? x : z; return ((h & 1) ? -u : u) + ((h & 2) ? -v : v); },
+  n(x, y, z) {
+    if (!this._p.length) this._init();
+    const p = this._p;
+    const xi = Math.floor(x) & 255, yi = Math.floor(y) & 255, zi = Math.floor(z) & 255;
+    const xf = x - Math.floor(x), yf = y - Math.floor(y), zf = z - Math.floor(z);
+    const u = this._fade(xf), v = this._fade(yf), w = this._fade(zf);
+    const A = p[xi] + yi, AA = p[A] + zi, AB = p[A + 1] + zi, B = p[xi + 1] + yi, BA = p[B] + zi, BB = p[B + 1] + zi;
     return this._lerp(
-      this._lerp(this._lerp(this._grad(p[AA],xf,yf,zf),this._grad(p[BA],xf-1,yf,zf),u),this._lerp(this._grad(p[AB],xf,yf-1,zf),this._grad(p[BB],xf-1,yf-1,zf),u),v),
-      this._lerp(this._lerp(this._grad(p[AA+1],xf,yf,zf-1),this._grad(p[BA+1],xf-1,yf,zf-1),u),this._lerp(this._grad(p[AB+1],xf,yf-1,zf-1),this._grad(p[BB+1],xf-1,yf-1,zf-1),u),v),
+      this._lerp(this._lerp(this._grad(p[AA], xf, yf, zf), this._grad(p[BA], xf - 1, yf, zf), u), this._lerp(this._grad(p[AB], xf, yf - 1, zf), this._grad(p[BB], xf - 1, yf - 1, zf), u), v),
+      this._lerp(this._lerp(this._grad(p[AA + 1], xf, yf, zf - 1), this._grad(p[BA + 1], xf - 1, yf, zf - 1), u), this._lerp(this._grad(p[AB + 1], xf, yf - 1, zf - 1), this._grad(p[BB + 1], xf - 1, yf - 1, zf - 1), u), v),
       w
     );
   },
-  fbm(x,y,z,oct=4,pers=0.5,lac=2.0){
-    let v=0,amp=1,freq=1,max=0;
-    for(let i=0;i<oct;i++){v+=this.n(x*freq,y*freq,z*freq)*amp;max+=amp;amp*=pers;freq*=lac;}
-    return v/max;
+  fbm(x, y, z, oct = 4, pers = 0.5, lac = 2.0) {
+    let v = 0, amp = 1, freq = 1, max = 0;
+    for (let i = 0; i < oct; i++) { v += this.n(x * freq, y * freq, z * freq) * amp; max += amp; amp *= pers; freq *= lac; }
+    return v / max;
   },
 };
 Noise._init();
@@ -152,13 +152,13 @@ Noise._init();
  * Reference: MIL-HDBK-1797, Chalk & Squire (1981) eqs 12-14
  */
 const DRYDEN = {
-  _u:0, _v:0, _w:0, _dw:0,
+  _u: 0, _v: 0, _w: 0, _dw: 0,
   intensity: 0,
   update(dt, altAGL) {
-    if(this.intensity<=0.001){this._u=this._v=this._w=this._dw=0;return;}
+    if (this.intensity <= 0.001) { this._u = this._v = this._w = this._dw = 0; return; }
     const h = Math.max(0.5, altAGL);
     // MIL-HDBK-1797 Table 3: horizontal scale length Lu
-    const Lu = h / Math.pow(0.177 + 0.000823*h, 1.2); // Chalk & Squire eq.12
+    const Lu = h / Math.pow(0.177 + 0.000823 * h, 1.2); // Chalk & Squire eq.12
     // [FIX-6.3] Vertical scale length = h (not Lu) — MIL-HDBK-1797 §3.7.2.1
     const Lw = h;
     const sigma = this.intensity * 6.5;
@@ -166,23 +166,23 @@ const DRYDEN = {
     const au = Vu / Lu;
     const aw = Vu / Lw;  // [FIX-6.3] was Vu/h (same), now explicit via Lw
     const inv = 1 / Math.sqrt(Math.max(dt, 1e-5));
-    const wu = (Math.random()-0.5)*2*inv;
-    const wv = (Math.random()-0.5)*2*inv;
-    const ww = (Math.random()-0.5)*2*inv;
+    const wu = (Math.random() - 0.5) * 2 * inv;
+    const wv = (Math.random() - 0.5) * 2 * inv;
+    const ww = (Math.random() - 0.5) * 2 * inv;
     // First-order filters for u and v (Chalk & Squire eq.12)
-    this._u += (-au*this._u + sigma*Math.sqrt(2*au)*wu) * dt;
-    this._v += (-au*this._v + sigma*0.85*Math.sqrt(2*au)*wv) * dt;
+    this._u += (-au * this._u + sigma * Math.sqrt(2 * au) * wu) * dt;
+    this._v += (-au * this._v + sigma * 0.85 * Math.sqrt(2 * au) * wv) * dt;
     // [FIX-6.3] Second-order filter for w (Chalk & Squire eqs 13-14)
     // d²w/dt² + 2·aw·dw/dt + aw²·w = σ·√3·aw²·n(t)
-    this._dw += (-2*aw*this._dw - aw*aw*this._w + sigma*Math.sqrt(3)*aw*aw*ww) * dt;
-    this._w  += this._dw * dt;
+    this._dw += (-2 * aw * this._dw - aw * aw * this._w + sigma * Math.sqrt(3) * aw * aw * ww) * dt;
+    this._w += this._dw * dt;
     // Clamp to 3.5σ
     const mx = sigma * 3.5;
     this._u = Math.max(-mx, Math.min(mx, this._u));
     this._v = Math.max(-mx, Math.min(mx, this._v));
     this._w = Math.max(-mx, Math.min(mx, this._w));
   },
-  get(){ return {x:this._v, y:this._w, z:this._u}; },
+  get() { return { x: this._v, y: this._w, z: this._u }; },
 };
 
 /**
@@ -190,23 +190,23 @@ const DRYDEN = {
  * [FIX-2.4] Conditional integration anti-windup: iErr only accumulates when output is NOT saturated
  */
 class PID {
-  constructor(p,i,d,iLimit=50,dCutoffHz=30){
-    this.p=p; this.i=i; this.d=d;
-    this.iLimit=iLimit; this.dCutoffHz=dCutoffHz;
-    this.iErr=0; this.prevMeas=0; this.dFilt=0; this._first=true;
-    this._lastOutput=0; this._outLimit=Infinity;
+  constructor(p, i, d, iLimit = 50, dCutoffHz = 30) {
+    this.p = p; this.i = i; this.d = d;
+    this.iLimit = iLimit; this.dCutoffHz = dCutoffHz;
+    this.iErr = 0; this.prevMeas = 0; this.dFilt = 0; this._first = true;
+    this._lastOutput = 0; this._outLimit = Infinity;
   }
-  reset(){this.iErr=0; this.prevMeas=0; this.dFilt=0; this._first=true; this._lastOutput=0;}
+  reset() { this.iErr = 0; this.prevMeas = 0; this.dFilt = 0; this._first = true; this._lastOutput = 0; }
 
-  update(setpoint, measured, dt){
-    if(dt<=0) return 0;
-    if(this._first){this.prevMeas=measured; this._first=false;}
+  update(setpoint, measured, dt) {
+    if (dt <= 0) return 0;
+    if (this._first) { this.prevMeas = measured; this._first = false; }
     const err = setpoint - measured;
     // [FIX-2.4] Conditional integration: only wind up if output was NOT saturated last step
     const saturated = Math.abs(this._lastOutput) >= this._outLimit * 0.98;
     const integrateOk = !saturated || (err * Math.sign(this._lastOutput) < 0);
-    if(integrateOk){
-      this.iErr = Math.max(-this.iLimit, Math.min(this.iLimit, this.iErr + err*dt));
+    if (integrateOk) {
+      this.iErr = Math.max(-this.iLimit, Math.min(this.iLimit, this.iErr + err * dt));
     }
     // Derivative on measurement (not error) — avoids derivative kick on setpoint changes
     const dMeas = (measured - this.prevMeas) / dt;
@@ -214,7 +214,7 @@ class PID {
     const alpha = 1 - Math.exp(-2 * Math.PI * this.dCutoffHz * dt);
     this.dFilt += alpha * (dMeas - this.dFilt);
     this.prevMeas = measured;
-    this._lastOutput = this.p*err + this.i*this.iErr - this.d*this.dFilt;
+    this._lastOutput = this.p * err + this.i * this.iErr - this.d * this.dFilt;
     return this._lastOutput;
   }
 }
@@ -223,9 +223,9 @@ class PID {
 class Kalman1D {
   // [FIX-3.4] Q and R were inverted in original — Q=process noise, R=measurement noise
   // Correct: Q_baro=0.005 (process), R_baro=0.08 (measurement)
-  constructor(Q=0.005, R=0.08){this.Q=Q; this.R=R; this.x=0; this.P=1; this._init=false;}
-  update(z){
-    if(!this._init){this.x=z; this._init=true; return z;}
+  constructor(Q = 0.005, R = 0.08) { this.Q = Q; this.R = R; this.x = 0; this.P = 1; this._init = false; }
+  update(z) {
+    if (!this._init) { this.x = z; this._init = true; return z; }
     this.P += this.Q;                         // predict
     const K = this.P / (this.P + this.R);     // Kalman gain
     this.x += K * (z - this.x);              // update
@@ -237,174 +237,174 @@ class Kalman1D {
 /* ─── Drone Profiles ─── */
 const DRONE_PROFILES = {
   racing5: {
-    label:'5\" Racing Quad', mass:1.24,
-    Ixx:0.006, Iyy:0.011, Izz:0.006, armLen:0.19,
-    kT:1.04e-5, kQ:1.55e-7, maxRPM:14000, idleRPM:500,
-    motorTau:0.055, escDelay:0.012,
-    dragArea:0.022, dragCd:1.12, angDrag:0.0028,
-    cells:4, battTotalAh:1.65,
-    color:0x1e88e5, bodyScale:1.0, rotorRadius:0.09,
-    maxTiltDeg:55, maxRate:{pitch:10, roll:10, yaw:4.5},
-    propInertia:2.5e-5, Cqlift:0.015,
+    label: '5\" Racing Quad', mass: 1.24,
+    Ixx: 0.006, Iyy: 0.011, Izz: 0.006, armLen: 0.19,
+    kT: 1.04e-5, kQ: 1.55e-7, maxRPM: 14000, idleRPM: 500,
+    motorTau: 0.055, escDelay: 0.012,
+    dragArea: 0.022, dragCd: 1.12, angDrag: 0.0028,
+    cells: 4, battTotalAh: 1.65,
+    color: 0x1e88e5, bodyScale: 1.0, rotorRadius: 0.09,
+    maxTiltDeg: 55, maxRate: { pitch: 10, roll: 10, yaw: 4.5 },
+    propInertia: 2.5e-5, Cqlift: 0.015,
   },
   cinequad: {
-    label:'CineQuad 4S', mass:2.85,
-    Ixx:0.032, Iyy:0.058, Izz:0.032, armLen:0.27,
-    kT:1.18e-5, kQ:2.2e-7, maxRPM:9500, idleRPM:450,
-    motorTau:0.09, escDelay:0.018,
-    dragArea:0.038, dragCd:1.05, angDrag:0.0045,
-    cells:4, battTotalAh:5.2,
-    color:0xffc107, bodyScale:1.1, rotorRadius:0.11,
-    maxTiltDeg:35, maxRate:{pitch:6, roll:6, yaw:2.5},
-    propInertia:6.5e-5, Cqlift:0.018,
+    label: 'CineQuad 4S', mass: 2.85,
+    Ixx: 0.032, Iyy: 0.058, Izz: 0.032, armLen: 0.27,
+    kT: 1.18e-5, kQ: 2.2e-7, maxRPM: 9500, idleRPM: 450,
+    motorTau: 0.09, escDelay: 0.018,
+    dragArea: 0.038, dragCd: 1.05, angDrag: 0.0045,
+    cells: 4, battTotalAh: 5.2,
+    color: 0xffc107, bodyScale: 1.1, rotorRadius: 0.11,
+    maxTiltDeg: 35, maxRate: { pitch: 6, roll: 6, yaw: 2.5 },
+    propInertia: 6.5e-5, Cqlift: 0.018,
   },
   micro2: {
-    label:'Micro 2S Quad', mass:0.34,
-    Ixx:0.0013, Iyy:0.0021, Izz:0.0013, armLen:0.09,
-    kT:6.8e-6, kQ:8.5e-8, maxRPM:22000, idleRPM:1200,
-    motorTau:0.045, escDelay:0.008,
-    dragArea:0.013, dragCd:1.18, angDrag:0.0012,
-    cells:2, battTotalAh:0.45,
-    color:0x43a047, bodyScale:0.75, rotorRadius:0.055,
-    maxTiltDeg:65, maxRate:{pitch:18, roll:18, yaw:8},
-    propInertia:8e-6, Cqlift:0.012,
+    label: 'Micro 2S Quad', mass: 0.34,
+    Ixx: 0.0013, Iyy: 0.0021, Izz: 0.0013, armLen: 0.09,
+    kT: 6.8e-6, kQ: 8.5e-8, maxRPM: 22000, idleRPM: 1200,
+    motorTau: 0.045, escDelay: 0.008,
+    dragArea: 0.013, dragCd: 1.18, angDrag: 0.0012,
+    cells: 2, battTotalAh: 0.45,
+    color: 0x43a047, bodyScale: 0.75, rotorRadius: 0.055,
+    maxTiltDeg: 65, maxRate: { pitch: 18, roll: 18, yaw: 8 },
+    propInertia: 8e-6, Cqlift: 0.012,
   },
   explorer6: {
-    label:'Explorer 6\" Hover', mass:1.68,
-    Ixx:0.011, Iyy:0.019, Izz:0.011, armLen:0.22,
-    kT:1.08e-5, kQ:1.7e-7, maxRPM:12000, idleRPM:350,
-    motorTau:0.07, escDelay:0.015,
-    dragArea:0.030, dragCd:1.08, angDrag:0.0032,
-    cells:4, battTotalAh:2.8,
-    color:0x8e24aa, bodyScale:1.05, rotorRadius:0.1,
-    maxTiltDeg:40, maxRate:{pitch:8, roll:8, yaw:3},
-    propInertia:4e-5, Cqlift:0.016,
+    label: 'Explorer 6\" Hover', mass: 1.68,
+    Ixx: 0.011, Iyy: 0.019, Izz: 0.011, armLen: 0.22,
+    kT: 1.08e-5, kQ: 1.7e-7, maxRPM: 12000, idleRPM: 350,
+    motorTau: 0.07, escDelay: 0.015,
+    dragArea: 0.030, dragCd: 1.08, angDrag: 0.0032,
+    cells: 4, battTotalAh: 2.8,
+    color: 0x8e24aa, bodyScale: 1.05, rotorRadius: 0.1,
+    maxTiltDeg: 40, maxRate: { pitch: 8, roll: 8, yaw: 3 },
+    propInertia: 4e-5, Cqlift: 0.016,
   },
 };
 
 /* ─── Physics Engine ─── */
 const PHYS = {
   GRAVITY: 9.80665,
-  mass:1.24, Ixx:0.006, Iyy:0.011, Izz:0.006,
-  armLen:0.19, kT:1.04e-5, kQ:1.55e-7,
-  maxRPM:14000, idleRPM:500,
-  motorTau:0.055, escDelay:0.012,
-  dragArea:0.022, dragCd:1.12, angDrag:0.0028,
-  airDens:1.225,
-  cells:4, battTotalAh:1.65,
-  propInertia:2.5e-5, Cqlift:0.015,
-  droneProfile:'racing5',
-  droneVisual:{bodyScale:1, rotorRadius:0.09, color:0x1e88e5},
-  maxTiltRad:(55*Math.PI)/180,
-  maxRate:{pitch:10, roll:10, yaw:4.5},
+  mass: 1.24, Ixx: 0.006, Iyy: 0.011, Izz: 0.006,
+  armLen: 0.19, kT: 1.04e-5, kQ: 1.55e-7,
+  maxRPM: 14000, idleRPM: 500,
+  motorTau: 0.055, escDelay: 0.012,
+  dragArea: 0.022, dragCd: 1.12, angDrag: 0.0028,
+  airDens: 1.225,
+  cells: 4, battTotalAh: 1.65,
+  propInertia: 2.5e-5, Cqlift: 0.015,
+  droneProfile: 'racing5',
+  droneVisual: { bodyScale: 1, rotorRadius: 0.09, color: 0x1e88e5 },
+  maxTiltRad: (55 * Math.PI) / 180,
+  maxRate: { pitch: 10, roll: 10, yaw: 4.5 },
   // Quad-X motor directions: FR(CW)=+1, FL(CCW)=-1, BL(CW)=+1, BR(CCW)=-1
   // [NOTE] CW torque = negative yaw in right-hand Y-up convention
-  motorDir:[1,-1,1,-1],
-  motorLabels:['FR','FL','BL','BR'],
+  motorDir: [1, -1, 1, -1],
+  motorLabels: ['FR', 'FL', 'BL', 'BR'],
 
-  pos:V3.zero(), vel:V3.zero(), acc:V3.zero(),
-  quat:Q.id(), angVel:V3.zero(),
-  gyro:V3.zero(), accelBody:V3.zero(),
+  pos: V3.zero(), vel: V3.zero(), acc: V3.zero(),
+  quat: Q.id(), angVel: V3.zero(),
+  gyro: V3.zero(), accelBody: V3.zero(),
 
-  motorRPM:[0,0,0,0],
-  motorCmd:[0,0,0,0],
-  motorCmdFiltered:[0,0,0,0],
+  motorRPM: [0, 0, 0, 0],
+  motorCmd: [0, 0, 0, 0],
+  motorCmdFiltered: [0, 0, 0, 0],
 
   // [FIX-2.1] FC rate commands stored per substep
-  _fcRateCmd:{pitch:0, roll:0, yaw:0, thr:0},
+  _fcRateCmd: { pitch: 0, roll: 0, yaw: 0, thr: 0 },
 
-  grounded:true, crashed:false,
-  homePos:null, groundY:0, colliders:[],
+  grounded: true, crashed: false,
+  homePos: null, groundY: 0, colliders: [],
 
-  battPct:100, battVoltage:16.8, battCapacity:0, currentDraw:0,
-  euler:{roll:0, pitch:0, yaw:0},
-  windVec:V3.zero(), windGust:0,
-  hoverThrottle:0.5,
-  turbulenceIntensity:0,
+  battPct: 100, battVoltage: 16.8, battCapacity: 0, currentDraw: 0,
+  euler: { roll: 0, pitch: 0, yaw: 0 },
+  windVec: V3.zero(), windGust: 0,
+  hoverThrottle: 0.5,
+  turbulenceIntensity: 0,
 
   // [FIX-3.4] Corrected Kalman Q/R values: Q=process noise, R=measurement noise
   _kAlt: new Kalman1D(0.005, 0.08),
-  _kVy:  new Kalman1D(0.01,  0.15),
+  _kVy: new Kalman1D(0.01, 0.15),
   _altEstimate: 0,
   _baroRaw: 0,
   // [FIX-3.2] Gyro bias random walk state
-  _gyroBias:{x:0, y:0, z:0}, // [FIX-H] was hardcoded non-zero, caused constant false rate in PID
-  _prevPos:V3.zero(), _prevQuat:Q.id(),
+  _gyroBias: { x: 0, y: 0, z: 0 }, // [FIX-H] was hardcoded non-zero, caused constant false rate in PID
+  _prevPos: V3.zero(), _prevQuat: Q.id(),
 
   // Terrain height cache to avoid re-evaluating Perlin every substep — [FIX-Bug-26d]
-  _lastTerrainPos:{x:NaN,z:NaN}, _lastTerrainH:0,
+  _lastTerrainPos: { x: NaN, z: NaN }, _lastTerrainH: 0,
 
-  applyProfile(name){
-    const p=DRONE_PROFILES[name]; if(!p) return;
-    this.droneProfile=name;
-    Object.assign(this,{
-      mass:p.mass, Ixx:p.Ixx, Iyy:p.Iyy, Izz:p.Izz,
-      armLen:p.armLen, kT:p.kT, kQ:p.kQ,
-      maxRPM:p.maxRPM, idleRPM:p.idleRPM,
-      motorTau:p.motorTau, escDelay:p.escDelay,
-      dragArea:p.dragArea, dragCd:p.dragCd, angDrag:p.angDrag,
-      cells:p.cells, battTotalAh:p.battTotalAh,
-      maxTiltRad:((p.maxTiltDeg||55)*Math.PI)/180,
-      maxRate:{...p.maxRate},
-      propInertia:p.propInertia||2.5e-5,
-      Cqlift:p.Cqlift||0.015,
+  applyProfile(name) {
+    const p = DRONE_PROFILES[name]; if (!p) return;
+    this.droneProfile = name;
+    Object.assign(this, {
+      mass: p.mass, Ixx: p.Ixx, Iyy: p.Iyy, Izz: p.Izz,
+      armLen: p.armLen, kT: p.kT, kQ: p.kQ,
+      maxRPM: p.maxRPM, idleRPM: p.idleRPM,
+      motorTau: p.motorTau, escDelay: p.escDelay,
+      dragArea: p.dragArea, dragCd: p.dragCd, angDrag: p.angDrag,
+      cells: p.cells, battTotalAh: p.battTotalAh,
+      maxTiltRad: ((p.maxTiltDeg || 55) * Math.PI) / 180,
+      maxRate: { ...p.maxRate },
+      propInertia: p.propInertia || 2.5e-5,
+      Cqlift: p.Cqlift || 0.015,
     });
-    this.droneVisual={bodyScale:p.bodyScale, rotorRadius:p.rotorRadius, color:p.color};
+    this.droneVisual = { bodyScale: p.bodyScale, rotorRadius: p.rotorRadius, color: p.color };
     this._recomputeHover();
-    const lbl=document.getElementById('drone-profile-label');
-    if(lbl) lbl.textContent=p.label;
-    if(typeof FC!=='undefined') FC.autoTuneFromPhysics();
+    const lbl = document.getElementById('drone-profile-label');
+    if (lbl) lbl.textContent = p.label;
+    if (typeof FC !== 'undefined') FC.autoTuneFromPhysics();
   },
 
-  _recomputeHover(){
+  _recomputeHover() {
     // Hover RPM: 4·kT·ω² = m·g  →  ω = √(mg/(4kT))  →  RPM = ω·60/(2π)
-    const omegaH = Math.sqrt((this.mass*this.GRAVITY)/(4*this.kT));
-    this.hoverRPM = omegaH * 60 / (2*Math.PI);  // [FIX-1.9] consistent RPM↔rad/s
-    this.hoverThrottle = Math.max(0.02, Math.min(0.92, this.hoverRPM/this.maxRPM));
+    const omegaH = Math.sqrt((this.mass * this.GRAVITY) / (4 * this.kT));
+    this.hoverRPM = omegaH * 60 / (2 * Math.PI);  // [FIX-1.9] consistent RPM↔rad/s
+    this.hoverThrottle = Math.max(0.02, Math.min(0.92, this.hoverRPM / this.maxRPM));
   },
 
-  reset(pos){
-    this.pos=pos||{x:0,y:0.15,z:0};
-    this._prevPos=V3.clone(this.pos);
-    this.vel=V3.zero(); this.acc=V3.zero();
-    this.quat=Q.id(); this._prevQuat=Q.id();
-    this.angVel=V3.zero(); this.gyro=V3.zero(); this.accelBody=V3.zero();
-    this.motorRPM=[0,0,0,0]; this.motorCmd=[0,0,0,0]; this.motorCmdFiltered=[0,0,0,0];
-    this._fcRateCmd={pitch:0,roll:0,yaw:0,thr:0};
-    this.grounded=true; this.crashed=false;
-    this.euler={roll:0,pitch:0,yaw:0};
-    this.battPct=100; this.battVoltage=4.2*this.cells; this.battCapacity=0; this.currentDraw=0;
-    this._kAlt=new Kalman1D(0.005,0.08); this._kVy=new Kalman1D(0.01,0.15);
-    this._baroRaw=0;
-    this._gyroBias={x:0,y:0,z:0}; // [FIX-H] reset bias on each flight
-    if(typeof State!=='undefined') State.motorDamage=[0,0,0,0];
+  reset(pos) {
+    this.pos = pos || { x: 0, y: 0.15, z: 0 };
+    this._prevPos = V3.clone(this.pos);
+    this.vel = V3.zero(); this.acc = V3.zero();
+    this.quat = Q.id(); this._prevQuat = Q.id();
+    this.angVel = V3.zero(); this.gyro = V3.zero(); this.accelBody = V3.zero();
+    this.motorRPM = [0, 0, 0, 0]; this.motorCmd = [0, 0, 0, 0]; this.motorCmdFiltered = [0, 0, 0, 0];
+    this._fcRateCmd = { pitch: 0, roll: 0, yaw: 0, thr: 0 };
+    this.grounded = true; this.crashed = false;
+    this.euler = { roll: 0, pitch: 0, yaw: 0 };
+    this.battPct = 100; this.battVoltage = 4.2 * this.cells; this.battCapacity = 0; this.currentDraw = 0;
+    this._kAlt = new Kalman1D(0.005, 0.08); this._kVy = new Kalman1D(0.01, 0.15);
+    this._baroRaw = 0;
+    this._gyroBias = { x: 0, y: 0, z: 0 }; // [FIX-H] reset bias on each flight
+    if (typeof State !== 'undefined') State.motorDamage = [0, 0, 0, 0];
     this._recomputeHover();
   },
 
-  saveHome(){ this.homePos=V3.clone(this.pos); },
+  saveHome() { this.homePos = V3.clone(this.pos); },
 
   /** [FIX-1.3] Sanitise all state fields including motorRPM */
-  _sanitize(){
-    const bad=v=>!Number.isFinite(v);
-    if(bad(this.pos.x)||bad(this.pos.y)||bad(this.pos.z)){
-      this.reset({x:0,y:this.groundY+0.2,z:0});
-      if(typeof FC!=='undefined') FC.resetPIDs();
+  _sanitize() {
+    const bad = v => !Number.isFinite(v);
+    if (bad(this.pos.x) || bad(this.pos.y) || bad(this.pos.z)) {
+      this.reset({ x: 0, y: this.groundY + 0.2, z: 0 });
+      if (typeof FC !== 'undefined') FC.resetPIDs();
       return false;
     }
-    if(bad(this.vel.x)||bad(this.vel.y)||bad(this.vel.z)) this.vel=V3.zero();
-    if(bad(this.angVel.x)||bad(this.angVel.y)||bad(this.angVel.z)){this.angVel=V3.zero();this.quat=Q.id();}
-    if(bad(this.quat.w)||bad(this.quat.x)||bad(this.quat.y)||bad(this.quat.z)) this.quat=Q.id();
-    for(let i=0;i<4;i++) if(bad(this.motorRPM[i])) this.motorRPM[i]=0;
+    if (bad(this.vel.x) || bad(this.vel.y) || bad(this.vel.z)) this.vel = V3.zero();
+    if (bad(this.angVel.x) || bad(this.angVel.y) || bad(this.angVel.z)) { this.angVel = V3.zero(); this.quat = Q.id(); }
+    if (bad(this.quat.w) || bad(this.quat.x) || bad(this.quat.y) || bad(this.quat.z)) this.quat = Q.id();
+    for (let i = 0; i < 4; i++) if (bad(this.motorRPM[i])) this.motorRPM[i] = 0;
     return true;
   },
 
   /** ISA standard atmosphere: ρ(h) — ICAO Doc 7488 */
-  _airDensity(alt){
-    const T0=288.15, L=0.0065, P0=101325, R=287.058, g=9.80665;
-    const h=Math.max(0,alt);
-    const T=T0-L*h;
+  _airDensity(alt) {
+    const T0 = 288.15, L = 0.0065, P0 = 101325, R = 287.058, g = 9.80665;
+    const h = Math.max(0, alt);
+    const T = T0 - L * h;
     // ρ = P/(R·T), P = P0·(T/T0)^(g/(L·R))
-    return (P0*Math.pow(T/T0,g/(L*R)))/(R*T);
+    return (P0 * Math.pow(T / T0, g / (L * R))) / (R * T);
   },
 
   /**
@@ -412,11 +412,11 @@ const PHYS = {
    * T = kT·ω²  where ω is in rad/s
    * RPM is only used for UI display; physics uses rad/s
    */
-  _motorThrust(rpmVal){
-    const omega = rpmVal * (2*Math.PI/60);        // RPM → rad/s
+  _motorThrust(rpmVal) {
+    const omega = rpmVal * (2 * Math.PI / 60);        // RPM → rad/s
     const T = this.kT * omega * omega;             // T = kT·ω²  (Leishman 2006 §4.2)
     // Nonlinear saturation at high RPM (blade stall approximation)
-    const sat = 1 - Math.max(0, (rpmVal/this.maxRPM - 0.85)*0.4);
+    const sat = 1 - Math.max(0, (rpmVal / this.maxRPM - 0.85) * 0.4);
     return T * sat;
   },
 
@@ -424,43 +424,43 @@ const PHYS = {
    * [FIX-1.9] Reaction torque — uses rad/s internally
    * Q_react = kQ·ω²  where ω in rad/s
    */
-  _motorTorque(rpmVal){
-    const omega = rpmVal * (2*Math.PI/60);
+  _motorTorque(rpmVal) {
+    const omega = rpmVal * (2 * Math.PI / 60);
     return this.kQ * omega * omega;
   },
 
-  step(dtFull){
-    dtFull=Math.max(0.0005,Math.min(0.04,dtFull));
-    if(!this._sanitize()) return;
-    this._prevPos=V3.clone(this.pos);
-    this._prevQuat={...this.quat};
-    if(this.crashed){this._crashSettle(dtFull); return;}
-    const SUB=4, dt=dtFull/SUB;
-    for(let s=0;s<SUB;s++) this._substep(dt);
+  step(dtFull) {
+    dtFull = Math.max(0.0005, Math.min(0.04, dtFull));
+    if (!this._sanitize()) return;
+    this._prevPos = V3.clone(this.pos);
+    this._prevQuat = { ...this.quat };
+    if (this.crashed) { this._crashSettle(dtFull); return; }
+    const SUB = 4, dt = dtFull / SUB;
+    for (let s = 0; s < SUB; s++) this._substep(dt);
     this._updateSensors(dtFull);
   },
 
-  _substep(dt){
+  _substep(dt) {
     // Battery voltage factor (voltage sag scales motor authority)
     const fullV = this.cells * 4.2;
     const internalR = 0.025 * this.cells;
-    const rawVF = Math.max(0.5, Math.min(1, this.battVoltage/fullV));
+    const rawVF = Math.max(0.5, Math.min(1, this.battVoltage / fullV));
 
     // ── Motor dynamics: first-order lag with asymmetric τ ─────────────────
     // τ·dω/dt = ω_target − ω  (first-order motor model)
-    for(let i=0;i<4;i++){
-      const dmg = (typeof State!=='undefined') ? State.motorDamage[i] : 0;
+    for (let i = 0; i < 4; i++) {
+      const dmg = (typeof State !== 'undefined') ? State.motorDamage[i] : 0;
       // [FIX-1.6] Battery voltage sag reduces available thrust
-      const target = this.motorCmd[i] * (1-dmg) * rawVF;
-      const escA = 1 - Math.exp(-dt/(this.escDelay+0.001));
-      this.motorCmdFiltered[i] += (target-this.motorCmdFiltered[i]) * escA;
+      const target = this.motorCmd[i] * (1 - dmg) * rawVF;
+      const escA = 1 - Math.exp(-dt / (this.escDelay + 0.001));
+      this.motorCmdFiltered[i] += (target - this.motorCmdFiltered[i]) * escA;
       const tRPM = this.motorCmdFiltered[i] * this.maxRPM;
       // Asymmetric τ: spin-up τ, spin-down 1.6τ (ESC/motor characteristic)
-      const tau = tRPM > this.motorRPM[i] ? this.motorTau : this.motorTau*1.6;
-      const rpmA = 1 - Math.exp(-dt/tau);
+      const tau = tRPM > this.motorRPM[i] ? this.motorTau : this.motorTau * 1.6;
+      const rpmA = 1 - Math.exp(-dt / tau);
       this.motorRPM[i] += (tRPM - this.motorRPM[i]) * rpmA;
       // Idle floor when armed
-      const idleFloor = (typeof State!=='undefined'&&State.armed) ? this.idleRPM : 0;
+      const idleFloor = (typeof State !== 'undefined' && State.armed) ? this.idleRPM : 0;
       this.motorRPM[i] = Math.max(idleFloor, Math.min(this.maxRPM, this.motorRPM[i]));
     }
 
@@ -471,7 +471,7 @@ const PHYS = {
     const rhoRatio = rho / 1.225;
 
     const T = this.motorRPM.map(r => this._motorThrust(r) * rhoRatio);
-    const totalThrust = T[0]+T[1]+T[2]+T[3];
+    const totalThrust = T[0] + T[1] + T[2] + T[3];
     const L = this.armLen;
 
     // ── Quad-X torques in body frame ──────────────────────────────────────
@@ -479,10 +479,10 @@ const PHYS = {
     // Motor positions: FR(+X,+Z), FL(-X,+Z), BL(-X,-Z), BR(+X,-Z)
     // Pitch torque (about X-axis): positive = nose up
     // tauPitch = L·( T_BL + T_BR − T_FR − T_FL )
-    const tauPitch = L * (T[2]+T[3] - T[0]-T[1]);
+    const tauPitch = L * (T[2] + T[3] - T[0] - T[1]);
     // Roll torque (about Z-axis): positive = right bank
     // tauRoll = L·( T_FR + T_BR − T_FL − T_BL )
-    const tauRoll  = L * (T[0]+T[3] - T[1]-T[2]);
+    const tauRoll = L * (T[0] + T[3] - T[1] - T[2]);
     // [FIX-1.9] Yaw torque — uses reaction torque (kQ·ω²) with direction sign
     // motorDir: FR=+1(CW), FL=-1(CCW), BL=+1(CW), BR=-1(CCW)
     // CW rotation (looking from above, Y-up) → negative yaw in right-hand convention
@@ -494,31 +494,31 @@ const PHYS = {
     );
 
     // Gyroscopic precession from net propeller angular momentum
-    const omegaNet = this.motorDir.reduce((s,d,i)=>s+d*this.motorRPM[i]*(2*Math.PI/60),0);
+    const omegaNet = this.motorDir.reduce((s, d, i) => s + d * this.motorRPM[i] * (2 * Math.PI / 60), 0);
     const Hgyro = this.propInertia * omegaNet; // angular momentum of spinning props
     // Gyroscopic torques: τ = Ω × H  (cross product of body rate with prop ang. momentum)
     const tauGyroPitch = -this.angVel.z * Hgyro;  // pitch gyro coupling
-    const tauGyroRoll  =  this.angVel.x * Hgyro;  // roll gyro coupling
+    const tauGyroRoll = this.angVel.x * Hgyro;  // roll gyro coupling
 
     // ── Euler rigid body equation ─────────────────────────────────────────
     // dω/dt = I⁻¹·(τ_ext − ω×(I·ω))  (Goldstein 1980, §5.5)
-    const {Ixx,Iyy,Izz} = this;
-    const wx=this.angVel.x, wy=this.angVel.y, wz=this.angVel.z;
+    const { Ixx, Iyy, Izz } = this;
+    const wx = this.angVel.x, wy = this.angVel.y, wz = this.angVel.z;
     // ω × (I·ω) = Magnus/gyroscopic term (prevents gimbal lock behaviour)
-    const gyroX = wy*(Izz*wz) - wz*(Iyy*wy); // [FIX-1.2] Euler body term
-    const gyroY = wz*(Ixx*wx) - wx*(Izz*wz);
-    const gyroZ = wx*(Iyy*wy) - wy*(Ixx*wx);
+    const gyroX = wy * (Izz * wz) - wz * (Iyy * wy); // [FIX-1.2] Euler body term
+    const gyroY = wz * (Ixx * wx) - wx * (Izz * wz);
+    const gyroZ = wx * (Iyy * wy) - wy * (Ixx * wx);
     const ad = this.angDrag;
-    const alphaPitch = (tauPitch + tauGyroPitch - gyroX) / Ixx - ad*wx*Math.abs(wx);
-    const alphaRoll  = (tauRoll  + tauGyroRoll  - gyroZ) / Izz - ad*wz*Math.abs(wz);
-    const alphaYaw   = (tauYaw                  - gyroY) / Iyy - ad*0.7*wy*Math.abs(wy);
+    const alphaPitch = (tauPitch + tauGyroPitch - gyroX) / Ixx - ad * wx * Math.abs(wx);
+    const alphaRoll = (tauRoll + tauGyroRoll - gyroZ) / Izz - ad * wz * Math.abs(wz);
+    const alphaYaw = (tauYaw - gyroY) / Iyy - ad * 0.7 * wy * Math.abs(wy);
 
     // [FIX-1.2] Soft-clamp angular velocity BEFORE integration (was after)
     const mr = this.maxRate;
-    const softClamp = (v,max)=>Math.abs(v)>max ? Math.sign(v)*(max+(Math.abs(v)-max)*0.08) : v;
-    this.angVel.x = softClamp(this.angVel.x + alphaPitch*dt, mr.pitch);
-    this.angVel.z = softClamp(this.angVel.z + alphaRoll *dt, mr.roll);
-    this.angVel.y = softClamp(this.angVel.y + alphaYaw  *dt, mr.yaw);
+    const softClamp = (v, max) => Math.abs(v) > max ? Math.sign(v) * (max + (Math.abs(v) - max) * 0.08) : v;
+    this.angVel.x = softClamp(this.angVel.x + alphaPitch * dt, mr.pitch);
+    this.angVel.z = softClamp(this.angVel.z + alphaRoll * dt, mr.roll);
+    this.angVel.y = softClamp(this.angVel.y + alphaYaw * dt, mr.yaw);
 
     // Integrate quaternion — renormalised every substep [FIX-1.1]
     this.quat = Q.integrate(this.quat, this.angVel, dt);
@@ -527,7 +527,7 @@ const PHYS = {
     // ── [FIX-2.1] Inner rate PID runs at substep rate ─────────────────────
     // FC._fcRateCmd is set by the outer (per-frame) angle loop
     // The inner rate→motor loop runs here at full substep frequency
-    if(typeof FC!=='undefined' && (typeof State==='undefined'||State.armed)){
+    if (typeof FC !== 'undefined' && (typeof State === 'undefined' || State.armed)) {
       const motorCmds = FC._rateLoopSubstep(dt, this._fcRateCmd.thr,
         this._fcRateCmd.pitch, this._fcRateCmd.roll, this._fcRateCmd.yaw);
       this.motorCmd = motorCmds;
@@ -535,16 +535,16 @@ const PHYS = {
 
     // ── Translational dynamics ────────────────────────────────────────────
     // Thrust in world frame: thrust acts along body Y-axis
-    let thrustW = Q.rotVec(this.quat, {x:0, y:totalThrust, z:0});
+    let thrustW = Q.rotVec(this.quat, { x: 0, y: totalThrust, z: 0 });
 
     // [FIX-1.4] Ground Effect — Cheeseman–Bennett 1955, eq.4
     // T_ge = T / (1 − (R/(4h))²)  for h > R/2; no effect for h > 2R
     const hAGL = this.pos.y - this.groundY;
-    const R_prop = (this.droneVisual.rotorRadius||0.09);
-    if(hAGL > R_prop*0.5 && hAGL < R_prop*2){
+    const R_prop = (this.droneVisual.rotorRadius || 0.09);
+    if (hAGL > R_prop * 0.5 && hAGL < R_prop * 2) {
       // Cheeseman–Bennett 1955 eq.4
-      const ratio = R_prop / (4 * Math.max(hAGL, R_prop*0.5));
-      const geGain = 1 / Math.max(0.01, 1 - ratio*ratio);
+      const ratio = R_prop / (4 * Math.max(hAGL, R_prop * 0.5));
+      const geGain = 1 / Math.max(0.01, 1 - ratio * ratio);
       thrustW = V3.scale(thrustW, Math.min(geGain, 2.5)); // cap at 2.5× safety
     }
 
@@ -560,55 +560,55 @@ const PHYS = {
 
     // Aerodynamic drag: F_drag = −½·ρ·Cd·A·|v_rel|²·v̂_rel (in world frame)
     let drag = V3.zero();
-    if(vRelMag > 0.01){
+    if (vRelMag > 0.01) {
       const qDyn = 0.5 * rho * vRelMag * vRelMag; // dynamic pressure [FIX-1.6] uses ISA ρ
-      const tilt = Math.sqrt(this.euler.pitch**2 + this.euler.roll**2);
-      const Cdeff = this.dragCd * (1 + 0.15*Math.sin(Math.abs(this.euler.pitch)) + 0.15*Math.sin(Math.abs(this.euler.roll)));
+      const tilt = Math.sqrt(this.euler.pitch ** 2 + this.euler.roll ** 2);
+      const Cdeff = this.dragCd * (1 + 0.15 * Math.sin(Math.abs(this.euler.pitch)) + 0.15 * Math.sin(Math.abs(this.euler.roll)));
       drag = V3.scale(V3.norm(vRel), -qDyn * this.dragArea * Cdeff);
     }
 
     // Translational damping from rotor edgewise drag (hover stability)
     const transDamp = V3.scale(this.vel, -this.mass * 0.16);
 
-    const gravity = {x:0, y:-this.mass*this.GRAVITY, z:0};
+    const gravity = { x: 0, y: -this.mass * this.GRAVITY, z: 0 };
     const fNet = V3.add(V3.add(V3.add(thrustW, gravity), drag), transDamp);
 
-    this.acc = V3.scale(fNet, 1/this.mass);
+    this.acc = V3.scale(fNet, 1 / this.mass);
     // [FIX-3.3] Store body-frame specific force for IMU simulation (accel output = a − g)
-    const gravWorld = {x:0, y:-this.GRAVITY, z:0};
+    const gravWorld = { x: 0, y: -this.GRAVITY, z: 0 };
     this.accelBody = Q.invRotVec(this.quat, V3.sub(this.acc, gravWorld));
 
     // Velocity Verlet integration
     let v2 = V3.add(this.vel, V3.scale(this.acc, dt));
-    const vl = V3.len(v2); if(vl > 32) v2 = V3.scale(V3.norm(v2), 32);
-    let newPos = V3.add(this.pos, V3.scale(V3.add(this.vel, v2), 0.5*dt));
+    const vl = V3.len(v2); if (vl > 32) v2 = V3.scale(V3.norm(v2), 32);
+    let newPos = V3.add(this.pos, V3.scale(V3.add(this.vel, v2), 0.5 * dt));
     this.vel = v2;
 
     // ── [FIX-1.7] Ground collision with restitution e=0.15 and Coulomb friction μ=0.4 ──
     const droneHalf = 0.13; // half-height of drone body
     const minY = this.groundY + droneHalf;
-    if(newPos.y < minY){
+    if (newPos.y < minY) {
       const impact = Math.abs(this.vel.y);
       // [FIX-1.8] Crash threshold 8 m/s (was 4.5 m/s)
-      if(impact > 8.0 && (typeof State!=='undefined') && State.armed){
+      if (impact > 8.0 && (typeof State !== 'undefined') && State.armed) {
         this._doCrash(impact); newPos.y = minY;
       } else {
         newPos.y = minY;
-        if(this.vel.y < 0){
+        if (this.vel.y < 0) {
           this.vel.y = -this.vel.y * 0.15; // restitution e=0.15 — [FIX-1.7]
         }
         // Coulomb friction on horizontal velocity: F_fric = μ·N = μ·m·g  [FIX-1.7]
         const mu = 0.4;
         const hSpd = Math.hypot(this.vel.x, this.vel.z);
-        if(hSpd > 0.001){
+        if (hSpd > 0.001) {
           const fricDecel = Math.min(hSpd, mu * this.GRAVITY * dt);
           const scale = (hSpd - fricDecel) / hSpd;
           this.vel.x *= scale; this.vel.z *= scale;
         }
-        const af = Math.exp(-18*dt);
-        this.angVel.x*=af; this.angVel.z*=af; this.angVel.y*=af;
-        this.angVel.x -= this.euler.pitch*8*dt;
-        this.angVel.z -= this.euler.roll *8*dt;
+        const af = Math.exp(-18 * dt);
+        this.angVel.x *= af; this.angVel.z *= af; this.angVel.y *= af;
+        this.angVel.x -= this.euler.pitch * 8 * dt;
+        this.angVel.z -= this.euler.roll * 8 * dt;
         this.grounded = true;
       }
     } else { this.grounded = false; }
@@ -621,20 +621,20 @@ const PHYS = {
 
     // AABB collider check with restitution impulse  [FIX-1.7]
     const hit = this._checkColliders(newPos);
-    if(hit){
+    if (hit) {
       const spd = V3.len(this.vel);
       // [FIX-1.8] Crash threshold 8 m/s
-      if(spd > 8.0 && (typeof State!=='undefined') && State.armed){ this._doCrash(spd); }
+      if (spd > 8.0 && (typeof State !== 'undefined') && State.armed) { this._doCrash(spd); }
       else {
-        const n = hit.normal || {x:0,y:1,z:0};
+        const n = hit.normal || { x: 0, y: 1, z: 0 };
         const vn = V3.dot(this.vel, n);
-        if(vn < 0){
+        if (vn < 0) {
           // Restitution impulse: Δv = −(1+e)·(v·n)·n
-          this.vel = V3.add(this.vel, V3.scale(n, -(1+0.15)*vn)); // e=0.15
+          this.vel = V3.add(this.vel, V3.scale(n, -(1 + 0.15) * vn)); // e=0.15
           // Coulomb friction tangential
-          const vt = V3.sub(this.vel, V3.scale(n, V3.dot(this.vel,n)));
+          const vt = V3.sub(this.vel, V3.scale(n, V3.dot(this.vel, n)));
           const vtMag = V3.len(vt);
-          if(vtMag > 0.001) this.vel = V3.sub(this.vel, V3.scale(V3.norm(vt), Math.min(vtMag, 0.4*Math.abs(vn))));
+          if (vtMag > 0.001) this.vel = V3.sub(this.vel, V3.scale(V3.norm(vt), Math.min(vtMag, 0.4 * Math.abs(vn))));
         }
         this.pos = V3.add(newPos, V3.scale(n, 0.05));
       }
@@ -642,33 +642,33 @@ const PHYS = {
 
     // ── Battery model ─────────────────────────────────────────────────────
     // Induced velocity from actuator disk theory: v_ind = √(T/(2ρA))
-    const rotorA = Math.PI*(R_prop*R_prop)*4 + 0.001;
-    const v_ind = Math.sqrt(totalThrust / (2*rho*rotorA)); // uses ISA ρ
+    const rotorA = Math.PI * (R_prop * R_prop) * 4 + 0.001;
+    const v_ind = Math.sqrt(totalThrust / (2 * rho * rotorA)); // uses ISA ρ
     const P_mech = totalThrust * v_ind * 1.18; // incl. motor/ESC losses ~18%
     this.currentDraw = P_mech / Math.max(this.battVoltage, 1);
     const internalDrop = this.currentDraw * internalR;
-    const ahStep = (this.currentDraw*dt) / 3600;
+    const ahStep = (this.currentDraw * dt) / 3600;
     this.battCapacity = Math.min(this.battTotalAh, this.battCapacity + ahStep);
-    this.battPct = Math.max(0, 100*(1 - this.battCapacity/this.battTotalAh));
+    this.battPct = Math.max(0, 100 * (1 - this.battCapacity / this.battTotalAh));
     const soc = this.battPct / 100;
     // [FIX-1.10] LiPo OCV polynomial: 4.2V at soc=1, 3.3V at soc=0
     // Verified against Plett (2004) LiPo cell model
     // ocv(soc) = 3.3 + 0.7·soc + 0.1·soc² + 0.1·soc³  (gives 4.2 at soc=1, 3.3 at soc=0)
-    const ocv = 3.3 + 0.7*soc + 0.1*soc*soc + 0.1*soc*soc*soc;
-    this.battVoltage = Math.max(this.cells*3.3, Math.min(this.cells*4.2, this.cells*ocv - internalDrop));
+    const ocv = 3.3 + 0.7 * soc + 0.1 * soc * soc + 0.1 * soc * soc * soc;
+    this.battVoltage = Math.max(this.cells * 3.3, Math.min(this.cells * 4.2, this.cells * ocv - internalDrop));
   },
 
   /** [FIX-3.1] [FIX-3.2] [FIX-3.3] Physically correct sensor simulation */
-  _updateSensors(dt){
+  _updateSensors(dt) {
     // [FIX-3.1] Gyro white noise: σ = 0.003 rad/s/√Hz · √(1/dt)
     // At dt=0.0167s (60Hz), σ_sample = 0.003/√0.0167 ≈ 0.023 rad/s per axis
-    const gyrNoiseStd = 0.003 * Math.sqrt(1/Math.max(dt, 0.001));
-    const gn = () => (Math.random()+Math.random()+Math.random()+Math.random()-2)*gyrNoiseStd*0.866;
+    const gyrNoiseStd = 0.003 * Math.sqrt(1 / Math.max(dt, 0.001));
+    const gn = () => (Math.random() + Math.random() + Math.random() + Math.random() - 2) * gyrNoiseStd * 0.866;
     // [FIX-3.2] Gyro bias random walk: bias += N(0, σ_bias·√dt)
     const biasSigma = 5e-5; // rad/s/√s bias instability
-    this._gyroBias.x += (Math.random()-0.5)*2*biasSigma*Math.sqrt(dt);
-    this._gyroBias.y += (Math.random()-0.5)*2*biasSigma*Math.sqrt(dt);
-    this._gyroBias.z += (Math.random()-0.5)*2*biasSigma*Math.sqrt(dt);
+    this._gyroBias.x += (Math.random() - 0.5) * 2 * biasSigma * Math.sqrt(dt);
+    this._gyroBias.y += (Math.random() - 0.5) * 2 * biasSigma * Math.sqrt(dt);
+    this._gyroBias.z += (Math.random() - 0.5) * 2 * biasSigma * Math.sqrt(dt);
     this.gyro = {
       x: this.angVel.x + gn() + this._gyroBias.x,
       y: this.angVel.y + gn() + this._gyroBias.y,
@@ -679,7 +679,7 @@ const PHYS = {
     // a_body = R_BW · (a_world − g_world)  →  accelBody already computed in _substep
     // Add accelerometer noise (σ ≈ 0.05 m/s²)
     const accNoiseStd = 0.05;
-    const an = () => (Math.random()-0.5)*2*accNoiseStd;
+    const an = () => (Math.random() - 0.5) * 2 * accNoiseStd;
     this.accelBody = {
       x: this.accelBody.x + an(),
       y: this.accelBody.y + an(),
@@ -687,86 +687,86 @@ const PHYS = {
     };
     // [FIX-3.4] Barometer with corrected Kalman Q/R
     // Baro noise: σ=0.05m + turbulence; bias drift τ≈30s
-    const bNoise = 0.05 + this.turbulenceIntensity*0.25;
+    const bNoise = 0.05 + this.turbulenceIntensity * 0.25;
     const trueAGL = this.pos.y - this.groundY;
-    this._baroRaw = trueAGL + (Math.random()-0.5)*bNoise*2;
+    this._baroRaw = trueAGL + (Math.random() - 0.5) * bNoise * 2;
     this._altEstimate = this._kAlt.update(this._baroRaw);
     this.euler = Q.toEuler(this.quat);
   },
 
-  _checkColliders(pos){
-    for(const c of this.colliders){
-      if(pos.x>c.min.x&&pos.x<c.max.x&&pos.y>c.min.y&&pos.y<c.max.y&&pos.z>c.min.z&&pos.z<c.max.z) return c;
+  _checkColliders(pos) {
+    for (const c of this.colliders) {
+      if (pos.x > c.min.x && pos.x < c.max.x && pos.y > c.min.y && pos.y < c.max.y && pos.z > c.min.z && pos.z < c.max.z) return c;
     }
     return null;
   },
 
-  _doCrash(impact){
-    this.crashed=true;
-    if(typeof State!=='undefined') State.armed=false;
-    const cnt=Math.min(4,Math.floor(impact/2.5));
-    const idxs=[0,1,2,3].sort(()=>Math.random()-0.5);
-    if(typeof State!=='undefined'){
-      for(let i=0;i<cnt;i++) State.motorDamage[idxs[i]]=Math.min(1,State.motorDamage[idxs[i]]+0.4+Math.random()*0.4);
+  _doCrash(impact) {
+    this.crashed = true;
+    if (typeof State !== 'undefined') State.armed = false;
+    const cnt = Math.min(4, Math.floor(impact / 2.5));
+    const idxs = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+    if (typeof State !== 'undefined') {
+      for (let i = 0; i < cnt; i++) State.motorDamage[idxs[i]] = Math.min(1, State.motorDamage[idxs[i]] + 0.4 + Math.random() * 0.4);
     }
-    if(typeof WARN!=='undefined') WARN.trigger('crash');
-    if(typeof updateArmUI==='function') updateArmUI();
+    if (typeof WARN !== 'undefined') WARN.trigger('crash');
+    if (typeof updateArmUI === 'function') updateArmUI();
   },
 
-  _crashSettle(dt){
-    this.angVel.x*=0.90; this.angVel.z*=0.90; this.angVel.y*=0.93;
-    this.quat=Q.integrate(this.quat,this.angVel,dt);
-    this.euler=Q.toEuler(this.quat);
-    if(this.pos.y>this.groundY+0.13){
-      this.vel.y-=this.GRAVITY*dt; this.pos.y+=this.vel.y*dt;
+  _crashSettle(dt) {
+    this.angVel.x *= 0.90; this.angVel.z *= 0.90; this.angVel.y *= 0.93;
+    this.quat = Q.integrate(this.quat, this.angVel, dt);
+    this.euler = Q.toEuler(this.quat);
+    if (this.pos.y > this.groundY + 0.13) {
+      this.vel.y -= this.GRAVITY * dt; this.pos.y += this.vel.y * dt;
     } else {
-      this.pos.y=this.groundY+0.13; this.vel=V3.zero();
+      this.pos.y = this.groundY + 0.13; this.vel = V3.zero();
     }
-    for(let i=0;i<4;i++) this.motorRPM[i]*=0.90;
+    for (let i = 0; i < 4; i++) this.motorRPM[i] *= 0.90;
   },
 };
 
 /* ─── Flight Controller ─── */
 const FC = {
-  mode:'stabilized',
-  motorMixGain:0.13,
-  maxAngleRate:3.2,
-  maxAltVelRate:2.5,
+  mode: 'stabilized',
+  motorMixGain: 0.13,
+  maxAngleRate: 3.2,
+  maxAltVelRate: 2.5,
 
-  ratePID:{
+  ratePID: {
     pitch: new PID(0.042, 0.000, 0.0018, 0.3, 20),
-    roll:  new PID(0.042, 0.000, 0.0018, 0.3, 20),
-    yaw:   new PID(0.065, 0.012, 0.0008, 0.25,15),
+    roll: new PID(0.042, 0.000, 0.0018, 0.3, 20),
+    yaw: new PID(0.065, 0.012, 0.0008, 0.25, 15),
   },
-  anglePID:{
+  anglePID: {
     pitch: new PID(2.2, 0, 0, 0.4, 20),
-    roll:  new PID(2.2, 0, 0, 0.4, 20),
+    roll: new PID(2.2, 0, 0, 0.4, 20),
   },
-  altPID:    new PID(1.6,  0.10, 0.06, 8.0,  6),
-  altVelPID: new PID(0.38, 0.08, 0.012,2.0, 12),
+  altPID: new PID(1.6, 0.10, 0.06, 8.0, 6),
+  altVelPID: new PID(0.38, 0.08, 0.012, 2.0, 12),
   // [FIX-2.5] posNPID/posEPID output is body-frame tilt angle setpoint
-  posNPID:   new PID(0.65, 0.015,0.18, 0.35, 8),
-  posEPID:   new PID(0.65, 0.015,0.18, 0.35, 8),
+  posNPID: new PID(0.65, 0.015, 0.18, 0.35, 8),
+  posEPID: new PID(0.65, 0.015, 0.18, 0.35, 8),
 
-  altTarget:null, posTarget:null, rthPhase:0, rthClimbAlt:10,
-  gains:{rp:0.042, ri:0.000, rd:0.0018, yp:0.065, ap:1.6, angleP:2.2},
+  altTarget: null, posTarget: null, rthPhase: 0, rthClimbAlt: 10,
+  gains: { rp: 0.042, ri: 0.000, rd: 0.0018, yp: 0.065, ap: 1.6, angleP: 2.2 },
 
-  _adaptiveGainFactor(){
+  _adaptiveGainFactor() {
     // [FIX-C] rateFactor floor raised from 0.55 → 0.90: PID should run near full gain
     // during steady hover/low-rate flight, not at 55% which causes sluggish response.
     // Small reduction at high tilt is still applied (airframe authority drops when tilted).
-    const tilt = Math.sqrt(PHYS.euler.pitch**2 + PHYS.euler.roll**2);
-    const tiltFactor = Math.max(0.65, 1.0 - tilt*0.20);
+    const tilt = Math.sqrt(PHYS.euler.pitch ** 2 + PHYS.euler.roll ** 2);
+    const tiltFactor = Math.max(0.65, 1.0 - tilt * 0.20);
     const rateAmp = Math.hypot(PHYS.angVel.x, PHYS.angVel.z);
     // [FIX-C] 0.90 floor: adaptive reduction only kicks in at very high rates
-    const rateFactor = Math.min(1.0, 0.90 + rateAmp*0.5);
+    const rateFactor = Math.min(1.0, 0.90 + rateAmp * 0.5);
     return tiltFactor * rateFactor;
   },
 
-  autoTuneFromPhysics(){
-    const m=PHYS.mass, L=PHYS.armLen, Ixx=PHYS.Ixx, Iyy=PHYS.Iyy, Izz=PHYS.Izz;
-    const kT=PHYS.kT, kQ=PHYS.kQ, maxRPM=PHYS.maxRPM;
-    const omegaMax = maxRPM * (2*Math.PI/60); // rad/s [FIX-1.9]
+  autoTuneFromPhysics() {
+    const m = PHYS.mass, L = PHYS.armLen, Ixx = PHYS.Ixx, Iyy = PHYS.Iyy, Izz = PHYS.Izz;
+    const kT = PHYS.kT, kQ = PHYS.kQ, maxRPM = PHYS.maxRPM;
+    const omegaMax = maxRPM * (2 * Math.PI / 60); // rad/s [FIX-1.9]
     // [FIX-A] Correct pitch/roll max torque: 2 motors oppose 2 motors across arm length
     // e.g. pitch: (T_BL+T_BR) - (T_FR+T_FL) → max when back pair at maxRPM, front at 0
     // Net max = 2·kT·ωmax²·L  (two motors at full on one side)
@@ -789,61 +789,61 @@ const FC = {
     // Old formula (2.0+1.5*L ≈ 2.3) was too slow to reject even tiny gyro bias drift
     const rateBW = rp * maxPitchTorque / Ixx;
     const angleP = Math.min(8.0, Math.max(3.5, rateBW / 5.0));
-    const ap = Math.max(1.0, Math.min(2.2, 0.9 + 0.45*m));
+    const ap = Math.max(1.0, Math.min(2.2, 0.9 + 0.45 * m));
 
     // [FIX-B] motorMixGain: normalise PID outputs to motor command space
     // Target: at max rate PID output the motor delta is ~0.25 (quarter throttle authority)
     // mixGain ≈ 0.25 / (rp * maxRate_pitch)  — keeps effective gain consistent
     const mr = PHYS.maxRate;
-    const rawMixGain = 0.22 / Math.max(0.01, rp * (mr.pitch||10));
+    const rawMixGain = 0.22 / Math.max(0.01, rp * (mr.pitch || 10));
     this.motorMixGain = Math.max(0.07, Math.min(0.20, rawMixGain));
 
-    this.maxAngleRate = Math.max(2.0, Math.min(4.5, 2.0 + (0.34 - m*0.04)*5));
-    this.gains = {rp, ri, rd, yp, ap, angleP};
+    this.maxAngleRate = Math.max(2.0, Math.min(4.5, 2.0 + (0.34 - m * 0.04) * 5));
+    this.gains = { rp, ri, rd, yp, ap, angleP };
     this.applyGains();
     this._syncSliders();
   },
 
-  _syncSliders(){
-    const g=this.gains;
-    const map={rp:'pid-rp',ri:'pid-ri',rd:'pid-rd',yp:'pid-yp',ap:'pid-ap'};
-    for(const k in map){const el=document.getElementById(map[k]);if(el) el.value=g[k];}
-    if(typeof setPID==='function'){setPID('rp',g.rp);setPID('ri',g.ri);setPID('rd',g.rd);setPID('yp',g.yp);setPID('ap',g.ap);}
+  _syncSliders() {
+    const g = this.gains;
+    const map = { rp: 'pid-rp', ri: 'pid-ri', rd: 'pid-rd', yp: 'pid-yp', ap: 'pid-ap' };
+    for (const k in map) { const el = document.getElementById(map[k]); if (el) el.value = g[k]; }
+    if (typeof setPID === 'function') { setPID('rp', g.rp); setPID('ri', g.ri); setPID('rd', g.rd); setPID('yp', g.yp); setPID('ap', g.ap); }
   },
 
-  applyGains(){
-    const g=this.gains;
-    this.ratePID.pitch.p=g.rp; this.ratePID.pitch.i=g.ri||0; this.ratePID.pitch.d=g.rd;
-    this.ratePID.roll.p =g.rp; this.ratePID.roll.i =g.ri||0; this.ratePID.roll.d =g.rd;
-    this.ratePID.yaw.p  =g.yp;
+  applyGains() {
+    const g = this.gains;
+    this.ratePID.pitch.p = g.rp; this.ratePID.pitch.i = g.ri || 0; this.ratePID.pitch.d = g.rd;
+    this.ratePID.roll.p = g.rp; this.ratePID.roll.i = g.ri || 0; this.ratePID.roll.d = g.rd;
+    this.ratePID.yaw.p = g.yp;
     // [FIX-F] Derive yaw I from yaw P (was hardcoded 0.012 regardless of profile).
     // Yaw I ≈ 0.18 * yp gives ~Ti = 1/0.18 ≈ 5.5s integration time — reasonable for yaw hold.
     // Also raise yaw I-limit from 0.25 → 0.45 so anti-windup doesn't thrash during manoeuvres.
-    this.ratePID.yaw.i  = g.yi != null ? g.yi : g.yp * 0.18;
+    this.ratePID.yaw.i = g.yi != null ? g.yi : g.yp * 0.18;
     this.ratePID.yaw.iLimit = 0.45;
-    if(g.angleP!=null){ this.anglePID.pitch.p=g.angleP; this.anglePID.roll.p=g.angleP; }
-    this.anglePID.pitch.d=0; this.anglePID.roll.d=0;
-    this.altPID.p=g.ap;
+    if (g.angleP != null) { this.anglePID.pitch.p = g.angleP; this.anglePID.roll.p = g.angleP; }
+    this.anglePID.pitch.d = 0; this.anglePID.roll.d = 0;
+    this.altPID.p = g.ap;
     // Set output limits for conditional anti-windup [FIX-2.4]
-    this.ratePID.pitch._outLimit=0.18; this.ratePID.roll._outLimit=0.18; this.ratePID.yaw._outLimit=0.12;
-    this.altPID._outLimit=this.maxAltVelRate; this.altVelPID._outLimit=0.5;
+    this.ratePID.pitch._outLimit = 0.18; this.ratePID.roll._outLimit = 0.18; this.ratePID.yaw._outLimit = 0.12;
+    this.altPID._outLimit = this.maxAltVelRate; this.altVelPID._outLimit = 0.5;
   },
 
-  resetPIDs(){
-    for(const k in this.ratePID) this.ratePID[k].reset();
-    for(const k in this.anglePID) this.anglePID[k].reset();
+  resetPIDs() {
+    for (const k in this.ratePID) this.ratePID[k].reset();
+    for (const k in this.anglePID) this.anglePID[k].reset();
     this.altPID.reset(); this.altVelPID.reset();
     this.posNPID.reset(); this.posEPID.reset();
-    this._altManualLastFrame=false;
+    this._altManualLastFrame = false;
   },
 
-  setMode(m){
-    this.mode=m; this.resetPIDs();
-    if(m==='althold'||m==='gpshold'||m==='rth') this.altTarget=PHYS.pos.y-PHYS.groundY;
-    if(m==='gpshold'||m==='rth') this.posTarget={x:PHYS.pos.x,z:PHYS.pos.z};
-    if(m==='rth'){
-      this.rthPhase=0;
-      this.posTarget=PHYS.homePos?{x:PHYS.homePos.x,z:PHYS.homePos.z}:{x:0,z:0};
+  setMode(m) {
+    this.mode = m; this.resetPIDs();
+    if (m === 'althold' || m === 'gpshold' || m === 'rth') this.altTarget = PHYS.pos.y - PHYS.groundY;
+    if (m === 'gpshold' || m === 'rth') this.posTarget = { x: PHYS.pos.x, z: PHYS.pos.z };
+    if (m === 'rth') {
+      this.rthPhase = 0;
+      this.posTarget = PHYS.homePos ? { x: PHYS.homePos.x, z: PHYS.homePos.z } : { x: 0, z: 0 };
     }
   },
 
@@ -852,116 +852,116 @@ const FC = {
    * Stores rate commands in PHYS._fcRateCmd for the inner loop.
    * [FIX-2.1] Inner rate loop now runs in PHYS._substep() at substep rate.
    */
-  update(dt, input){
-    if(PHYS.crashed||((typeof State!=='undefined')&&!State.armed)){
-      PHYS._fcRateCmd={pitch:0,roll:0,yaw:0,thr:0};
-      return [0,0,0,0];
+  update(dt, input) {
+    if (PHYS.crashed || ((typeof State !== 'undefined') && !State.armed)) {
+      PHYS._fcRateCmd = { pitch: 0, roll: 0, yaw: 0, thr: 0 };
+      return [0, 0, 0, 0];
     }
-    let thrCmd=input.throttle, pitchSP=0, rollSP=0;
-    const maxTilt=PHYS.maxTiltRad;
-    let yawRateCmd=input.yaw*PHYS.maxRate.yaw;
-    const e=PHYS.euler;
+    let thrCmd = input.throttle, pitchSP = 0, rollSP = 0;
+    const maxTilt = PHYS.maxTiltRad;
+    let yawRateCmd = input.yaw * PHYS.maxRate.yaw;
+    const e = PHYS.euler;
 
-    if(this.mode==='acro'){
-      const mr=PHYS.maxRate;
-      PHYS._fcRateCmd={pitch:input.pitch*mr.pitch, roll:input.roll*mr.roll, yaw:yawRateCmd, thr:thrCmd};
+    if (this.mode === 'acro') {
+      const mr = PHYS.maxRate;
+      PHYS._fcRateCmd = { pitch: input.pitch * mr.pitch, roll: input.roll * mr.roll, yaw: yawRateCmd, thr: thrCmd };
       return PHYS.motorCmd; // motor cmds will be updated in substep
     }
-    if(this.mode==='stabilized'||this.mode==='angle'){
-      pitchSP=input.pitch*maxTilt*0.60;
-      rollSP =input.roll *maxTilt*0.60;
+    if (this.mode === 'stabilized' || this.mode === 'angle') {
+      pitchSP = input.pitch * maxTilt * 0.60;
+      rollSP = input.roll * maxTilt * 0.60;
     }
-    if(this.mode==='althold'||this.mode==='gpshold'||this.mode==='rth'){
-      const stickDead=0.045;
-      const hov=PHYS.hoverThrottle;
-      if(this.mode==='althold'){
-        pitchSP=input.pitch*maxTilt*0.60;
-        rollSP =input.roll *maxTilt*0.60;
+    if (this.mode === 'althold' || this.mode === 'gpshold' || this.mode === 'rth') {
+      const stickDead = 0.045;
+      const hov = PHYS.hoverThrottle;
+      if (this.mode === 'althold') {
+        pitchSP = input.pitch * maxTilt * 0.60;
+        rollSP = input.roll * maxTilt * 0.60;
       }
-      if(Math.abs(input.throttle-0.5)<stickDead){
-        if(this.altTarget==null) this.altTarget=PHYS.pos.y-PHYS.groundY;
-        if(this._altManualLastFrame){
+      if (Math.abs(input.throttle - 0.5) < stickDead) {
+        if (this.altTarget == null) this.altTarget = PHYS.pos.y - PHYS.groundY;
+        if (this._altManualLastFrame) {
           this.altVelPID.reset(); this.altPID.reset();
-          this._altManualLastFrame=false;
+          this._altManualLastFrame = false;
         }
-        const velSP=Math.max(-this.maxAltVelRate,Math.min(this.maxAltVelRate,
-          this.altPID.update(this.altTarget,PHYS._altEstimate,dt)));
-        thrCmd=Math.max(0,Math.min(0.97,hov+this.altVelPID.update(velSP,PHYS.vel.y,dt)));
+        const velSP = Math.max(-this.maxAltVelRate, Math.min(this.maxAltVelRate,
+          this.altPID.update(this.altTarget, PHYS._altEstimate, dt)));
+        thrCmd = Math.max(0, Math.min(0.97, hov + this.altVelPID.update(velSP, PHYS.vel.y, dt)));
       } else {
-        this._altManualLastFrame=true;
-        this.altTarget=PHYS.pos.y-PHYS.groundY;
-        const t=input.throttle;
-        thrCmd=t<=0.5 ? (t/0.5)*hov : hov+((t-0.5)/0.5)*(0.97-hov);
+        this._altManualLastFrame = true;
+        this.altTarget = PHYS.pos.y - PHYS.groundY;
+        const t = input.throttle;
+        thrCmd = t <= 0.5 ? (t / 0.5) * hov : hov + ((t - 0.5) / 0.5) * (0.97 - hov);
       }
     }
-    if(this.mode==='gpshold'){
-      if(Math.abs(input.pitch)<0.08&&Math.abs(input.roll)<0.08){
-        if(this.posTarget==null) this.posTarget={x:PHYS.pos.x,z:PHYS.pos.z};
+    if (this.mode === 'gpshold') {
+      if (Math.abs(input.pitch) < 0.08 && Math.abs(input.roll) < 0.08) {
+        if (this.posTarget == null) this.posTarget = { x: PHYS.pos.x, z: PHYS.pos.z };
         // [FIX-2.5] Position error in world frame → rotate to body frame via −yaw
-        const dN=this.posTarget.z-PHYS.pos.z, dE=this.posTarget.x-PHYS.pos.x;
-        const cy=Math.cos(e.yaw), sy=Math.sin(e.yaw);
+        const dN = this.posTarget.z - PHYS.pos.z, dE = this.posTarget.x - PHYS.pos.x;
+        const cy = Math.cos(e.yaw), sy = Math.sin(e.yaw);
         // Body-frame error: forward = cy*dN+sy*dE, right = −sy*dN+cy*dE
-        const errFwd  =  cy*dN + sy*dE;
-        const errRight= -sy*dN + cy*dE;
+        const errFwd = cy * dN + sy * dE;
+        const errRight = -sy * dN + cy * dE;
         // posNPID/posEPID: setpoint=0, measured=body-frame error → output is tilt angle (rad)
-        pitchSP=Math.max(-maxTilt*0.5,Math.min(maxTilt*0.5, this.posNPID.update(0,-errFwd, dt)));
-        rollSP =Math.max(-maxTilt*0.5,Math.min(maxTilt*0.5, this.posEPID.update(0,-errRight,dt)));
+        pitchSP = Math.max(-maxTilt * 0.5, Math.min(maxTilt * 0.5, this.posNPID.update(0, -errFwd, dt)));
+        rollSP = Math.max(-maxTilt * 0.5, Math.min(maxTilt * 0.5, this.posEPID.update(0, -errRight, dt)));
       } else {
-        this.posTarget={x:PHYS.pos.x,z:PHYS.pos.z};
-        pitchSP=input.pitch*maxTilt*0.65; rollSP=input.roll*maxTilt*0.65;
+        this.posTarget = { x: PHYS.pos.x, z: PHYS.pos.z };
+        pitchSP = input.pitch * maxTilt * 0.65; rollSP = input.roll * maxTilt * 0.65;
       }
     }
-    if(this.mode==='rth'){
-      const home=PHYS.homePos||{x:0,y:0,z:0};
-      const cy=Math.cos(e.yaw),sy=Math.sin(e.yaw);
-      const curAGL=PHYS.pos.y-PHYS.groundY;
-      const homeAGL=home.y-PHYS.groundY;
-      const hov=PHYS.hoverThrottle;
-      if(this.rthPhase===0){
-        const safeAlt=Math.max(homeAGL+this.rthClimbAlt,curAGL+3);
-        const velSP=this.altPID.update(safeAlt,PHYS._altEstimate,dt);
-        thrCmd=Math.max(hov,Math.min(0.94,hov+this.altVelPID.update(Math.min(2.5,velSP),PHYS.vel.y,dt)));
-        if(curAGL>=safeAlt-0.5) this.rthPhase=1;
-        pitchSP=0; rollSP=0;
-      } else if(this.rthPhase===1){
-        const dN=home.z-PHYS.pos.z, dE=home.x-PHYS.pos.x, dist=Math.hypot(dN,dE);
-        const velSP=this.altPID.update(this.altTarget!=null?this.altTarget:curAGL,PHYS._altEstimate,dt);
-        thrCmd=Math.max(Math.max(0,hov-0.5),Math.min(0.9,hov+this.altVelPID.update(velSP,PHYS.vel.y,dt)));
-        if(dist<1.0){this.rthPhase=2;this.posTarget={x:home.x,z:home.z};}
-        else{
-          const spd=Math.min(1,dist/15);
-          pitchSP=Math.max(-maxTilt*0.6,Math.min(maxTilt*0.6,-(cy*dN+sy*dE)*0.14*spd));
-          rollSP =Math.max(-maxTilt*0.6,Math.min(maxTilt*0.6,-(-sy*dN+cy*dE)*0.14*spd));
+    if (this.mode === 'rth') {
+      const home = PHYS.homePos || { x: 0, y: 0, z: 0 };
+      const cy = Math.cos(e.yaw), sy = Math.sin(e.yaw);
+      const curAGL = PHYS.pos.y - PHYS.groundY;
+      const homeAGL = home.y - PHYS.groundY;
+      const hov = PHYS.hoverThrottle;
+      if (this.rthPhase === 0) {
+        const safeAlt = Math.max(homeAGL + this.rthClimbAlt, curAGL + 3);
+        const velSP = this.altPID.update(safeAlt, PHYS._altEstimate, dt);
+        thrCmd = Math.max(hov, Math.min(0.94, hov + this.altVelPID.update(Math.min(2.5, velSP), PHYS.vel.y, dt)));
+        if (curAGL >= safeAlt - 0.5) this.rthPhase = 1;
+        pitchSP = 0; rollSP = 0;
+      } else if (this.rthPhase === 1) {
+        const dN = home.z - PHYS.pos.z, dE = home.x - PHYS.pos.x, dist = Math.hypot(dN, dE);
+        const velSP = this.altPID.update(this.altTarget != null ? this.altTarget : curAGL, PHYS._altEstimate, dt);
+        thrCmd = Math.max(Math.max(0, hov - 0.5), Math.min(0.9, hov + this.altVelPID.update(velSP, PHYS.vel.y, dt)));
+        if (dist < 1.0) { this.rthPhase = 2; this.posTarget = { x: home.x, z: home.z }; }
+        else {
+          const spd = Math.min(1, dist / 15);
+          pitchSP = Math.max(-maxTilt * 0.6, Math.min(maxTilt * 0.6, -(cy * dN + sy * dE) * 0.14 * spd));
+          rollSP = Math.max(-maxTilt * 0.6, Math.min(maxTilt * 0.6, -(-sy * dN + cy * dE) * 0.14 * spd));
         }
-      } else if(this.rthPhase===2){
-        const dN=home.z-PHYS.pos.z, dE=home.x-PHYS.pos.x;
-        pitchSP=Math.max(-0.15,Math.min(0.15,-(cy*dN+sy*dE)*0.09));
-        rollSP =Math.max(-0.15,Math.min(0.15,-(-sy*dN+cy*dE)*0.09));
-        const velSP=this.altPID.update(0.15,PHYS._altEstimate,dt);
-        thrCmd=Math.max(0,Math.min(hov+0.2,hov+this.altVelPID.update(Math.max(-1.5,velSP),PHYS.vel.y,dt)));
-        if(PHYS.grounded){
-          this.rthPhase=3;
-          if(typeof State!=='undefined') State.armed=false;
-          if(typeof updateArmUI==='function') updateArmUI();
+      } else if (this.rthPhase === 2) {
+        const dN = home.z - PHYS.pos.z, dE = home.x - PHYS.pos.x;
+        pitchSP = Math.max(-0.15, Math.min(0.15, -(cy * dN + sy * dE) * 0.09));
+        rollSP = Math.max(-0.15, Math.min(0.15, -(-sy * dN + cy * dE) * 0.09));
+        const velSP = this.altPID.update(0.15, PHYS._altEstimate, dt);
+        thrCmd = Math.max(0, Math.min(hov + 0.2, hov + this.altVelPID.update(Math.max(-1.5, velSP), PHYS.vel.y, dt)));
+        if (PHYS.grounded) {
+          this.rthPhase = 3;
+          if (typeof State !== 'undefined') State.armed = false;
+          if (typeof updateArmUI === 'function') updateArmUI();
         }
       } else {
-        PHYS._fcRateCmd={pitch:0,roll:0,yaw:0,thr:0};
-        return [0,0,0,0];
+        PHYS._fcRateCmd = { pitch: 0, roll: 0, yaw: 0, thr: 0 };
+        return [0, 0, 0, 0];
       }
     }
-    return this._angleThenStore(dt,thrCmd,pitchSP,rollSP,yawRateCmd);
+    return this._angleThenStore(dt, thrCmd, pitchSP, rollSP, yawRateCmd);
   },
 
   /**
    * Angle loop → compute rate commands and store in PHYS._fcRateCmd.
    * The actual rate→motor PID runs in PHYS._substep() at substep rate.
    */
-  _angleThenStore(dt,thrCmd,pitchSP,rollSP,yawRateCmd){
-    const e=PHYS.euler, cap=this.maxAngleRate, af=this._adaptiveGainFactor();
-    const pitchRateCmd=Math.max(-cap,Math.min(cap,this.anglePID.pitch.update(pitchSP,e.pitch,dt)*af));
-    const rollRateCmd =Math.max(-cap,Math.min(cap,this.anglePID.roll.update(rollSP, e.roll, dt)*af));
+  _angleThenStore(dt, thrCmd, pitchSP, rollSP, yawRateCmd) {
+    const e = PHYS.euler, cap = this.maxAngleRate, af = this._adaptiveGainFactor();
+    const pitchRateCmd = Math.max(-cap, Math.min(cap, this.anglePID.pitch.update(pitchSP, e.pitch, dt) * af));
+    const rollRateCmd = Math.max(-cap, Math.min(cap, this.anglePID.roll.update(rollSP, e.roll, dt) * af));
     // Store rate commands for inner loop
-    PHYS._fcRateCmd = {pitch:pitchRateCmd, roll:rollRateCmd, yaw:yawRateCmd, thr:thrCmd};
+    PHYS._fcRateCmd = { pitch: pitchRateCmd, roll: rollRateCmd, yaw: yawRateCmd, thr: thrCmd };
     return PHYS.motorCmd; // current motor cmd (will be updated by substep)
   },
 
@@ -974,106 +974,106 @@ const FC = {
    *   M3(BR) = base + pitch + roll  − yaw  (CCW: −yaw)
    * Sign convention: +pitch = nose up (BL+BR thrust up), +roll = right bank (FR+BR up)
    */
-  _rateLoopSubstep(dt, thrCmd, pitchRateCmd, rollRateCmd, yawRateCmd){
+  _rateLoopSubstep(dt, thrCmd, pitchRateCmd, rollRateCmd, yawRateCmd) {
     const g = PHYS.gyro;
     const af = this._adaptiveGainFactor();
     let pitchOut = this.ratePID.pitch.update(pitchRateCmd, g.x, dt) * af;
-    let rollOut  = this.ratePID.roll.update(rollRateCmd,  g.z, dt) * af;
-    let yawOut   = this.ratePID.yaw.update(yawRateCmd,   g.y, dt);
-    if(typeof DEBUG!=='undefined') DEBUG.recordPID(pitchRateCmd,g.x,rollRateCmd,g.z,yawRateCmd,g.y);
-    const mg=this.motorMixGain;
-    const lim=0.18, ylim=0.12;
-    pitchOut=Math.max(-lim, Math.min(lim, pitchOut*mg));
-    rollOut =Math.max(-lim, Math.min(lim, rollOut *mg));
-    yawOut  =Math.max(-ylim,Math.min(ylim,yawOut  *mg));
-    const hover=PHYS.hoverThrottle;
-    const modeAlt=this.mode==='althold'||this.mode==='gpshold'||this.mode==='rth';
+    let rollOut = this.ratePID.roll.update(rollRateCmd, g.z, dt) * af;
+    let yawOut = this.ratePID.yaw.update(yawRateCmd, g.y, dt);
+    if (typeof DEBUG !== 'undefined') DEBUG.recordPID(pitchRateCmd, g.x, rollRateCmd, g.z, yawRateCmd, g.y);
+    const mg = this.motorMixGain;
+    const lim = 0.18, ylim = 0.12;
+    pitchOut = Math.max(-lim, Math.min(lim, pitchOut * mg));
+    rollOut = Math.max(-lim, Math.min(lim, rollOut * mg));
+    yawOut = Math.max(-ylim, Math.min(ylim, yawOut * mg));
+    const hover = PHYS.hoverThrottle;
+    const modeAlt = this.mode === 'althold' || this.mode === 'gpshold' || this.mode === 'rth';
     // [FIX-D] Throttle mapping: symmetric authority around hoverThrottle.
     // Low half (0→0.5): 0→hover. High half (0.5→1): hover→0.97.
     // This replaces the hardcoded *0.38 that was only valid for racing5.
     let base;
-    if(modeAlt){
+    if (modeAlt) {
       base = thrCmd;
     } else {
       const t = Math.max(0, Math.min(1, thrCmd));
       base = t <= 0.5 ? (t / 0.5) * hover
-                      : hover + ((t - 0.5) / 0.5) * (0.97 - hover);
+        : hover + ((t - 0.5) / 0.5) * (0.97 - hover);
     }
-    base=Math.max(0.02, Math.min(0.97, base));
+    base = Math.max(0.02, Math.min(0.97, base));
     // [FIX-G] Yaw sign corrected: tauYaw in _substep has an outer negation
     // (tauYaw = -(kQ·dir0·ω0 + ...)), so increasing CW motors REDUCES tauYaw (goes negative).
     // With Y-up right-hand convention, negative tauYaw = CW angular accel = decreasing yaw angle.
     // Therefore to INCREASE yaw (fight +gy spin): DECREASE CW, INCREASE CCW → yawOut negated.
     // Blackbox confirmed: old sign caused CW-CCW to grow negative as +gy grew → positive feedback.
-    const m=[
-      base - pitchOut + rollOut  - yawOut,  // M0 FR (CW)
-      base - pitchOut - rollOut  + yawOut,  // M1 FL (CCW)
-      base + pitchOut - rollOut  - yawOut,  // M2 BL (CW)
-      base + pitchOut + rollOut  + yawOut,  // M3 BR (CCW)
+    const m = [
+      base - pitchOut + rollOut - yawOut,  // M0 FR (CW)
+      base - pitchOut - rollOut + yawOut,  // M1 FL (CCW)
+      base + pitchOut - rollOut - yawOut,  // M2 BL (CW)
+      base + pitchOut + rollOut + yawOut,  // M3 BR (CCW)
     ];
     return this._mixMotors(m);
   },
 
-  _mixMotors(m){
+  _mixMotors(m) {
     // [FIX-E] Betaflight-style desaturation: shift the whole mix rather than
     // floor-clamping individual motors. Floor-clamping breaks yaw torque balance —
     // asymmetric thrust creates spurious yaw spin whenever pitching hard.
     let out = m.slice();
     // Step 1: shift down so max <= 1
     const maxV = Math.max(...out);
-    if(maxV > 1) out = out.map(v => v - (maxV - 1));
+    if (maxV > 1) out = out.map(v => v - (maxV - 1));
     // Step 2: shift up so min >= 0
     const minV = Math.min(...out);
-    if(minV < 0) out = out.map(v => v - minV);
+    if (minV < 0) out = out.map(v => v - minV);
     // Step 3: if still > 1 after floor-lift, scale proportionally
     const maxV2 = Math.max(...out);
-    if(maxV2 > 1) out = out.map(v => v / maxV2);
+    if (maxV2 > 1) out = out.map(v => v / maxV2);
     return out.map(v => Math.max(0, Math.min(1, v)));
   },
 };
 
 /* ─── Input Handler ─── */
 const INPUT = {
-  _keys:{}, _thrRaw:0, sensitivity:0.26, expo:0.38, deadband:0.05,
-  _gamepad:null, pitch:0, roll:0, yaw:0, throttle:0,
-  _vjLeft:{x:0,y:0}, _vjRight:{x:0,y:0}, _vjActive:false,
+  _keys: {}, _thrRaw: 0, sensitivity: 0.26, expo: 0.38, deadband: 0.05,
+  _gamepad: null, pitch: 0, roll: 0, yaw: 0, throttle: 0,
+  _vjLeft: { x: 0, y: 0 }, _vjRight: { x: 0, y: 0 }, _vjActive: false,
 
-  init(){
-    window.addEventListener('keydown',(e)=>{
-      if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
-      this._keys[e.code]=true;
-      if(e.repeat) return;
-      switch(e.code){
-        case 'Space': e.preventDefault(); if(typeof toggleArm==='function') toggleArm(); break;
-        case 'KeyT': if(typeof takeoff==='function') takeoff(); break;
-        case 'KeyR': if(typeof returnHome==='function') returnHome(); break;
-        case 'KeyH': if(typeof doHover==='function') doHover(); break;
-        case 'KeyG': if(typeof setFlightMode==='function') setFlightMode('gpshold'); break;
-        case 'KeyX': case 'Escape': if(typeof emergStop==='function') emergStop(); break;
+  init() {
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+      this._keys[e.code] = true;
+      if (e.repeat) return;
+      switch (e.code) {
+        case 'Space': e.preventDefault(); if (typeof toggleArm === 'function') toggleArm(); break;
+        case 'KeyT': if (typeof takeoff === 'function') takeoff(); break;
+        case 'KeyR': if (typeof returnHome === 'function') returnHome(); break;
+        case 'KeyH': if (typeof doHover === 'function') doHover(); break;
+        case 'KeyG': if (typeof setFlightMode === 'function') setFlightMode('gpshold'); break;
+        case 'KeyX': case 'Escape': if (typeof emergStop === 'function') emergStop(); break;
         case 'KeyF':
-          if(typeof setCamera==='function'){
-            if(typeof _camMode_global!=='undefined'&&_camMode_global==='fpv') setCamera('third');
+          if (typeof setCamera === 'function') {
+            if (typeof _camMode_global !== 'undefined' && _camMode_global === 'fpv') setCamera('third');
             else setCamera('fpv');
           }
           break;
-        case 'KeyC': case 'Tab': e.preventDefault(); if(typeof cycleCamera==='function') cycleCamera(); break;
-        case 'KeyM': if(typeof addWaypoint==='function') addWaypoint(); break;
-        case 'Digit1': if(typeof setFlightMode==='function') setFlightMode('stabilized'); break;
-        case 'Digit2': if(typeof setFlightMode==='function') setFlightMode('angle');      break;
-        case 'Digit3': if(typeof setFlightMode==='function') setFlightMode('acro');       break;
-        case 'Digit4': if(typeof setFlightMode==='function') setFlightMode('althold');    break;
-        case 'Digit5': if(typeof setFlightMode==='function') setFlightMode('gpshold');    break;
+        case 'KeyC': case 'Tab': e.preventDefault(); if (typeof cycleCamera === 'function') cycleCamera(); break;
+        case 'KeyM': if (typeof addWaypoint === 'function') addWaypoint(); break;
+        case 'Digit1': if (typeof setFlightMode === 'function') setFlightMode('stabilized'); break;
+        case 'Digit2': if (typeof setFlightMode === 'function') setFlightMode('angle'); break;
+        case 'Digit3': if (typeof setFlightMode === 'function') setFlightMode('acro'); break;
+        case 'Digit4': if (typeof setFlightMode === 'function') setFlightMode('althold'); break;
+        case 'Digit5': if (typeof setFlightMode === 'function') setFlightMode('gpshold'); break;
       }
     });
-    window.addEventListener('keyup',(e)=>{this._keys[e.code]=false;});
-    window.addEventListener('blur',()=>{this._keys={}; this.pitch=0; this.roll=0; this.yaw=0;});
-    window.addEventListener('gamepadconnected',(e)=>{
-      this._gamepad=e.gamepad;
-      if(typeof UI!=='undefined') UI.toast('🎮 Controller: '+e.gamepad.id.substring(0,28));
+    window.addEventListener('keyup', (e) => { this._keys[e.code] = false; });
+    window.addEventListener('blur', () => { this._keys = {}; this.pitch = 0; this.roll = 0; this.yaw = 0; });
+    window.addEventListener('gamepadconnected', (e) => {
+      this._gamepad = e.gamepad;
+      if (typeof UI !== 'undefined') UI.toast('🎮 Controller: ' + e.gamepad.id.substring(0, 28));
     });
-    window.addEventListener('gamepaddisconnected',()=>{
-      this._gamepad=null;
-      if(typeof UI!=='undefined') UI.toast('🎮 Controller disconnected');
+    window.addEventListener('gamepaddisconnected', () => {
+      this._gamepad = null;
+      if (typeof UI !== 'undefined') UI.toast('🎮 Controller disconnected');
     });
   },
 
@@ -1082,72 +1082,72 @@ const INPUT = {
    * Previous: deadband applied before expo caused a jump from 0 to expo(deadband)
    * Correct: apply deadband, linearly rescale to [0,1], then apply expo
    */
-  _applyDeadExpo(v){
-    const d=this.deadband;
-    if(Math.abs(v)<d) return 0;
+  _applyDeadExpo(v) {
+    const d = this.deadband;
+    if (Math.abs(v) < d) return 0;
     // Rescale from [d,1] to [0,1] preserving sign
-    const rescaled=(Math.abs(v)-d)/(1-d);
-    const e=this.expo;
-    const expo_out=rescaled*(1-e)+rescaled*rescaled*rescaled*e;
-    return Math.sign(v)*expo_out;
+    const rescaled = (Math.abs(v) - d) / (1 - d);
+    const e = this.expo;
+    const expo_out = rescaled * (1 - e) + rescaled * rescaled * rescaled * e;
+    return Math.sign(v) * expo_out;
   },
 
-  update(dt){
-    const K=this._keys, s=this.sensitivity;
-    let gpActive=false;
+  update(dt) {
+    const K = this._keys, s = this.sensitivity;
+    let gpActive = false;
 
-    if(this._gamepad){
-      const gp=navigator.getGamepads()[this._gamepad.index];
-      if(gp&&gp.axes.length>=4){
-        gpActive=true;
-        const rawThrY=this._applyDeadExpo(-gp.axes[1]);
-        this._thrRaw=Math.max(0,Math.min(1,(rawThrY+1)*0.5));
-        this.yaw  =this._applyDeadExpo(gp.axes[0]) *s;
-        this.pitch=this._applyDeadExpo(-gp.axes[3])*s;
-        this.roll =this._applyDeadExpo( gp.axes[2])*s;
+    if (this._gamepad) {
+      const gp = navigator.getGamepads()[this._gamepad.index];
+      if (gp && gp.axes.length >= 4) {
+        gpActive = true;
+        const rawThrY = this._applyDeadExpo(-gp.axes[1]);
+        this._thrRaw = Math.max(0, Math.min(1, (rawThrY + 1) * 0.5));
+        this.yaw = this._applyDeadExpo(gp.axes[0]) * s;
+        this.pitch = this._applyDeadExpo(-gp.axes[3]) * s;
+        this.roll = this._applyDeadExpo(gp.axes[2]) * s;
       }
     }
 
-    if(!gpActive&&this._vjActive){
-      const thrRate=-this._vjLeft.y*0.9*s;
-      this._thrRaw=Math.max(0,Math.min(1,this._thrRaw+thrRate*dt));
-      this.yaw=this._applyDeadExpo(this._vjLeft.x)*s;
-      const tau=1-Math.exp(-dt*8);
-      this.pitch+=(this._applyDeadExpo(this._vjRight.y)*s-this.pitch)*tau;
-      this.roll +=(this._applyDeadExpo(this._vjRight.x)*s-this.roll) *tau;
-      gpActive=true;
+    if (!gpActive && this._vjActive) {
+      const thrRate = -this._vjLeft.y * 0.9 * s;
+      this._thrRaw = Math.max(0, Math.min(1, this._thrRaw + thrRate * dt));
+      this.yaw = this._applyDeadExpo(this._vjLeft.x) * s;
+      const tau = 1 - Math.exp(-dt * 8);
+      this.pitch += (this._applyDeadExpo(this._vjRight.y) * s - this.pitch) * tau;
+      this.roll += (this._applyDeadExpo(this._vjRight.x) * s - this.roll) * tau;
+      gpActive = true;
     }
 
-    if(!gpActive){
-      if(K['KeyW']||K['ShiftLeft']||K['ShiftRight'])
-        this._thrRaw=Math.min(1,this._thrRaw+dt*0.85*s);
-      else if(K['KeyS']||K['ControlLeft']||K['ControlRight'])
-        this._thrRaw=Math.max(0,this._thrRaw-dt*0.85*s);
-      const yt=((K['KeyA']?-1:0)+(K['KeyD']?1:0))*s;
-      const pt=((K['ArrowUp']?1:0)+(K['ArrowDown']?-1:0))*s;
-      const rt=((K['ArrowRight']?1:0)+(K['ArrowLeft']?-1:0))*s;
-      const tau=1-Math.exp(-dt*6);
-      this.pitch+=(this._applyDeadExpo(pt)-this.pitch)*tau;
-      this.roll +=(this._applyDeadExpo(rt)-this.roll) *tau;
-      this.yaw  +=(this._applyDeadExpo(yt)-this.yaw)  *tau;
+    if (!gpActive) {
+      if (K['KeyW'] || K['ShiftLeft'] || K['ShiftRight'])
+        this._thrRaw = Math.min(1, this._thrRaw + dt * 0.85 * s);
+      else if (K['KeyS'] || K['ControlLeft'] || K['ControlRight'])
+        this._thrRaw = Math.max(0, this._thrRaw - dt * 0.85 * s);
+      const yt = ((K['KeyA'] ? -1 : 0) + (K['KeyD'] ? 1 : 0)) * s;
+      const pt = ((K['ArrowUp'] ? 1 : 0) + (K['ArrowDown'] ? -1 : 0)) * s;
+      const rt = ((K['ArrowRight'] ? 1 : 0) + (K['ArrowLeft'] ? -1 : 0)) * s;
+      const tau = 1 - Math.exp(-dt * 6);
+      this.pitch += (this._applyDeadExpo(pt) - this.pitch) * tau;
+      this.roll += (this._applyDeadExpo(rt) - this.roll) * tau;
+      this.yaw += (this._applyDeadExpo(yt) - this.yaw) * tau;
     }
 
-    this.throttle=this._thrRaw;
-    const slEl=document.getElementById('throttle-slider');
-    if(slEl&&!slEl._dragging){
-      slEl.value=Math.round(this._thrRaw*100);
-      const tv=document.getElementById('thr-val');
-      if(tv) tv.textContent=Math.round(this._thrRaw*100)+'%';
+    this.throttle = this._thrRaw;
+    const slEl = document.getElementById('throttle-slider');
+    if (slEl && !slEl._dragging) {
+      slEl.value = Math.round(this._thrRaw * 100);
+      const tv = document.getElementById('thr-val');
+      if (tv) tv.textContent = Math.round(this._thrRaw * 100) + '%';
     }
-    if(typeof _updateStickViz==='function') _updateStickViz();
+    if (typeof _updateStickViz === 'function') _updateStickViz();
   },
 
-  get(){
+  get() {
     return {
-      throttle:Math.max(0,Math.min(1,this.throttle)),
-      pitch:   Math.max(-1,Math.min(1,this.pitch)),
-      roll:    Math.max(-1,Math.min(1,this.roll)),
-      yaw:     Math.max(-1,Math.min(1,this.yaw)),
+      throttle: Math.max(0, Math.min(1, this.throttle)),
+      pitch: Math.max(-1, Math.min(1, this.pitch)),
+      roll: Math.max(-1, Math.min(1, this.roll)),
+      yaw: Math.max(-1, Math.min(1, this.yaw)),
     };
   },
 };
@@ -1157,110 +1157,110 @@ const INPUT = {
 const _simClock = { t: 0 };
 
 const BLACKBOX = {
-  _log:[], _max:6000, recording:false,
-  start(){this._log=[];this.recording=true;},
-  stop(){this.recording=false;},
+  _log: [], _max: 6000, recording: false,
+  start() { this._log = []; this.recording = true; },
+  stop() { this.recording = false; },
   /** [FIX-5.1] Extended fields: accX/Y/Z, baro_raw/filtered, wind, dryden, mode, armed */
-  tick(t){
-    if(!this.recording) return;
-    const p=PHYS;
-    const gps=typeof GPS_SIM!=='undefined'?GPS_SIM.rawInt():{};
-    const obs=typeof OBSTACLE_DIST!=='undefined'?OBSTACLE_DIST.get():[0,0,0,0,0];
-    const gust=DRYDEN.get();
+  tick(t) {
+    if (!this.recording) return;
+    const p = PHYS;
+    const gps = typeof GPS_SIM !== 'undefined' ? GPS_SIM.rawInt() : {};
+    const obs = typeof OBSTACLE_DIST !== 'undefined' ? OBSTACLE_DIST.get() : [0, 0, 0, 0, 0];
+    const gust = DRYDEN.get();
     this._log.push({
       // [FIX-5.2] Use shared sim clock
       t: _simClock.t,
-      px:p.pos.x, py:p.pos.y, pz:p.pos.z,
-      roll:p.euler.roll, pitch:p.euler.pitch, yaw:p.euler.yaw,
-      gx:p.gyro.x, gy:p.gyro.y, gz:p.gyro.z,
+      px: p.pos.x, py: p.pos.y, pz: p.pos.z,
+      roll: p.euler.roll, pitch: p.euler.pitch, yaw: p.euler.yaw,
+      gx: p.gyro.x, gy: p.gyro.y, gz: p.gyro.z,
       // [FIX-5.1] Accelerometer body-frame
-      accX:p.accelBody.x, accY:p.accelBody.y, accZ:p.accelBody.z,
-      vx:p.vel.x, vy:p.vel.y, vz:p.vel.z,
-      m0:p.motorCmd[0], m1:p.motorCmd[1], m2:p.motorCmd[2], m3:p.motorCmd[3],
-      rpm0:p.motorRPM[0], rpm1:p.motorRPM[1], rpm2:p.motorRPM[2], rpm3:p.motorRPM[3],
-      batt:p.battVoltage, curr:p.currentDraw, batt_pct:p.battPct,
+      accX: p.accelBody.x, accY: p.accelBody.y, accZ: p.accelBody.z,
+      vx: p.vel.x, vy: p.vel.y, vz: p.vel.z,
+      m0: p.motorCmd[0], m1: p.motorCmd[1], m2: p.motorCmd[2], m3: p.motorCmd[3],
+      rpm0: p.motorRPM[0], rpm1: p.motorRPM[1], rpm2: p.motorRPM[2], rpm3: p.motorRPM[3],
+      batt: p.battVoltage, curr: p.currentDraw, batt_pct: p.battPct,
       // [FIX-5.1] Baro raw and filtered
-      baro_raw:p._baroRaw, baro_filtered:p._altEstimate,
+      baro_raw: p._baroRaw, baro_filtered: p._altEstimate,
       // [FIX-5.1] Wind and Dryden turbulence
-      wind_x:p.windVec.x, wind_z:p.windVec.z,
-      dryden_x:gust.x, dryden_y:gust.y, dryden_z:gust.z,
-      gps_lat:gps.lat||0, gps_lon:gps.lon||0, gps_fix:gps.fix_type||0, gps_sat:gps.satellites_visible||0,
-      obs_fwd:obs[0], obs_right:obs[1], obs_back:obs[2], obs_left:obs[3], obs_up:obs[4],
+      wind_x: p.windVec.x, wind_z: p.windVec.z,
+      dryden_x: gust.x, dryden_y: gust.y, dryden_z: gust.z,
+      gps_lat: gps.lat || 0, gps_lon: gps.lon || 0, gps_fix: gps.fix_type || 0, gps_sat: gps.satellites_visible || 0,
+      obs_fwd: obs[0], obs_right: obs[1], obs_back: obs[2], obs_left: obs[3], obs_up: obs[4],
       // [FIX-5.1] Flight mode and arm state
-      mode:typeof FC!=='undefined'?FC.mode:'unknown',
-      armed:(typeof State!=='undefined')?State.armed:false,
+      mode: typeof FC !== 'undefined' ? FC.mode : 'unknown',
+      armed: (typeof State !== 'undefined') ? State.armed : false,
     });
-    if(this._log.length>this._max) this._log.shift();
+    if (this._log.length > this._max) this._log.shift();
   },
-  exportCSV(){
-    if(!this._log.length) return '';
-    const keys=Object.keys(this._log[0]);
-    return [keys.join(','),...this._log.map(row=>keys.map(k=>row[k]).join(','))].join('\n');
+  exportCSV() {
+    if (!this._log.length) return '';
+    const keys = Object.keys(this._log[0]);
+    return [keys.join(','), ...this._log.map(row => keys.map(k => row[k]).join(','))].join('\n');
   },
-  download(){
-    const csv=this.exportCSV(); if(!csv) return;
-    const blob=new Blob([csv],{type:'text/csv'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='certanity-blackbox-'+Date.now()+'.csv';
+  download() {
+    const csv = this.exportCSV(); if (!csv) return;
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'certanity-blackbox-' + Date.now() + '.csv';
     a.click();
   },
-  getLog(){ return this._log.slice(); },
-  getStats(){
-    if(!this._log.length) return null;
-    const alts=this._log.map(e=>e.py);
-    const vels=this._log.map(e=>Math.hypot(e.vx,e.vy,e.vz));
+  getLog() { return this._log.slice(); },
+  getStats() {
+    if (!this._log.length) return null;
+    const alts = this._log.map(e => e.py);
+    const vels = this._log.map(e => Math.hypot(e.vx, e.vy, e.vz));
     return {
-      duration:(this._log[this._log.length-1].t-this._log[0].t).toFixed(1),
-      samples:this._log.length,
-      maxAlt:Math.max(...alts).toFixed(1),
-      avgVel:(vels.reduce((a,b)=>a+b,0)/vels.length).toFixed(1),
-      maxVel:Math.max(...vels).toFixed(1),
+      duration: (this._log[this._log.length - 1].t - this._log[0].t).toFixed(1),
+      samples: this._log.length,
+      maxAlt: Math.max(...alts).toFixed(1),
+      avgVel: (vels.reduce((a, b) => a + b, 0) / vels.length).toFixed(1),
+      maxVel: Math.max(...vels).toFixed(1),
     };
   },
 };
 
 /* ─── Debug / PID Visualizer ─── */
 const DEBUG = {
-  enabled:false, _pidHist:{pitch:[],roll:[],yaw:[]}, _histLen:120,
-  recordPID(pSP,pM,rSP,rM,ySP,yM){
-    if(!this.enabled) return;
-    const h=this._pidHist;
-    h.pitch.push({sp:pSP,m:pM}); h.roll.push({sp:rSP,m:rM}); h.yaw.push({sp:ySP,m:yM});
-    if(h.pitch.length>this._histLen){h.pitch.shift();h.roll.shift();h.yaw.shift();}
+  enabled: false, _pidHist: { pitch: [], roll: [], yaw: [] }, _histLen: 120,
+  recordPID(pSP, pM, rSP, rM, ySP, yM) {
+    if (!this.enabled) return;
+    const h = this._pidHist;
+    h.pitch.push({ sp: pSP, m: pM }); h.roll.push({ sp: rSP, m: rM }); h.yaw.push({ sp: ySP, m: yM });
+    if (h.pitch.length > this._histLen) { h.pitch.shift(); h.roll.shift(); h.yaw.shift(); }
   },
-  toggle(){
-    this.enabled=!this.enabled;
-    const el=document.getElementById('debug-badge');
-    if(el) el.style.display=this.enabled?'block':'none';
+  toggle() {
+    this.enabled = !this.enabled;
+    const el = document.getElementById('debug-badge');
+    if (el) el.style.display = this.enabled ? 'block' : 'none';
     return this.enabled;
   },
-  draw(){
-    if(!this.enabled) return;
-    this._drawPID('pidGraph',this._pidHist.pitch,'#EE9346');
+  draw() {
+    if (!this.enabled) return;
+    this._drawPID('pidGraph', this._pidHist.pitch, '#EE9346');
     this._drawGyro();
   },
-  _drawPID(canvasId,data,color){
-    const canvas=document.getElementById(canvasId); if(!canvas||!data.length) return;
-    const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
-    ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle='rgba(96,125,139,0.3)';ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
-    const draw=(fn,col)=>{
-      ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.beginPath();
-      data.forEach((d,i)=>{const x=(i/(data.length-1||1))*W,y=H/2-(fn(d)/8)*(H*0.45);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  _drawPID(canvasId, data, color) {
+    const canvas = document.getElementById(canvasId); if (!canvas || !data.length) return;
+    const ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(96,125,139,0.3)'; ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke();
+    const draw = (fn, col) => {
+      ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.beginPath();
+      data.forEach((d, i) => { const x = (i / (data.length - 1 || 1)) * W, y = H / 2 - (fn(d) / 8) * (H * 0.45); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
       ctx.stroke();
     };
-    draw(d=>d.m,color); draw(d=>d.sp,'rgba(16,37,109,0.7)');
+    draw(d => d.m, color); draw(d => d.sp, 'rgba(16,37,109,0.7)');
   },
-  _drawGyro(){
-    const canvas=document.getElementById('gyroGraph'); if(!canvas) return;
-    const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
-    ctx.clearRect(0,0,W,H);
-    const g=PHYS.gyro,max=PHYS.maxRate.pitch;
-    [{v:g.x,c:'#EE9346',l:'P'},{v:g.z,c:'#10256D',l:'R'},{v:g.y,c:'#43A047',l:'Y'}].forEach((b,i)=>{
-      const x=12+i*36,h=(Math.abs(b.v)/max)*(H-20);
-      ctx.fillStyle=b.c; ctx.fillRect(x,H-10-h,24,h);
-      ctx.fillStyle='#607D8B'; ctx.font='9px Inter'; ctx.fillText(b.l,x+8,H-2);
+  _drawGyro() {
+    const canvas = document.getElementById('gyroGraph'); if (!canvas) return;
+    const ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+    const g = PHYS.gyro, max = PHYS.maxRate.pitch;
+    [{ v: g.x, c: '#EE9346', l: 'P' }, { v: g.z, c: '#10256D', l: 'R' }, { v: g.y, c: '#43A047', l: 'Y' }].forEach((b, i) => {
+      const x = 12 + i * 36, h = (Math.abs(b.v) / max) * (H - 20);
+      ctx.fillStyle = b.c; ctx.fillRect(x, H - 10 - h, 24, h);
+      ctx.fillStyle = '#607D8B'; ctx.font = '9px Inter'; ctx.fillText(b.l, x + 8, H - 2);
     });
   },
 };
@@ -1275,180 +1275,182 @@ const GPS_SIM = {
 
   /** [FIX-3.5] HOME_LAT converted to radians for Math.cos */
   getLat() { return this.HOME_LAT + PHYS.pos.z / 111320; },
-  getLon() { return this.HOME_LON + PHYS.pos.x / (111320 * Math.cos(this.HOME_LAT * Math.PI/180)); },
+  getLon() { return this.HOME_LON + PHYS.pos.x / (111320 * Math.cos(this.HOME_LAT * Math.PI / 180)); },
   getAltMSL() { return this.HOME_ALT + PHYS.pos.y; },
 
   update(dt) {
     this._satTimer += dt;
-    if(this._satTimer > 2.0){
-      this._satTimer=0;
-      this._satJitter=Math.round((Math.random()-0.5)*2);
+    if (this._satTimer > 2.0) {
+      this._satTimer = 0;
+      this._satJitter = Math.round((Math.random() - 0.5) * 2);
     }
-    const indoor=typeof ENV!=='undefined'&&ENV._name==='indoor';
-    this._fixType=indoor?0:(typeof State!=='undefined'&&State.armed?3:2);
-    this._hdop=indoor?99.9:(0.7+Math.random()*0.4);
+    const indoor = typeof ENV !== 'undefined' && ENV._name === 'indoor';
+    this._fixType = indoor ? 0 : (typeof State !== 'undefined' && State.armed ? 3 : 2);
+    this._hdop = indoor ? 99.9 : (0.7 + Math.random() * 0.4);
   },
 
-  getSatCount(){ return Math.max(0,this._satBase+this._satJitter+(this._fixType===0?-14:0)); },
+  getSatCount() { return Math.max(0, this._satBase + this._satJitter + (this._fixType === 0 ? -14 : 0)); },
   getFixType() { return this._fixType; },
-  getHdop()    { return this._hdop; },
+  getHdop() { return this._hdop; },
 
-  rawInt(){
+  rawInt() {
     return {
-      lat:  Math.round(this.getLat()*1e7),
-      lon:  Math.round(this.getLon()*1e7),
-      alt:  Math.round(this.getAltMSL()*1000),
+      lat: Math.round(this.getLat() * 1e7),
+      lon: Math.round(this.getLon() * 1e7),
+      alt: Math.round(this.getAltMSL() * 1000),
       fix_type: this._fixType,
       satellites_visible: this.getSatCount(),
-      eph:  Math.round(this._hdop*100),
-      epv:  Math.round((this._hdop+0.3)*100),
+      eph: Math.round(this._hdop * 100),
+      epv: Math.round((this._hdop + 0.3) * 100),
     };
   },
 };
 
 /* ─── VISION_POSITION Simulation ─── */
 const VISION_POS = {
-  _x:0, _y:0, _z:0, _driftX:0, _driftZ:0,
-  UPDATE_RATE:30,
-  _isActive(){
-    const indoor=typeof ENV!=='undefined'&&ENV._name==='indoor';
-    return indoor||GPS_SIM.getFixType()<2;
+  _x: 0, _y: 0, _z: 0, _driftX: 0, _driftZ: 0,
+  UPDATE_RATE: 30,
+  _isActive() {
+    const indoor = typeof ENV !== 'undefined' && ENV._name === 'indoor';
+    return indoor || GPS_SIM.getFixType() < 2;
   },
-  update(dt){
-    if(!this._isActive()){
-      this._driftX*=0.95; this._driftZ*=0.95;
+  update(dt) {
+    if (!this._isActive()) {
+      this._driftX *= 0.95; this._driftZ *= 0.95;
     }
-    const driftRate=this._isActive()?0.002:0.0001;
-    this._driftX+=(Math.random()-0.5)*driftRate;
-    this._driftZ+=(Math.random()-0.5)*driftRate;
-    const noiseAmp=this._isActive()?0.04:0.008;
-    this._x=PHYS.pos.x+this._driftX+(Math.random()-0.5)*noiseAmp;
-    this._y=Math.max(0,PHYS.pos.y-PHYS.groundY+(Math.random()-0.5)*noiseAmp*0.5);
-    this._z=PHYS.pos.z+this._driftZ+(Math.random()-0.5)*noiseAmp;
+    const driftRate = this._isActive() ? 0.002 : 0.0001;
+    this._driftX += (Math.random() - 0.5) * driftRate;
+    this._driftZ += (Math.random() - 0.5) * driftRate;
+    const noiseAmp = this._isActive() ? 0.04 : 0.008;
+    this._x = PHYS.pos.x + this._driftX + (Math.random() - 0.5) * noiseAmp;
+    this._y = Math.max(0, PHYS.pos.y - PHYS.groundY + (Math.random() - 0.5) * noiseAmp * 0.5);
+    this._z = PHYS.pos.z + this._driftZ + (Math.random() - 0.5) * noiseAmp;
   },
-  get(){
+  get() {
     return {
-      x:this._x.toFixed(2), y:this._y.toFixed(2), z:this._z.toFixed(2),
-      active:this._isActive(),
-      quality:this._isActive()?Math.max(0,100-Math.round(Math.hypot(this._driftX,this._driftZ)*500)):100,
+      x: this._x.toFixed(2), y: this._y.toFixed(2), z: this._z.toFixed(2),
+      active: this._isActive(),
+      quality: this._isActive() ? Math.max(0, 100 - Math.round(Math.hypot(this._driftX, this._driftZ) * 500)) : 100,
     };
   },
 };
 
 /* ─── OBSTACLE_DISTANCE — 5-sector proximity ─── */
 const OBSTACLE_DIST = {
-  SECTORS:['FWD','RIGHT','BACK','LEFT','UP'],
-  SENSOR_RANGE:12.0,
-  UPDATE_RATE:10,
-  _distances:[12,12,12,12,12],
-  _angles:[0,Math.PI/2,Math.PI,-Math.PI/2,null],
+  SECTORS: ['FWD', 'RIGHT', 'BACK', 'LEFT', 'UP'],
+  SENSOR_RANGE: 12.0,
+  UPDATE_RATE: 10,
+  _distances: [12, 12, 12, 12, 12],
+  _angles: [0, Math.PI / 2, Math.PI, -Math.PI / 2, null],
 
-  update(){
-    const p=PHYS;
-    const yaw=p.euler.yaw;
-    const pos=p.pos;
-    const groundY=p.groundY;
-    for(let s=0;s<5;s++){
-      if(s===4){
-        this._distances[s]=Math.max(0,120-(pos.y-groundY));
+  update() {
+    const p = PHYS;
+    const yaw = p.euler.yaw;
+    const pos = p.pos;
+    const groundY = p.groundY;
+    for (let s = 0; s < 5; s++) {
+      if (s === 4) {
+        this._distances[s] = Math.max(0, 120 - (pos.y - groundY));
         continue;
       }
-      const sectorAngle=yaw+this._angles[s];
-      const dx=Math.sin(sectorAngle), dz=Math.cos(sectorAngle);
-      let minDist=this.SENSOR_RANGE;
-      for(const c of p.colliders){
-        const cx=(c.min.x+c.max.x)*0.5, cz=(c.min.z+c.max.z)*0.5;
-        const toX=cx-pos.x, toZ=cz-pos.z;
-        const proj=toX*dx+toZ*dz;
-        if(proj<0||proj>this.SENSOR_RANGE) continue;
-        const perpDist=Math.abs(toX*dz-toZ*dx);
-        const hw=Math.max((c.max.x-c.min.x),(c.max.z-c.min.z))*0.5;
-        if(perpDist<hw+0.5) minDist=Math.min(minDist,proj);
+      const sectorAngle = yaw + this._angles[s];
+      const dx = Math.sin(sectorAngle), dz = Math.cos(sectorAngle);
+      let minDist = this.SENSOR_RANGE;
+      for (const c of p.colliders) {
+        const cx = (c.min.x + c.max.x) * 0.5, cz = (c.min.z + c.max.z) * 0.5;
+        const toX = cx - pos.x, toZ = cz - pos.z;
+        const proj = toX * dx + toZ * dz;
+        if (proj < 0 || proj > this.SENSOR_RANGE) continue;
+        const perpDist = Math.abs(toX * dz - toZ * dx);
+        const hw = Math.max((c.max.x - c.min.x), (c.max.z - c.min.z)) * 0.5;
+        if (perpDist < hw + 0.5) minDist = Math.min(minDist, proj);
       }
-      this._distances[s]=Math.max(0,minDist+(Math.random()-0.5)*0.15);
+      this._distances[s] = Math.max(0, minDist + (Math.random() - 0.5) * 0.15);
     }
   },
-  get(){ return this._distances.slice(); },
+  get() { return this._distances.slice(); },
 };
 
 /* ─── PID Telemetry ─── */
 const PID_TELEM = {
-  axes:{
-    roll:    {kp:0,ki:0,kd:0,setpoint:0,measured:0,error:0,output:0},
-    pitch:   {kp:0,ki:0,kd:0,setpoint:0,measured:0,error:0,output:0},
-    yaw:     {kp:0,ki:0,kd:0,setpoint:0,measured:0,error:0,output:0},
-    throttle:{kp:0,ki:0,kd:0,setpoint:0,measured:0,error:0,output:0},
+  axes: {
+    roll: { kp: 0, ki: 0, kd: 0, setpoint: 0, measured: 0, error: 0, output: 0 },
+    pitch: { kp: 0, ki: 0, kd: 0, setpoint: 0, measured: 0, error: 0, output: 0 },
+    yaw: { kp: 0, ki: 0, kd: 0, setpoint: 0, measured: 0, error: 0, output: 0 },
+    throttle: { kp: 0, ki: 0, kd: 0, setpoint: 0, measured: 0, error: 0, output: 0 },
   },
-  capture(){
-    const g=FC.gains;
-    const rp=FC.ratePID;
-    const fcrc=PHYS._fcRateCmd;
+  capture() {
+    const g = FC.gains;
+    const rp = FC.ratePID;
+    const fcrc = PHYS._fcRateCmd;
     // Capture rate setpoints from PHYS._fcRateCmd (inner loop values)
-    this.axes.roll    ={kp:g.rp,ki:g.ri||0,kd:g.rd, setpoint:fcrc.roll,  measured:PHYS.gyro.z, error:fcrc.roll -PHYS.gyro.z, output:PHYS.motorCmd[0]-PHYS.motorCmd[1]};
-    this.axes.pitch   ={kp:g.rp,ki:g.ri||0,kd:g.rd, setpoint:fcrc.pitch, measured:PHYS.gyro.x, error:fcrc.pitch-PHYS.gyro.x, output:PHYS.motorCmd[2]-PHYS.motorCmd[0]};
-    this.axes.yaw     ={kp:g.yp,ki:0.012,  kd:0,     setpoint:fcrc.yaw,   measured:PHYS.gyro.y, error:fcrc.yaw  -PHYS.gyro.y, output:PHYS.motorCmd[0]-PHYS.motorCmd[3]};
-    this.axes.throttle={kp:g.ap,ki:FC.altPID.i,kd:FC.altPID.d, setpoint:FC.altTarget||0, measured:PHYS._altEstimate, error:(FC.altTarget||0)-PHYS._altEstimate, output:PHYS.hoverThrottle};
+    this.axes.roll = { kp: g.rp, ki: g.ri || 0, kd: g.rd, setpoint: fcrc.roll, measured: PHYS.gyro.z, error: fcrc.roll - PHYS.gyro.z, output: PHYS.motorCmd[0] - PHYS.motorCmd[1] };
+    this.axes.pitch = { kp: g.rp, ki: g.ri || 0, kd: g.rd, setpoint: fcrc.pitch, measured: PHYS.gyro.x, error: fcrc.pitch - PHYS.gyro.x, output: PHYS.motorCmd[2] - PHYS.motorCmd[0] };
+    this.axes.yaw = { kp: g.yp, ki: 0.012, kd: 0, setpoint: fcrc.yaw, measured: PHYS.gyro.y, error: fcrc.yaw - PHYS.gyro.y, output: PHYS.motorCmd[0] - PHYS.motorCmd[3] };
+    this.axes.throttle = { kp: g.ap, ki: FC.altPID.i, kd: FC.altPID.d, setpoint: FC.altTarget || 0, measured: PHYS._altEstimate, error: (FC.altTarget || 0) - PHYS._altEstimate, output: PHYS.hoverThrottle };
   },
 };
 
 /* ─── Battery flight time estimate ─── */
-function getBattEstimatedFlightTime(){
-  const remainingAh=PHYS.battTotalAh*(PHYS.battPct/100);
-  const currentA=Math.max(0.1,PHYS.currentDraw);
-  return Math.min(9999,(remainingAh/currentA)*3600);
+function getBattEstimatedFlightTime() {
+  const remainingAh = PHYS.battTotalAh * (PHYS.battPct / 100);
+  const currentA = Math.max(0.1, PHYS.currentDraw);
+  return Math.min(9999, (remainingAh / currentA) * 3600);
 }
 
 /* ─── Global exports ─── */
-if(typeof globalThis!=='undefined'){
-  Object.assign(globalThis,{V3,Q,Noise,DRYDEN,PID,Kalman1D,DRONE_PROFILES,PHYS,FC,INPUT,BLACKBOX,DEBUG,
-    GPS_SIM,VISION_POS,OBSTACLE_DIST,PID_TELEM,getBattEstimatedFlightTime,_simClock});
+if (typeof globalThis !== 'undefined') {
+  Object.assign(globalThis, {
+    V3, Q, Noise, DRYDEN, PID, Kalman1D, DRONE_PROFILES, PHYS, FC, INPUT, BLACKBOX, DEBUG,
+    GPS_SIM, VISION_POS, OBSTACLE_DIST, PID_TELEM, getBattEstimatedFlightTime, _simClock
+  });
 }
 
 /* ─── MAVLink v1 Export ─── */
 const MAVLINK = {
-  MSG_HEARTBEAT:0, MSG_SYS_STATUS:1, MSG_BATTERY_STATUS:147,
-  MSG_ATTITUDE:30, MSG_LOCAL_POSITION_NED:32, MSG_GPS_RAW_INT:24,
-  MSG_RC_CHANNELS_RAW:35, MSG_VFR_HUD:74, MSG_STATUSTEXT:253,
-  _seq:0,
+  MSG_HEARTBEAT: 0, MSG_SYS_STATUS: 1, MSG_BATTERY_STATUS: 147,
+  MSG_ATTITUDE: 30, MSG_LOCAL_POSITION_NED: 32, MSG_GPS_RAW_INT: 24,
+  MSG_RC_CHANNELS_RAW: 35, MSG_VFR_HUD: 74, MSG_STATUSTEXT: 253,
+  _seq: 0,
 
-  _crc16(buf){
-    let crc=0xFFFF;
-    for(let i=0;i<buf.length;i++){
-      let tmp=buf[i]^(crc&0xFF);
-      tmp=(tmp^(tmp<<4))&0xFF;
-      crc=((crc>>8)^(tmp<<8)^(tmp<<3)^(tmp>>4))&0xFFFF;
+  _crc16(buf) {
+    let crc = 0xFFFF;
+    for (let i = 0; i < buf.length; i++) {
+      let tmp = buf[i] ^ (crc & 0xFF);
+      tmp = (tmp ^ (tmp << 4)) & 0xFF;
+      crc = ((crc >> 8) ^ (tmp << 8) ^ (tmp << 3) ^ (tmp >> 4)) & 0xFFFF;
     }
     return crc;
   },
 
   // CRC extra bytes verified against MAVLink common.xml
-  _crcExtra:{
-    0:50,   // HEARTBEAT
-    1:124,  // SYS_STATUS
-    24:24,  // GPS_RAW_INT
-    30:39,  // ATTITUDE
-    32:185, // LOCAL_POSITION_NED
-    35:244, // RC_CHANNELS_RAW
-    74:20,  // VFR_HUD
-    147:154,// BATTERY_STATUS
-    253:83, // STATUSTEXT
+  _crcExtra: {
+    0: 50,   // HEARTBEAT
+    1: 124,  // SYS_STATUS
+    24: 24,  // GPS_RAW_INT
+    30: 39,  // ATTITUDE
+    32: 185, // LOCAL_POSITION_NED
+    35: 244, // RC_CHANNELS_RAW
+    74: 20,  // VFR_HUD
+    147: 154,// BATTERY_STATUS
+    253: 83, // STATUSTEXT
   },
 
-  _packet(msgId, payload){
-    const sysId=1,compId=1;
-    const len=payload.length;
-    const header=[0xFE,len,this._seq&0xFF,sysId,compId,msgId];
-    this._seq=(this._seq+1)&0xFF;
-    const crcBuf=[...header.slice(1),...payload,this._crcExtra[msgId]||0];
-    const crc=this._crc16(crcBuf);
-    return new Uint8Array([...header,...payload,crc&0xFF,(crc>>8)&0xFF]);
+  _packet(msgId, payload) {
+    const sysId = 1, compId = 1;
+    const len = payload.length;
+    const header = [0xFE, len, this._seq & 0xFF, sysId, compId, msgId];
+    this._seq = (this._seq + 1) & 0xFF;
+    const crcBuf = [...header.slice(1), ...payload, this._crcExtra[msgId] || 0];
+    const crc = this._crc16(crcBuf);
+    return new Uint8Array([...header, ...payload, crc & 0xFF, (crc >> 8) & 0xFF]);
   },
 
-  _f32(dv,off,val){dv.setFloat32(off,val,true);},
-  _u32(dv,off,val){dv.setUint32(off,val,true);},
-  _i32(dv,off,val){dv.setInt32(off,val,true);},
-  _u16(dv,off,val){dv.setUint16(off,val,true);},
-  _i16(dv,off,val){dv.setInt16(off,val,true);},
+  _f32(dv, off, val) { dv.setFloat32(off, val, true); },
+  _u32(dv, off, val) { dv.setUint32(off, val, true); },
+  _i32(dv, off, val) { dv.setInt32(off, val, true); },
+  _u16(dv, off, val) { dv.setUint16(off, val, true); },
+  _i16(dv, off, val) { dv.setInt16(off, val, true); },
 
   /**
    * HEARTBEAT — MAVLink common.xml ID=0
@@ -1457,150 +1459,150 @@ const MAVLINK = {
    *   bit4 (0x10): MAV_MODE_FLAG_GUIDED_ENABLED (GPS hold)
    *   bit3 (0x08): MAV_MODE_FLAG_STABILIZE_ENABLED (stabilized/angle)
    */
-  heartbeat(customMode, type, autopilot, baseMode, sysStatus, mavlinkVersion){
-    const buf=new ArrayBuffer(9); const dv=new DataView(buf);
-    this._u32(dv,0,customMode||0);
-    dv.setUint8(4,type||2);        // MAV_TYPE_QUADROTOR=2
-    dv.setUint8(5,autopilot||3);   // MAV_AUTOPILOT_ARDUPILOTMEGA=3
+  heartbeat(customMode, type, autopilot, baseMode, sysStatus, mavlinkVersion) {
+    const buf = new ArrayBuffer(9); const dv = new DataView(buf);
+    this._u32(dv, 0, customMode || 0);
+    dv.setUint8(4, type || 2);        // MAV_TYPE_QUADROTOR=2
+    dv.setUint8(5, autopilot || 3);   // MAV_AUTOPILOT_ARDUPILOTMEGA=3
     // [FIX-5.3] Correct baseMode flags
-    let bm=0;
-    const armed = typeof State!=='undefined'&&State.armed;
-    const mode  = typeof FC!=='undefined'?FC.mode:'stabilized';
-    if(armed)  bm|=0x80; // MAV_MODE_FLAG_SAFETY_ARMED
-    if(mode==='gpshold'||mode==='rth') bm|=0x10; // MAV_MODE_FLAG_GUIDED_ENABLED
-    if(mode==='stabilized'||mode==='angle'||mode==='althold') bm|=0x08; // MAV_MODE_FLAG_STABILIZE_ENABLED
-    dv.setUint8(6,baseMode!==undefined?baseMode:bm);
-    dv.setUint8(7,sysStatus||0);
-    dv.setUint8(8,mavlinkVersion||3);
-    return this._packet(this.MSG_HEARTBEAT,[...new Uint8Array(buf)]);
+    let bm = 0;
+    const armed = typeof State !== 'undefined' && State.armed;
+    const mode = typeof FC !== 'undefined' ? FC.mode : 'stabilized';
+    if (armed) bm |= 0x80; // MAV_MODE_FLAG_SAFETY_ARMED
+    if (mode === 'gpshold' || mode === 'rth') bm |= 0x10; // MAV_MODE_FLAG_GUIDED_ENABLED
+    if (mode === 'stabilized' || mode === 'angle' || mode === 'althold') bm |= 0x08; // MAV_MODE_FLAG_STABILIZE_ENABLED
+    dv.setUint8(6, baseMode !== undefined ? baseMode : bm);
+    dv.setUint8(7, sysStatus || 0);
+    dv.setUint8(8, mavlinkVersion || 3);
+    return this._packet(this.MSG_HEARTBEAT, [...new Uint8Array(buf)]);
   },
 
-  attitude(timeBootMs,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed){
-    const buf=new ArrayBuffer(28); const dv=new DataView(buf);
-    this._u32(dv,0,timeBootMs>>>0);
-    this._f32(dv,4,roll); this._f32(dv,8,pitch); this._f32(dv,12,yaw);
-    this._f32(dv,16,rollspeed); this._f32(dv,20,pitchspeed); this._f32(dv,24,yawspeed);
-    return this._packet(this.MSG_ATTITUDE,[...new Uint8Array(buf)]);
+  attitude(timeBootMs, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed) {
+    const buf = new ArrayBuffer(28); const dv = new DataView(buf);
+    this._u32(dv, 0, timeBootMs >>> 0);
+    this._f32(dv, 4, roll); this._f32(dv, 8, pitch); this._f32(dv, 12, yaw);
+    this._f32(dv, 16, rollspeed); this._f32(dv, 20, pitchspeed); this._f32(dv, 24, yawspeed);
+    return this._packet(this.MSG_ATTITUDE, [...new Uint8Array(buf)]);
   },
 
-  localPositionNed(timeBootMs,x,y,z,vx,vy,vz){
-    const buf=new ArrayBuffer(28); const dv=new DataView(buf);
-    this._u32(dv,0,timeBootMs>>>0);
-    this._f32(dv,4,x); this._f32(dv,8,y); this._f32(dv,12,z);
-    this._f32(dv,16,vx); this._f32(dv,20,vy); this._f32(dv,24,vz);
-    return this._packet(this.MSG_LOCAL_POSITION_NED,[...new Uint8Array(buf)]);
+  localPositionNed(timeBootMs, x, y, z, vx, vy, vz) {
+    const buf = new ArrayBuffer(28); const dv = new DataView(buf);
+    this._u32(dv, 0, timeBootMs >>> 0);
+    this._f32(dv, 4, x); this._f32(dv, 8, y); this._f32(dv, 12, z);
+    this._f32(dv, 16, vx); this._f32(dv, 20, vy); this._f32(dv, 24, vz);
+    return this._packet(this.MSG_LOCAL_POSITION_NED, [...new Uint8Array(buf)]);
   },
 
-  vfrHud(airspeed,groundspeed,heading,throttle,alt,climb){
-    const buf=new ArrayBuffer(20); const dv=new DataView(buf);
-    this._f32(dv,0,airspeed); this._f32(dv,4,groundspeed);
-    this._f32(dv,8,alt); this._f32(dv,12,climb);
-    this._i16(dv,16,heading); this._u16(dv,18,throttle);
-    return this._packet(this.MSG_VFR_HUD,[...new Uint8Array(buf)]);
+  vfrHud(airspeed, groundspeed, heading, throttle, alt, climb) {
+    const buf = new ArrayBuffer(20); const dv = new DataView(buf);
+    this._f32(dv, 0, airspeed); this._f32(dv, 4, groundspeed);
+    this._f32(dv, 8, alt); this._f32(dv, 12, climb);
+    this._i16(dv, 16, heading); this._u16(dv, 18, throttle);
+    return this._packet(this.MSG_VFR_HUD, [...new Uint8Array(buf)]);
   },
 
   /** [FIX-5.3] GPS_RAW_INT: vel = ground speed cm/s, cog = atan2(vx,vz) cdeg */
-  gpsRawInt(timeBootMs,lat,lon,alt,eph,epv,vel,cog,fixType,satellitesVisible){
-    const buf=new ArrayBuffer(30); const dv=new DataView(buf);
-    dv.setUint32(0,(timeBootMs*1000)>>>0,true); dv.setUint32(4,0,true);
-    this._i32(dv,8,lat); this._i32(dv,12,lon); this._i32(dv,16,alt);
-    this._u16(dv,20,eph!==undefined?eph:0xFFFF);
-    this._u16(dv,22,epv!==undefined?epv:0xFFFF);
-    this._u16(dv,24,vel!==undefined?vel:0xFFFF); // ground speed cm/s
-    this._u16(dv,26,cog!==undefined?cog:0xFFFF); // course over ground cdeg
-    dv.setUint8(28,fixType||0);
-    dv.setUint8(29,satellitesVisible!==undefined?satellitesVisible:255);
-    return this._packet(this.MSG_GPS_RAW_INT,[...new Uint8Array(buf)]);
+  gpsRawInt(timeBootMs, lat, lon, alt, eph, epv, vel, cog, fixType, satellitesVisible) {
+    const buf = new ArrayBuffer(30); const dv = new DataView(buf);
+    dv.setUint32(0, (timeBootMs * 1000) >>> 0, true); dv.setUint32(4, 0, true);
+    this._i32(dv, 8, lat); this._i32(dv, 12, lon); this._i32(dv, 16, alt);
+    this._u16(dv, 20, eph !== undefined ? eph : 0xFFFF);
+    this._u16(dv, 22, epv !== undefined ? epv : 0xFFFF);
+    this._u16(dv, 24, vel !== undefined ? vel : 0xFFFF); // ground speed cm/s
+    this._u16(dv, 26, cog !== undefined ? cog : 0xFFFF); // course over ground cdeg
+    dv.setUint8(28, fixType || 0);
+    dv.setUint8(29, satellitesVisible !== undefined ? satellitesVisible : 255);
+    return this._packet(this.MSG_GPS_RAW_INT, [...new Uint8Array(buf)]);
   },
 
   /** [FIX-5.3] BATTERY_STATUS: currentBattery in centi-amps (A×100), voltages in mV */
-  batteryStatus(id,battFunction,type,temperature,voltages,currentBattery,currentConsumed,energyConsumed,batteryRemaining){
-    const buf=new ArrayBuffer(36); const dv=new DataView(buf);
-    this._i32(dv,0,currentConsumed!==undefined?currentConsumed:-1);   // mAh
-    this._i32(dv,4,energyConsumed!==undefined?energyConsumed:-1);
-    this._i16(dv,8,temperature!==undefined?temperature:0x7FFF);
-    const vArr=voltages||[];
-    for(let i=0;i<10;i++) this._u16(dv,10+i*2,i<vArr.length?vArr[i]:0xFFFF); // mV per cell
-    this._i16(dv,30,currentBattery!==undefined?currentBattery:-1); // centi-amps (A×100)
-    dv.setUint8(32,id||0);
-    dv.setUint8(33,battFunction||0);
-    dv.setUint8(34,type||0);
-    dv.setInt8( 35,batteryRemaining!==undefined?batteryRemaining:-1);
-    return this._packet(this.MSG_BATTERY_STATUS,[...new Uint8Array(buf)]);
+  batteryStatus(id, battFunction, type, temperature, voltages, currentBattery, currentConsumed, energyConsumed, batteryRemaining) {
+    const buf = new ArrayBuffer(36); const dv = new DataView(buf);
+    this._i32(dv, 0, currentConsumed !== undefined ? currentConsumed : -1);   // mAh
+    this._i32(dv, 4, energyConsumed !== undefined ? energyConsumed : -1);
+    this._i16(dv, 8, temperature !== undefined ? temperature : 0x7FFF);
+    const vArr = voltages || [];
+    for (let i = 0; i < 10; i++) this._u16(dv, 10 + i * 2, i < vArr.length ? vArr[i] : 0xFFFF); // mV per cell
+    this._i16(dv, 30, currentBattery !== undefined ? currentBattery : -1); // centi-amps (A×100)
+    dv.setUint8(32, id || 0);
+    dv.setUint8(33, battFunction || 0);
+    dv.setUint8(34, type || 0);
+    dv.setInt8(35, batteryRemaining !== undefined ? batteryRemaining : -1);
+    return this._packet(this.MSG_BATTERY_STATUS, [...new Uint8Array(buf)]);
   },
 
-  buildTlog(logEntries){
-    if(!logEntries||!logEntries.length) return null;
-    this._seq=0;
-    const chunks=[];
-    const writeEntry=(tSec,pkt)=>{
-      const ts=Math.round(tSec*1e6);
-      const tsBuf=new ArrayBuffer(8); const tsView=new DataView(tsBuf);
-      tsView.setUint32(0,Math.floor(ts/4294967296)>>>0,false);
-      tsView.setUint32(4,ts>>>0,false);
+  buildTlog(logEntries) {
+    if (!logEntries || !logEntries.length) return null;
+    this._seq = 0;
+    const chunks = [];
+    const writeEntry = (tSec, pkt) => {
+      const ts = Math.round(tSec * 1e6);
+      const tsBuf = new ArrayBuffer(8); const tsView = new DataView(tsBuf);
+      tsView.setUint32(0, Math.floor(ts / 4294967296) >>> 0, false);
+      tsView.setUint32(4, ts >>> 0, false);
       chunks.push(new Uint8Array(tsBuf));
       chunks.push(pkt);
     };
-    let lastHB=-999,lastGPS=-999,lastBatt=-999;
-    for(const e of logEntries){
-      if(e.t-lastHB>=1.0){
-        writeEntry(e.t,this.heartbeat(0,2,3));
-        lastHB=e.t;
+    let lastHB = -999, lastGPS = -999, lastBatt = -999;
+    for (const e of logEntries) {
+      if (e.t - lastHB >= 1.0) {
+        writeEntry(e.t, this.heartbeat(0, 2, 3));
+        lastHB = e.t;
       }
-      if(e.t-lastGPS>=0.2){
-        const gLat=Math.round((GPS_SIM.HOME_LAT+e.pz/111320)*1e7);
+      if (e.t - lastGPS >= 0.2) {
+        const gLat = Math.round((GPS_SIM.HOME_LAT + e.pz / 111320) * 1e7);
         // [FIX-3.5] Use radians for cos
-        const gLon=Math.round((GPS_SIM.HOME_LON+e.px/(111320*Math.cos(GPS_SIM.HOME_LAT*Math.PI/180)))*1e7);
-        const gAlt=Math.round((GPS_SIM.HOME_ALT+e.py)*1000);
-        const gVel=Math.round(Math.hypot(e.vx,e.vz)*100); // ground speed cm/s
-        const gCog=Math.round(((Math.atan2(e.vx,e.vz)*180/Math.PI)+360)%360*100); // course cdeg
-        writeEntry(e.t,this.gpsRawInt(Math.round(e.t*1000),gLat,gLon,gAlt,90,130,gVel,gCog,3,14));
-        lastGPS=e.t;
+        const gLon = Math.round((GPS_SIM.HOME_LON + e.px / (111320 * Math.cos(GPS_SIM.HOME_LAT * Math.PI / 180))) * 1e7);
+        const gAlt = Math.round((GPS_SIM.HOME_ALT + e.py) * 1000);
+        const gVel = Math.round(Math.hypot(e.vx, e.vz) * 100); // ground speed cm/s
+        const gCog = Math.round(((Math.atan2(e.vx, e.vz) * 180 / Math.PI) + 360) % 360 * 100); // course cdeg
+        writeEntry(e.t, this.gpsRawInt(Math.round(e.t * 1000), gLat, gLon, gAlt, 90, 130, gVel, gCog, 3, 14));
+        lastGPS = e.t;
       }
-      if(e.t-lastBatt>=0.5){
-        const cellV=Math.round((e.batt/(PHYS.cells||4))*1000); // mV per cell
-        const voltages=Array(10).fill(0xFFFF);
-        for(let c=0;c<(PHYS.cells||4);c++) voltages[c]=cellV;
-        const consumed=Math.round(PHYS.battCapacity*1000); // mAh
-        const remaining=Math.round(PHYS.battPct);
+      if (e.t - lastBatt >= 0.5) {
+        const cellV = Math.round((e.batt / (PHYS.cells || 4)) * 1000); // mV per cell
+        const voltages = Array(10).fill(0xFFFF);
+        for (let c = 0; c < (PHYS.cells || 4); c++) voltages[c] = cellV;
+        const consumed = Math.round(PHYS.battCapacity * 1000); // mAh
+        const remaining = Math.round(PHYS.battPct);
         // [FIX-5.3] currentBattery in centi-amps (A×100)
-        writeEntry(e.t,this.batteryStatus(0,0,0,2500,voltages,Math.round(e.curr*100),consumed,-1,remaining));
-        lastBatt=e.t;
+        writeEntry(e.t, this.batteryStatus(0, 0, 0, 2500, voltages, Math.round(e.curr * 100), consumed, -1, remaining));
+        lastBatt = e.t;
       }
-      const tms=Math.round(e.t*1000);
-      writeEntry(e.t,this.attitude(tms,e.roll,e.pitch,e.yaw,e.gx,e.gy,e.gz));
-      writeEntry(e.t,this.localPositionNed(tms,e.px,-e.pz,-e.py,e.vx,-e.vz,-e.vy));
-      const speed=Math.hypot(e.vx,e.vy,e.vz);
-      const hspeed=Math.hypot(e.vx,e.vz);
-      writeEntry(e.t,this.vfrHud(speed,hspeed,Math.round(((e.yaw*180/Math.PI)+360)%360),Math.round((e.m0+e.m1+e.m2+e.m3)/4*100),e.py,e.vy));
+      const tms = Math.round(e.t * 1000);
+      writeEntry(e.t, this.attitude(tms, e.roll, e.pitch, e.yaw, e.gx, e.gy, e.gz));
+      writeEntry(e.t, this.localPositionNed(tms, e.px, -e.pz, -e.py, e.vx, -e.vz, -e.vy));
+      const speed = Math.hypot(e.vx, e.vy, e.vz);
+      const hspeed = Math.hypot(e.vx, e.vz);
+      writeEntry(e.t, this.vfrHud(speed, hspeed, Math.round(((e.yaw * 180 / Math.PI) + 360) % 360), Math.round((e.m0 + e.m1 + e.m2 + e.m3) / 4 * 100), e.py, e.vy));
     }
-    const total=chunks.reduce((s,c)=>s+c.byteLength,0);
-    const out=new Uint8Array(total); let off=0;
-    for(const c of chunks){out.set(c,off);off+=c.byteLength;}
+    const total = chunks.reduce((s, c) => s + c.byteLength, 0);
+    const out = new Uint8Array(total); let off = 0;
+    for (const c of chunks) { out.set(c, off); off += c.byteLength; }
     return out;
   },
 
-  downloadTlog(){
-    const log=BLACKBOX.getLog();
-    if(!log.length){console.warn('No blackbox data');return false;}
-    const data=this.buildTlog(log);
-    if(!data) return false;
-    const blob=new Blob([data],{type:'application/octet-stream'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='certanity-'+Date.now()+'.tlog';
+  downloadTlog() {
+    const log = BLACKBOX.getLog();
+    if (!log.length) { console.warn('No blackbox data'); return false; }
+    const data = this.buildTlog(log);
+    if (!data) return false;
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'certanity-' + Date.now() + '.tlog';
     a.click(); URL.revokeObjectURL(a.href);
     return true;
   },
 
-  downloadJSON(){
-    const log=BLACKBOX.getLog();
-    if(!log.length) return false;
-    const json=JSON.stringify({meta:{version:'2.1',drone:PHYS.droneProfile,exported:new Date().toISOString()},frames:log},null,2);
-    const blob=new Blob([json],{type:'application/json'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='certanity-telem-'+Date.now()+'.json';
+  downloadJSON() {
+    const log = BLACKBOX.getLog();
+    if (!log.length) return false;
+    const json = JSON.stringify({ meta: { version: '2.1', drone: PHYS.droneProfile, exported: new Date().toISOString() }, frames: log }, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'certanity-telem-' + Date.now() + '.json';
     a.click(); URL.revokeObjectURL(a.href);
     return true;
   },
@@ -1608,68 +1610,68 @@ const MAVLINK = {
 
 /* ─── Telemetry Graph ─── */
 const TELEM_GRAPH = {
-  _canvas:null, _ctx:null,
-  _history:{alt:[],vel:[],roll:[],pitch:[],batt:[]},
-  _maxLen:200,
-  _channels:['alt','vel','roll','pitch','batt'],
-  _colors:{alt:'#10256D',vel:'#EE9346',roll:'#43A047',pitch:'#E53935',batt:'#9C27B0'},
-  _visible:{alt:true,vel:true,roll:false,pitch:false,batt:false},
+  _canvas: null, _ctx: null,
+  _history: { alt: [], vel: [], roll: [], pitch: [], batt: [] },
+  _maxLen: 200,
+  _channels: ['alt', 'vel', 'roll', 'pitch', 'batt'],
+  _colors: { alt: '#10256D', vel: '#EE9346', roll: '#43A047', pitch: '#E53935', batt: '#9C27B0' },
+  _visible: { alt: true, vel: true, roll: false, pitch: false, batt: false },
   // [Section 6.24] Auto-scale altitude axis
-  _scales:{alt:50,vel:15,roll:90,pitch:90,batt:100},
+  _scales: { alt: 50, vel: 15, roll: 90, pitch: 90, batt: 100 },
 
-  init(canvasId){
-    this._canvas=document.getElementById(canvasId);
-    if(this._canvas) this._ctx=this._canvas.getContext('2d');
+  init(canvasId) {
+    this._canvas = document.getElementById(canvasId);
+    if (this._canvas) this._ctx = this._canvas.getContext('2d');
   },
 
-  push(p){
-    const R2D=180/Math.PI;
-    const vals={
-      alt:Math.max(0,p.pos.y-p.groundY),
-      vel:Math.hypot(p.vel.x,p.vel.y,p.vel.z),
-      roll:p.euler.roll*R2D,
-      pitch:p.euler.pitch*R2D,
-      batt:p.battPct,
+  push(p) {
+    const R2D = 180 / Math.PI;
+    const vals = {
+      alt: Math.max(0, p.pos.y - p.groundY),
+      vel: Math.hypot(p.vel.x, p.vel.y, p.vel.z),
+      roll: p.euler.roll * R2D,
+      pitch: p.euler.pitch * R2D,
+      batt: p.battPct,
     };
-    for(const k of this._channels){
+    for (const k of this._channels) {
       this._history[k].push(vals[k]);
-      if(this._history[k].length>this._maxLen) this._history[k].shift();
+      if (this._history[k].length > this._maxLen) this._history[k].shift();
     }
     // [Section 6.24] Auto-scale altitude: max(alt_history) × 1.1
-    if(this._history.alt.length>0){
-      const maxAlt=Math.max(...this._history.alt);
-      this._scales.alt=Math.max(10,maxAlt*1.1);
+    if (this._history.alt.length > 0) {
+      const maxAlt = Math.max(...this._history.alt);
+      this._scales.alt = Math.max(10, maxAlt * 1.1);
     }
   },
 
-  draw(){
-    const c=this._canvas,ctx=this._ctx;
-    if(!c||!ctx) return;
-    const W=c.width,H=c.height;
-    ctx.clearRect(0,0,W,H);
-    ctx.fillStyle='rgba(238,241,247,0.6)';
-    ctx.fillRect(0,0,W,H);
-    ctx.strokeStyle='rgba(96,125,139,0.2)';ctx.lineWidth=1;
-    for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(0,H*i/4);ctx.lineTo(W,H*i/4);ctx.stroke();}
-    for(const k of this._channels){
-      if(!this._visible[k]) continue;
-      const data=this._history[k];
-      if(data.length<2) continue;
-      const scale=this._scales[k];
-      ctx.strokeStyle=this._colors[k];ctx.lineWidth=1.5;
+  draw() {
+    const c = this._canvas, ctx = this._ctx;
+    if (!c || !ctx) return;
+    const W = c.width, H = c.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = 'rgba(238,241,247,0.6)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(96,125,139,0.2)'; ctx.lineWidth = 1;
+    for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(0, H * i / 4); ctx.lineTo(W, H * i / 4); ctx.stroke(); }
+    for (const k of this._channels) {
+      if (!this._visible[k]) continue;
+      const data = this._history[k];
+      if (data.length < 2) continue;
+      const scale = this._scales[k];
+      ctx.strokeStyle = this._colors[k]; ctx.lineWidth = 1.5;
       ctx.beginPath();
-      data.forEach((v,i)=>{
-        const x=(i/(this._maxLen-1))*W;
-        const y=H/2-(v/scale)*(H*0.45);
-        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      data.forEach((v, i) => {
+        const x = (i / (this._maxLen - 1)) * W;
+        const y = H / 2 - (v / scale) * (H * 0.45);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       });
       ctx.stroke();
     }
   },
 
-  toggle(ch){ if(this._visible[ch]!==undefined) this._visible[ch]=!this._visible[ch]; },
+  toggle(ch) { if (this._visible[ch] !== undefined) this._visible[ch] = !this._visible[ch]; },
 };
 
-if(typeof globalThis!=='undefined'){
-  Object.assign(globalThis,{MAVLINK,TELEM_GRAPH});
+if (typeof globalThis !== 'undefined') {
+  Object.assign(globalThis, { MAVLINK, TELEM_GRAPH });
 }
