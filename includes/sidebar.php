@@ -36,21 +36,16 @@ $_ic_billing   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
 <aside class="sidebar">
 
   <!-- Logo — single definition, no duplication across pages -->
+  <style>
+    html[data-theme="dark"] .logo-light-theme { display: none; }
+    html[data-theme="light"] .logo-dark-theme { display: none; }
+    .logo-light-theme, .logo-dark-theme {
+      object-fit: contain;
+    }
+  </style>
   <div class="sidebar-logo">
-    <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <!-- central hub -->
-      <circle cx="16" cy="16" r="4" fill="#10256D"/>
-      <!-- arms -->
-      <rect x="6"  y="14" width="8"  height="4" rx="2" fill="#10256D" opacity=".75"/>
-      <rect x="18" y="14" width="8"  height="4" rx="2" fill="#10256D" opacity=".75"/>
-      <rect x="14" y="6"  width="4"  height="8" rx="2" fill="#10256D" opacity=".75"/>
-      <rect x="14" y="18" width="4"  height="8" rx="2" fill="#10256D" opacity=".75"/>
-      <!-- rotor hubs -->
-      <circle cx="7"  cy="7"  r="3" fill="#EE9346"/>
-      <circle cx="25" cy="7"  r="3" fill="#EE9346"/>
-      <circle cx="7"  cy="25" r="3" fill="#EE9346"/>
-      <circle cx="25" cy="25" r="3" fill="#EE9346"/>
-    </svg>
+    <img src="assets/logo-white.png" class="logo-dark-theme" alt="Certanity Logo" width="28" height="28">
+    <img src="assets/logo-black.png" class="logo-light-theme" alt="Certanity Logo" width="28" height="28">
     <span class="sidebar-logo-text">CERTANITY</span>
   </div>
 

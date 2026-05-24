@@ -50,9 +50,8 @@ $isLoggedIn = isset($_SESSION['id']) && isset($_SESSION['email']);
   <!-- =====================================================
        FAVICON (add your actual favicon files to /assets/)
   ====================================================== -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" href="assets/logo-iso.png" />
+  <link rel="apple-touch-icon" href="assets/logo-iso.png" />
   <link rel="manifest" href="/site.webmanifest" />
   <meta name="theme-color" content="#10256D" />
 
@@ -186,17 +185,7 @@ $isLoggedIn = isset($_SESSION['id']) && isset($_SESSION['email']);
 <header class="navbar" id="navbar">
   <div class="nav-container">
     <div class="nav-logo">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="16" cy="16" r="4" fill="#10256D"/>
-        <rect x="6" y="14" width="8" height="4" rx="2" fill="#10256D" opacity="0.7"/>
-        <rect x="18" y="14" width="8" height="4" rx="2" fill="#10256D" opacity="0.7"/>
-        <rect x="14" y="6" width="4" height="8" rx="2" fill="#10256D" opacity="0.7"/>
-        <rect x="14" y="18" width="4" height="8" rx="2" fill="#10256D" opacity="0.7"/>
-        <circle cx="7" cy="7" r="3" fill="#EE9346"/>
-        <circle cx="25" cy="7" r="3" fill="#EE9346"/>
-        <circle cx="7" cy="25" r="3" fill="#EE9346"/>
-        <circle cx="25" cy="25" r="3" fill="#EE9346"/>
-      </svg>
+      <img src="assets/logo-black.png" alt="Certanity Logo" width="32" height="32">
       <span>CERTANITY ROBOTICS</span>
     </div>
     <nav class="nav-links" id="navLinks">
@@ -640,17 +629,7 @@ $isLoggedIn = isset($_SESSION['id']) && isset($_SESSION['email']);
   <div class="footer-top">
     <div class="footer-brand">
       <div class="nav-logo footer-logo">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-          <circle cx="16" cy="16" r="4" fill="#fff"/>
-          <rect x="6" y="14" width="8" height="4" rx="2" fill="#fff" opacity="0.7"/>
-          <rect x="18" y="14" width="8" height="4" rx="2" fill="#fff" opacity="0.7"/>
-          <rect x="14" y="6" width="4" height="8" rx="2" fill="#fff" opacity="0.7"/>
-          <rect x="14" y="18" width="4" height="8" rx="2" fill="#fff" opacity="0.7"/>
-          <circle cx="7" cy="7" r="3" fill="#EE9346"/>
-          <circle cx="25" cy="7" r="3" fill="#EE9346"/>
-          <circle cx="7" cy="25" r="3" fill="#EE9346"/>
-          <circle cx="25" cy="25" r="3" fill="#EE9346"/>
-        </svg>
+        <img src="assets/logo-white.png" alt="Certanity Logo" width="28" height="28">
         <span style="color:#fff">CERTANITY ROBOTICS</span>
       </div>
       <p class="footer-tagline">Build the future. Simulate it first.</p>
@@ -698,17 +677,7 @@ $isLoggedIn = isset($_SESSION['id']) && isset($_SESSION['email']);
     <!-- Modal Header -->
     <div class="modal-header">
       <div class="modal-logo">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-          <circle cx="16" cy="16" r="4" fill="#10256D"/>
-          <rect x="6" y="14" width="8" height="4" rx="2" fill="#10256D" opacity="0.7"/>
-          <rect x="18" y="14" width="8" height="4" rx="2" fill="#10256D" opacity="0.7"/>
-          <rect x="14" y="6" width="4" height="8" rx="2" fill="#10256D" opacity="0.7"/>
-          <rect x="14" y="18" width="4" height="8" rx="2" fill="#10256D" opacity="0.7"/>
-          <circle cx="7" cy="7" r="3" fill="#EE9346"/>
-          <circle cx="25" cy="7" r="3" fill="#EE9346"/>
-          <circle cx="7" cy="25" r="3" fill="#EE9346"/>
-          <circle cx="25" cy="25" r="3" fill="#EE9346"/>
-        </svg>
+        <img src="assets/logo-black.png" alt="Certanity Logo" width="28" height="28">
         <span class="modal-logo-text">CERTANITY</span>
       </div>
       <p class="modal-tagline" id="modalTagline">Sign in or create an account to continue.</p>

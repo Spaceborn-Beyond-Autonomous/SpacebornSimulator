@@ -1157,7 +1157,7 @@ const INPUT = {
 const _simClock = { t: 0 };
 
 const BLACKBOX = {
-  _log: [], _max: 6000, recording: false,
+  _log: [], _max: 6000, recording: true,
   start() { this._log = []; this.recording = true; },
   stop() { this.recording = false; },
   /** [FIX-5.1] Extended fields: accX/Y/Z, baro_raw/filtered, wind, dryden, mode, armed */
