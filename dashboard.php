@@ -19,12 +19,14 @@ foreach($flights as $f) {
     $dur = $f['duration'] ?? 0;
     $total_seconds += $dur;
     
-    $dt = $f['created_at']->toDateTime();
-    if ($dt >= $seven_days_ago) {
-        $this_week_count++;
-        // 1 (Mon) - 7 (Sun)
-        $day_idx = (int)$dt->format('N') - 1;
-        $usage_seconds[$day_idx] += $dur;
+    if (isset($f['created_at'])) {
+        $dt = $f['created_at']->toDateTime();
+        if ($dt >= $seven_days_ago) {
+            $this_week_count++;
+            // 1 (Mon) - 7 (Sun)
+            $day_idx = (int)$dt->format('N') - 1;
+            $usage_seconds[$day_idx] += $dur;
+        }
     }
 }
 

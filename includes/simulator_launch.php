@@ -7,7 +7,7 @@ declare(strict_types=1);
  *
  * @return array{url: string, plan_id: int, plan_name: string, needs_picker: bool}
  */
-function sb_simulator_launch_info(?array $user = null): array
+function sb_simulator_launch_info(array|object|null $user = null): array
 {
     $planId = 0;
     $wallet = 0.0;
@@ -52,7 +52,7 @@ function sb_simulator_launch_info(?array $user = null): array
     ];
 }
 
-function sb_can_launch_simulator(?array $user = null): bool
+function sb_can_launch_simulator(array|object|null $user = null): bool
 {
     $info = sb_simulator_launch_info($user);
     if (!$info['needs_picker'] && $info['plan_id'] <= 0) {
