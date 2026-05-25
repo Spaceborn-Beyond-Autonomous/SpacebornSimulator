@@ -160,6 +160,8 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Certanity — My Plan &amp; Billing</title>
+  <link rel="icon" type="image/png" href="assets/logo-iso.png" />
+  <link rel="apple-touch-icon" href="assets/logo-iso.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>

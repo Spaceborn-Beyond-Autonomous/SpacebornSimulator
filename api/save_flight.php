@@ -38,6 +38,7 @@ try {
         'duration' => (int)($input['duration'] ?? 0),
         'status' => $input['status'] ?? 'completed',
         'telemetry_url' => $input['telemetry_url'] ?? null,
+        'telemetry_urls' => $input['telemetry_urls'] ?? [],
         'created_at' => new MongoDB\BSON\UTCDateTime($now * 1000)
     ]);
     

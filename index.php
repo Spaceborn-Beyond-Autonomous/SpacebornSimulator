@@ -185,7 +185,7 @@ $isLoggedIn = isset($_SESSION['id']) && isset($_SESSION['email']);
 <header class="navbar" id="navbar">
   <div class="nav-container">
     <div class="nav-logo">
-      <img src="assets/logo-black.png" alt="Certanity Logo" width="32" height="32">
+      <img src="assets/logo-black.png" alt="Certanity Logo" width="48" height="48">
       <span>CERTANITY ROBOTICS</span>
     </div>
     <nav class="nav-links" id="navLinks">
@@ -629,7 +629,7 @@ $isLoggedIn = isset($_SESSION['id']) && isset($_SESSION['email']);
   <div class="footer-top">
     <div class="footer-brand">
       <div class="nav-logo footer-logo">
-        <img src="assets/logo-white.png" alt="Certanity Logo" width="28" height="28">
+        <img src="assets/logo-white.png" alt="Certanity Logo" width="40" height="40">
         <span style="color:#fff">CERTANITY ROBOTICS</span>
       </div>
       <p class="footer-tagline">Build the future. Simulate it first.</p>
@@ -677,7 +677,7 @@ $isLoggedIn = isset($_SESSION['id']) && isset($_SESSION['email']);
     <!-- Modal Header -->
     <div class="modal-header">
       <div class="modal-logo">
-        <img src="assets/logo-black.png" alt="Certanity Logo" width="28" height="28">
+        <img src="assets/logo-black.png" alt="Certanity Logo" width="40" height="40">
         <span class="modal-logo-text">CERTANITY</span>
       </div>
       <p class="modal-tagline" id="modalTagline">Sign in or create an account to continue.</p>

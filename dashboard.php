@@ -52,6 +52,8 @@ $simulator_url = htmlspecialchars($sim_launch['url'], ENT_QUOTES, 'UTF-8');
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Certanity — Dashboard</title>
+  <link rel="icon" type="image/png" href="assets/logo-iso.png" />
+  <link rel="apple-touch-icon" href="assets/logo-iso.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -317,5 +319,17 @@ $simulator_url = htmlspecialchars($sim_launch['url'], ENT_QUOTES, 'UTF-8');
   });
 })();
 </script>
+<?php if (isset($_GET['upgrade_telem'])): ?>
+<div id="telem-upgrade-modal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(4px);">
+  <div style="background:var(--surf);padding:30px;border-radius:12px;max-width:400px;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,0.3);border:1px solid var(--n2);">
+    <h3 style="margin-top:0;margin-bottom:15px;color:var(--txt);">Flight Data Saved ☁️</h3>
+    <p style="color:var(--txt2);margin-bottom:20px;font-size:14px;line-height:1.5;">Your telemetry data has been initially saved to the cloud.<br><br>If you want to download this data, you need to upgrade to a higher tier like <strong>PRO</strong> or <strong>MAX</strong> within the next 15 minutes.<br><br>Otherwise, the data will be permanently deleted.</p>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <a href="billing.php" class="btn" style="background:var(--p);color:#fff;text-decoration:none;padding:8px 16px;border-radius:6px;font-weight:600;">Upgrade Now</a>
+      <button onclick="document.getElementById('telem-upgrade-modal').style.display='none';" style="background:var(--n);color:var(--txt);border:1px solid var(--n2);padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;">Close</button>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
 </body>
 </html>

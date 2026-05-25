@@ -34,6 +34,8 @@ foreach ($flights as $f) {
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Certanity — Simulations</title>
+  <link rel="icon" type="image/png" href="assets/logo-iso.png" />
+  <link rel="apple-touch-icon" href="assets/logo-iso.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
   <style>
@@ -306,15 +308,23 @@ foreach ($flights as $f) {
                 </svg>
                 View Replay
               </a>
-              <?php if (!empty($s['telemetry_url'])): ?>
-              <a class="btn-solid" href="<?= htmlspecialchars($s['telemetry_url']) ?>" target="_blank" download>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                Download Telemetry
-              </a>
+              <?php 
+              $telemetry_urls = $s['telemetry_urls'] ?? [];
+              if (empty($telemetry_urls) && !empty($s['telemetry_url'])) {
+                  $telemetry_urls = [['time' => 'End of flight', 'url' => $s['telemetry_url']]];
+              }
+              ?>
+              <?php if (!empty($telemetry_urls)): ?>
+                  <?php foreach($telemetry_urls as $idx => $telem): ?>
+                  <a class="btn-solid" href="<?= htmlspecialchars($telem['url'] ?? $telem) ?>" target="_blank" download>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Telemetry (<?= htmlspecialchars($telem['time'] ?? 'Saved') ?>)
+                  </a>
+                  <?php endforeach; ?>
               <?php endif; ?>
               <a class="btn-solid" href="<?= htmlspecialchars($s['log']) ?>" download>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

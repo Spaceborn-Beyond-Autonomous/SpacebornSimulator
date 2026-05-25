@@ -5,6 +5,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>CERTANITY · Drone Simulator — PRO</title>
+<link rel="icon" type="image/png" href="../assets/logo-iso.png" />
+<link rel="apple-touch-icon" href="../assets/logo-iso.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -4226,28 +4228,61 @@ window.addEventListener('DOMContentLoaded', () => {
     let droneName = 'Unknown Drone';
     const profileEl = document.getElementById('drone-profile-label');
     if (profileEl) droneName = profileEl.innerText;
-    
-    const payload = {
-      name: 'Simulation Session',
-      drone: droneName,
-      environment: 'Simulation',
-      weather: 'Clear',
-      mode: 'Manual',
-      duration: flightDurationSeconds,
-      status: 'completed',
-      plan: simPlanName,
-      ppm: simPpm,
-      telemetry_url: cloudTelemetryUrl
-    };
-    fetch('../api/save_flight.php', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
-    }).then(() => {
-      window.location.href = '../simulations.php';
-    }).catch(() => {
-      window.location.href = '../simulations.php';
-    });
+
+    // Auto save to R2
+    fetch('../api/get_r2_upload_url.php', { method: 'POST' })
+      .then(r => r.json())
+      .then(data => {
+         if (data.success) {
+            let telemetryData = {};
+            try {
+              telemetryData = { log: BLACKBOX.getLog(), stats: BLACKBOX.getStats() };
+            } catch(e) {}
+            
+            return fetch(data.uploadUrl, {
+              method: 'PUT',
+              body: JSON.stringify(telemetryData),
+              headers: {'Content-Type': 'application/json'}
+            }).then(res => {
+               if (res.ok) {
+                  cloudTelemetryUrl = data.publicUrl;
+                  window.cloudTelemetryUrls = window.cloudTelemetryUrls || [];
+                  window.cloudTelemetryUrls.push({ time: new Date().toLocaleTimeString() + ' (Auto)', url: data.publicUrl });
+               }
+            });
+         }
+      })
+      .catch(err => {
+         console.error('Auto cloud save failed:', err);
+      })
+      .finally(() => {
+        const payload = {
+          name: 'Simulation Session',
+          drone: droneName,
+          environment: 'Simulation',
+          weather: 'Clear',
+          mode: 'Manual',
+          duration: flightDurationSeconds,
+          status: 'completed',
+          plan: simPlanName,
+          ppm: simPpm,
+          telemetry_url: cloudTelemetryUrl,
+          telemetry_urls: window.cloudTelemetryUrls || []
+        };
+        fetch('../api/save_flight.php', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        }).then(() => {
+          if (simPlanName === 'FREE' || simPlanName === 'BASIC') {
+            window.location.href = '../dashboard.php?upgrade_telem=1';
+          } else {
+            window.location.href = '../simulations.php';
+          }
+        }).catch(() => {
+          window.location.href = '../simulations.php';
+        });
+      });
   };
 
   window.triggerCloudSave = function() {

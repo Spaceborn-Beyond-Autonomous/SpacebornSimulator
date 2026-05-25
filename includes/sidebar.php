@@ -44,8 +44,8 @@ $_ic_billing   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
     }
   </style>
   <div class="sidebar-logo">
-    <img src="assets/logo-white.png" class="logo-dark-theme" alt="Certanity Logo" width="28" height="28">
-    <img src="assets/logo-black.png" class="logo-light-theme" alt="Certanity Logo" width="28" height="28">
+    <img src="assets/logo-white.png" class="logo-dark-theme" alt="Certanity Logo" width="58" height="58">
+    <img src="assets/logo-black.png" class="logo-light-theme" alt="Certanity Logo" width="58" height="58">
     <span class="sidebar-logo-text">CERTANITY</span>
   </div>
 
