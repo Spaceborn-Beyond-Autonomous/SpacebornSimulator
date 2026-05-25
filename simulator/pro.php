@@ -4247,6 +4247,8 @@ window.addEventListener('DOMContentLoaded', () => {
                if (res.ok) {
                   cloudTelemetryUrl = data.publicUrl;
                   window.cloudTelemetryUrls = window.cloudTelemetryUrls || [];
+                  window.cloudTelemetryUrls.push({ time: new Date().toLocaleTimeString(), url: data.publicUrl });
+                  window.cloudTelemetryUrls = window.cloudTelemetryUrls || [];
                   window.cloudTelemetryUrls.push({ time: new Date().toLocaleTimeString() + ' (Auto)', url: data.publicUrl });
                }
             });
@@ -4311,11 +4313,13 @@ window.addEventListener('DOMContentLoaded', () => {
              body: JSON.stringify(telemetryData),
              headers: {'Content-Type': 'application/json'}
            }).then(res => {
-              if (res.ok) {
-                 cloudTelemetryUrl = data.publicUrl;
-                 if (typeof UI !== 'undefined' && UI.toast) UI.toast('✅ Telemetry saved to Cloudflare!');
-                 else alert('✅ Telemetry saved to Cloudflare!');
-              } else {
+               if (res.ok) {
+                  cloudTelemetryUrl = data.publicUrl;
+                  window.cloudTelemetryUrls = window.cloudTelemetryUrls || [];
+                  window.cloudTelemetryUrls.push({ time: new Date().toLocaleTimeString(), url: data.publicUrl });
+                  if (typeof UI !== 'undefined' && UI.toast) UI.toast('✅ Telemetry saved to Cloudflare!');
+                  else alert('✅ Telemetry saved to Cloudflare!');
+               } else {
                  res.text().then(errText => {
                    console.error('R2 upload failed:', errText);
                    alert('R2 Upload failed: ' + res.status + ' ' + res.statusText + '\nDetails: ' + errText);
