@@ -1159,6 +1159,7 @@ const PLAN = {
   tier: 'PRO',
   sessionMinutes: 1440,
   sessionSeconds: <?= $paidSessionSeconds > 0 ? $paidSessionSeconds : 86400 ?>,
+  planExpiresAt: <?= (int) ($paidState['expires_at'] ?? 0) ?>,
   droneProfiles: ['racing5', 'micro2'],
   environments: ['field', 'mountains', 'urban'],
   waypointMissions: false,
@@ -3954,6 +3955,7 @@ window.addEventListener('DOMContentLoaded', () => {
   /* ─ 2. SESSION TIMER ───────────────────────────────────────── */
   // [PLAN-SESSION] Enforce time-limited access (BASIC=1h, PRO=24h, MAX=∞)
   if (isFinite(PLAN.sessionSeconds)) {
+    const EXPIRES_AT_MS = PLAN.planExpiresAt > 0 ? PLAN.planExpiresAt * 1000 : 0;
     const SESSION_MS = PLAN.sessionSeconds * 1000;
     const t0 = Date.now();
 
@@ -3986,7 +3988,9 @@ window.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(overlay);
 
     function tick() {
-      const rem = Math.max(0, SESSION_MS - (Date.now() - t0));
+      const rem = EXPIRES_AT_MS > 0
+        ? Math.max(0, EXPIRES_AT_MS - Date.now())
+        : Math.max(0, SESSION_MS - (Date.now() - t0));
       const el = document.getElementById('ses-left');
       if (el) {
         const m = String(Math.floor(rem/60000)).padStart(2,'0');

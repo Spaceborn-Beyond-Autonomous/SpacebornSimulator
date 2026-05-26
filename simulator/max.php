@@ -8,6 +8,8 @@ $email = $_SESSION['email'] ?? '';
 $user = $db->users->findOne(['email' => $email]);
 $sub_id = (int)($user['sub_id'] ?? 0);
 $run_plan = strtoupper($_GET['run_plan'] ?? '');
+$paidState = sb_paid_plan_state($user, true);
+$paidSessionSeconds = (int) ($paidState['remaining_seconds'] ?? 0);
 
 // Allow access if: subscribed to MAX, OR running on wallet with run_plan=MAX
 $allowed = ($sub_id >= 3) || ($sub_id === 0 && $run_plan === 'MAX');
@@ -1178,12 +1180,14 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <!-- ══ TIER: MAX ══ -->
 <script>
 /* PLAN FLAGS — MAX tier
-   Duration: Unlimited | All profiles + Custom
+   Duration: 30 days | All profiles + Custom
    All 6 envs | Full HUD | Full PID | Full export
    Gamepad | Waypoints | GLTF upload | Priority support */
 const PLAN = {
   tier: 'MAX',
-  sessionMinutes: Infinity,
+  sessionMinutes: 43200,
+  sessionSeconds: <?= $paidSessionSeconds > 0 ? $paidSessionSeconds : 2592000 ?>,
+  planExpiresAt: <?= (int) ($paidState['expires_at'] ?? 0) ?>,
   droneProfiles: ['racing5','cinequad','micro2','explorer6'],
   environments: ['field','mountains','urban','indoor','desert','windy'],
   waypointMissions: true,
@@ -4016,9 +4020,10 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ─ 2. SESSION TIMER ───────────────────────────────────────── */
-  // [PLAN-SESSION] Enforce time-limited access (BASIC=1h, PRO=24h, MAX=∞)
-  if (isFinite(PLAN.sessionMinutes)) {
-    const SESSION_MS = PLAN.sessionMinutes * 60000;
+  // [PLAN-SESSION] Enforce time-limited access (BASIC=1h, PRO=24h, MAX=30d)
+  if (isFinite(PLAN.sessionSeconds)) {
+    const EXPIRES_AT_MS = PLAN.planExpiresAt > 0 ? PLAN.planExpiresAt * 1000 : 0;
+    const SESSION_MS = PLAN.sessionSeconds * 1000;
     const t0 = Date.now();
 
     // Countdown badge
@@ -4034,14 +4039,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const overlay = document.createElement('div');
     overlay.style.cssText = `position:fixed;inset:0;z-index:9999;background:rgba(10,12,20,0.97);
       display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;`;
-    const durationLabel = PLAN.sessionMinutes >= 60
-      ? Math.round(PLAN.sessionMinutes/60) + 'h'
-      : PLAN.sessionMinutes + 'min';
+    const durationLabel = PLAN.sessionSeconds >= 3600
+      ? Math.round(PLAN.sessionSeconds/3600) + 'h'
+      : Math.max(1, Math.ceil(PLAN.sessionSeconds/60)) + 'min';
     overlay.innerHTML = `
       <div style="font-family:var(--fh);font-size:32px;font-weight:700;color:var(--p)">⏱ Session Ended</div>
       <div style="font-size:14px;color:var(--txt2);text-align:center;max-width:380px;line-height:1.7">
         Your <strong>${PLAN.tierLabel}</strong> session (${durationLabel}) has expired.<br>
-        Upgrade to <strong style="color:var(--s)">MAX</strong> for unlimited access.
+        Renew your MAX plan to continue flying.
       </div>
       <button onclick="location.reload()" style="background:var(--p);color:#fff;border:none;
         padding:10px 28px;border-radius:20px;font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer;">
@@ -4050,7 +4055,9 @@ window.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(overlay);
 
     function tick() {
-      const rem = Math.max(0, SESSION_MS - (Date.now() - t0));
+      const rem = EXPIRES_AT_MS > 0
+        ? Math.max(0, EXPIRES_AT_MS - Date.now())
+        : Math.max(0, SESSION_MS - (Date.now() - t0));
       const el = document.getElementById('ses-left');
       if (el) {
         const m = String(Math.floor(rem/60000)).padStart(2,'0');
@@ -4435,7 +4442,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
   };
 
-  console.log(`[CERTANITY SIM] Plan: ${PLAN.tierLabel} | Session: ${isFinite(PLAN.sessionMinutes) ? PLAN.sessionMinutes+'min' : 'Unlimited'}`);
+  console.log(`[CERTANITY SIM] Plan: ${PLAN.tierLabel} | Session: ${isFinite(PLAN.sessionSeconds) ? PLAN.sessionSeconds+'s' : 'Unlimited'}`);
 });
 </script>
 

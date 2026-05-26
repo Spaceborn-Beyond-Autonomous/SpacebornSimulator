@@ -33,7 +33,7 @@ $trialState = ['available' => false, 'active' => false, 'remaining_seconds' => 0
 
 if ($planId > 0) {
     $paidState = sb_paid_plan_state($user, true);
-    $timeSeconds = ($paidState['plan_id'] === 3) ? -1 : (int) $paidState['remaining_seconds'];
+    $timeSeconds = (int) $paidState['remaining_seconds'];
     $planName = (string) ($paidState['plan_name'] ?? 'FREE');
     $subActive = (bool) ($paidState['active'] ?? false);
     $subRemainingSeconds = ($timeSeconds > 0) ? (int) $timeSeconds : 0;
