@@ -4475,7 +4475,7 @@ window.addEventListener('DOMContentLoaded', () => {
     <p style="font-size:13px;color:var(--txt2);margin-bottom:24px;line-height:1.5;">Your available simulation time has ended. Please add balance to your wallet or upgrade your plan to continue flying.</p>
     <div class="nbtn-row" style="justify-content:center;gap:12px;">
       <a class="nbtn primary" href="../billing.php" style="text-decoration:none;">Upgrade / Add Balance</a>
-      <button class="nbtn danger" onclick="exitSimulation()">Exit Simulator</button>
+      <button class="nbtn danger" onclick="window.close()">Close Window</button>
     </div>
   </div>
 </div>

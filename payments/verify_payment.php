@@ -45,21 +45,34 @@ try {
 
         if (isset($db)) {
             $email = (string) $_SESSION['email'];
+            $target_minutes = 60.0;
+            if ($planId === 3) {
+                $target_minutes = (float)($_ENV['PLAN_MAX_MINUTES'] ?? 43200);
+            } elseif ($planId === 2) {
+                $target_minutes = (float)($_ENV['PLAN_PRO_MINUTES'] ?? 1440);
+            } else {
+                $target_minutes = (float)($_ENV['PLAN_BASIC_MINUTES'] ?? 60);
+            }
+            
+            $now = time();
+            $activated_at = new MongoDB\BSON\UTCDateTime((int)($now * 1000));
+            $expires_at   = new MongoDB\BSON\UTCDateTime((int)(($now + ($target_minutes * 60)) * 1000));
+
             $db->users->updateOne(
                 ['email' => $email],
                 ['$set' => [
                     'sub_id' => $planId,
-                    'sub_started' => false,
-                    'sub_activated_at' => null,
-                    'sub_expires_at' => null,
+                    'sub_started' => true,
+                    'sub_activated_at' => $activated_at,
+                    'sub_expires_at' => $expires_at,
                     'updated_at' => new MongoDB\BSON\UTCDateTime()
                 ]]
             );
 
             // Sync session variables
-            $_SESSION['sub_started'] = false;
-            $_SESSION['sub_activated_at'] = null;
-            $_SESSION['sub_expires_at'] = null;
+            $_SESSION['sub_started'] = true;
+            $_SESSION['sub_activated_at'] = $now;
+            $_SESSION['sub_expires_at'] = $now + ($target_minutes * 60);
 
             $userSub = $db->subscriptions->findOne(['id' => $planId]);
             if ($userSub) {

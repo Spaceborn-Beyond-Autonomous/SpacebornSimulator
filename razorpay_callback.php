@@ -55,9 +55,9 @@ $usersCol->updateOne(
     [
         '$set' => [
             'sub_id'           => $plan_id,
-            'sub_started'      => false,
-            'sub_activated_at' => null,
-            'sub_expires_at'   => null
+            'sub_started'      => true,
+            'sub_activated_at' => $activated_at,
+            'sub_expires_at'   => $expires_at
         ]
     ]
 );
@@ -80,9 +80,9 @@ if (!$user_sub) {
     die("Subscription plan definition not found in database. Please seed subscriptions.");
 }
 
-$_SESSION['sub_started']      = false;
-$_SESSION['sub_activated_at'] = null;
-$_SESSION['sub_expires_at']   = null;
+$_SESSION['sub_started']      = true;
+$_SESSION['sub_activated_at'] = $now;
+$_SESSION['sub_expires_at']   = $now + ($target_minutes * 60);
 $_SESSION['user_sub'] = [
     'id'               => (string) ($user_sub['id'] ?? ''),
     'plan_id'          => (int)    ($user_sub['id'] ?? 0),

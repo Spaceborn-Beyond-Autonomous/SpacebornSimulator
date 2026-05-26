@@ -15,16 +15,14 @@ $basicPpm = (float) ($_ENV['PLAN_BASIC_PPM'] ?? 0.10);
 $walletSeconds = ($wallet > 0 && $basicPpm > 0) ? (int) (($wallet / $basicPpm) * 60) : 0;
 $trialRemainingSeconds = 0;
 
-// Allow access if: subscribed to any paid plan, running on wallet with run_plan=BASIC, or free trial is available.
-$trialState = sb_free_trial_state($user, false);
-$allowed = ($sub_id >= 1)
-    || ($sub_id === 0 && $wallet > 0 && ($run_plan === 'BASIC' || $run_plan === 'FREE'))
-    || ($sub_id === 0 && $wallet <= 0 && $run_plan === 'FREE' && $trialState['available']);
+// Allow access if: subscribed to any paid plan, OR free user (sub_id === 0)
+$allowed = ($sub_id >= 1) || ($sub_id === 0);
 if (!$allowed) {
     header('Location: ../dashboard.php?error=tier_mismatch');
     exit;
 }
 
+$trialState = sb_free_trial_state($user, false);
 if ($trialState['available']) {
     $trialRemainingSeconds = (int) ($trialState['remaining_seconds'] ?? (10 * 60));
 }
@@ -4409,11 +4407,11 @@ window.addEventListener('DOMContentLoaded', () => {
 <div id="sim-time-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(5px);align-items:center;justify-content:center;">
   <div class="card" style="width:360px;text-align:center;padding:32px;">
     <div style="font-size:32px;margin-bottom:12px;">⏳</div>
-    <h2 style="font-family:var(--fh);font-size:20px;color:var(--txt);margin-bottom:8px;">10-Minute Trial Reached</h2>
-    <p style="font-size:13px;color:var(--txt2);margin-bottom:24px;line-height:1.5;">Your 10 free minutes on the basic tier are used up. The trial refreshes every 6 hours. Please upgrade or add balance to continue flying now.</p>
+    <h2 id="sim-time-modal-title" style="font-family:var(--fh);font-size:20px;color:var(--txt);margin-bottom:8px;">10-Minute Trial Reached</h2>
+    <p id="sim-time-modal-text" style="font-size:13px;color:var(--txt2);margin-bottom:24px;line-height:1.5;">Your 10 free minutes on the basic tier are used up. The trial refreshes every 6 hours. Please upgrade or add balance to continue flying now.</p>
     <div class="nbtn-row" style="justify-content:center;gap:12px;">
       <a class="nbtn primary" href="../billing.php" style="text-decoration:none;">Upgrade / Add Balance</a>
-      <button class="nbtn danger" onclick="exitSimulation()">Exit Simulator</button>
+      <button id="sim-time-modal-exit-btn" class="nbtn danger" onclick="window.close()">Close Window</button>
     </div>
   </div>
 </div>

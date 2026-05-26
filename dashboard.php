@@ -48,6 +48,13 @@ $sim_launch = sb_simulator_launch_info($user_row ?: null);
 $can_launch = sb_can_launch_simulator($user_row ?: null);
 $simulator_url = htmlspecialchars($sim_launch['url'], ENT_QUOTES, 'UTF-8');
 
+$trial_state = sb_free_trial_state($user_row, false);
+$wallet_balance = (float) ($_SESSION['wallet_balance'] ?? 0);
+$show_wallet = $live_plan_id > 0 || $wallet_balance > 0;
+$trial_min = floor($trial_state['remaining_seconds'] / 60);
+$trial_sec = $trial_state['remaining_seconds'] % 60;
+$trial_text = sprintf("%d:%02d", $trial_min, $trial_sec);
+
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -174,7 +181,11 @@ $simulator_url = htmlspecialchars($sim_launch['url'], ENT_QUOTES, 'UTF-8');
     <div class="topbar-title">Dashboard</div>
     <div class="topbar-right">
       <div class="wallet-chip" style="display:flex; align-items:center; gap:6px; background:var(--surface); padding:6px 12px; border-radius:12px; box-shadow:var(--neu-btn); font-size:13px; font-weight:600; color:var(--text); margin-right:4px;">
-        <span style="color:var(--accent);">💰</span> $<?= number_format($_SESSION['wallet_balance'] ?? 0, 2) ?>
+        <?php if ($show_wallet): ?>
+            <span style="color:var(--accent);">💰</span> $<?= number_format($wallet_balance, 2) ?>
+        <?php else: ?>
+            <span style="color:var(--accent);">🕐</span> <?= $trial_text ?> free time
+        <?php endif; ?>
       </div>
       <span id="themeIcon" style="font-size:13px">🌙</span>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode"></button>
