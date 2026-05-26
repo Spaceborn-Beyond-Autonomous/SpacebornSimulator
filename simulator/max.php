@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../auth/session_guard.php';
 require_once __DIR__ . '/../auth/db.php';
+require_once __DIR__ . '/../includes/simulator_launch.php';
 
 // Tier guard: MAX simulator requires sub_id >= 3 or wallet-based run with run_plan=MAX
 $email = $_SESSION['email'] ?? '';
