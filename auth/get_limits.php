@@ -4,6 +4,9 @@ require_once __DIR__ . '/db.php'; // ensure env is loaded
 require_once __DIR__ . '/../includes/simulator_launch.php';
 
 header('Content-Type: application/json');
+header('Cache-Control: no-cache, no-store, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
 
 $email = $_SESSION['email'] ?? '';
 $user = $db->users->findOne(['email' => $email]);
@@ -160,8 +163,13 @@ if ($has_active_subscription) {
     }
 }
 
-$wallet_seconds = ($wallet > 0 && $ppm > 0) ? (int) (($wallet / $ppm) * 60) : 0;
-$max_seconds = $remaining_seconds + $wallet_seconds;
+if ($remaining_seconds > 0) {
+    $wallet_seconds = 0;
+    $max_seconds = $remaining_seconds;
+} else {
+    $wallet_seconds = ($wallet > 0 && $ppm > 0) ? (int) (($wallet / $ppm) * 60) : 0;
+    $max_seconds = $wallet_seconds;
+}
 $now = time();
 $access_expires_at = $max_seconds > 0 ? $now + $max_seconds : 0;
 

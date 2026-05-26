@@ -4,6 +4,9 @@ require_once __DIR__ . '/../auth/db.php';
 require_once __DIR__ . '/../includes/simulator_launch.php';
 
 header('Content-Type: application/json');
+header('Cache-Control: no-cache, no-store, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
 
 $email = $_SESSION['email'] ?? '';
 if (!$email) {
@@ -47,8 +50,13 @@ if ($planId > 0) {
         $ppm = (float) ($_ENV['PLAN_MAX_PPM'] ?? 0.01);
     }
 
-    $walletSeconds = ($wallet > 0 && $ppm > 0) ? (int) (($wallet / $ppm) * 60) : 0;
-    $timeSeconds = $subRemainingSeconds + $walletSeconds;
+    if ($subRemainingSeconds > 0) {
+        $walletSeconds = 0;
+        $timeSeconds = $subRemainingSeconds;
+    } else {
+        $walletSeconds = ($wallet > 0 && $ppm > 0) ? (int) (($wallet / $ppm) * 60) : 0;
+        $timeSeconds = $walletSeconds;
+    }
 } else {
     if ($requestedPlan === 'BASIC') {
         $ppm = (float) ($_ENV['PLAN_BASIC_PPM'] ?? 0.10);

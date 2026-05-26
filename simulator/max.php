@@ -22,7 +22,12 @@ if (!$allowed) {
 }
 
 if ($sub_id >= 3) {
-    $accessSeconds = $paidSessionSeconds + $walletSeconds;
+    if ($paidSessionSeconds > 0) {
+        $walletSeconds = 0;
+        $accessSeconds = $paidSessionSeconds;
+    } else {
+        $accessSeconds = $walletSeconds;
+    }
 } elseif ($sub_id === 0 && $run_plan === 'MAX') {
     $accessSeconds = $walletSeconds;
 }

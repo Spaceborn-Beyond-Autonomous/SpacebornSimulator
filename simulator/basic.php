@@ -29,11 +29,18 @@ if ($trialState['available']) {
 
 $accessSeconds = 0;
 if ($sub_id >= 1) {
-    $accessSeconds = $paidSessionSeconds + $walletSeconds;
-} elseif ($wallet > 0 && ($run_plan === 'BASIC' || $run_plan === 'FREE')) {
-    $accessSeconds = $walletSeconds;
-} elseif ($sub_id === 0 && $wallet <= 0 && $run_plan === 'FREE' && $trialState['available']) {
-    $accessSeconds = $trialRemainingSeconds > 0 ? $trialRemainingSeconds : (10 * 60);
+    if ($paidSessionSeconds > 0) {
+        $walletSeconds = 0;
+        $accessSeconds = $paidSessionSeconds;
+    } else {
+        $accessSeconds = $walletSeconds;
+    }
+} elseif ($sub_id === 0) {
+    if ($wallet > 0 && ($run_plan === 'BASIC' || $run_plan === 'FREE')) {
+        $accessSeconds = $walletSeconds;
+    } elseif ($wallet <= 0 && $run_plan === 'FREE' && $trialState['available']) {
+        $accessSeconds = $trialRemainingSeconds > 0 ? $trialRemainingSeconds : (10 * 60);
+    }
 }
 
 $accessExpiresAt = $accessSeconds > 0 ? time() + $accessSeconds : 0;

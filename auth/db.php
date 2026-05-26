@@ -5,6 +5,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 
+// Set default timezone for dates displayed on the UI
+date_default_timezone_set('Asia/Kolkata');
+
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $allowed_origin = $_ENV['APP_URL'] ?? '';
 $isAllowed = false;
