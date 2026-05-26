@@ -33,9 +33,9 @@ if (!function_exists('sb_simulator_launch_info')) {
 }
 $_sim_launch_url = htmlspecialchars(sb_simulator_launch_info()['url'], ENT_QUOTES, 'UTF-8');
 
-function _nav_item(string $href, string $label, string $icon_svg, string $key, string $active): string {
+function _nav_item(string $href, string $label, string $icon_svg, string $key, string $active, string $attrs = ''): string {
     $cls = $key === $active ? 'nav-item active' : 'nav-item';
-    return "<a class=\"{$cls}\" href=\"{$href}\">{$icon_svg}<span>{$label}</span></a>";
+    return "<a class=\"{$cls}\" href=\"{$href}\" {$attrs}>{$icon_svg}<span>{$label}</span></a>";
 }
 
 // Icon SVGs — defined once here, reused below
@@ -62,7 +62,7 @@ $_ic_billing   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
 
   <!-- Nav links -->
   <?= _nav_item('dashboard.php',   'Dashboard',          $_ic_dashboard, 'dashboard',      $_active) ?>
-  <?= _nav_item($_sim_launch_url . '" target="_blank', 'New Simulation',     $_ic_new,       'new-simulation', $_active) ?>
+  <?= _nav_item($_sim_launch_url,   'New Simulation',     $_ic_new,       'new-simulation', $_active, 'target="_blank" rel="noopener noreferrer"') ?>
   <?= _nav_item('simulations.php', 'Simulations',        $_ic_sims,      'simulations',    $_active) ?>
   <?= _nav_item('billing.php',     'My Plan &amp; Billing', $_ic_billing, 'billing',        $_active) ?>
 
