@@ -5,14 +5,18 @@ declare(strict_types=1);
 function sb_current_user_record(array|object|null $user = null): array
 {
     if ($user !== null) {
-        return is_array($user) ? $user : (array) $user;
+        if (is_array($user)) return $user;
+        if (method_exists($user, 'getArrayCopy')) return $user->getArrayCopy();
+        return (array) $user;
     }
 
     $email = $_SESSION['email'] ?? '';
     if ($email !== '' && isset($GLOBALS['db']) && isset($GLOBALS['db']->users)) {
         $found = $GLOBALS['db']->users->findOne(['email' => $email]);
         if ($found) {
-            return is_array($found) ? $found : (array) $found;
+            if (is_array($found)) return $found;
+            if (method_exists($found, 'getArrayCopy')) return $found->getArrayCopy();
+            return (array) $found;
         }
     }
 
