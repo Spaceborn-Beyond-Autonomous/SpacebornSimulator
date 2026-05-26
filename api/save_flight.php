@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../auth/session_guard.php';
 require_once __DIR__ . '/../auth/db.php';
+require_once __DIR__ . '/../includes/simulator_launch.php';
 
 header('Content-Type: application/json');
 
@@ -49,11 +50,23 @@ try {
         $duration = (float)($input['duration'] ?? 0); // flight duration in seconds
         $plan = strtoupper($input['plan'] ?? 'FREE');
         $ppm = (float)($input['ppm'] ?? 0.10);
-        $sub_active = (bool)($input['sub_active'] ?? false);
-        $sub_remaining_seconds = (float)($input['sub_remaining_seconds'] ?? 0);
+        $planId = (int) ($user['sub_id'] ?? 0);
+        $sub_remaining_seconds = 0.0;
+
+        if ($planId > 0) {
+            $paidState = sb_paid_plan_state($user, false);
+            $sub_remaining_seconds = (float) ($paidState['remaining_seconds'] ?? 0);
+            if ($planId === 1) {
+                $ppm = (float) ($_ENV['PLAN_BASIC_PPM'] ?? $ppm);
+            } elseif ($planId === 2) {
+                $ppm = (float) ($_ENV['PLAN_PRO_PPM'] ?? $ppm);
+            } elseif ($planId === 3) {
+                $ppm = (float) ($_ENV['PLAN_MAX_PPM'] ?? $ppm);
+            }
+        }
         
         $charge = 0.0;
-        if ($sub_active) {
+        if ($sub_remaining_seconds > 0) {
             if ($duration > $sub_remaining_seconds) {
                 $excess_seconds = $duration - $sub_remaining_seconds;
                 $charge = ($excess_seconds / 60.0) * $ppm;

@@ -9,7 +9,10 @@ $user = $db->users->findOne(['email' => $email]);
 $sub_id = (int)($user['sub_id'] ?? 0);
 $run_plan = strtoupper($_GET['run_plan'] ?? '');
 $paidState = sb_paid_plan_state($user, true);
-$paidSessionSeconds = (int) ($paidState['remaining_seconds'] ?? 0);
+$paidSessionSeconds = max(0, (int) ($paidState['remaining_seconds'] ?? 0));
+$maxPpm = (float) ($_ENV['PLAN_MAX_PPM'] ?? 0.01);
+$walletSeconds = ($wallet > 0 && $maxPpm > 0) ? (int) (($wallet / $maxPpm) * 60) : 0;
+$accessSeconds = 0;
 
 // Allow access if: subscribed to MAX, OR running on wallet with run_plan=MAX
 $allowed = ($sub_id >= 3) || ($sub_id === 0 && $run_plan === 'MAX');
@@ -17,6 +20,14 @@ if (!$allowed) {
     header('Location: ../dashboard.php?error=tier_mismatch');
     exit;
 }
+
+if ($sub_id >= 3) {
+    $accessSeconds = $paidSessionSeconds + $walletSeconds;
+} elseif ($sub_id === 0 && $run_plan === 'MAX') {
+    $accessSeconds = $walletSeconds;
+}
+
+$accessExpiresAt = $accessSeconds > 0 ? time() + $accessSeconds : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1185,9 +1196,9 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
    Gamepad | Waypoints | GLTF upload | Priority support */
 const PLAN = {
   tier: 'MAX',
-  sessionMinutes: 43200,
-  sessionSeconds: <?= $paidSessionSeconds > 0 ? $paidSessionSeconds : 2592000 ?>,
-  planExpiresAt: <?= (int) ($paidState['expires_at'] ?? 0) ?>,
+  sessionMinutes: <?= max(1, (int) ceil(($accessSeconds > 0 ? $accessSeconds : 2592000) / 60)) ?>,
+  sessionSeconds: <?= $accessSeconds > 0 ? $accessSeconds : 2592000 ?>,
+  planExpiresAt: <?= (int) $accessExpiresAt ?>,
   droneProfiles: ['racing5','cinequad','micro2','explorer6'],
   environments: ['field','mountains','urban','indoor','desert','windy'],
   waypointMissions: true,
@@ -4296,6 +4307,7 @@ window.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       if (data.success) {
         simPlanName = data.plan_name;
+        simPpm = data.ppm;
         simTimeRemaining = data.time_remaining_seconds;
         if (simTimeRemaining === 0) {
           showTimeLimitModal();

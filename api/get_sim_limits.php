@@ -20,6 +20,7 @@ if (!$user) {
 $planId = (int) ($user['sub_id'] ?? 0);
 $wallet = (float) ($user['wallet_balance'] ?? 0.0);
 $ppm = (float) ($_GET['ppm'] ?? 0.10);
+$requestedPlan = strtoupper(trim((string) ($_GET['run_plan'] ?? $_GET['plan'] ?? 'FREE')));
 
 $timeSeconds = 0;
 $planName = 'FREE';
@@ -33,12 +34,30 @@ $trialState = ['available' => false, 'active' => false, 'remaining_seconds' => 0
 
 if ($planId > 0) {
     $paidState = sb_paid_plan_state($user, true);
-    $timeSeconds = (int) $paidState['remaining_seconds'];
+    $subRemainingSeconds = max(0, (int) ($paidState['remaining_seconds'] ?? 0));
     $planName = (string) ($paidState['plan_name'] ?? 'FREE');
     $subActive = (bool) ($paidState['active'] ?? false);
-    $subRemainingSeconds = ($timeSeconds > 0) ? (int) $timeSeconds : 0;
     $baseMinutes = $planId === 1 ? 60 : ($planId === 2 ? 1440 : 43200);
+
+    if ($planId === 1) {
+        $ppm = (float) ($_ENV['PLAN_BASIC_PPM'] ?? 0.10);
+    } elseif ($planId === 2) {
+        $ppm = (float) ($_ENV['PLAN_PRO_PPM'] ?? 0.05);
+    } elseif ($planId === 3) {
+        $ppm = (float) ($_ENV['PLAN_MAX_PPM'] ?? 0.01);
+    }
+
+    $walletSeconds = ($wallet > 0 && $ppm > 0) ? (int) (($wallet / $ppm) * 60) : 0;
+    $timeSeconds = $subRemainingSeconds + $walletSeconds;
 } else {
+    if ($requestedPlan === 'BASIC') {
+        $ppm = (float) ($_ENV['PLAN_BASIC_PPM'] ?? 0.10);
+    } elseif ($requestedPlan === 'PRO') {
+        $ppm = (float) ($_ENV['PLAN_PRO_PPM'] ?? 0.05);
+    } elseif ($requestedPlan === 'MAX') {
+        $ppm = (float) ($_ENV['PLAN_MAX_PPM'] ?? 0.01);
+    }
+
     if ($wallet > 0 && ($ppm > 0)) {
         $walletSeconds = (int) (($wallet / $ppm) * 60);
         $timeSeconds = $walletSeconds;

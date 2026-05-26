@@ -9,7 +9,12 @@ $user = $db->users->findOne(['email' => $email]);
 $sub_id = (int)($user['sub_id'] ?? 0);
 $run_plan = strtoupper($_GET['run_plan'] ?? '');
 $paidState = sb_paid_plan_state($user, true);
-$paidSessionSeconds = (int) ($paidState['remaining_seconds'] ?? 0);
+$paidSessionSeconds = max(0, (int) ($paidState['remaining_seconds'] ?? 0));
+$proPpm = (float) ($_ENV['PLAN_PRO_PPM'] ?? 0.05);
+$walletSeconds = ($user && (float) ($user['wallet_balance'] ?? 0.0) > 0 && $proPpm > 0)
+    ? (int) (((float) ($user['wallet_balance'] ?? 0.0) / $proPpm) * 60)
+    : 0;
+$accessSeconds = 0;
 
 // Allow access if: subscribed to PRO/MAX, OR running on wallet with run_plan=PRO
 $allowed = ($sub_id >= 2) || ($sub_id === 0 && $run_plan === 'PRO');
@@ -17,6 +22,14 @@ if (!$allowed) {
     header('Location: ../dashboard.php?error=tier_mismatch');
     exit;
 }
+
+if ($sub_id >= 2) {
+    $accessSeconds = $paidSessionSeconds + $walletSeconds;
+} elseif ($sub_id === 0 && $run_plan === 'PRO') {
+    $accessSeconds = $walletSeconds;
+}
+
+$accessExpiresAt = $accessSeconds > 0 ? time() + $accessSeconds : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1157,9 +1170,9 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
    No: waypoints, export, GLTF, gamepad */
 const PLAN = {
   tier: 'PRO',
-  sessionMinutes: 1440,
-  sessionSeconds: <?= $paidSessionSeconds > 0 ? $paidSessionSeconds : 86400 ?>,
-  planExpiresAt: <?= (int) ($paidState['expires_at'] ?? 0) ?>,
+  sessionMinutes: <?= max(1, (int) ceil(($accessSeconds > 0 ? $accessSeconds : 86400) / 60)) ?>,
+  sessionSeconds: <?= $accessSeconds > 0 ? $accessSeconds : 86400 ?>,
+  planExpiresAt: <?= (int) $accessExpiresAt ?>,
   droneProfiles: ['racing5', 'micro2'],
   environments: ['field', 'mountains', 'urban'],
   waypointMissions: false,
@@ -4229,6 +4242,7 @@ window.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       if (data.success) {
         simPlanName = data.plan_name;
+        simPpm = data.ppm;
         simTimeRemaining = data.time_remaining_seconds;
         if (simTimeRemaining === 0) {
           showTimeLimitModal();

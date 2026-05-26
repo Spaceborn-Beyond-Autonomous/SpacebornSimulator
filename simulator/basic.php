@@ -10,7 +10,10 @@ $sub_id = (int)($user['sub_id'] ?? 0);
 $wallet = (float)($user['wallet_balance'] ?? 0.0);
 $run_plan = strtoupper($_GET['run_plan'] ?? '');
 $paidState = sb_paid_plan_state($user, true);
-$paidSessionSeconds = (int) ($paidState['remaining_seconds'] ?? 0);
+$paidSessionSeconds = max(0, (int) ($paidState['remaining_seconds'] ?? 0));
+$basicPpm = (float) ($_ENV['PLAN_BASIC_PPM'] ?? 0.10);
+$walletSeconds = ($wallet > 0 && $basicPpm > 0) ? (int) (($wallet / $basicPpm) * 60) : 0;
+$trialRemainingSeconds = 0;
 
 // Allow access if: subscribed to any paid plan, running on wallet with run_plan=BASIC, or free trial is available.
 $trialState = sb_free_trial_state($user, false);
@@ -21,6 +24,21 @@ if (!$allowed) {
     header('Location: ../dashboard.php?error=tier_mismatch');
     exit;
 }
+
+if ($trialState['available']) {
+    $trialRemainingSeconds = (int) ($trialState['remaining_seconds'] ?? (10 * 60));
+}
+
+$accessSeconds = 0;
+if ($sub_id >= 1) {
+    $accessSeconds = $paidSessionSeconds + $walletSeconds;
+} elseif ($wallet > 0 && ($run_plan === 'BASIC' || $run_plan === 'FREE')) {
+    $accessSeconds = $walletSeconds;
+} elseif ($sub_id === 0 && $wallet <= 0 && $run_plan === 'FREE' && $trialState['available']) {
+    $accessSeconds = $trialRemainingSeconds > 0 ? $trialRemainingSeconds : (10 * 60);
+}
+
+$accessExpiresAt = $accessSeconds > 0 ? time() + $accessSeconds : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1159,9 +1177,9 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
    No: waypoints, PID tune, export, MAVLink, GLTF, gamepad */
 const PLAN = {
   tier: 'BASIC',
-  sessionMinutes: 60,
-  sessionSeconds: <?= $paidSessionSeconds > 0 ? $paidSessionSeconds : 3600 ?>,
-  planExpiresAt: <?= (int) ($paidState['expires_at'] ?? 0) ?>,
+  sessionMinutes: <?= max(1, (int) ceil(($accessSeconds > 0 ? $accessSeconds : 3600) / 60)) ?>,
+  sessionSeconds: <?= $accessSeconds > 0 ? $accessSeconds : 3600 ?>,
+  planExpiresAt: <?= (int) $accessExpiresAt ?>,
   droneProfiles: ['racing5'],
   environments: ['field'],
   waypointMissions: false,
@@ -4231,6 +4249,7 @@ window.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       if (data.success) {
         simPlanName = data.plan_name;
+        simPpm = data.ppm;
         simTimeRemaining = data.time_remaining_seconds;
         if (simTimeRemaining === 0) {
           showTimeLimitModal();
