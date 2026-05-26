@@ -1,4 +1,25 @@
-<?php require_once __DIR__ . '/../auth/session_guard.php'; ?>
+<?php
+require_once __DIR__ . '/../auth/session_guard.php';
+require_once __DIR__ . '/../auth/db.php';
+require_once __DIR__ . '/../includes/simulator_launch.php';
+
+// Tier guard: BASIC simulator requires a paid plan, a wallet run, or an available free trial.
+$email = $_SESSION['email'] ?? '';
+$user = $db->users->findOne(['email' => $email]);
+$sub_id = (int)($user['sub_id'] ?? 0);
+$wallet = (float)($user['wallet_balance'] ?? 0.0);
+$run_plan = strtoupper($_GET['run_plan'] ?? '');
+
+// Allow access if: subscribed to any paid plan, running on wallet with run_plan=BASIC, or free trial is available.
+$trialState = sb_free_trial_state($user, false);
+$allowed = ($sub_id >= 1)
+    || ($sub_id === 0 && $wallet > 0 && ($run_plan === 'BASIC' || $run_plan === 'FREE'))
+    || ($sub_id === 0 && $wallet <= 0 && $run_plan === 'FREE' && $trialState['available']);
+if (!$allowed) {
+    header('Location: ../dashboard.php?error=tier_mismatch');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2887,9 +2908,18 @@ const SIM = {
       }
     }
 
-    // Clock — [FIX-Bug-26b] flightTime increments at real-time rate when armed
-    // Wall clock shows State.flightTime which is incremented by rawDt (unscaled) in _loop
-    const ft = State.flightTime;
+    // Clock — Wall-clock based (immune to frame throttling)
+    // _wallClockArmedStart tracks when arming began; _wallClockAccum accumulates paused time
+    if (State.armed) {
+      if (!SIM._wallClockArmedStart) SIM._wallClockArmedStart = Date.now() - (SIM._wallClockAccum || 0);
+    } else {
+      if (SIM._wallClockArmedStart) {
+        SIM._wallClockAccum = Date.now() - SIM._wallClockArmedStart;
+        SIM._wallClockArmedStart = 0;
+      }
+    }
+    const ft = SIM._wallClockArmedStart ? (Date.now() - SIM._wallClockArmedStart) / 1000 : (SIM._wallClockAccum || 0) / 1000;
+    State.flightTime = ft; // keep State in sync for other consumers
     const mm = Math.floor(ft/60), ss = Math.floor(ft%60);
     const clk = $('top-clock');
     if (clk) clk.textContent = mm.toString().padStart(2,'0')+':'+ss.toString().padStart(2,'0');
@@ -4344,8 +4374,8 @@ window.addEventListener('DOMContentLoaded', () => {
 <div id="sim-time-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(5px);align-items:center;justify-content:center;">
   <div class="card" style="width:360px;text-align:center;padding:32px;">
     <div style="font-size:32px;margin-bottom:12px;">⏳</div>
-    <h2 style="font-family:var(--fh);font-size:20px;color:var(--txt);margin-bottom:8px;">Time Limit Reached</h2>
-    <p style="font-size:13px;color:var(--txt2);margin-bottom:24px;line-height:1.5;">Your available simulation time has ended. Please add balance to your wallet or upgrade your plan to continue flying.</p>
+    <h2 style="font-family:var(--fh);font-size:20px;color:var(--txt);margin-bottom:8px;">10-Minute Trial Reached</h2>
+    <p style="font-size:13px;color:var(--txt2);margin-bottom:24px;line-height:1.5;">Your 10 free minutes on the basic tier are used up. The trial refreshes every 6 hours. Please upgrade or add balance to continue flying now.</p>
     <div class="nbtn-row" style="justify-content:center;gap:12px;">
       <a class="nbtn primary" href="../billing.php" style="text-decoration:none;">Upgrade / Add Balance</a>
       <button class="nbtn danger" onclick="exitSimulation()">Exit Simulator</button>

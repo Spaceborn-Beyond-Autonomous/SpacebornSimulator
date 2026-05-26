@@ -1,4 +1,20 @@
-<?php require_once __DIR__ . '/../auth/session_guard.php'; ?>
+<?php
+require_once __DIR__ . '/../auth/session_guard.php';
+require_once __DIR__ . '/../auth/db.php';
+
+// Tier guard: PRO simulator requires sub_id >= 2 or wallet-based run with run_plan=PRO
+$email = $_SESSION['email'] ?? '';
+$user = $db->users->findOne(['email' => $email]);
+$sub_id = (int)($user['sub_id'] ?? 0);
+$run_plan = strtoupper($_GET['run_plan'] ?? '');
+
+// Allow access if: subscribed to PRO/MAX, OR running on wallet with run_plan=PRO
+$allowed = ($sub_id >= 2) || ($sub_id === 0 && $run_plan === 'PRO');
+if (!$allowed) {
+    header('Location: ../dashboard.php?error=tier_mismatch');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2889,9 +2905,18 @@ const SIM = {
       }
     }
 
-    // Clock — [FIX-Bug-26b] flightTime increments at real-time rate when armed
-    // Wall clock shows State.flightTime which is incremented by rawDt (unscaled) in _loop
-    const ft = State.flightTime;
+    // Clock — Wall-clock based (immune to frame throttling)
+    // _wallClockArmedStart tracks when arming began; _wallClockAccum accumulates paused time
+    if (State.armed) {
+      if (!SIM._wallClockArmedStart) SIM._wallClockArmedStart = Date.now() - (SIM._wallClockAccum || 0);
+    } else {
+      if (SIM._wallClockArmedStart) {
+        SIM._wallClockAccum = Date.now() - SIM._wallClockArmedStart;
+        SIM._wallClockArmedStart = 0;
+      }
+    }
+    const ft = SIM._wallClockArmedStart ? (Date.now() - SIM._wallClockArmedStart) / 1000 : (SIM._wallClockAccum || 0) / 1000;
+    State.flightTime = ft; // keep State in sync for other consumers
     const mm = Math.floor(ft/60), ss = Math.floor(ft%60);
     const clk = $('top-clock');
     if (clk) clk.textContent = mm.toString().padStart(2,'0')+':'+ss.toString().padStart(2,'0');

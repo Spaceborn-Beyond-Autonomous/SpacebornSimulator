@@ -50,11 +50,6 @@ if (isset($_GET['code'])) {
         $user = $db->users->findOne(['email' => $userEmail]);
 
         if (!$user) {
-            $basic_minutes = (float)($_ENV['PLAN_BASIC_MINUTES'] ?? 60);
-            $now = new DateTime();
-            $now_expires = clone $now;
-            $now_expires->modify("+" . (int)$basic_minutes . " minutes");
-
             $insertResult = $db->users->insertOne([
                 'name' => $data['name'],
                 'email' => $userEmail,
@@ -66,7 +61,10 @@ if (isset($_GET['code'])) {
                 'sub_started' => false,
                 'sub_activated_at' => null,
                 'sub_expires_at' => null,
-                'wallet_balance' => 4.0,
+                'wallet_balance' => 0.0,
+                'free_minutes_used' => 0,
+                'free_trial_started_at' => null,
+                'free_minutes_reset_at' => null,
                 'is_verified' => true,
                 'verification_token' => ''
             ]);
@@ -125,10 +123,17 @@ if (isset($_GET['code'])) {
 
         $_SESSION['id'] = (string)$result->getInsertedId();
         $_SESSION['name'] = $user['name'];
-        $_SESSION['wallet_balance'] = (float)($user['wallet_balance'] ?? 1.0);
+        $_SESSION['wallet_balance'] = (float)($user['wallet_balance'] ?? 0.0);
         $_SESSION['sub_started'] = $sub_started;
         $_SESSION['sub_activated_at'] = $sub_activated_at;
         $_SESSION['sub_expires_at'] = $sub_expires_at;
+        $_SESSION['free_minutes_used'] = (int)($user['free_minutes_used'] ?? 0);
+        $_SESSION['free_trial_started_at'] = isset($user['free_trial_started_at']) && $user['free_trial_started_at'] instanceof MongoDB\BSON\UTCDateTime
+            ? $user['free_trial_started_at']->toDateTime()->getTimestamp()
+            : null;
+        $_SESSION['free_minutes_reset_at'] = isset($user['free_minutes_reset_at']) && $user['free_minutes_reset_at'] instanceof MongoDB\BSON\UTCDateTime
+            ? $user['free_minutes_reset_at']->toDateTime()->getTimestamp()
+            : null;
         $_SESSION['user_sub'] = [
             'id'               => (string) ($user_sub['id'] ?? '0'),
             'plan_id'          => (int)    ($user_sub['id'] ?? 0),

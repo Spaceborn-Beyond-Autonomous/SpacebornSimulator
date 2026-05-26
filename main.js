@@ -65,29 +65,37 @@ const modalClose   = document.getElementById('modalClose');
 const loginBtn     = document.getElementById('loginBtn');
 
 function openModal(tab = 'login') {
+  if (!modalOverlay) return;
   modalOverlay.classList.add('active');
   switchTab(tab);
   document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
+  if (!modalOverlay) return;
   modalOverlay.classList.remove('active');
   document.body.style.overflow = '';
 }
 
 window.openModal = openModal;
 
-loginBtn.addEventListener('click', () => openModal('login'));
+if (loginBtn) {
+  loginBtn.addEventListener('click', () => openModal('login'));
+}
 
 // Fix: use addEventListener instead of relying on element re-query
-modalClose.addEventListener('click', function(e) {
-  e.stopPropagation();
-  closeModal();
-});
+if (modalClose) {
+  modalClose.addEventListener('click', function(e) {
+    e.stopPropagation();
+    closeModal();
+  });
+}
 
-modalOverlay.addEventListener('click', e => {
-  if (e.target === modalOverlay) closeModal();
-});
+if (modalOverlay) {
+  modalOverlay.addEventListener('click', e => {
+    if (e.target === modalOverlay) closeModal();
+  });
+}
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
@@ -188,22 +196,24 @@ const pricingToggle = document.getElementById('pricingToggle');
 const labelMonthly  = document.getElementById('labelMonthly');
 const labelPayg     = document.getElementById('labelPayg');
 
-pricingToggle.addEventListener('change', () => {
-  const isPayg = pricingToggle.checked;
-  labelMonthly.classList.toggle('active', !isPayg);
-  labelPayg.classList.toggle('active', isPayg);
+if (pricingToggle) {
+  pricingToggle.addEventListener('change', () => {
+    const isPayg = pricingToggle.checked;
+    labelMonthly.classList.toggle('active', !isPayg);
+    labelPayg.classList.toggle('active', isPayg);
 
-  document.querySelectorAll('.plan-price').forEach(el => {
-    el.textContent = isPayg ? el.dataset.payg : el.dataset.monthly;
-    // Restore the span for sub-text (rebuild after text overwrite)
-    const raw = isPayg ? el.dataset.payg : el.dataset.monthly;
-    const match = raw.match(/^(\$[\d]+)\s*(.*)$/);
-    if (match) {
-      el.innerHTML = match[1] + ' <span>' + match[2] + '</span>';
-    }
+    document.querySelectorAll('.plan-price').forEach(el => {
+      el.textContent = isPayg ? el.dataset.payg : el.dataset.monthly;
+      // Restore the span for sub-text (rebuild after text overwrite)
+      const raw = isPayg ? el.dataset.payg : el.dataset.monthly;
+      const match = raw.match(/^(\$[\d]+)\s*(.*)$/);
+      if (match) {
+        el.innerHTML = match[1] + ' <span>' + match[2] + '</span>';
+      }
+    });
   });
-});
-labelMonthly.classList.add('active');
+  labelMonthly.classList.add('active');
+}
 
 /* -------------------------------------------------------
    7. INTERSECTION OBSERVER — FADE-IN ANIMATIONS

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/session_guard.php';
 require_once __DIR__ . '/db.php'; // ensure env is loaded
+require_once __DIR__ . '/../includes/simulator_launch.php';
 
 header('Content-Type: application/json');
 
@@ -66,12 +67,17 @@ $run_plan = $_GET['run_plan'] ?? '';
 
 if (!$has_active_subscription) {
     if (empty($run_plan)) {
-        // Prompt user to select a plan inside the simulator
-        echo json_encode([
-            'requires_plan_selection' => true,
-            'wallet_balance'          => $wallet
-        ]);
-        exit;
+        if ($wallet > 0) {
+            // Prompt wallet users to select a plan inside the simulator
+            echo json_encode([
+                'requires_plan_selection' => true,
+                'wallet_balance'          => $wallet
+            ]);
+            exit;
+        }
+
+        // Default to the free basic trial when no wallet balance is available.
+        $run_plan = 'FREE';
     }
     
     // Running on wallet balance using chosen tier features/pricing
@@ -84,6 +90,7 @@ if (!$has_active_subscription) {
 
 $base_minutes = 0;
 $ppm = 0.10; // default safe ppm
+$trial_mode = false;
 
 if ($plan === 'BASIC') {
     $base_minutes = (float)($_ENV['PLAN_BASIC_MINUTES'] ?? 60);
@@ -99,7 +106,7 @@ if ($plan === 'BASIC') {
     $ppm = 0.50;
 }
 
-if ($ppm <= 0) $ppm = 0.01;
+if ($ppm <= 0 && !$trial_mode) $ppm = 0.01;
 
 $remaining_seconds = 0;
 
@@ -134,11 +141,26 @@ if ($has_active_subscription) {
         $remaining_seconds = max(0, $sub_expires_at - $now);
     }
 } else {
-    // Wallet run has 0 base seconds (they pay per minute from wallet balance)
-    $remaining_seconds = 0;
+    $trial_state = sb_free_trial_state($user, false);
+
+    if ($wallet > 0 && $ppm > 0) {
+        // Wallet run has no free base seconds (they pay per minute from wallet balance)
+        $remaining_seconds = (int) (($wallet / $ppm) * 60);
+        $base_minutes = 0;
+    } elseif ($trial_state['available']) {
+        $remaining_seconds = (int) $trial_state['remaining_seconds'];
+        $base_minutes = 10;
+        $ppm = 0.0;
+        $trial_mode = true;
+    } else {
+        $remaining_seconds = 0;
+        $base_minutes = 10;
+        $ppm = 0.0;
+        $trial_mode = true;
+    }
 }
 
-$wallet_seconds = (int) (($wallet / $ppm) * 60);
+$wallet_seconds = ($wallet > 0 && $ppm > 0) ? (int) (($wallet / $ppm) * 60) : 0;
 $max_seconds = $remaining_seconds + $wallet_seconds;
 $now = time();
 $access_expires_at = $max_seconds > 0 ? $now + $max_seconds : 0;

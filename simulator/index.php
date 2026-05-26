@@ -28,25 +28,31 @@ $planIdFiles = [
     3 => 'max.php',
 ];
 
-// Active subscription → open matching tier simulator
+// Active subscription opens the matching tier simulator.
 if ($planId > 0 && isset($planIdFiles[$planId])) {
     header('Location: ' . $planIdFiles[$planId]);
     exit;
 }
 
-// Wallet-only: user picked a tier
+// Wallet-only: user picked a tier.
 if ($planId <= 0 && $wallet > 0 && isset($planFiles[$runPlan])) {
     header('Location: ' . $planFiles[$runPlan] . '?run_plan=' . urlencode($runPlan));
     exit;
 }
 
-// No access
+// Free basic trial: 10 minutes refreshed every 6 hours.
+$trialState = sb_free_trial_state($user, false);
+if ($planId <= 0 && $wallet <= 0 && $trialState['available']) {
+    header('Location: basic.php?run_plan=FREE');
+    exit;
+}
+
+// No access.
 if ($planId <= 0 && $wallet <= 0) {
     header('Location: ../billing.php?msg=insufficient_funds');
     exit;
 }
 
-// Wallet balance but no plan chosen yet — Free zone (bypasses picker)
+// Wallet balance but no plan chosen yet - free zone (bypasses picker).
 header('Location: basic.php?run_plan=FREE&ppm=0.10');
 exit;
-

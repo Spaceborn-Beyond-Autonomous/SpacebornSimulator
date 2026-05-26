@@ -186,6 +186,13 @@ $simulator_url = htmlspecialchars($sim_launch['url'], ENT_QUOTES, 'UTF-8');
 
   <div class="content">
 
+    <?php if (isset($_GET['error']) && $_GET['error'] === 'tier_mismatch'): ?>
+    <div style="background:rgba(224,85,85,.12);border:1px solid rgba(224,85,85,.3);border-radius:var(--r);padding:16px 22px;display:flex;align-items:center;gap:12px;color:#e05555;font-size:13.5px;font-weight:500;">
+      <span style="font-size:18px;">⚠️</span>
+      <span>You don't have the required plan to access that simulator tier. Please <a href="billing.php" style="color:var(--secondary);font-weight:600;">upgrade your plan</a> or select the correct simulator for your subscription.</span>
+    </div>
+    <?php endif; ?>
+
     <div class="stat-row">
       <div class="stat-card fade-up delay-1">
         <div class="stat-label">Active Sessions</div>
