@@ -3960,13 +3960,24 @@ window.addEventListener('DOMContentLoaded', () => {
     const EXPIRES_AT_MS = PLAN.planExpiresAt > 0 ? PLAN.planExpiresAt * 1000 : 0;
     const SESSION_MS = PLAN.sessionSeconds * 1000;
     const t0 = Date.now();
+    function fmt(ms) {
+      const total = Math.max(0, Math.floor(ms / 1000));
+      const days = Math.floor(total / 86400);
+      const hours = Math.floor((total % 86400) / 3600);
+      const mins = Math.floor((total % 3600) / 60);
+      const secs = total % 60;
+      const hh = String(hours).padStart(2, '0');
+      const mm = String(mins).padStart(2, '0');
+      const ss = String(secs).padStart(2, '0');
+      return days > 0 ? `${days}d ${hh}:${mm}:${ss}` : `${hh}:${mm}:${ss}`;
+    }
 
     // Countdown badge
     const cdBadge = document.createElement('div');
     cdBadge.style.cssText = `display:flex;align-items:center;gap:5px;padding:4px 11px;
       border-radius:20px;background:var(--n);box-shadow:inset 4px 4px 8px #0d1018,inset -4px -4px 8px #232a3a;
       font-size:11px;font-weight:600;font-family:var(--fh);color:var(--txt2);`;
-    cdBadge.innerHTML = `<span style="color:var(--s)">⏱</span><span id="ses-left">--:--</span>`;
+    cdBadge.innerHTML = `<span style="color:var(--s)">⏱</span><span id="ses-left">--:--:--</span>`;
     const tb = document.getElementById('topbar');
     if (tb) { const tsp = tb.querySelector('.tsp'); if (tsp) tb.insertBefore(cdBadge, tsp.nextSibling); }
 
@@ -3995,9 +4006,7 @@ window.addEventListener('DOMContentLoaded', () => {
         : Math.max(0, SESSION_MS - (Date.now() - t0));
       const el = document.getElementById('ses-left');
       if (el) {
-        const m = String(Math.floor(rem/60000)).padStart(2,'0');
-        const s = String(Math.floor((rem%60000)/1000)).padStart(2,'0');
-        el.textContent = `${m}:${s}`;
+        el.textContent = fmt(rem);
       }
       if (rem < 300000) cdBadge.style.color = '#EE9346';
       if (rem < 60000)  cdBadge.style.color = '#F44336';
