@@ -37,10 +37,13 @@ foreach($usage_seconds as $s) {
     $usage_pct[] = $max_usage > 0 ? round(($s / $max_usage) * 100) : 0;
 }
 
-$plan_name = $_SESSION['user_sub']['plan_name'] ?? 'Free';
-if (!$plan_name) $plan_name = 'Active';
-
 $user_row = $db->users->findOne(['email' => $email]);
+$plan_map = [1 => 'BASIC', 2 => 'PRO', 3 => 'MAX'];
+$live_plan_id = (int) ($user_row['sub_id'] ?? ($_SESSION['user_sub']['plan_id'] ?? 0));
+$plan_name = $plan_map[$live_plan_id] ?? (string) ($_SESSION['user_sub']['plan_name'] ?? 'Free');
+if ($plan_name === '' || $plan_name === '0') {
+    $plan_name = 'Free';
+}
 $sim_launch = sb_simulator_launch_info($user_row ?: null);
 $can_launch = sb_can_launch_simulator($user_row ?: null);
 $simulator_url = htmlspecialchars($sim_launch['url'], ENT_QUOTES, 'UTF-8');

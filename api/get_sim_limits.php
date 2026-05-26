@@ -28,48 +28,16 @@ $subRemainingSeconds = 0;
 $walletSeconds = 0;
 $baseMinutes = 0;
 $trialMode = false;
+$paidState = null;
 $trialState = ['available' => false, 'active' => false, 'remaining_seconds' => 0, 'started_at' => 0, 'reset_at' => 0];
 
 if ($planId > 0) {
-    $subExpiresAt = 0;
-    if (isset($user['sub_expires_at']) && $user['sub_expires_at'] instanceof MongoDB\BSON\UTCDateTime) {
-        $subExpiresAt = $user['sub_expires_at']->toDateTime()->getTimestamp();
-    }
-
-    // If not started yet, return the full duration so they see the starting limit.
-    if (empty($user['sub_started'])) {
-        if ($planId === 1) {
-            $timeSeconds = 3600;
-            $baseMinutes = 60;
-        } elseif ($planId === 2) {
-            $timeSeconds = 86400;
-            $baseMinutes = 1440;
-        } elseif ($planId === 3) {
-            $timeSeconds = -1; // Unlimited
-            $baseMinutes = 43200;
-        }
-    } else {
-        if ($planId === 3) {
-            $timeSeconds = -1; // Unlimited
-            $baseMinutes = 43200;
-        } else {
-            $now = time();
-            $timeSeconds = max(0, $subExpiresAt - $now);
-            if ($planId === 1) {
-                $baseMinutes = 60;
-            } elseif ($planId === 2) {
-                $baseMinutes = 1440;
-            }
-        }
-    }
-
-    if ($planId === 1) {
-        $planName = 'BASIC';
-    } elseif ($planId === 2) {
-        $planName = 'PRO';
-    } elseif ($planId === 3) {
-        $planName = 'MAX';
-    }
+    $paidState = sb_paid_plan_state($user, true);
+    $timeSeconds = ($paidState['plan_id'] === 3) ? -1 : (int) $paidState['remaining_seconds'];
+    $planName = (string) ($paidState['plan_name'] ?? 'FREE');
+    $subActive = (bool) ($paidState['active'] ?? false);
+    $subRemainingSeconds = ($timeSeconds > 0) ? (int) $timeSeconds : 0;
+    $baseMinutes = $planId === 1 ? 60 : ($planId === 2 ? 1440 : 43200);
 } else {
     if ($wallet > 0 && ($ppm > 0)) {
         $walletSeconds = (int) (($wallet / $ppm) * 60);
@@ -93,11 +61,6 @@ if ($planId > 0) {
     }
 }
 
-if ($planId > 0) {
-    $subActive = true;
-    $subRemainingSeconds = max(0, (int) $timeSeconds);
-}
-
 if ($trialMode) {
     $subActive = false;
     $subRemainingSeconds = 0;
@@ -106,10 +69,11 @@ if ($trialMode) {
 
 $now = time();
 $accessExpiresAt = $timeSeconds > 0 ? $now + $timeSeconds : 0;
+$effectivePlanId = (int) ($paidState['plan_id'] ?? $planId);
 
 echo json_encode([
     'success' => true,
-    'plan_id' => $planId,
+    'plan_id' => $effectivePlanId,
     'plan_name' => $planName,
     'wallet_balance' => $wallet,
     'base_minutes' => $baseMinutes,
@@ -117,9 +81,7 @@ echo json_encode([
     'time_remaining_seconds' => $timeSeconds,
     'max_session_seconds' => $timeSeconds,
     'sub_active' => $subActive,
-    'sub_expires_at' => $planId > 0 && !empty($user['sub_started']) && isset($user['sub_expires_at']) && $user['sub_expires_at'] instanceof MongoDB\BSON\UTCDateTime
-        ? $user['sub_expires_at']->toDateTime()->getTimestamp()
-        : 0,
+    'sub_expires_at' => $paidState['expires_at'] ?? 0,
     'sub_remaining_seconds' => $subRemainingSeconds,
     'wallet_seconds' => $walletSeconds,
     'access_expires_at' => $accessExpiresAt,

@@ -46,6 +46,129 @@ function sb_free_trial_refresh_seconds(): int
     return 6 * 60 * 60;
 }
 
+function sb_paid_plan_duration_seconds(int $planId): int
+{
+    if ($planId === 1) {
+        return (int) ((float) ($_ENV['PLAN_BASIC_MINUTES'] ?? 60) * 60);
+    }
+
+    if ($planId === 2) {
+        return (int) ((float) ($_ENV['PLAN_PRO_MINUTES'] ?? 1440) * 60);
+    }
+
+    if ($planId === 3) {
+        return (int) ((float) ($_ENV['PLAN_MAX_MINUTES'] ?? 43200) * 60);
+    }
+
+    return 0;
+}
+
+function sb_paid_plan_state(array|object|null $user = null, bool $consume = false): array
+{
+    $row = sb_current_user_record($user);
+    $planId = (int) ($row['sub_id'] ?? 0);
+    $wallet = (float) ($row['wallet_balance'] ?? 0.0);
+
+    $state = [
+        'plan_id' => $planId,
+        'plan_name' => $planId === 1 ? 'BASIC' : ($planId === 2 ? 'PRO' : ($planId === 3 ? 'MAX' : 'FREE')),
+        'active' => false,
+        'started' => false,
+        'remaining_seconds' => 0,
+        'expires_at' => 0,
+        'started_at' => 0,
+        'is_expired' => false,
+    ];
+
+    if ($planId <= 0) {
+        return $state;
+    }
+
+    $durationSeconds = sb_paid_plan_duration_seconds($planId);
+    $now = time();
+    $startedAt = sb_mongo_timestamp($row['sub_activated_at'] ?? null);
+    $expiresAt = sb_mongo_timestamp($row['sub_expires_at'] ?? null);
+    $subStarted = (bool) ($row['sub_started'] ?? false);
+
+    $persistState = function (array $fields) use ($row): void {
+        $email = (string) ($row['email'] ?? ($_SESSION['email'] ?? ''));
+        if ($email === '' || !isset($GLOBALS['db']) || !isset($GLOBALS['db']->users)) {
+            return;
+        }
+
+        $GLOBALS['db']->users->updateOne(
+            ['email' => $email],
+            ['$set' => $fields]
+        );
+    };
+
+    if (!$subStarted || $startedAt <= 0 || $expiresAt <= 0) {
+        if ($consume) {
+            $startedAt = $now;
+            $expiresAt = $now + $durationSeconds;
+
+            $persistState([
+                'sub_started' => true,
+                'sub_activated_at' => new MongoDB\BSON\UTCDateTime($startedAt * 1000),
+                'sub_expires_at' => new MongoDB\BSON\UTCDateTime($expiresAt * 1000),
+            ]);
+
+            return [
+                'plan_id' => $planId,
+                'plan_name' => $state['plan_name'],
+                'active' => true,
+                'started' => true,
+                'remaining_seconds' => $durationSeconds,
+                'expires_at' => $expiresAt,
+                'started_at' => $startedAt,
+                'is_expired' => false,
+            ];
+        }
+
+        return [
+            'plan_id' => $planId,
+            'plan_name' => $state['plan_name'],
+            'active' => true,
+            'started' => false,
+            'remaining_seconds' => $durationSeconds,
+            'expires_at' => $now + $durationSeconds,
+            'started_at' => 0,
+            'is_expired' => false,
+        ];
+    }
+
+    if ($expiresAt > 0 && $now > $expiresAt) {
+        $persistState([
+            'sub_id' => 0,
+            'sub_started' => false,
+            'sub_activated_at' => null,
+            'sub_expires_at' => null,
+        ]);
+
+        return [
+            'plan_id' => 0,
+            'plan_name' => 'FREE',
+            'active' => false,
+            'started' => false,
+            'remaining_seconds' => 0,
+            'expires_at' => 0,
+            'started_at' => 0,
+            'is_expired' => true,
+        ];
+    }
+
+    return [
+        'plan_id' => $planId,
+        'plan_name' => $state['plan_name'],
+        'active' => true,
+        'started' => true,
+        'remaining_seconds' => max(0, $expiresAt - $now),
+        'expires_at' => $expiresAt,
+        'started_at' => $startedAt,
+        'is_expired' => false,
+    ];
+}
+
 function sb_free_trial_state(array|object|null $user = null, bool $consume = false): array
 {
     $row = sb_current_user_record($user);

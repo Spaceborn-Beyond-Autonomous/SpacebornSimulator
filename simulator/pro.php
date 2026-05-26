@@ -7,6 +7,8 @@ $email = $_SESSION['email'] ?? '';
 $user = $db->users->findOne(['email' => $email]);
 $sub_id = (int)($user['sub_id'] ?? 0);
 $run_plan = strtoupper($_GET['run_plan'] ?? '');
+$paidState = sb_paid_plan_state($user, true);
+$paidSessionSeconds = (int) ($paidState['remaining_seconds'] ?? 0);
 
 // Allow access if: subscribed to PRO/MAX, OR running on wallet with run_plan=PRO
 $allowed = ($sub_id >= 2) || ($sub_id === 0 && $run_plan === 'PRO');
@@ -1155,6 +1157,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 const PLAN = {
   tier: 'PRO',
   sessionMinutes: 1440,
+  sessionSeconds: <?= $paidSessionSeconds > 0 ? $paidSessionSeconds : 86400 ?>,
   droneProfiles: ['racing5', 'micro2'],
   environments: ['field', 'mountains', 'urban'],
   waypointMissions: false,
@@ -3949,8 +3952,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   /* ─ 2. SESSION TIMER ───────────────────────────────────────── */
   // [PLAN-SESSION] Enforce time-limited access (BASIC=1h, PRO=24h, MAX=∞)
-  if (isFinite(PLAN.sessionMinutes)) {
-    const SESSION_MS = PLAN.sessionMinutes * 60000;
+  if (isFinite(PLAN.sessionSeconds)) {
+    const SESSION_MS = PLAN.sessionSeconds * 1000;
     const t0 = Date.now();
 
     // Countdown badge
@@ -3966,9 +3969,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const overlay = document.createElement('div');
     overlay.style.cssText = `position:fixed;inset:0;z-index:9999;background:rgba(10,12,20,0.97);
       display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;`;
-    const durationLabel = PLAN.sessionMinutes >= 60
-      ? Math.round(PLAN.sessionMinutes/60) + 'h'
-      : PLAN.sessionMinutes + 'min';
+    const durationLabel = PLAN.sessionSeconds >= 3600
+      ? Math.round(PLAN.sessionSeconds/3600) + 'h'
+      : Math.max(1, Math.ceil(PLAN.sessionSeconds/60)) + 'min';
     overlay.innerHTML = `
       <div style="font-family:var(--fh);font-size:32px;font-weight:700;color:var(--p)">⏱ Session Ended</div>
       <div style="font-size:14px;color:var(--txt2);text-align:center;max-width:380px;line-height:1.7">
@@ -4367,7 +4370,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
   };
 
-  console.log(`[CERTANITY SIM] Plan: ${PLAN.tierLabel} | Session: ${isFinite(PLAN.sessionMinutes) ? PLAN.sessionMinutes+'min' : 'Unlimited'}`);
+  console.log(`[CERTANITY SIM] Plan: ${PLAN.tierLabel} | Session: ${isFinite(PLAN.sessionSeconds) ? PLAN.sessionSeconds+'s' : 'Unlimited'}`);
 });
 </script>
 

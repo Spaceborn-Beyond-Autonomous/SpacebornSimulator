@@ -10,12 +10,23 @@ $_active = $sidebar_active ?? '';
 $_user_name = htmlspecialchars($_SESSION['name'] ?? 'User');
 $_initial   = strtoupper(substr(trim($_SESSION['name'] ?? 'U'), 0, 1));
 
-// Map plan_id → display label (matches DB plan_id values)
+// Prefer the live DB subscription so the sidebar stays synced with the real tier.
 $_plan_id_map = [1 => 'BASIC', 2 => 'PRO', 3 => 'MAX'];
-$_plan_id     = $_SESSION['user_sub']['plan_id'] ?? null;
-$_plan_label  = isset($_plan_id, $_plan_id_map[$_plan_id])
-    ? $_plan_id_map[$_plan_id]
-    : htmlspecialchars($_SESSION['user_sub']['plan_name'] ?? 'Free');
+$_plan_label = htmlspecialchars($_SESSION['user_sub']['plan_name'] ?? 'Free');
+if (isset($db) && isset($_SESSION['email'])) {
+    try {
+        $_live_user = $db->users->findOne(['email' => $_SESSION['email']]);
+        if ($_live_user) {
+            $_live_plan_id = (int) ($_live_user['sub_id'] ?? 0);
+            $_plan_label = $_plan_id_map[$_live_plan_id] ?? htmlspecialchars((string) ($_live_user['sub_name'] ?? 'Free'));
+            if ($_plan_label === '' || $_plan_label === '0') {
+                $_plan_label = 'Free';
+            }
+        }
+    } catch (Throwable $e) {
+        // Fall back to the session value if the live lookup fails.
+    }
+}
 
 if (!function_exists('sb_simulator_launch_info')) {
     require_once __DIR__ . '/simulator_launch.php';
@@ -64,6 +75,7 @@ $_ic_billing   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
         <div class="user-role"><?= $_plan_label ?> plan</div>
       </div>
       <div class="user-actions">
+        <?php if ($_active !== 'dashboard'): ?>
         <a href="settings.php"
            class="user-action-btn <?= $_active === 'settings' ? 'active-icon' : '' ?>"
            title="Settings">
@@ -72,6 +84,7 @@ $_ic_billing   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" st
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
         </a>
+        <?php endif; ?>
         <a href="auth/logout.php" class="user-action-btn logout" title="Logout">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>

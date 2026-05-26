@@ -63,7 +63,7 @@ if ($refund_amount < 0) $refund_amount = 0.0;
 if ($refund_amount > $current_plan_price) $refund_amount = $current_plan_price;
 
 // Round to 2 decimal places
-$refund_amount = round($refund_amount, 2);
+$refund_amount = round($refund_amount * 0.5, 2);
 
 // Target plan settings
 $target_minutes = 60;
