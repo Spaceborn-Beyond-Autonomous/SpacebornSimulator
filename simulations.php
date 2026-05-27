@@ -302,13 +302,7 @@ foreach ($flights as $f) {
               </div>
             </div>
             <div class="detail-actions">
-              <a class="btn-outline" href="session-detail.php?id=<?= $s['id'] ?>">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-                View Replay
-              </a>
+
               <?php 
               $telemetry_urls = $s['telemetry_urls'] ?? [];
               if (empty($telemetry_urls) && !empty($s['telemetry_url'])) {

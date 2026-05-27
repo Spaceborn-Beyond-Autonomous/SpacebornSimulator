@@ -501,8 +501,8 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       <select id="sim-speed" onchange="setSimSpeed(this.value)" style="font-size:11px;font-weight:600;color:var(--txt);background:none;border:none;outline:none;cursor:pointer;">
         <option value="0.25">0.25×</option>
         <option value="0.5">0.5×</option>
-        <option value="1" selected>1×</option>
-        <option value="2">2×</option>
+        <option value="1">1×</option>
+        <option value="2" selected>2×</option>
         <option value="4">4×</option>
       </select>
     </div>
@@ -2792,7 +2792,7 @@ const State = {
 };
 
 const SIM = {
-  _last: 0, _running: false, _paused: false, _speed: 1.0,
+  _last: 0, _running: false, _paused: false, _speed: 2.0,
   start() {
     this._running = true;
     this._paused = false;
