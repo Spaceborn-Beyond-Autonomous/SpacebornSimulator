@@ -22,7 +22,7 @@ foreach ($flights as $f) {
         'mode'        => $f['mode'] ?? 'Manual',
         'duration'    => gmdate("i\m s\s", $f['duration'] ?? 0),
         'status'      => $f['status'] ?? 'completed',
-        'date'        => $f['created_at'] ? $f['created_at']->toDateTime()->format('M d, g:i A') : 'Unknown',
+        'date'        => $f['created_at'] ? (function($c){ $d = $c->toDateTime(); $d->setTimezone(new DateTimeZone('Asia/Kolkata')); return $d->format('M d, g:i A'); })($f['created_at']) : 'Unknown',
         'telemetry_url'=> $f['telemetry_url'] ?? null,
         'log'         => 'logs/' . ((string)$f['_id']) . '.zip'
     ];

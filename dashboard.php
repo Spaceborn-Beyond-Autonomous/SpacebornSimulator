@@ -249,7 +249,7 @@ $trial_text = sprintf("%d:%02d", $trial_min, $trial_sec);
         $recent_flights = array_slice($flights, 0, 4);
         foreach ($recent_flights as $f) {
           $dur = gmdate("i\m s\s", $f['duration'] ?? 0);
-          $date = $f['created_at'] ? $f['created_at']->toDateTime()->format('M d, g:i A') : 'Unknown';
+          $date = $f['created_at'] ? (function($c){ $d = $c->toDateTime(); $d->setTimezone(new DateTimeZone('Asia/Kolkata')); return $d->format('M d, g:i A'); })($f['created_at']) : 'Unknown';
           $recent[] = [ $f['name'] ?? 'Simulation', $f['drone'] ?? 'Unknown Drone', $date, $dur ];
         }
         if (empty($recent)) {

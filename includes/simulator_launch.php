@@ -96,7 +96,7 @@ function sb_paid_plan_state(array|object|null $user = null, bool $consume = fals
 
     $persistState = function (array $fields) use ($row): void {
         $email = (string) ($row['email'] ?? ($_SESSION['email'] ?? ''));
-        if ($email === '' || !isset($GLOBALS['db']) || !isset($GLOBALS['db']->users)) {
+        if ($email === '' || !isset($GLOBALS['db'])) {
             return;
         }
 
@@ -202,7 +202,7 @@ function sb_free_trial_state(array|object|null $user = null, bool $consume = fal
     $usedSeconds = (int) ($row['free_minutes_used'] ?? 0);
 
     $persistState = function (array $fields) use ($email): void {
-        if ($email === '' || !isset($GLOBALS['db']) || !isset($GLOBALS['db']->users)) {
+        if ($email === '' || !isset($GLOBALS['db'])) {
             return;
         }
 
