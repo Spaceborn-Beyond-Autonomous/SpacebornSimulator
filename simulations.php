@@ -25,6 +25,7 @@ foreach ($flights as $f) {
         'status'      => $f['status'] ?? 'completed',
         'date'        => $f['created_at'] ? (function($c){ $d = $c->toDateTime(); $d->setTimezone(new DateTimeZone('Asia/Kolkata')); return $d->format('M d, g:i A'); })($f['created_at']) : 'Unknown',
         'telemetry_url'=> $f['telemetry_url'] ?? null,
+        'telemetry_urls'=> isset($f['telemetry_urls']) ? (array)$f['telemetry_urls'] : [],
         'log'         => 'logs/' . ((string)$f['_id']) . '.zip'
     ];
 }
@@ -312,7 +313,7 @@ foreach ($flights as $f) {
               <?php if (!empty($telemetry_urls)): ?>
                   <?php if ($can_download_telemetry): ?>
                       <?php foreach($telemetry_urls as $idx => $telem): ?>
-                      <a class="btn-solid" href="<?= htmlspecialchars($telem['url'] ?? $telem) ?>" target="_blank" download>
+                      <a class="btn-solid" href="api/download_telemetry.php?id=<?= $s['id'] ?>&idx=<?= $idx ?>">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                           <polyline points="7 10 12 15 17 10"/>
