@@ -320,6 +320,12 @@ foreach ($flights as $f) {
                         </svg>
                         Telemetry (<?= htmlspecialchars($telem['time'] ?? 'Saved') ?>)
                       </a>
+                      <a class="btn-outline" href="simulator/replay.php?id=<?= $s['id'] ?>&idx=<?= $idx ?>" target="_blank" style="margin-left: 5px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        Replay (<?= htmlspecialchars($telem['time'] ?? 'Saved') ?>)
+                      </a>
                       <?php endforeach; ?>
                   <?php else: ?>
                       <a class="btn-solid" href="billing.php" style="background:var(--surface2);color:var(--text3);box-shadow:none;">
