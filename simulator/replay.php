@@ -6,6 +6,12 @@ $email = $_SESSION['email'] ?? '';
 $id = $_GET['id'] ?? '';
 $idx = isset($_GET['idx']) ? (int)$_GET['idx'] : 0;
 
+$user_row = $db->users->findOne(['email' => $email]);
+if (!$user_row || ((int)($user_row['sub_id'] ?? 0)) < 2) {
+    header('Location: ../billing.php');
+    exit;
+}
+
 try {
     $oid = new MongoDB\BSON\ObjectId($id);
     $flight = $db->flights->findOne(['_id' => $oid, 'email' => $email]);
