@@ -321,12 +321,7 @@ foreach ($flights as $f) {
                         </svg>
                         Telemetry (<?= htmlspecialchars($telem['time'] ?? 'Saved') ?>)
                       </a>
-                      <a class="btn-outline" href="simulator/replay.php?id=<?= $s['id'] ?>&idx=<?= $idx ?>" target="_blank" style="margin-left: 5px;">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                          <polygon points="5 3 19 12 5 21 5 3"/>
-                        </svg>
-                        Replay (<?= htmlspecialchars($telem['time'] ?? 'Saved') ?>)
-                      </a>
+
                       <?php endforeach; ?>
                   <?php else: ?>
                       <a class="btn-solid" href="billing.php" style="background:var(--surface2);color:var(--text3);box-shadow:none;">
@@ -334,7 +329,7 @@ foreach ($flights as $f) {
                           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                         </svg>
-                        PRO to Unlock Telemetry & Replay
+                        PRO to Unlock Telemetry
                       </a>
                   <?php endif; ?>
               <?php endif; ?>
