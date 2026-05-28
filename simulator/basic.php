@@ -1183,7 +1183,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 const PLAN = {
   tier: 'BASIC',
   sessionMinutes: <?= max(1, (int) ceil(($accessSeconds > 0 ? $accessSeconds : 3600) / 60)) ?>,
-  sessionSeconds: <?= $accessSeconds > 0 ? $accessSeconds : 3600 ?>,
+  sessionSeconds: <?= $accessSeconds > 0 ? min($accessSeconds, 3600) : 3600 ?>,
   planExpiresAt: <?= (int) $accessExpiresAt ?>,
   droneProfiles: ['racing5'],
   environments: ['field'],

@@ -1202,7 +1202,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 const PLAN = {
   tier: 'MAX',
   sessionMinutes: <?= max(1, (int) ceil(($accessSeconds > 0 ? $accessSeconds : 2592000) / 60)) ?>,
-  sessionSeconds: <?= $accessSeconds > 0 ? $accessSeconds : 2592000 ?>,
+  sessionSeconds: <?= $accessSeconds > 0 ? min($accessSeconds, 2592000) : 2592000 ?>,
   planExpiresAt: <?= (int) $accessExpiresAt ?>,
   droneProfiles: ['racing5','cinequad','micro2','explorer6'],
   environments: ['field','mountains','urban','indoor','desert','windy'],

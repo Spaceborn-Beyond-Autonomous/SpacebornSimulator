@@ -4324,12 +4324,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const statusEl = document.getElementById('sys-status');
     if (statusEl) statusEl.textContent = 'FETCHING TELEMETRY...';
 
-    // Stop normal physics completely
     if (typeof SIM !== 'undefined') {
         SIM._paused = true;
     }
     
-    // Attempt to hide simulator specific UI like cloud save button
     const csBtn = document.getElementById('cloud-save-btn');
     if (csBtn) csBtn.style.display = 'none';
 
@@ -4346,39 +4344,58 @@ window.addEventListener('DOMContentLoaded', () => {
           window.replayLog = log;
           window.replayIdx = 0;
           window.isReplaying = false;
+          window.replaySpeed = 1.0;
+          window._isScrubbing = false;
 
           const timeline = document.getElementById('replay-timeline');
           if (timeline) {
               timeline.max = log.length - 1;
               timeline.value = 0;
+              
+              timeline.addEventListener('mousedown', () => window._isScrubbing = true);
+              timeline.addEventListener('touchstart', () => window._isScrubbing = true);
+              
               timeline.addEventListener('input', e => {
                   window.replayIdx = parseInt(e.target.value);
                   applyReplayFrame(window.replayLog[window.replayIdx]);
               });
+              
+              timeline.addEventListener('mouseup', () => window._isScrubbing = false);
+              timeline.addEventListener('touchend', () => window._isScrubbing = false);
+              timeline.addEventListener('change', () => window._isScrubbing = false);
           }
 
-          // Convert play button into replay toggle
-          const playBtn = document.getElementById('pause-btn');
-          if (playBtn) {
-              // override click behavior
-              playBtn.onclick = (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.isReplaying = !window.isReplaying;
-                  playBtn.innerHTML = window.isReplaying ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
-                  playBtn.classList.toggle('paused', !window.isReplaying);
-                  if (window.isReplaying && window.replayIdx >= window.replayLog.length - 1) {
-                      window.replayIdx = 0; // restart if at end
-                  }
+          window.togglePlayback = () => {
+              window.isReplaying = !window.isReplaying;
+              const icon = document.getElementById('play-icon-bottom');
+              if (icon) icon.innerHTML = window.isReplaying ? '&#10074;&#10074;' : '&#9658;'; // Pause / Play icon
+              
+              if (window.isReplaying && window.replayIdx >= window.replayLog.length - 1) {
+                  window.replayIdx = 0;
+              }
+          };
+
+          window.setPlaybackSpeed = (val) => {
+              window.replaySpeed = parseFloat(val) || 1.0;
+          };
+
+          const oldBtn = document.getElementById('pause-btn');
+          if (oldBtn) {
+              oldBtn.onclick = (e) => {
+                  e.preventDefault(); e.stopPropagation();
+                  window.togglePlayback();
+                  oldBtn.innerHTML = window.isReplaying ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
+                  oldBtn.classList.toggle('paused', !window.isReplaying);
               };
-              playBtn.classList.add('paused');
+              oldBtn.classList.add('paused');
           }
 
-          // Apply first frame
           applyReplayFrame(window.replayLog[0]);
-
-          // Start loop
           requestAnimationFrame(replayLoop);
+          
+          // Initial state for play icon
+          const icon = document.getElementById('play-icon-bottom');
+          if (icon) icon.innerHTML = '&#9658;'; // Play
       })
       .catch(err => {
           console.error(err);
@@ -4389,19 +4406,27 @@ window.addEventListener('DOMContentLoaded', () => {
 let _lastReplayTick = 0;
 function replayLoop(now) {
     if (window.isReplaying && window.replayLog && window.replayLog.length > 0) {
-        if (now - _lastReplayTick > 16) { // ~60fps
+        const targetMs = 16.66 / (window.replaySpeed || 1.0);
+        
+        if (now - _lastReplayTick >= targetMs) {
             if (window.replayIdx < window.replayLog.length) {
                 applyReplayFrame(window.replayLog[window.replayIdx]);
-                const timeline = document.getElementById('replay-timeline');
-                if (timeline) timeline.value = window.replayIdx;
+                
+                if (!window._isScrubbing) {
+                    const timeline = document.getElementById('replay-timeline');
+                    if (timeline) timeline.value = window.replayIdx;
+                }
+                
                 window.replayIdx++;
                 _lastReplayTick = now;
             } else {
                 window.isReplaying = false;
-                const playBtn = document.getElementById('pause-btn');
-                if (playBtn) {
-                   playBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
-                   playBtn.classList.add('paused');
+                const icon = document.getElementById('play-icon-bottom');
+                if (icon) icon.innerHTML = '&#9658;';
+                const oldBtn = document.getElementById('pause-btn');
+                if (oldBtn) {
+                   oldBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
+                   oldBtn.classList.add('paused');
                 }
             }
         }
@@ -4467,6 +4492,16 @@ function applyReplayFrame(pt) {
             const ss = Math.floor(t % 60);
             clock.textContent = String(mm).padStart(2,'0') + ':' + String(ss).padStart(2,'0');
         }
+    }
+
+    const tt = document.getElementById('timeline-time-bottom');
+    if (tt && window.replayLog) {
+        const tCur = pt.t || 0;
+        const ptEnd = window.replayLog[window.replayLog.length - 1];
+        const tEnd = ptEnd ? (ptEnd.t || 0) : 0;
+        
+        const fmt = s => String(Math.floor(s/60)).padStart(2,'0') + ':' + String(Math.floor(s%60)).padStart(2,'0');
+        tt.textContent = fmt(tCur) + ' / ' + fmt(tEnd);
     }
 }
 </script>
