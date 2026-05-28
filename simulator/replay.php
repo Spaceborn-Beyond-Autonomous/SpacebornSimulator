@@ -4315,5 +4315,160 @@ function updateSavedTelemBtn() {
    }
 }
 </script>
+<!-- REPLAY LOGIC -->
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+    const telemUrl = <?= json_encode($telemetry_url) ?>;
+    if (!telemUrl) return;
+
+    const statusEl = document.getElementById('sys-status');
+    if (statusEl) statusEl.textContent = 'FETCHING TELEMETRY...';
+
+    // Stop normal physics completely
+    if (typeof SIM !== 'undefined') {
+        SIM._paused = true;
+    }
+    
+    // Attempt to hide simulator specific UI like cloud save button
+    const csBtn = document.getElementById('cloud-save-btn');
+    if (csBtn) csBtn.style.display = 'none';
+
+    fetch(telemUrl)
+      .then(res => res.json())
+      .then(data => {
+          const log = data.log || [];
+          if (!log.length) {
+              if (statusEl) statusEl.textContent = 'REPLAY DATA EMPTY';
+              return;
+          }
+          if (statusEl) statusEl.textContent = 'REPLAY READY';
+
+          window.replayLog = log;
+          window.replayIdx = 0;
+          window.isReplaying = false;
+
+          const timeline = document.getElementById('replay-timeline');
+          if (timeline) {
+              timeline.max = log.length - 1;
+              timeline.value = 0;
+              timeline.addEventListener('input', e => {
+                  window.replayIdx = parseInt(e.target.value);
+                  applyReplayFrame(window.replayLog[window.replayIdx]);
+              });
+          }
+
+          // Convert play button into replay toggle
+          const playBtn = document.getElementById('pause-btn');
+          if (playBtn) {
+              // override click behavior
+              playBtn.onclick = (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.isReplaying = !window.isReplaying;
+                  playBtn.innerHTML = window.isReplaying ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
+                  playBtn.classList.toggle('paused', !window.isReplaying);
+                  if (window.isReplaying && window.replayIdx >= window.replayLog.length - 1) {
+                      window.replayIdx = 0; // restart if at end
+                  }
+              };
+              playBtn.classList.add('paused');
+          }
+
+          // Apply first frame
+          applyReplayFrame(window.replayLog[0]);
+
+          // Start loop
+          requestAnimationFrame(replayLoop);
+      })
+      .catch(err => {
+          console.error(err);
+          if (statusEl) statusEl.textContent = 'ERROR LOADING REPLAY';
+      });
+});
+
+let _lastReplayTick = 0;
+function replayLoop(now) {
+    if (window.isReplaying && window.replayLog && window.replayLog.length > 0) {
+        if (now - _lastReplayTick > 16) { // ~60fps
+            if (window.replayIdx < window.replayLog.length) {
+                applyReplayFrame(window.replayLog[window.replayIdx]);
+                const timeline = document.getElementById('replay-timeline');
+                if (timeline) timeline.value = window.replayIdx;
+                window.replayIdx++;
+                _lastReplayTick = now;
+            } else {
+                window.isReplaying = false;
+                const playBtn = document.getElementById('pause-btn');
+                if (playBtn) {
+                   playBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
+                   playBtn.classList.add('paused');
+                }
+            }
+        }
+    }
+    requestAnimationFrame(replayLoop);
+}
+
+function applyReplayFrame(pt) {
+    if (!pt) return;
+    
+    if (typeof PHYS !== 'undefined') {
+        PHYS.pos.x = pt.px || 0; 
+        PHYS.pos.y = pt.py || 0; 
+        PHYS.pos.z = pt.pz || 0;
+        
+        PHYS.euler.pitch = pt.pitch || 0; 
+        PHYS.euler.yaw = pt.yaw || 0; 
+        PHYS.euler.roll = pt.roll || 0;
+        
+        if (typeof THREE !== 'undefined') {
+            PHYS.q.setFromEuler(new THREE.Euler(PHYS.euler.pitch, PHYS.euler.yaw, PHYS.euler.roll, 'YXZ'));
+        }
+        
+        PHYS.vel.x = pt.vx || 0; 
+        PHYS.vel.y = pt.vy || 0; 
+        PHYS.vel.z = pt.vz || 0;
+        
+        PHYS.motorCmd = [pt.m0||0, pt.m1||0, pt.m2||0, pt.m3||0];
+        PHYS.battVoltage = pt.batt || 0;
+        PHYS.currentDraw = pt.curr || 0;
+        PHYS.battPct = pt.batt_pct || 0;
+    }
+    
+    if (typeof _simClock !== 'undefined') {
+        _simClock.t = pt.t || 0;
+    }
+    
+    if (typeof State !== 'undefined') {
+        State.armed = pt.armed || false;
+    }
+    
+    if (typeof FC !== 'undefined') {
+        FC.mode = pt.mode || 'unknown';
+    }
+    
+    if (typeof THREE_ENV !== 'undefined') {
+        THREE_ENV.updateDrone(PHYS.pos, PHYS.q, PHYS.motorCmd);
+        THREE_ENV.render();
+    }
+    
+    if (typeof window._updateUI === 'function') {
+        window._updateUI();
+    } else {
+        const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        setEl('val-alt', (pt.pz||0).toFixed(1));
+        setEl('val-spd', Math.hypot(pt.vx||0, pt.vy||0, pt.vz||0).toFixed(1));
+        setEl('sys-status', 'REPLAY ' + (pt.t||0).toFixed(1) + 's');
+        
+        const clock = document.getElementById('flight-clock');
+        if (clock) {
+            const t = pt.t || 0;
+            const mm = Math.floor(t / 60);
+            const ss = Math.floor(t % 60);
+            clock.textContent = String(mm).padStart(2,'0') + ':' + String(ss).padStart(2,'0');
+        }
+    }
+}
+</script>
 </body>
 </html>
