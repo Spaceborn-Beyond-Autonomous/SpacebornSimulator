@@ -4318,8 +4318,8 @@ function updateSavedTelemBtn() {
 <!-- REPLAY LOGIC -->
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-    const telemUrl = <?= json_encode($telemetry_url) ?>;
-    if (!telemUrl) return;
+    // Use the download proxy to avoid CORS issues from direct R2 URL
+    const telemUrl = `../api/download_telemetry.php?id=<?= urlencode($id) ?>&idx=<?= $idx ?>`;
 
     const statusEl = document.getElementById('sys-status');
     if (statusEl) statusEl.textContent = 'FETCHING TELEMETRY...';
@@ -4330,6 +4330,28 @@ window.addEventListener('DOMContentLoaded', () => {
     
     const csBtn = document.getElementById('cloud-save-btn');
     if (csBtn) csBtn.style.display = 'none';
+
+    // Pre-define globals so buttons don't throw errors
+    window.replayLog = [];
+    window.replayIdx = 0;
+    window.isReplaying = false;
+    window.replaySpeed = 1.0;
+    window._isScrubbing = false;
+
+    window.togglePlayback = () => {
+        if (!window.replayLog || window.replayLog.length === 0) return;
+        window.isReplaying = !window.isReplaying;
+        const icon = document.getElementById('play-icon-bottom');
+        if (icon) icon.innerHTML = window.isReplaying ? '&#10074;&#10074;' : '&#9658;'; // Pause / Play icon
+        
+        if (window.isReplaying && window.replayIdx >= window.replayLog.length - 1) {
+            window.replayIdx = 0;
+        }
+    };
+
+    window.setPlaybackSpeed = (val) => {
+        window.replaySpeed = parseFloat(val) || 1.0;
+    };
 
     fetch(telemUrl)
       .then(res => res.json())
@@ -4342,10 +4364,6 @@ window.addEventListener('DOMContentLoaded', () => {
           if (statusEl) statusEl.textContent = 'REPLAY READY';
 
           window.replayLog = log;
-          window.replayIdx = 0;
-          window.isReplaying = false;
-          window.replaySpeed = 1.0;
-          window._isScrubbing = false;
 
           const timeline = document.getElementById('replay-timeline');
           if (timeline) {
