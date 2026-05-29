@@ -130,8 +130,26 @@ input,select{font-family:var(--fb)}
 #viewport{grid-row:2/3;grid-column:2/3;position:relative;overflow:hidden;background:#0a1020;min-width:0;min-height:0;width:100%;height:100%}
 #threeCanvas{position:absolute;top:0;left:0;right:0;bottom:0;width:100%!important;height:100%!important;display:block;background:#0a1628;z-index:0}
 
-
-
+/* Cinematic vignette */
+#viewport::after{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:radial-gradient(ellipse 80% 80% at 50% 50%, transparent 55%, rgba(4,8,20,0.72) 100%);
+}
+/* Lens glow rim */
+#viewport::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:4;
+  box-shadow:inset 0 0 40px rgba(10,25,80,0.45), inset 0 0 2px rgba(238,147,70,0.15);
+  border-radius:2px;
+}
+/* Film grain overlay */
+#vp-grain{
+  position:absolute;inset:0;z-index:5;pointer-events:none;
+  opacity:0.028;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:128px 128px;
+  animation:grain 0.12s steps(1) infinite;
+  mix-blend-mode:overlay;
+}
 @keyframes grain{
   0%{background-position:0 0}10%{background-position:-32px -48px}20%{background-position:64px 16px}
   30%{background-position:-16px 80px}40%{background-position:80px -32px}50%{background-position:-48px 48px}
@@ -480,13 +498,17 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       <button class="npill" id="nav-mission" onclick="showSection('mission')">Mission</button>
       <button class="npill" id="nav-debug" onclick="showSection('debug')">Debug</button>
     </div>
-    <div class="tsp"></div>
+        <div class="tsp"></div>
+    <button class="nbtn sm accent" id="cloud-save-btn" onclick="triggerCloudSave()" title="Save Telemetry to Cloudflare">☁️ Cloud Save</button>
+    <button class="nbtn sm accent" id="saved-telem-btn" style="display:none;background:var(--s);color:#fff;" onclick="openSavedTelemModal()">📥 Saved (0)</button>
+    <button class="nbtn sm danger" id="exit-sim-btn" onclick="exitSimulation()" title="Exit and Save Flight">🚪 Exit</button>
     <button class="nbtn sm" id="pause-btn" onclick="toggleSimPause()" title="Pause/Resume Simulation (Space)">⏸ Pause</button>
 
     <div class="top-stat"><div class="sdot" id="sys-dot"></div><span id="sys-status">READY</span></div>
     <span id="arm-status">DISARMED</span>
     <div class="top-stat"><span>⚡</span><span id="batt-top">100%</span></div>
     <div class="top-stat"><span>🌡</span><span id="fps-val">60fps</span></div>
+    <div class="top-stat"><span>🗺</span><span id="chunk-count">0 chunks</span></div>
     <div class="top-clock" id="top-clock">00:00</div>
   </div>
 
@@ -548,6 +570,14 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         <button class="fmode-btn" data-env="indoor" onclick="setEnvironment('indoor')"><span class="fm-icon">🏭</span>Warehouse</button>
         <button class="fmode-btn" data-env="desert" onclick="setEnvironment('desert')"><span class="fm-icon">🏜️</span>Desert</button>
         <button class="fmode-btn" data-env="windy" onclick="setEnvironment('windy')"><span class="fm-icon">🌪️</span>Windy</button>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;margin-top:4px">
+        <div class="nfield" style="flex:1">
+          <label style="font-size:10px;color:var(--txt4);white-space:nowrap">🌍 Seed</label>
+          <input type="number" id="world-seed-input" value="12345" min="0" max="999999" style="background:none;border:none;outline:none;font-size:12px;color:var(--txt);width:80px;font-family:var(--fh);font-weight:600">
+        </div>
+        <button class="nbtn sm primary" onclick="applyWorldSeed()">Apply</button>
+        <button class="nbtn sm" onclick="randomWorldSeed()">🎲</button>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px">
         <div class="nslider-wrap">
@@ -1244,12 +1274,65 @@ const THREE_ENV = (() => {
   let _waypointMarkers = [];
   let _propSpinRate = [0,0,0,0];
 
-  // Chunk system
-  const CHUNK_SIZE = 80;
-  const CHUNK_SEGS = 28;
-  const RENDER_DIST = 2; // chunks in each direction
-  let _chunks = new Map(); // key -> {mesh, veg, rocks, x, z}
-  let _lastChunkX = null, _lastChunkZ = null;
+  // ── Chunk streaming constants ──────────────────────────────────────
+  const CHUNK_SIZE   = 80;
+  const CHUNK_SEGS   = 24;   // full-detail segment count (reduced for perf)
+  const CHUNK_SEGS_L = 8;    // low-detail segment count (outer ring)
+  const RENDER_DIST  = 3;    // full-detail ring radius (chunks)
+  const LOD_DIST     = 6;    // low-detail ring radius (chunks)
+  let _chunks        = new Map(); // key -> chunkData
+  let _lastChunkX    = null, _lastChunkZ = null;
+  // Async load queue — process at most N chunks per render frame
+  let _loadQueue     = [];
+  const MAX_LOADS_PER_FRAME = 1; // 1 full chunk/frame = smooth 60fps
+
+  // ── Floating-origin render space ───────────────────────────────────
+  // Physics is in world space (true JS doubles, unlimited range).
+  // Three.js scene is rebased so the camera is always near origin,
+  // preventing float32 precision loss at large coordinates.
+  const REBASE_THRESHOLD = CHUNK_SIZE * 4;  // rebase when camera drifts >320m from render origin
+  let _renderOriginX = 0, _renderOriginZ = 0; // render origin in world coords
+  let _needsFullRebase = false;
+
+  // Convert world XZ to render-space XZ
+  function _toRender(wx, wz) {
+    return { x: wx - _renderOriginX, z: wz - _renderOriginZ };
+  }
+
+  // Rebase: shift all scene objects so camera stays near render origin
+  function _rebaseRenderOrigin() {
+    const p = PHYS.pos;
+    const newOX = Math.round(p.x / CHUNK_SIZE) * CHUNK_SIZE;
+    const newOZ = Math.round(p.z / CHUNK_SIZE) * CHUNK_SIZE;
+    const dx = newOX - _renderOriginX;
+    const dz = newOZ - _renderOriginZ;
+    if (Math.abs(dx) < 1 && Math.abs(dz) < 1) return;
+
+    // Shift every chunk mesh in the scene by -delta
+    for (const [, cd] of _chunks) {
+      ['mesh','veg','flowers','grass','rocks'].forEach(k => {
+        if (cd[k]) {
+          cd[k].position.x -= dx;
+          cd[k].position.z -= dz;
+        }
+      });
+    }
+    // Shift waypoint markers
+    if (_waypointMarkers) {
+      _waypointMarkers.forEach(m => {
+        m.position.x -= dx;
+        m.position.z -= dz;
+      });
+    }
+    // Shift drone trail
+    if (_trailLine) {
+      _trailLine.position.x -= dx;
+      _trailLine.position.z -= dz;
+    }
+    _renderOriginX = newOX;
+    _renderOriginZ = newOZ;
+    _needsFullRebase = false;
+  }
 
   // Mouse orbit
   let _mouse = { down:false, lx:0, ly:0 };
@@ -1258,32 +1341,65 @@ const THREE_ENV = (() => {
   let _bloomRT, _bloomScene, _bloomCamera, _bloomQuad;
   let _mainRT;
 
-  // ── Terrain heightmap (chunk-aware) ──────────────────────────────
+  // ── Multi-biome terrain heightmap ────────────────────────────────
+  // Uses domain-warped FBM + continent mask to blend biomes seamlessly.
+  // The same (x,z) always returns the same height for a given seed.
+  // ─────────────────────────────────────────────────────────────────
+  // Terrain architecture (for procedural/infinite envs):
+  //   continent(x,z) ∈ [0,1]  — low-frequency "where is high ground?"
+  //   erosion(x,z)   ∈ [0,1]  — medium-freq ridges vs smooth slopes
+  //   detail(x,z)    ∈ [-1,1] — high-freq surface texture
+  //   h = continent^2 * 80 + erosion * 20 + detail * 3
+  // ─────────────────────────────────────────────────────────────────
+
+  // Cache last result per env to avoid recalculating same point twice
+  let _thCache = null;
   function terrainHeight(x, z, envName) {
     const env = envName || _envName;
-    switch(env) {
-      case 'mountains': {
-        const h = Noise.fbm(x*0.012, 0, z*0.012, 6, 0.55, 2.1) * 60
-                + Noise.fbm(x*0.04,  0, z*0.04,  3, 0.45, 2.0) * 12
-                + Noise.fbm(x*0.12,  0, z*0.12,  2, 0.4,  2.0) * 4;
-        return Math.max(0, h);
-      }
-      case 'desert': {
-        const dune = Noise.fbm(x*0.025, 0.3, z*0.025, 4, 0.45, 2.0) * 18
-                   + Noise.fbm(x*0.08,  0.7, z*0.08,  3, 0.4, 2.0) * 5;
-        return Math.max(0, dune);
-      }
-      case 'urban': return 0;
-      case 'indoor': return 0;
-      case 'field':
-      case 'windy':
-      default: {
-        return Math.max(0,
-          Noise.fbm(x*0.015, 0.5, z*0.015, 4, 0.5, 2.0) * 8
-        + Noise.fbm(x*0.06,  1.2, z*0.06,  3, 0.4, 2.0) * 2.5
-        + Noise.fbm(x*0.15,  2.3, z*0.15,  2, 0.35,2.0) * 0.8);
-      }
+
+    // Flat environments
+    if (env === 'urban' || env === 'indoor') return 0;
+
+    // Domain-warped low-frequency continent mask (very smooth, no sharp edges)
+    const cx  = x * 0.004, cz = z * 0.004;
+    const wx  = Noise.n(cx + 3.7, 0.1, cz + 1.3) * 18;
+    const wz  = Noise.n(cx + 8.2, 0.8, cz + 6.1) * 18;
+    const continent = Math.max(0, Noise.fbm(cx + wx*0.004, 0, cz + wz*0.004, 4, 0.55, 2.0) * 0.5 + 0.5);
+
+    if (env === 'field' || env === 'windy') {
+      // Gentle rolling hills — continent kept low, heavy smoothing
+      const base = Math.pow(continent * 0.55, 1.6) * 14;
+      const mid  = Noise.fbm(x*0.022, 1.2, z*0.022, 4, 0.48, 2.0) * 6;
+      const fine = Noise.n(x*0.14, 2.3, z*0.14) * 1.2;
+      return Math.max(0, base + mid + fine);
     }
+
+    if (env === 'desert') {
+      // Dune ridges: elongated in one direction + flat inter-dune pans
+      const duneDir = x * 0.018 + z * 0.006; // asymmetric dune axis
+      const dune    = Math.pow(Math.abs(Noise.n(duneDir, 0.3, z*0.014)), 0.7) * 20;
+      const pan     = Math.max(0, Noise.fbm(x*0.009, 0.8, z*0.009, 3, 0.45, 2.0)) * 8;
+      const fine    = Noise.n(x*0.12, 1.1, z*0.12) * 1.5;
+      return Math.max(0, dune + pan + fine);
+    }
+
+    if (env === 'mountains') {
+      // Sharp, varied peaks using ridged noise + domain warp
+      // Ridged noise: 1 - |fbm|  → inverted valleys, sharp ridges
+      const raw   = Noise.warpedFbm(x, z, 5, 0.55, 2.1, 40);
+      const ridge = Math.pow(Math.max(0, continent * 0.8 + raw * 0.5 + 0.1), 1.5);
+      const peak  = ridge * 80;
+      // Erosion detail layered on top
+      const erode = Noise.fbm(x*0.05, 0.5, z*0.05, 3, 0.42, 2.0) * 10 * continent;
+      const scree = Noise.n(x*0.18, 2.1, z*0.18) * 2.5;
+      return Math.max(0, peak + erode + scree);
+    }
+
+    // Default / generic procedural world
+    const raw    = Noise.warpedFbm(x, z, 5, 0.52, 2.0, 30);
+    const height = Math.pow(Math.max(0, continent * 0.7 + raw * 0.4 + 0.15), 1.4) * 50;
+    const detail = Noise.fbm(x*0.08, 1.5, z*0.08, 3, 0.4, 2.0) * 5;
+    return Math.max(0, height + detail);
   }
 
   // ── Safe spawn finder ─────────────────────────────────────────────
@@ -1319,48 +1435,80 @@ const THREE_ENV = (() => {
   }
 
   // ── Terrain colour helper ──────────────────────────────────────────
+  // Layered colour with micro-variation and slope-based darkening
   function terrainColor(x, z, h, envName) {
     const env = envName || _envName;
     let r, g, b;
+
+    // Shared micro-variation (same for all envs)
+    const v1 = Noise.n(x*0.11, 0.3, z*0.11) * 0.07;
+    const v2 = Noise.n(x*0.32, 1.4, z*0.32) * 0.03;
+    const nv = v1 + v2; // net variation
+
     if (env === 'desert') {
-      const v = Noise.n(x*0.18, 0, z*0.18)*0.06;
-      r = 0.80 + h*0.005 + v; g = 0.65 + h*0.003 + v; b = 0.32 + v;
+      const ripple = Noise.n(x*0.35, 0.0, z*0.22) * 0.05;
+      r = 0.82 + nv + ripple;
+      g = 0.66 + nv*0.7;
+      b = 0.30 + nv*0.3;
     } else if (env === 'mountains') {
-      // h < 4  : valley floor — green grass
-      // h < 10 : lower slope — quick transition from grass to rock
-      // h < 40 : mountain body — rocky grey-brown (NOT sandy)
-      // h < 60 : upper rock — cooler grey scree
-      // else   : snow cap
-      if      (h < 4)  { r=0.30; g=0.50; b=0.18; }
-      else if (h < 10) { const t=(h-4)/6;   r=0.30+t*0.22; g=0.50-t*0.14; b=0.18+t*0.10; }
-      else if (h < 40) { const t=(h-10)/30; r=0.52+t*0.14; g=0.36+t*0.10; b=0.28+t*0.14; }
-      else if (h < 60) { const t=(h-40)/20; r=0.66+t*0.16; g=0.46+t*0.20; b=0.42+t*0.24; }
-      else             { r=0.90; g=0.92; b=0.95; }
+      // Smooth height-based blend: grass → rock → scree → snow
+      if (h < 3) {
+        r=0.28+nv; g=0.52+nv*0.6; b=0.16+nv*0.3;
+      } else if (h < 12) {
+        const t=(h-3)/9;
+        r=0.28+t*0.24+nv; g=0.52-t*0.16+nv*0.3; b=0.16+t*0.12+nv*0.2;
+      } else if (h < 42) {
+        const t=(h-12)/30;
+        r=0.52+t*0.16+nv*0.5; g=0.36+t*0.08+nv*0.3; b=0.28+t*0.14+nv*0.2;
+      } else if (h < 65) {
+        const t=(h-42)/23;
+        r=0.68+t*0.18+nv*0.3; g=0.44+t*0.22+nv*0.2; b=0.42+t*0.26+nv*0.2;
+      } else {
+        // Snow — slight blue tint in shadows
+        r=0.90+nv*0.1; g=0.93+nv*0.08; b=0.98+nv*0.05;
+      }
     } else if (env === 'urban') {
-      r=0.36; g=0.36; b=0.36;
+      r=0.34+nv; g=0.34+nv; b=0.34+nv;
     } else {
-      // Lush field — variation between meadow greens
-      const v  = Noise.n(x*0.12, 0, z*0.12)*0.10;
-      const v2 = Noise.n(x*0.35, 1, z*0.35)*0.04;
-      const moisture = Noise.fbm(x*0.02, 3, z*0.02, 2, 0.5, 2)*0.5+0.5;
-      r = 0.18 + v + v2 + h*0.008 - moisture*0.04;
-      g = 0.48 + h*0.015 + v*0.5 + moisture*0.08;
-      b = 0.14 + v2 - moisture*0.02;
+      // Field / procedural — moisture-driven greens
+      const moisture = Noise.fbm(x*0.018, 3.3, z*0.018, 2, 0.5, 2) * 0.5 + 0.5;
+      r = 0.16 + nv - moisture*0.04 + h*0.006;
+      g = 0.46 + nv*0.5 + moisture*0.10 + h*0.012;
+      b = 0.12 + nv*0.3 - moisture*0.02;
     }
     return [Math.min(1,Math.max(0,r)), Math.min(1,Math.max(0,g)), Math.min(1,Math.max(0,b))];
   }
 
+
+  // ── Per-chunk seeded RNG — identical output every time a chunk is rebuilt ──
+  // Uses a simple xorshift32 so each (cx,cz) produces the same vegetation layout.
+  function _chunkRng(cx, cz) {
+    let s = (cx * 73856093) ^ (cz * 19349663);
+    s = s ^ (s >>> 16); s = (s * 0x45d9f3b) & 0xffffffff;
+    s = s ^ (s >>> 16);
+    return function() {
+      s ^= s << 13; s ^= s >> 17; s ^= s << 5;
+      return ((s >>> 0) / 0xffffffff);
+    };
+  }
+
   // ── Single chunk terrain mesh ──────────────────────────────────────
-  function buildChunkMesh(cx, cz, envName) {
-    const geo = new THREE.PlaneGeometry(CHUNK_SIZE, CHUNK_SIZE, CHUNK_SEGS, CHUNK_SEGS);
+  function buildChunkMesh(cx, cz, envName, segs) {
+    const s = segs || CHUNK_SEGS;
+    const geo = new THREE.PlaneGeometry(CHUNK_SIZE, CHUNK_SIZE, s, s);
     geo.rotateX(-Math.PI/2);
     const pos = geo.attributes.position;
     const colors = [];
+    // World-space origin of this chunk (used for terrain eval only)
     const worldOffX = cx * CHUNK_SIZE;
     const worldOffZ = cz * CHUNK_SIZE;
     for (let i = 0; i < pos.count; i++) {
-      const wx = pos.getX(i) + worldOffX;
-      const wz = pos.getZ(i) + worldOffZ;
+      // Vertex is chunk-local (PlaneGeometry centred at 0)
+      const localX = pos.getX(i);
+      const localZ = pos.getZ(i);
+      // Evaluate terrain in true world coords (double precision JS numbers)
+      const wx = localX + worldOffX;
+      const wz = localZ + worldOffZ;
       const h = terrainHeight(wx, wz, envName);
       pos.setY(i, h);
       const [r,g,b] = terrainColor(wx, wz, h, envName);
@@ -1370,7 +1518,8 @@ const THREE_ENV = (() => {
     geo.computeVertexNormals();
     const mat = new THREE.MeshLambertMaterial({ vertexColors: true });
     const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(worldOffX, 0, worldOffZ);
+    // Position set by _buildChunk in render space — leave at zero here
+    mesh.position.set(0, 0, 0);
     mesh.receiveShadow = true;
     mesh.name = 'terrain_chunk';
     return mesh;
@@ -1378,7 +1527,8 @@ const THREE_ENV = (() => {
 
   // ── Grass blade system (per-chunk) ────────────────────────────────
   let _grassTime = 0;
-  function buildGrassBlades(cx, cz, envName) {
+  function buildGrassBlades(cx, cz, envName){
+    const rng = _chunkRng(cx, cz);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert') return null;
     const worldOffX = cx * CHUNK_SIZE;
@@ -1388,18 +1538,18 @@ const THREE_ENV = (() => {
     let vi = 0;
     // Each blade: 3 quads (6 verts)
     for (let i = 0; i < count; i++) {
-      const lx = (Math.random()-0.5)*CHUNK_SIZE;
-      const lz = (Math.random()-0.5)*CHUNK_SIZE;
+      const lx = (rng()-0.5)*CHUNK_SIZE;
+      const lz = (rng()-0.5)*CHUNK_SIZE;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, wz, env);
-      const h = 0.18 + Math.random()*0.22;
-      const ang = Math.random()*Math.PI*2;
+      const hy = terrainHeight(wx, lz, env);
+      const h = 0.18 + rng()*0.22;
+      const ang = rng()*Math.PI*2;
       const bx = Math.cos(ang)*0.04, bz = Math.sin(ang)*0.04;
       // color variation
-      const gv = 0.3 + Math.random()*0.3;
+      const gv = 0.3 + rng()*0.3;
       const rc = 0.1+gv*0.3, gc = 0.4+gv*0.35, bc = 0.05+gv*0.1;
       // base L
-      positions.push(wx-bx, hy, wz-bz, wx+bx, hy, wz+bz, wx, hy+h, wz);
+      positions.push(lx-bx, hy, wz-bz, wx+bx, hy, wz+bz, wx, hy+h, lz);
       colors2.push(rc*0.7,gc*0.7,bc*0.7, rc*0.7,gc*0.7,bc*0.7, rc,gc,bc);
       indices2.push(vi,vi+1,vi+2);
       vi += 3;
@@ -1415,7 +1565,8 @@ const THREE_ENV = (() => {
   }
 
   // ── Flowers ────────────────────────────────────────────────────────
-  function buildFlowers(cx, cz, envName) {
+  function buildFlowers(cx, cz, envName){
+    const rng = _chunkRng(cx + 1000, cz + 2000);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert' || env === 'mountains') return null;
     const worldOffX = cx * CHUNK_SIZE;
@@ -1423,21 +1574,21 @@ const THREE_ENV = (() => {
     const group = new THREE.Group();
     const flowerColors = [0xff4466, 0xffcc22, 0xff8844, 0xee66ff, 0xffffff, 0x66ddff];
     const stemMat = new THREE.MeshLambertMaterial({ color: 0x2d7a1a });
-    const count = 30 + Math.floor(Math.random()*40);
+    const count = 30 + Math.floor(rng()*40);
     for (let i = 0; i < count; i++) {
-      const lx = (Math.random()-0.5)*CHUNK_SIZE;
-      const lz = (Math.random()-0.5)*CHUNK_SIZE;
+      const lx = (rng()-0.5)*CHUNK_SIZE;
+      const lz = (rng()-0.5)*CHUNK_SIZE;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, wz, env);
-      const h = 0.14 + Math.random()*0.12;
+      const hy = terrainHeight(wx, lz, env);
+      const h = 0.14 + rng()*0.12;
       // stem
       const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.008,h,4), stemMat);
-      stem.position.set(wx, hy+h/2, wz);
+      stem.position.set(lx, hy+h/2, lz);
       group.add(stem);
       // petals
-      const col = flowerColors[Math.floor(Math.random()*flowerColors.length)];
+      const col = flowerColors[Math.floor(rng()*flowerColors.length)];
       const petMat = new THREE.MeshLambertMaterial({ color: col, side: THREE.DoubleSide });
-      const pCount = 4 + Math.floor(Math.random()*3);
+      const pCount = 4 + Math.floor(rng()*3);
       for (let p = 0; p < pCount; p++) {
         const pa = (p/pCount)*Math.PI*2;
         const pet = new THREE.Mesh(new THREE.PlaneGeometry(0.05,0.04), petMat);
@@ -1448,14 +1599,15 @@ const THREE_ENV = (() => {
       // center
       const cMat = new THREE.MeshBasicMaterial({ color: 0xffee00 });
       const cen = new THREE.Mesh(new THREE.SphereGeometry(0.018,6,4), cMat);
-      cen.position.set(wx, hy+h+0.018, wz);
+      cen.position.set(lx, hy+h+0.018, lz);
       group.add(cen);
     }
     return group;
   }
 
   // ── Rocks ──────────────────────────────────────────────────────────
-  function buildRocks(cx, cz, envName) {
+  function buildRocks(cx, cz, envName){
+    const rng = _chunkRng(cx + 5000, cz + 6000);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor') return null;
     const worldOffX = cx * CHUNK_SIZE;
@@ -1464,12 +1616,12 @@ const THREE_ENV = (() => {
     const count = env === 'mountains' ? 20 : env === 'desert' ? 12 : 8;
     const rockColors = [0x888880, 0x706a60, 0x999288, 0x7a7268];
     for (let i = 0; i < count; i++) {
-      const lx = (Math.random()-0.5)*CHUNK_SIZE;
-      const lz = (Math.random()-0.5)*CHUNK_SIZE;
+      const lx = (rng()-0.5)*CHUNK_SIZE;
+      const lz = (rng()-0.5)*CHUNK_SIZE;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, wz, env);
-      const scale = 0.2 + Math.random()*0.8;
-      const col = rockColors[Math.floor(Math.random()*rockColors.length)];
+      const hy = terrainHeight(wx, lz, env);
+      const scale = 0.2 + rng()*0.8;
+      const col = rockColors[Math.floor(rng()*rockColors.length)];
       const mat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.9, metalness: 0.05 });
       // Irregular rock shape from scaled sphere
       const geo = new THREE.SphereGeometry(scale, 6, 5);
@@ -1477,12 +1629,12 @@ const THREE_ENV = (() => {
       for (let v = 0; v < verts.count; v++) {
         const nx = verts.getX(v), ny = verts.getY(v), nz = verts.getZ(v);
         const bump = 1 + Noise.n(nx*2+wx*0.1, ny*2, nz*2+wz*0.1)*0.35;
-        verts.setXYZ(v, nx*bump, ny*bump*(0.5+Math.random()*0.4), nz*bump);
+        verts.setXYZ(v, nx*bump, ny*bump*(0.5+rng()*0.4), nz*bump);
       }
       geo.computeVertexNormals();
       const rock = new THREE.Mesh(geo, mat);
-      rock.position.set(wx, hy + scale*0.35, wz);
-      rock.rotation.y = Math.random()*Math.PI*2;
+      rock.position.set(lx, hy + scale*0.35, lz);
+      rock.rotation.y = rng()*Math.PI*2;
       rock.castShadow = true; rock.receiveShadow = true;
       group.add(rock);
     }
@@ -1490,7 +1642,8 @@ const THREE_ENV = (() => {
   }
 
   // ── Trees (lush, varied) ──────────────────────────────────────────
-  function buildVegetation(cx, cz, envName) {
+  function buildVegetation(cx, cz, envName){
+    const rng = _chunkRng(cx + 3000, cz + 4000);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert') return null;
     const worldOffX = cx * CHUNK_SIZE;
@@ -1503,66 +1656,66 @@ const THREE_ENV = (() => {
       : [0x3a8a2e, 0x2e7a24, 0x4a9a3c, 0x338030, 0x28701e];
     const count = env === 'mountains' ? 12 : 20;
     for (let i = 0; i < count; i++) {
-      const lx = (Math.random()-0.5)*CHUNK_SIZE*0.85;
-      const lz = (Math.random()-0.5)*CHUNK_SIZE*0.85;
+      const lx = (rng()-0.5)*CHUNK_SIZE*0.85;
+      const lz = (rng()-0.5)*CHUNK_SIZE*0.85;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, wz, env);
+      const hy = terrainHeight(wx, lz, env);
       if (env === 'mountains' && hy > 30) continue;
-      const treeType = Math.floor(Math.random()*3);
-      const leafCol = leafColors[Math.floor(Math.random()*leafColors.length)];
+      const treeType = Math.floor(rng()*3);
+      const leafCol = leafColors[Math.floor(rng()*leafColors.length)];
       const leafMat = new THREE.MeshStandardMaterial({ color: leafCol, roughness: 0.85, metalness: 0 });
       if (treeType === 0) {
         // Pine / conifer
-        const tH = 3 + Math.random()*4;
+        const tH = 3 + rng()*4;
         const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.18, tH, 6), trunkMat.clone());
-        trunk.position.set(wx, hy + tH/2, wz);
+        trunk.position.set(lx, hy + tH/2, lz);
         trunk.castShadow = true;
         group.add(trunk);
         // Stacked cones
-        const tiers = 3 + Math.floor(Math.random()*2);
+        const tiers = 3 + Math.floor(rng()*2);
         for (let t = 0; t < tiers; t++) {
           const ty = hy + tH*0.4 + t*(tH*0.22);
-          const r = 1.6 - t*0.3 + Math.random()*0.3;
+          const r = 1.6 - t*0.3 + rng()*0.3;
           const cone = new THREE.Mesh(new THREE.ConeGeometry(r, tH*0.35, 7), leafMat.clone());
-          cone.position.set(wx, ty, wz);
+          cone.position.set(lx, ty, lz);
           cone.castShadow = true;
           group.add(cone);
         }
       } else if (treeType === 1) {
         // Broad deciduous
-        const tH = 2.5 + Math.random()*3;
+        const tH = 2.5 + rng()*3;
         const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.22, tH, 7), darkTrunk.clone());
-        trunk.position.set(wx, hy + tH/2, wz);
+        trunk.position.set(lx, hy + tH/2, lz);
         trunk.castShadow = true;
         group.add(trunk);
         // Multi-sphere canopy
-        const cr = 1.8 + Math.random()*1.4;
+        const cr = 1.8 + rng()*1.4;
         const canopy = new THREE.Mesh(new THREE.SphereGeometry(cr, 8, 7), leafMat.clone());
-        canopy.position.set(wx, hy + tH + cr*0.6, wz);
-        canopy.scale.y = 0.72 + Math.random()*0.2;
+        canopy.position.set(lx, hy + tH + cr*0.6, lz);
+        canopy.scale.y = 0.72 + rng()*0.2;
         canopy.castShadow = true;
         group.add(canopy);
         // Extra lobes
         for (let l = 0; l < 3; l++) {
-          const la = (l/3)*Math.PI*2 + Math.random()*0.8;
+          const la = (l/3)*Math.PI*2 + rng()*0.8;
           const lr = cr*0.55;
           const lobe = new THREE.Mesh(new THREE.SphereGeometry(lr, 6, 5), leafMat.clone());
-          lobe.position.set(wx+Math.cos(la)*cr*0.55, hy+tH+cr*0.3+Math.random()*0.5, wz+Math.sin(la)*cr*0.55);
+          lobe.position.set(wx+Math.cos(la)*cr*0.55, hy+tH+cr*0.3+rng()*0.5, wz+Math.sin(la)*cr*0.55);
           lobe.castShadow = true;
           group.add(lobe);
         }
       } else {
         // Tall slender birch
-        const tH = 4 + Math.random()*5;
+        const tH = 4 + rng()*5;
         const birchMat = new THREE.MeshStandardMaterial({ color: 0xddd8cc, roughness: 0.8 });
         const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.14, tH, 6), birchMat);
-        trunk.position.set(wx, hy + tH/2, wz);
+        trunk.position.set(lx, hy + tH/2, lz);
         trunk.castShadow = true;
         group.add(trunk);
         const brightLeaf = new THREE.MeshStandardMaterial({ color: 0x8ab840, roughness: 0.8 });
-        const cr = 1.2 + Math.random()*0.8;
+        const cr = 1.2 + rng()*0.8;
         const canopy = new THREE.Mesh(new THREE.SphereGeometry(cr, 7, 6), brightLeaf);
-        canopy.position.set(wx, hy + tH + cr*0.5, wz);
+        canopy.position.set(lx, hy + tH + cr*0.5, lz);
         canopy.scale.y = 1.1;
         canopy.castShadow = true;
         group.add(canopy);
@@ -2005,19 +2158,24 @@ const THREE_ENV = (() => {
 
   function updateTrail() {
     const p = PHYS.pos;
-    const last = _trailPoints[_trailPoints.length-1] || {x:9999,y:9999,z:9999};
+    const last = _trailPoints[_trailPoints.length-1] || {x:p.x+999,y:p.y,z:p.z+999};
     if (V3.len(V3.sub(p, last)) > 0.3) {
+      // Store world coords (doubles) in trail array — convert to render space at draw time
       _trailPoints.push({ x:p.x, y:p.y, z:p.z });
-      if (_trailPoints.length > 500) _trailPoints.shift();
+      if (_trailPoints.length > 600) _trailPoints.shift();
     }
+    // Write trail buffer in render space to avoid float32 precision loss
     const buf = _trailLine.geometry.attributes.position.array;
+    const rox = _renderOriginX, roz = _renderOriginZ;
     for (let i = 0; i < _trailPoints.length; i++) {
-      buf[i*3  ] = _trailPoints[i].x;
+      buf[i*3  ] = _trailPoints[i].x - rox;
       buf[i*3+1] = _trailPoints[i].y;
-      buf[i*3+2] = _trailPoints[i].z;
+      buf[i*3+2] = _trailPoints[i].z - roz;
     }
     _trailLine.geometry.setDrawRange(0, _trailPoints.length);
     _trailLine.geometry.attributes.position.needsUpdate = true;
+    // Trail mesh stays at origin (render-space coords baked into vertices)
+    _trailLine.position.set(0, 0, 0);
   }
 
   // ── Waypoint markers ─────────────────────────────────────────────
@@ -2083,62 +2241,127 @@ const THREE_ENV = (() => {
   // ── Chunk management ─────────────────────────────────────────────
   function _chunkKey(cx, cz) { return `${cx},${cz}`; }
 
-  function _loadChunk(cx, cz) {
-    const key = _chunkKey(cx, cz);
-    if (_chunks.has(key)) return;
-    const chunkData = {};
-    // Terrain
-    const mesh = buildChunkMesh(cx, cz, _envName);
-    scene.add(mesh);
-    chunkData.mesh = mesh;
-    // Vegetation
-    if (_envName !== 'indoor') {
-      const veg = buildVegetation(cx, cz, _envName);
-      if (veg) { scene.add(veg); chunkData.veg = veg; }
-      const flowers = buildFlowers(cx, cz, _envName);
-      if (flowers) { scene.add(flowers); chunkData.flowers = flowers; }
-      const grass = buildGrassBlades(cx, cz, _envName);
-      if (grass)   { scene.add(grass);   chunkData.grass = grass; }
-      const rocks = buildRocks(cx, cz, _envName);
-      if (rocks)   { scene.add(rocks);   chunkData.rocks = rocks; }
-    }
-    chunkData.cx = cx; chunkData.cz = cz;
-    _chunks.set(key, chunkData);
-  }
-
-  function _unloadChunk(key) {
-    const cd = _chunks.get(key);
-    if (!cd) return;
+  // ── Dispose all Three objects in a chunk ──────────────────────────
+  function _disposeChunkData(cd) {
     ['mesh','veg','flowers','grass','rocks'].forEach(k => {
       if (!cd[k]) return;
       scene.remove(cd[k]);
       cd[k].traverse(o => {
         if (o.geometry) o.geometry.dispose();
         if (o.material) {
-          if (Array.isArray(o.material)) o.material.forEach(m=>m.dispose());
+          if (Array.isArray(o.material)) o.material.forEach(m => m.dispose());
           else o.material.dispose();
         }
       });
     });
+  }
+
+  // ── Build one chunk and place it in render space ──────────────────
+  function _buildChunk(cx, cz, lod) {
+    const key = _chunkKey(cx, cz);
+    const existing = _chunks.get(key);
+    if (existing) {
+      if (existing.lod <= lod) return;
+      _disposeChunkData(existing);
+      _chunks.delete(key);
+    }
+    const segs = lod === 0 ? CHUNK_SEGS : CHUNK_SEGS_L;
+    const chunkData = { cx, cz, lod };
+
+    // World-space origin of this chunk
+    const worldX = cx * CHUNK_SIZE;
+    const worldZ = cz * CHUNK_SIZE;
+    // Render-space offset (kept small regardless of world position)
+    const renderX = worldX - _renderOriginX;
+    const renderZ = worldZ - _renderOriginZ;
+
+    chunkData.mesh = buildChunkMesh(cx, cz, _envName, segs);
+    // buildChunkMesh places geometry relative to its own origin,
+    // then we position the mesh group in render space
+    chunkData.mesh.position.set(renderX, 0, renderZ);
+    scene.add(chunkData.mesh);
+
+    // Vegetation only on full-detail inner chunks
+    if (lod === 0 && _envName !== 'indoor' && _envName !== 'urban') {
+      const veg = buildVegetation(cx, cz, _envName);
+      if (veg)     { veg.position.set(renderX, 0, renderZ);     scene.add(veg);     chunkData.veg     = veg;     }
+      const flowers = buildFlowers(cx, cz, _envName);
+      if (flowers) { flowers.position.set(renderX, 0, renderZ); scene.add(flowers); chunkData.flowers = flowers; }
+      const grass = buildGrassBlades(cx, cz, _envName);
+      if (grass)   { grass.position.set(renderX, 0, renderZ);   scene.add(grass);   chunkData.grass   = grass;   }
+      const rocks = buildRocks(cx, cz, _envName);
+      if (rocks)   { rocks.position.set(renderX, 0, renderZ);   scene.add(rocks);   chunkData.rocks   = rocks;   }
+    }
+    _chunks.set(key, chunkData);
+  }
+
+  function _unloadChunk(key) {
+    const cd = _chunks.get(key);
+    if (!cd) return;
+    _disposeChunkData(cd);
     _chunks.delete(key);
   }
 
+  // ── Time-budgeted chunk drain — max 6ms per frame ────────────────
+  const CHUNK_BUDGET_MS = 6;
+  function _drainLoadQueue() {
+    const t0 = performance.now();
+    while (_loadQueue.length > 0) {
+      if (performance.now() - t0 > CHUNK_BUDGET_MS) break; // time budget exhausted
+      const { cx, cz, lod } = _loadQueue.shift();
+      const key = _chunkKey(cx, cz);
+      const ex  = _chunks.get(key);
+      if (!ex || ex.lod > lod) {
+        _buildChunk(cx, cz, lod);
+      }
+    }
+  }
+
+  // ── Called every render frame: determine which chunks are needed ──
   function _updateChunks() {
     const p = PHYS.pos;
     const cx = Math.round(p.x / CHUNK_SIZE);
     const cz = Math.round(p.z / CHUNK_SIZE);
+
+    // Always drain queue first (spread build cost over frames)
+    _drainLoadQueue();
+
+    // Only recompute needed set when drone crosses a chunk boundary
     if (cx === _lastChunkX && cz === _lastChunkZ) return;
     _lastChunkX = cx; _lastChunkZ = cz;
-    // Load needed chunks
-    const needed = new Set();
+
+    const needed = new Map(); // key -> lod (0=full, 1=low)
+
+    // Full-detail inner ring
     for (let dx = -RENDER_DIST; dx <= RENDER_DIST; dx++) {
       for (let dz = -RENDER_DIST; dz <= RENDER_DIST; dz++) {
-        const key = _chunkKey(cx+dx, cz+dz);
-        needed.add(key);
-        _loadChunk(cx+dx, cz+dz);
+        needed.set(_chunkKey(cx+dx, cz+dz), 0);
       }
     }
-    // Unload far chunks
+    // Low-detail outer ring
+    for (let dx = -LOD_DIST; dx <= LOD_DIST; dx++) {
+      for (let dz = -LOD_DIST; dz <= LOD_DIST; dz++) {
+        if (Math.abs(dx) <= RENDER_DIST && Math.abs(dz) <= RENDER_DIST) continue; // already full
+        needed.set(_chunkKey(cx+dx, cz+dz), 1);
+      }
+    }
+
+    // Queue new / upgraded chunks, sorted closest-first so nearest loads first
+    const toLoad = [];
+    for (const [key, lod] of needed) {
+      const ex = _chunks.get(key);
+      if (!ex || ex.lod > lod) {
+        // Parse cx/cz back from key for distance sort
+        const [kcx, kcz] = key.split(',').map(Number);
+        const dist2 = (kcx-cx)**2 + (kcz-cz)**2;
+        toLoad.push({ cx: kcx, cz: kcz, lod, dist2 });
+      }
+    }
+    toLoad.sort((a, b) => a.dist2 - b.dist2);
+    // Prepend to queue (priority: new closest chunks jump the line)
+    _loadQueue = [...toLoad, ..._loadQueue.filter(e => needed.has(_chunkKey(e.cx, e.cz)))];
+
+    // Unload chunks that are no longer in range — unload synchronously (GPU memory freed immediately)
     for (const [key] of _chunks) {
       if (!needed.has(key)) _unloadChunk(key);
     }
@@ -2255,7 +2478,9 @@ const THREE_ENV = (() => {
     _envName = envName;
     PHYS.colliders = [];
 
-    // Clear all chunks
+    // Reset render origin and clear everything on env rebuild
+    _renderOriginX = 0; _renderOriginZ = 0;
+    _loadQueue = [];
     for (const [key] of _chunks) _unloadChunk(key);
     _chunks.clear();
     _lastChunkX = null; _lastChunkZ = null;
@@ -2388,50 +2613,60 @@ const THREE_ENV = (() => {
     // Initial chunk load (around spawn)
     if (envName !== 'urban' && envName !== 'indoor') {
       _lastChunkX = null; _lastChunkZ = null;
+      // Build centre 3×3 immediately so there's terrain underfoot on first frame
+      const spawnCX = Math.round(PHYS.pos.x / CHUNK_SIZE);
+      const spawnCZ = Math.round(PHYS.pos.z / CHUNK_SIZE);
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dz = -1; dz <= 1; dz++) {
+          _buildChunk(spawnCX+dx, spawnCZ+dz, 0);
+        }
+      }
+      // Queue the rest for async streaming
       _updateChunks();
     }
   }
 
-  // ── Camera update ────────────────────────────────────────────────
-  // Clamp camera Y above terrain + margin to prevent clipping inside mountains
-  function _camMinY(cx, cz, margin) {
-    const th = terrainHeight(cx, cz, _envName);
-    return th + (margin || 0.8);
+  // ── Camera update (render-space) ─────────────────────────────────
+  function _camMinY(wx, wz, margin) {
+    return terrainHeight(wx, wz, _envName) + (margin || 0.8);
   }
 
   function updateCamera() {
-    const p = PHYS.pos;
+    const p  = PHYS.pos;
     const quat = PHYS.quat;
     const yaw  = PHYS.euler.yaw;
+    const rox  = _renderOriginX, roz = _renderOriginZ;
+
+    // Drone render-space position (always near origin)
+    const drx = p.x - rox, drz = p.z - roz;
 
     if (_camMode === 'third') {
       const dist = 4.5, height = 2.2;
-      const tx = p.x - Math.sin(yaw)*dist;
-      const tz = p.z - Math.cos(yaw)*dist;
-      const ty = Math.max(p.y+height, _camMinY(tx, tz, 1.2));
-      camera.position.lerp(_camTargetV3.set(tx, ty, tz), 0.12);
-      camera.lookAt(p.x, Math.max(p.y+0.3, PHYS.groundY+0.5), p.z);
+      const twx = p.x - Math.sin(yaw)*dist; // world
+      const twz = p.z - Math.cos(yaw)*dist;
+      const ty  = Math.max(p.y + height, _camMinY(twx, twz, 1.2));
+      camera.position.lerp(_camTargetV3.set(twx - rox, ty, twz - roz), 0.12);
+      camera.lookAt(drx, Math.max(p.y+0.3, PHYS.groundY+0.5), drz);
     } else if (_camMode === 'fpv') {
-      // FPV: camera IS the drone - clamp to at least 0.2 above ground
       const fwd = Q.rotVec(quat, {x:0, y:0.05, z:0.15});
-      const fpvY = Math.max(p.y+fwd.y, PHYS.groundY + 0.15);
-      camera.position.set(p.x+fwd.x, fpvY, p.z+fwd.z);
+      const fpvY = Math.max(p.y + fwd.y, PHYS.groundY + 0.15);
+      camera.position.set(drx + fwd.x, fpvY, drz + fwd.z);
       const aim = Q.rotVec(quat, {x:0, y:-0.1, z:1.0});
-      // When crashed/inverted, look forward from the camera position
-      const lookY = PHYS.crashed ? PHYS.groundY + 0.5 : p.y+aim.y;
-      camera.lookAt(p.x+aim.x, lookY, p.z+aim.z);
+      const lookY = PHYS.crashed ? PHYS.groundY + 0.5 : p.y + aim.y;
+      camera.lookAt(drx + aim.x, lookY, drz + aim.z);
     } else if (_camMode === 'orbit') {
-      const ox = p.x + Math.sin(_orbitAngle)*_orbitDist;
-      const oz = p.z + Math.cos(_orbitAngle)*_orbitDist;
-      const oy = Math.max(p.y+_orbitH, _camMinY(ox, oz, 1.5));
-      camera.position.lerp(_camTargetV3.set(ox, oy, oz), 0.08);
-      camera.lookAt(p.x, Math.max(p.y, PHYS.groundY+0.3), p.z);
+      const owx = p.x + Math.sin(_orbitAngle)*_orbitDist;
+      const owz = p.z + Math.cos(_orbitAngle)*_orbitDist;
+      const oy  = Math.max(p.y + _orbitH, _camMinY(owx, owz, 1.5));
+      camera.position.lerp(_camTargetV3.set(owx - rox, oy, owz - roz), 0.08);
+      camera.lookAt(drx, Math.max(p.y, PHYS.groundY + 0.3), drz);
     } else if (_camMode === 'free') {
+      // Free cam stored in render space (small numbers)
       camera.position.lerp(_camTargetV3.set(_freeCam.x, _freeCam.y, _freeCam.z), 0.05);
-      camera.lookAt(p.x, p.y, p.z);
+      camera.lookAt(drx, p.y, drz);
     } else if (_camMode === 'top') {
-      camera.position.lerp(_camTargetV3.set(p.x, p.y+22, p.z+0.001), 0.06);
-      camera.lookAt(p.x, p.y, p.z);
+      camera.position.lerp(_camTargetV3.set(drx, p.y+22, drz+0.001), 0.06);
+      camera.lookAt(drx, p.y, drz);
     }
   }
 
@@ -2474,6 +2709,8 @@ const THREE_ENV = (() => {
     const dt = Math.min(0.05, clock.getDelta());
     _frame++;
     _simTime += dt;
+    // Render-origin for this frame (used by camera, shadow, drone, trail)
+    const rox = _renderOriginX, roz = _renderOriginZ;
 
     // FPS counter
     const now = performance.now();
@@ -2486,9 +2723,16 @@ const THREE_ENV = (() => {
       skyMesh.material.uniforms.time.value = _simTime;
     }
 
-    // Drone mesh from physics
+    // ── Floating-origin rebase check ──────────────────────────────────
+    // Rebase when the drone strays too far from render origin
     const p = PHYS.pos;
-    droneGroup.position.set(p.x, p.y, p.z);
+    const distFromOrigin = Math.max(Math.abs(p.x - _renderOriginX), Math.abs(p.z - _renderOriginZ));
+    if (distFromOrigin > REBASE_THRESHOLD) {
+      _rebaseRenderOrigin();
+    }
+
+    // Place drone in render space (world minus render origin)
+    droneGroup.position.set(p.x - rox, p.y, p.z - roz);
     droneGroup.quaternion.set(PHYS.quat.x, PHYS.quat.y, PHYS.quat.z, PHYS.quat.w);
 
     // Propeller spin
@@ -2541,8 +2785,10 @@ const THREE_ENV = (() => {
         _rainPositions[b+2] += windZ;       // top z drift
         _rainPositions[b+5] += windZ;
         if (_rainPositions[b+1] < -8) {
-          const nx = p.x + (Math.random()-0.5)*80;
-          const nz = p.z + (Math.random()-0.5)*80;
+          // Use render-space drone position (small numbers, no precision loss)
+          const drx2 = p.x - _renderOriginX, drz2 = p.z - _renderOriginZ;
+          const nx = drx2 + (Math.random()-0.5)*80;
+          const nz = drz2 + (Math.random()-0.5)*80;
           const ny = 58 + Math.random()*5;
           const sl = 0.45 + Math.random()*0.35;
           _rainPositions[b  ] = nx;     _rainPositions[b+1] = ny;
@@ -2561,10 +2807,10 @@ const THREE_ENV = (() => {
     if (_dayTime > 1) _dayTime -= 1;
     if (!_nightMode) _updateSunFromTime(_dayTime);
 
-    // Shadow frustum follows drone
+    // Shadow frustum follows drone in render space
     if (shadowLight) {
-      shadowLight.shadow.camera.position.copy(shadowLight.position).add(_shadowOffsetV3.set(p.x, 0, p.z));
-      shadowLight.target.position.set(p.x, 0, p.z);
+      const sdx = p.x - rox, sdz = p.z - roz;
+      shadowLight.target.position.set(sdx, 0, sdz);
       shadowLight.target.updateMatrixWorld();
     }
 
@@ -2613,6 +2859,9 @@ const THREE_ENV = (() => {
     getFPS() { return _fpsSmooth; },
     getTerrainHeight(x, z) { return terrainHeight(x, z, _envName); },
     getSafeSpawnPoint() { return getSafeSpawnPoint(_envName); },
+    getChunkInfo() {
+      return { loaded: _chunks.size, queued: _loadQueue.length };
+    },
     render,
   };
 })();
@@ -2699,9 +2948,12 @@ const MINIMAP = {
     ctx.closePath(); ctx.fill();
     ctx.restore();
 
-    // Badge
+    // Badge — show world position + loaded chunk count
     const badge = document.getElementById('minimap-badge');
-    if (badge) badge.textContent = `${PHYS.pos.x.toFixed(1)}, ${PHYS.pos.z.toFixed(1)}`;
+    if (badge) {
+      const wx = PHYS.pos.x.toFixed(0), wz = PHYS.pos.z.toFixed(0);
+      badge.textContent = `${wx}, ${wz}`;
+    }
 
     // Trail update
     if (this._trail.length === 0 || Math.hypot(px - (this._trail[this._trail.length-1]?.x||0), pz - (this._trail[this._trail.length-1]?.z||0)) > 1) {
@@ -3028,13 +3280,12 @@ const SIM = {
     const subDt = dt / substeps;
     INPUT.update(dt);
     const inp = INPUT.get();
-    // Cache terrain height once per frame — only for terrain-based envs (not flat indoor/urban)
+    // Cache terrain height once per frame — env-aware (flat envs stay at 0)
     const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
     if (_envName_sim !== 'indoor' && _envName_sim !== 'urban') {
       PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
+      if (PHYS.groundY < 0) PHYS.groundY = 0;
     }
-    // Hard safety floor: never let groundY go negative
-    if (PHYS.groundY < 0) PHYS.groundY = 0;
     for (let s = 0; s < substeps; s++) {
       // [FIX-2.1] FC.update() runs the OUTER angle loop only (stores rate cmd).
       // The inner rate PID runs inside PHYS._substep() at full substep rate.
@@ -3241,6 +3492,13 @@ const SIM = {
     const fpsEl = D['fps-val'];
     if (fpsEl) fpsEl.textContent = THREE_ENV.getFPS()+'fps';
 
+    // Chunk count (live)
+    const chunkEl = document.getElementById('chunk-count');
+    if (chunkEl) {
+      const info = THREE_ENV.getChunkInfo ? THREE_ENV.getChunkInfo() : null;
+      if (info) chunkEl.textContent = `${info.loaded} chunks · ${info.queued} queued`;
+    }
+
     // System status
     const sysDot = D['sys-dot'], sysStat = D['sys-status'];
     const crashOverlay = document.getElementById('crash-overlay');
@@ -3358,6 +3616,23 @@ function cycleCamera() {
 function setEnvironment(name) {
   ENV.set(name);
   document.querySelectorAll('[data-env]').forEach(b => b.classList.toggle('on', b.dataset.env===name));
+}
+
+function applyWorldSeed() {
+  const el = document.getElementById('world-seed-input');
+  const seed = parseInt(el?.value || '12345', 10) || 12345;
+  if (typeof setWorldSeed === 'function') setWorldSeed(seed);
+  // Re-run current environment to regenerate terrain with new seed
+  ENV.set(typeof ENV !== 'undefined' ? ENV._name : 'field');
+  UI.toast('🌍 World seed: ' + seed);
+  UI.log('New seed: ' + seed, 'ok');
+}
+
+function randomWorldSeed() {
+  const seed = Math.floor(Math.random() * 999999);
+  const el = document.getElementById('world-seed-input');
+  if (el) el.value = seed;
+  applyWorldSeed();
 }
 
 function setDroneProfile(name) {
@@ -4675,6 +4950,7 @@ window.addEventListener('DOMContentLoaded', () => {
                   window.cloudTelemetryUrls.push({ time: new Date().toLocaleTimeString(), url: data.publicUrl });
                   if (typeof UI !== 'undefined' && UI.toast) UI.toast('✅ Telemetry saved to Cloudflare!');
                   else alert('✅ Telemetry saved to Cloudflare!');
+                  updateSavedTelemBtn();
                } else {
                  res.text().then(errText => {
                    console.error('R2 upload failed:', errText);
