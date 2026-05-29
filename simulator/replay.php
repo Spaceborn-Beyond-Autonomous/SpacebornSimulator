@@ -4102,30 +4102,35 @@ window.addEventListener('DOMContentLoaded', () => {
   let timerInterval = null;
   let cloudTelemetryUrl = null;
 
-  fetch('../api/get_sim_limits.php' + window.location.search)
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        simPlanName = data.plan_name;
-        simPpm = data.ppm;
-        simTimeRemaining = data.time_remaining_seconds;
-        if (simTimeRemaining === 0) {
-          showTimeLimitModal();
-        } else if (simTimeRemaining > 0) {
-          timerInterval = setInterval(() => {
-            simTimeRemaining--;
-            flightDurationSeconds++;
-            if (simTimeRemaining <= 0) {
-               showTimeLimitModal();
-            }
-          }, 1000);
-        } else {
-          timerInterval = setInterval(() => {
-            flightDurationSeconds++;
-          }, 1000);
+  function syncSimLimits() {
+    fetch('../api/get_sim_limits.php' + window.location.search)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          simPlanName = data.plan_name;
+          simPpm = data.ppm;
+          simTimeRemaining = data.time_remaining_seconds;
+          if (simTimeRemaining === 0) {
+            showTimeLimitModal();
+          }
         }
+      });
+  }
+
+  // Initial fetch and 1-minute polling interval
+  syncSimLimits();
+  setInterval(syncSimLimits, 60000);
+
+  // Local 1-second timer
+  timerInterval = setInterval(() => {
+    flightDurationSeconds++;
+    if (simTimeRemaining > 0) {
+      simTimeRemaining--;
+      if (simTimeRemaining <= 0) {
+         showTimeLimitModal();
       }
-    });
+    }
+  }, 1000);
 
   window.showTimeLimitModal = function() {
     if (timerInterval) clearInterval(timerInterval);

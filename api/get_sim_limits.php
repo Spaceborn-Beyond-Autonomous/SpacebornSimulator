@@ -9,6 +9,8 @@ header('Pragma: no-cache');
 header('Expires: 0');
 
 $email = $_SESSION['email'] ?? '';
+session_write_close();
+
 if (!$email) {
     echo json_encode(['success' => false, 'error' => 'Not logged in']);
     exit;
