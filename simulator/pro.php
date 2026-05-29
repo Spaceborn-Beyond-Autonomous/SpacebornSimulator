@@ -35,13 +35,12 @@ if ($sub_id >= 2) {
 }
 
 $accessExpiresAt = $accessSeconds > 0 ? time() + $accessSeconds : 0;
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CERTANITY · Drone Simulator — PRO</title>
+<title>CERTANITY · Drone Simulator — MAX</title>
 <link rel="icon" type="image/png" href="../assets/logo-iso.png" />
 <link rel="apple-touch-icon" href="../assets/logo-iso.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -177,6 +176,14 @@ input,select{font-family:var(--fb)}
 .vp-warn{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(244,67,54,.85);color:white;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;backdrop-filter:blur(4px);opacity:0;transition:opacity .3s;pointer-events:none}
 .vp-warn.show{opacity:1}
 #toast.show{opacity:1!important;}
+#crash-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .35s;z-index:20;background:radial-gradient(ellipse at center,rgba(200,20,10,.45) 0%,rgba(0,0,0,.72) 100%)}
+#crash-overlay.show{opacity:1;pointer-events:auto}
+#crash-overlay .co-icon{font-size:52px;line-height:1;animation:co-pulse 1s ease-in-out infinite alternate}
+#crash-overlay .co-title{font-family:var(--fh,monospace);font-size:28px;font-weight:800;color:#ff3b30;letter-spacing:3px;text-shadow:0 0 24px rgba(255,59,48,.9),0 2px 8px rgba(0,0,0,.8);margin:8px 0 4px}
+#crash-overlay .co-sub{font-family:var(--fh,monospace);font-size:12px;color:rgba(255,255,255,.75);letter-spacing:2px;text-transform:uppercase}
+#crash-overlay .co-btn{margin-top:22px;padding:8px 24px;background:rgba(255,59,48,.22);border:1.5px solid rgba(255,59,48,.7);border-radius:20px;color:#ff6b60;font-family:var(--fh,monospace);font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;pointer-events:auto;backdrop-filter:blur(6px);transition:background .2s,color .2s}
+#crash-overlay .co-btn:hover{background:rgba(255,59,48,.45);color:#fff}
+@keyframes co-pulse{from{transform:scale(1) rotate(-5deg)}to{transform:scale(1.15) rotate(5deg)}}
 
 /* ── Card / Panel ── */
 .card{background:var(--surf);border-radius:var(--r3);padding:14px;box-shadow:var(--sh-out)}
@@ -491,25 +498,17 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       <button class="npill" id="nav-mission" onclick="showSection('mission')">Mission</button>
       <button class="npill" id="nav-debug" onclick="showSection('debug')">Debug</button>
     </div>
-    <div class="tsp"></div>
+        <div class="tsp"></div>
     <button class="nbtn sm accent" id="cloud-save-btn" onclick="triggerCloudSave()" title="Save Telemetry to Cloudflare">☁️ Cloud Save</button>
     <button class="nbtn sm accent" id="saved-telem-btn" style="display:none;background:var(--s);color:#fff;" onclick="openSavedTelemModal()">📥 Saved (0)</button>
     <button class="nbtn sm danger" id="exit-sim-btn" onclick="exitSimulation()" title="Exit and Save Flight">🚪 Exit</button>
     <button class="nbtn sm" id="pause-btn" onclick="toggleSimPause()" title="Pause/Resume Simulation (Space)">⏸ Pause</button>
-    <div class="nfield" style="padding:3px 8px;gap:4px;">
-      <label style="font-size:10px;color:var(--txt4)">Speed</label>
-      <select id="sim-speed" onchange="setSimSpeed(this.value)" style="font-size:11px;font-weight:600;color:var(--txt);background:none;border:none;outline:none;cursor:pointer;">
-        <option value="0.25">0.25×</option>
-        <option value="0.5">0.5×</option>
-        <option value="1">1×</option>
-        <option value="2" selected>2×</option>
-        <option value="4">4×</option>
-      </select>
-    </div>
+
     <div class="top-stat"><div class="sdot" id="sys-dot"></div><span id="sys-status">READY</span></div>
     <span id="arm-status">DISARMED</span>
     <div class="top-stat"><span>⚡</span><span id="batt-top">100%</span></div>
     <div class="top-stat"><span>🌡</span><span id="fps-val">60fps</span></div>
+    <div class="top-stat"><span>🗺</span><span id="chunk-count">0 chunks</span></div>
     <div class="top-clock" id="top-clock">00:00</div>
   </div>
 
@@ -572,6 +571,14 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         <button class="fmode-btn" data-env="desert" onclick="setEnvironment('desert')"><span class="fm-icon">🏜️</span>Desert</button>
         <button class="fmode-btn" data-env="windy" onclick="setEnvironment('windy')"><span class="fm-icon">🌪️</span>Windy</button>
       </div>
+      <div style="display:flex;gap:6px;align-items:center;margin-top:4px">
+        <div class="nfield" style="flex:1">
+          <label style="font-size:10px;color:var(--txt4);white-space:nowrap">🌍 Seed</label>
+          <input type="number" id="world-seed-input" value="12345" min="0" max="999999" style="background:none;border:none;outline:none;font-size:12px;color:var(--txt);width:80px;font-family:var(--fh);font-weight:600">
+        </div>
+        <button class="nbtn sm primary" onclick="applyWorldSeed()">Apply</button>
+        <button class="nbtn sm" onclick="randomWorldSeed()">🎲</button>
+      </div>
       <div style="display:flex;flex-direction:column;gap:8px">
         <div class="nslider-wrap">
           <div class="nslider-label"><span>Wind Speed</span><span id="wind-val">0 m/s</span></div>
@@ -621,6 +628,14 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
           <button class="nbtn sm" id="customize-toggle-btn" onclick="toggleProfileCustomize()" style="flex:1">✏️ Customize</button>
           <button class="nbtn sm accent" onclick="openCustomProfileModal()" style="flex:1">＋ New Profile</button>
         </div>
+
+      <!-- [TIER-MAX] GLTF/GLB Upload Section (inserted before customize panel) -->
+      <div id="gltf-upload-section" style="margin-top:6px;padding:8px;border-radius:var(--r1);background:var(--n);box-shadow:var(--sh-in-sm);">
+        <div style="font-size:10px;font-weight:700;color:var(--s);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">🚁 Custom GLTF/GLB Drone</div>
+        <input type="file" id="gltf-upload-input" accept=".gltf,.glb" style="display:none" onchange="handleGLTFUpload(this)">
+        <button class="nbtn sm accent" onclick="document.getElementById('gltf-upload-input').click()" style="width:100%">📁 Upload Drone Model (.gltf/.glb)</button>
+        <div id="gltf-upload-status" style="font-size:10px;color:var(--txt4);margin-top:4px;text-align:center;">No custom model loaded</div>
+      </div>
         <!-- Inline customize panel -->
         <div class="profile-customize" id="profile-customize-panel">
           <div class="profile-section-title">⚙ Physics Parameters</div>
@@ -743,6 +758,13 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <div class="cam-badge" id="cam-badge">THIRD PERSON</div>
     <div class="crosshair"><div class="ch-h"></div><div class="ch-v"></div></div>
     <div class="vp-warn" id="vp-warn">⚠ LOW ALTITUDE</div>
+    <div id="crash-overlay">
+      <div class="co-icon">💥</div>
+      <div class="co-title">DRONE CRASHED</div>
+      <div class="co-sub">Impact detected · Motors disarmed</div>
+      <button class="co-btn" onclick="clearMotorFailures()" style="background:rgba(0,200,80,.18);border-color:rgba(0,220,80,.6);color:#00e060;margin-bottom:4px">⚡ Restore Motors &amp; Fly</button>
+      <button class="co-btn" onclick="resetSim()">↺ &nbsp;RESET &amp; RETRY</button>
+    </div>
   </div>
 
   <!-- Right Panel -->
@@ -989,6 +1011,26 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       </div>
     </div>
 
+
+      <!-- [TIER-MAX] Advanced Scenario Panel — Motor Failure & GPS Denied -->
+      <div class="card card-sm" id="advanced-scenarios-card">
+        <div class="card-title"><span class="ct-dot"></span>ADVANCED SCENARIOS</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="font-size:10px;color:var(--txt4);font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-bottom:2px">Motor Failure Sim</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;">
+            <button class="nbtn sm danger" onclick="activateMotorFailure(0)" title="Fail Front-Right motor">M1</button>
+            <button class="nbtn sm danger" onclick="activateMotorFailure(1)" title="Fail Front-Left motor">M2</button>
+            <button class="nbtn sm danger" onclick="activateMotorFailure(2)" title="Fail Back-Left motor">M3</button>
+            <button class="nbtn sm danger" onclick="activateMotorFailure(3)" title="Fail Back-Right motor">M4</button>
+          </div>
+          <button class="nbtn sm" onclick="clearMotorFailures()" style="width:100%">✅ Restore All Motors</button>
+          <div style="margin-top:4px;display:flex;gap:7px;">
+            <button class="nbtn sm accent" onclick="activateGPSDenied(true)" style="flex:1">🚫 GPS Denied</button>
+            <button class="nbtn sm" onclick="activateGPSDenied(false)" style="flex:1">✅ GPS Restore</button>
+          </div>
+        </div>
+      </div>
+
     <!-- Debug (hidden by default) -->
     <div class="card card-sm" id="debug-section" style="display:none">
       <div class="card-title"><span class="ct-dot"></span>DEBUG PID</div>
@@ -1167,12 +1209,12 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <!-- Sim Engine (external) -->
 <script src="sim-engine.js"></script>
 
-<!-- ══ TIER: PRO ══ -->
+<!-- ══ TIER: MAX ══ -->
 <script>
-/* PLAN FLAGS — PRO tier
-   Duration: 24h | 2 profiles | 3 envs | Basic HUD
-   PID: view-only | MAVLink: read-only
-   No: waypoints, export, GLTF, gamepad */
+/* PLAN FLAGS — MAX tier
+   Duration: Unlimited | All profiles + Custom
+   All 6 envs | Full HUD | Full PID | Full export
+   Gamepad | Waypoints | GLTF upload | Priority support */
 const PLAN = {
   tier: 'PRO',
   sessionMinutes: <?= max(1, (int) ceil(($accessSeconds > 0 ? $accessSeconds : 86400) / 60)) ?>,
@@ -1232,12 +1274,65 @@ const THREE_ENV = (() => {
   let _waypointMarkers = [];
   let _propSpinRate = [0,0,0,0];
 
-  // Chunk system
-  const CHUNK_SIZE = 80;
-  const CHUNK_SEGS = 48;
-  const RENDER_DIST = 3; // chunks in each direction
-  let _chunks = new Map(); // key -> {mesh, veg, rocks, x, z}
-  let _lastChunkX = null, _lastChunkZ = null;
+  // ── Chunk streaming constants ──────────────────────────────────────
+  const CHUNK_SIZE   = 80;
+  const CHUNK_SEGS   = 24;   // full-detail segment count (reduced for perf)
+  const CHUNK_SEGS_L = 8;    // low-detail segment count (outer ring)
+  const RENDER_DIST  = 3;    // full-detail ring radius (chunks)
+  const LOD_DIST     = 6;    // low-detail ring radius (chunks)
+  let _chunks        = new Map(); // key -> chunkData
+  let _lastChunkX    = null, _lastChunkZ = null;
+  // Async load queue — process at most N chunks per render frame
+  let _loadQueue     = [];
+  const MAX_LOADS_PER_FRAME = 1; // 1 full chunk/frame = smooth 60fps
+
+  // ── Floating-origin render space ───────────────────────────────────
+  // Physics is in world space (true JS doubles, unlimited range).
+  // Three.js scene is rebased so the camera is always near origin,
+  // preventing float32 precision loss at large coordinates.
+  const REBASE_THRESHOLD = CHUNK_SIZE * 4;  // rebase when camera drifts >320m from render origin
+  let _renderOriginX = 0, _renderOriginZ = 0; // render origin in world coords
+  let _needsFullRebase = false;
+
+  // Convert world XZ to render-space XZ
+  function _toRender(wx, wz) {
+    return { x: wx - _renderOriginX, z: wz - _renderOriginZ };
+  }
+
+  // Rebase: shift all scene objects so camera stays near render origin
+  function _rebaseRenderOrigin() {
+    const p = PHYS.pos;
+    const newOX = Math.round(p.x / CHUNK_SIZE) * CHUNK_SIZE;
+    const newOZ = Math.round(p.z / CHUNK_SIZE) * CHUNK_SIZE;
+    const dx = newOX - _renderOriginX;
+    const dz = newOZ - _renderOriginZ;
+    if (Math.abs(dx) < 1 && Math.abs(dz) < 1) return;
+
+    // Shift every chunk mesh in the scene by -delta
+    for (const [, cd] of _chunks) {
+      ['mesh','veg','flowers','grass','rocks'].forEach(k => {
+        if (cd[k]) {
+          cd[k].position.x -= dx;
+          cd[k].position.z -= dz;
+        }
+      });
+    }
+    // Shift waypoint markers
+    if (_waypointMarkers) {
+      _waypointMarkers.forEach(m => {
+        m.position.x -= dx;
+        m.position.z -= dz;
+      });
+    }
+    // Shift drone trail
+    if (_trailLine) {
+      _trailLine.position.x -= dx;
+      _trailLine.position.z -= dz;
+    }
+    _renderOriginX = newOX;
+    _renderOriginZ = newOZ;
+    _needsFullRebase = false;
+  }
 
   // Mouse orbit
   let _mouse = { down:false, lx:0, ly:0 };
@@ -1246,72 +1341,174 @@ const THREE_ENV = (() => {
   let _bloomRT, _bloomScene, _bloomCamera, _bloomQuad;
   let _mainRT;
 
-  // ── Terrain heightmap (chunk-aware) ──────────────────────────────
+  // ── Multi-biome terrain heightmap ────────────────────────────────
+  // Uses domain-warped FBM + continent mask to blend biomes seamlessly.
+  // The same (x,z) always returns the same height for a given seed.
+  // ─────────────────────────────────────────────────────────────────
+  // Terrain architecture (for procedural/infinite envs):
+  //   continent(x,z) ∈ [0,1]  — low-frequency "where is high ground?"
+  //   erosion(x,z)   ∈ [0,1]  — medium-freq ridges vs smooth slopes
+  //   detail(x,z)    ∈ [-1,1] — high-freq surface texture
+  //   h = continent^2 * 80 + erosion * 20 + detail * 3
+  // ─────────────────────────────────────────────────────────────────
+
+  // Cache last result per env to avoid recalculating same point twice
+  let _thCache = null;
   function terrainHeight(x, z, envName) {
     const env = envName || _envName;
-    switch(env) {
-      case 'mountains': {
-        const h = Noise.fbm(x*0.012, 0, z*0.012, 6, 0.55, 2.1) * 60
-                + Noise.fbm(x*0.04,  0, z*0.04,  3, 0.45, 2.0) * 12
-                + Noise.fbm(x*0.12,  0, z*0.12,  2, 0.4,  2.0) * 4;
-        return Math.max(0, h);
-      }
-      case 'desert': {
-        const dune = Noise.fbm(x*0.025, 0.3, z*0.025, 4, 0.45, 2.0) * 18
-                   + Noise.fbm(x*0.08,  0.7, z*0.08,  3, 0.4, 2.0) * 5;
-        return Math.max(0, dune);
-      }
-      case 'urban': return 0;
-      case 'indoor': return 0;
-      case 'field':
-      case 'windy':
-      default: {
-        return Math.max(0,
-          Noise.fbm(x*0.015, 0.5, z*0.015, 4, 0.5, 2.0) * 8
-        + Noise.fbm(x*0.06,  1.2, z*0.06,  3, 0.4, 2.0) * 2.5
-        + Noise.fbm(x*0.15,  2.3, z*0.15,  2, 0.35,2.0) * 0.8);
+
+    // Flat environments
+    if (env === 'urban' || env === 'indoor') return 0;
+
+    // Domain-warped low-frequency continent mask (very smooth, no sharp edges)
+    const cx  = x * 0.004, cz = z * 0.004;
+    const wx  = Noise.n(cx + 3.7, 0.1, cz + 1.3) * 18;
+    const wz  = Noise.n(cx + 8.2, 0.8, cz + 6.1) * 18;
+    const continent = Math.max(0, Noise.fbm(cx + wx*0.004, 0, cz + wz*0.004, 4, 0.55, 2.0) * 0.5 + 0.5);
+
+    if (env === 'field' || env === 'windy') {
+      // Gentle rolling hills — continent kept low, heavy smoothing
+      const base = Math.pow(continent * 0.55, 1.6) * 14;
+      const mid  = Noise.fbm(x*0.022, 1.2, z*0.022, 4, 0.48, 2.0) * 6;
+      const fine = Noise.n(x*0.14, 2.3, z*0.14) * 1.2;
+      return Math.max(0, base + mid + fine);
+    }
+
+    if (env === 'desert') {
+      // Dune ridges: elongated in one direction + flat inter-dune pans
+      const duneDir = x * 0.018 + z * 0.006; // asymmetric dune axis
+      const dune    = Math.pow(Math.abs(Noise.n(duneDir, 0.3, z*0.014)), 0.7) * 20;
+      const pan     = Math.max(0, Noise.fbm(x*0.009, 0.8, z*0.009, 3, 0.45, 2.0)) * 8;
+      const fine    = Noise.n(x*0.12, 1.1, z*0.12) * 1.5;
+      return Math.max(0, dune + pan + fine);
+    }
+
+    if (env === 'mountains') {
+      // Sharp, varied peaks using ridged noise + domain warp
+      // Ridged noise: 1 - |fbm|  → inverted valleys, sharp ridges
+      const raw   = Noise.warpedFbm(x, z, 5, 0.55, 2.1, 40);
+      const ridge = Math.pow(Math.max(0, continent * 0.8 + raw * 0.5 + 0.1), 1.5);
+      const peak  = ridge * 80;
+      // Erosion detail layered on top
+      const erode = Noise.fbm(x*0.05, 0.5, z*0.05, 3, 0.42, 2.0) * 10 * continent;
+      const scree = Noise.n(x*0.18, 2.1, z*0.18) * 2.5;
+      return Math.max(0, peak + erode + scree);
+    }
+
+    // Default / generic procedural world
+    const raw    = Noise.warpedFbm(x, z, 5, 0.52, 2.0, 30);
+    const height = Math.pow(Math.max(0, continent * 0.7 + raw * 0.4 + 0.15), 1.4) * 50;
+    const detail = Noise.fbm(x*0.08, 1.5, z*0.08, 3, 0.4, 2.0) * 5;
+    return Math.max(0, height + detail);
+  }
+
+  // ── Safe spawn finder ─────────────────────────────────────────────
+  // Drone was spawning inside mountains because (0,0) can be mid-peak.
+  // Now searches a wider grid to find the lowest-elevation flat spot.
+  function getSafeSpawnPoint(envName) {
+    const env = envName || _envName;
+    if (env === 'indoor' || env === 'urban') {
+      return { x: 0, z: 0, y: 0 };
+    }
+    if (env === 'field' || env === 'windy') {
+      const h = terrainHeight(0, 0, env);
+      return { x: 0, z: 0, y: h };
+    }
+    // For mountains and desert, find the lowest valley point in a wide grid
+    let bestX = 0, bestZ = 0, bestH = Infinity;
+    const step = 6, range = 100;
+    for (let xi = -range; xi <= range; xi += step) {
+      for (let zi = -range; zi <= range; zi += step) {
+        const h = terrainHeight(xi, zi, env);
+        if (h < bestH) { bestH = h; bestX = xi; bestZ = zi; }
       }
     }
+    // Fine-search around best candidate
+    const fStep = 2, fRange = 8;
+    for (let xi = bestX - fRange; xi <= bestX + fRange; xi += fStep) {
+      for (let zi = bestZ - fRange; zi <= bestZ + fRange; zi += fStep) {
+        const h = terrainHeight(xi, zi, env);
+        if (h < bestH) { bestH = h; bestX = xi; bestZ = zi; }
+      }
+    }
+    return { x: bestX, z: bestZ, y: bestH };
   }
 
   // ── Terrain colour helper ──────────────────────────────────────────
+  // Layered colour with micro-variation and slope-based darkening
   function terrainColor(x, z, h, envName) {
     const env = envName || _envName;
     let r, g, b;
+
+    // Shared micro-variation (same for all envs)
+    const v1 = Noise.n(x*0.11, 0.3, z*0.11) * 0.07;
+    const v2 = Noise.n(x*0.32, 1.4, z*0.32) * 0.03;
+    const nv = v1 + v2; // net variation
+
     if (env === 'desert') {
-      const v = Noise.n(x*0.18, 0, z*0.18)*0.06;
-      r = 0.80 + h*0.005 + v; g = 0.65 + h*0.003 + v; b = 0.32 + v;
+      const ripple = Noise.n(x*0.35, 0.0, z*0.22) * 0.05;
+      r = 0.82 + nv + ripple;
+      g = 0.66 + nv*0.7;
+      b = 0.30 + nv*0.3;
     } else if (env === 'mountains') {
-      if      (h < 2)  { r=0.32; g=0.52; b=0.20; }
-      else if (h < 12) { const t=h/12; r=0.28+t*0.22; g=0.46+t*0.06; b=0.16+t*0.12; }
-      else if (h < 30) { const t=(h-12)/18; r=0.50+t*0.18; g=0.44+t*0.04; b=0.38+t*0.08; }
-      else if (h < 45) { const t=(h-30)/15; r=0.68+t*0.14; g=0.62+t*0.18; b=0.58+t*0.22; }
-      else             { r=0.92; g=0.94; b=0.96; }
+      // Smooth height-based blend: grass → rock → scree → snow
+      if (h < 3) {
+        r=0.28+nv; g=0.52+nv*0.6; b=0.16+nv*0.3;
+      } else if (h < 12) {
+        const t=(h-3)/9;
+        r=0.28+t*0.24+nv; g=0.52-t*0.16+nv*0.3; b=0.16+t*0.12+nv*0.2;
+      } else if (h < 42) {
+        const t=(h-12)/30;
+        r=0.52+t*0.16+nv*0.5; g=0.36+t*0.08+nv*0.3; b=0.28+t*0.14+nv*0.2;
+      } else if (h < 65) {
+        const t=(h-42)/23;
+        r=0.68+t*0.18+nv*0.3; g=0.44+t*0.22+nv*0.2; b=0.42+t*0.26+nv*0.2;
+      } else {
+        // Snow — slight blue tint in shadows
+        r=0.90+nv*0.1; g=0.93+nv*0.08; b=0.98+nv*0.05;
+      }
     } else if (env === 'urban') {
-      r=0.36; g=0.36; b=0.36;
+      r=0.34+nv; g=0.34+nv; b=0.34+nv;
     } else {
-      // Lush field — variation between meadow greens
-      const v  = Noise.n(x*0.12, 0, z*0.12)*0.10;
-      const v2 = Noise.n(x*0.35, 1, z*0.35)*0.04;
-      const moisture = Noise.fbm(x*0.02, 3, z*0.02, 2, 0.5, 2)*0.5+0.5;
-      r = 0.18 + v + v2 + h*0.008 - moisture*0.04;
-      g = 0.48 + h*0.015 + v*0.5 + moisture*0.08;
-      b = 0.14 + v2 - moisture*0.02;
+      // Field / procedural — moisture-driven greens
+      const moisture = Noise.fbm(x*0.018, 3.3, z*0.018, 2, 0.5, 2) * 0.5 + 0.5;
+      r = 0.16 + nv - moisture*0.04 + h*0.006;
+      g = 0.46 + nv*0.5 + moisture*0.10 + h*0.012;
+      b = 0.12 + nv*0.3 - moisture*0.02;
     }
     return [Math.min(1,Math.max(0,r)), Math.min(1,Math.max(0,g)), Math.min(1,Math.max(0,b))];
   }
 
+
+  // ── Per-chunk seeded RNG — identical output every time a chunk is rebuilt ──
+  // Uses a simple xorshift32 so each (cx,cz) produces the same vegetation layout.
+  function _chunkRng(cx, cz) {
+    let s = (cx * 73856093) ^ (cz * 19349663);
+    s = s ^ (s >>> 16); s = (s * 0x45d9f3b) & 0xffffffff;
+    s = s ^ (s >>> 16);
+    return function() {
+      s ^= s << 13; s ^= s >> 17; s ^= s << 5;
+      return ((s >>> 0) / 0xffffffff);
+    };
+  }
+
   // ── Single chunk terrain mesh ──────────────────────────────────────
-  function buildChunkMesh(cx, cz, envName) {
-    const geo = new THREE.PlaneGeometry(CHUNK_SIZE, CHUNK_SIZE, CHUNK_SEGS, CHUNK_SEGS);
+  function buildChunkMesh(cx, cz, envName, segs) {
+    const s = segs || CHUNK_SEGS;
+    const geo = new THREE.PlaneGeometry(CHUNK_SIZE, CHUNK_SIZE, s, s);
     geo.rotateX(-Math.PI/2);
     const pos = geo.attributes.position;
     const colors = [];
+    // World-space origin of this chunk (used for terrain eval only)
     const worldOffX = cx * CHUNK_SIZE;
     const worldOffZ = cz * CHUNK_SIZE;
     for (let i = 0; i < pos.count; i++) {
-      const wx = pos.getX(i) + worldOffX;
-      const wz = pos.getZ(i) + worldOffZ;
+      // Vertex is chunk-local (PlaneGeometry centred at 0)
+      const localX = pos.getX(i);
+      const localZ = pos.getZ(i);
+      // Evaluate terrain in true world coords (double precision JS numbers)
+      const wx = localX + worldOffX;
+      const wz = localZ + worldOffZ;
       const h = terrainHeight(wx, wz, envName);
       pos.setY(i, h);
       const [r,g,b] = terrainColor(wx, wz, h, envName);
@@ -1321,7 +1518,8 @@ const THREE_ENV = (() => {
     geo.computeVertexNormals();
     const mat = new THREE.MeshLambertMaterial({ vertexColors: true });
     const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(worldOffX, 0, worldOffZ);
+    // Position set by _buildChunk in render space — leave at zero here
+    mesh.position.set(0, 0, 0);
     mesh.receiveShadow = true;
     mesh.name = 'terrain_chunk';
     return mesh;
@@ -1329,7 +1527,8 @@ const THREE_ENV = (() => {
 
   // ── Grass blade system (per-chunk) ────────────────────────────────
   let _grassTime = 0;
-  function buildGrassBlades(cx, cz, envName) {
+  function buildGrassBlades(cx, cz, envName){
+    const rng = _chunkRng(cx, cz);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert') return null;
     const worldOffX = cx * CHUNK_SIZE;
@@ -1339,18 +1538,18 @@ const THREE_ENV = (() => {
     let vi = 0;
     // Each blade: 3 quads (6 verts)
     for (let i = 0; i < count; i++) {
-      const lx = (Math.random()-0.5)*CHUNK_SIZE;
-      const lz = (Math.random()-0.5)*CHUNK_SIZE;
+      const lx = (rng()-0.5)*CHUNK_SIZE;
+      const lz = (rng()-0.5)*CHUNK_SIZE;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, wz, env);
-      const h = 0.18 + Math.random()*0.22;
-      const ang = Math.random()*Math.PI*2;
+      const hy = terrainHeight(wx, lz, env);
+      const h = 0.18 + rng()*0.22;
+      const ang = rng()*Math.PI*2;
       const bx = Math.cos(ang)*0.04, bz = Math.sin(ang)*0.04;
       // color variation
-      const gv = 0.3 + Math.random()*0.3;
+      const gv = 0.3 + rng()*0.3;
       const rc = 0.1+gv*0.3, gc = 0.4+gv*0.35, bc = 0.05+gv*0.1;
       // base L
-      positions.push(wx-bx, hy, wz-bz, wx+bx, hy, wz+bz, wx, hy+h, wz);
+      positions.push(lx-bx, hy, wz-bz, wx+bx, hy, wz+bz, wx, hy+h, lz);
       colors2.push(rc*0.7,gc*0.7,bc*0.7, rc*0.7,gc*0.7,bc*0.7, rc,gc,bc);
       indices2.push(vi,vi+1,vi+2);
       vi += 3;
@@ -1366,7 +1565,8 @@ const THREE_ENV = (() => {
   }
 
   // ── Flowers ────────────────────────────────────────────────────────
-  function buildFlowers(cx, cz, envName) {
+  function buildFlowers(cx, cz, envName){
+    const rng = _chunkRng(cx + 1000, cz + 2000);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert' || env === 'mountains') return null;
     const worldOffX = cx * CHUNK_SIZE;
@@ -1374,21 +1574,21 @@ const THREE_ENV = (() => {
     const group = new THREE.Group();
     const flowerColors = [0xff4466, 0xffcc22, 0xff8844, 0xee66ff, 0xffffff, 0x66ddff];
     const stemMat = new THREE.MeshLambertMaterial({ color: 0x2d7a1a });
-    const count = 30 + Math.floor(Math.random()*40);
+    const count = 30 + Math.floor(rng()*40);
     for (let i = 0; i < count; i++) {
-      const lx = (Math.random()-0.5)*CHUNK_SIZE;
-      const lz = (Math.random()-0.5)*CHUNK_SIZE;
+      const lx = (rng()-0.5)*CHUNK_SIZE;
+      const lz = (rng()-0.5)*CHUNK_SIZE;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, wz, env);
-      const h = 0.14 + Math.random()*0.12;
+      const hy = terrainHeight(wx, lz, env);
+      const h = 0.14 + rng()*0.12;
       // stem
       const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.008,h,4), stemMat);
-      stem.position.set(wx, hy+h/2, wz);
+      stem.position.set(lx, hy+h/2, lz);
       group.add(stem);
       // petals
-      const col = flowerColors[Math.floor(Math.random()*flowerColors.length)];
+      const col = flowerColors[Math.floor(rng()*flowerColors.length)];
       const petMat = new THREE.MeshLambertMaterial({ color: col, side: THREE.DoubleSide });
-      const pCount = 4 + Math.floor(Math.random()*3);
+      const pCount = 4 + Math.floor(rng()*3);
       for (let p = 0; p < pCount; p++) {
         const pa = (p/pCount)*Math.PI*2;
         const pet = new THREE.Mesh(new THREE.PlaneGeometry(0.05,0.04), petMat);
@@ -1399,14 +1599,15 @@ const THREE_ENV = (() => {
       // center
       const cMat = new THREE.MeshBasicMaterial({ color: 0xffee00 });
       const cen = new THREE.Mesh(new THREE.SphereGeometry(0.018,6,4), cMat);
-      cen.position.set(wx, hy+h+0.018, wz);
+      cen.position.set(lx, hy+h+0.018, lz);
       group.add(cen);
     }
     return group;
   }
 
   // ── Rocks ──────────────────────────────────────────────────────────
-  function buildRocks(cx, cz, envName) {
+  function buildRocks(cx, cz, envName){
+    const rng = _chunkRng(cx + 5000, cz + 6000);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor') return null;
     const worldOffX = cx * CHUNK_SIZE;
@@ -1415,12 +1616,12 @@ const THREE_ENV = (() => {
     const count = env === 'mountains' ? 20 : env === 'desert' ? 12 : 8;
     const rockColors = [0x888880, 0x706a60, 0x999288, 0x7a7268];
     for (let i = 0; i < count; i++) {
-      const lx = (Math.random()-0.5)*CHUNK_SIZE;
-      const lz = (Math.random()-0.5)*CHUNK_SIZE;
+      const lx = (rng()-0.5)*CHUNK_SIZE;
+      const lz = (rng()-0.5)*CHUNK_SIZE;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, wz, env);
-      const scale = 0.2 + Math.random()*0.8;
-      const col = rockColors[Math.floor(Math.random()*rockColors.length)];
+      const hy = terrainHeight(wx, lz, env);
+      const scale = 0.2 + rng()*0.8;
+      const col = rockColors[Math.floor(rng()*rockColors.length)];
       const mat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.9, metalness: 0.05 });
       // Irregular rock shape from scaled sphere
       const geo = new THREE.SphereGeometry(scale, 6, 5);
@@ -1428,12 +1629,12 @@ const THREE_ENV = (() => {
       for (let v = 0; v < verts.count; v++) {
         const nx = verts.getX(v), ny = verts.getY(v), nz = verts.getZ(v);
         const bump = 1 + Noise.n(nx*2+wx*0.1, ny*2, nz*2+wz*0.1)*0.35;
-        verts.setXYZ(v, nx*bump, ny*bump*(0.5+Math.random()*0.4), nz*bump);
+        verts.setXYZ(v, nx*bump, ny*bump*(0.5+rng()*0.4), nz*bump);
       }
       geo.computeVertexNormals();
       const rock = new THREE.Mesh(geo, mat);
-      rock.position.set(wx, hy + scale*0.35, wz);
-      rock.rotation.y = Math.random()*Math.PI*2;
+      rock.position.set(lx, hy + scale*0.35, lz);
+      rock.rotation.y = rng()*Math.PI*2;
       rock.castShadow = true; rock.receiveShadow = true;
       group.add(rock);
     }
@@ -1441,7 +1642,8 @@ const THREE_ENV = (() => {
   }
 
   // ── Trees (lush, varied) ──────────────────────────────────────────
-  function buildVegetation(cx, cz, envName) {
+  function buildVegetation(cx, cz, envName){
+    const rng = _chunkRng(cx + 3000, cz + 4000);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert') return null;
     const worldOffX = cx * CHUNK_SIZE;
@@ -1454,66 +1656,66 @@ const THREE_ENV = (() => {
       : [0x3a8a2e, 0x2e7a24, 0x4a9a3c, 0x338030, 0x28701e];
     const count = env === 'mountains' ? 12 : 20;
     for (let i = 0; i < count; i++) {
-      const lx = (Math.random()-0.5)*CHUNK_SIZE*0.85;
-      const lz = (Math.random()-0.5)*CHUNK_SIZE*0.85;
+      const lx = (rng()-0.5)*CHUNK_SIZE*0.85;
+      const lz = (rng()-0.5)*CHUNK_SIZE*0.85;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, wz, env);
+      const hy = terrainHeight(wx, lz, env);
       if (env === 'mountains' && hy > 30) continue;
-      const treeType = Math.floor(Math.random()*3);
-      const leafCol = leafColors[Math.floor(Math.random()*leafColors.length)];
+      const treeType = Math.floor(rng()*3);
+      const leafCol = leafColors[Math.floor(rng()*leafColors.length)];
       const leafMat = new THREE.MeshStandardMaterial({ color: leafCol, roughness: 0.85, metalness: 0 });
       if (treeType === 0) {
         // Pine / conifer
-        const tH = 3 + Math.random()*4;
+        const tH = 3 + rng()*4;
         const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.18, tH, 6), trunkMat.clone());
-        trunk.position.set(wx, hy + tH/2, wz);
+        trunk.position.set(lx, hy + tH/2, lz);
         trunk.castShadow = true;
         group.add(trunk);
         // Stacked cones
-        const tiers = 3 + Math.floor(Math.random()*2);
+        const tiers = 3 + Math.floor(rng()*2);
         for (let t = 0; t < tiers; t++) {
           const ty = hy + tH*0.4 + t*(tH*0.22);
-          const r = 1.6 - t*0.3 + Math.random()*0.3;
+          const r = 1.6 - t*0.3 + rng()*0.3;
           const cone = new THREE.Mesh(new THREE.ConeGeometry(r, tH*0.35, 7), leafMat.clone());
-          cone.position.set(wx, ty, wz);
+          cone.position.set(lx, ty, lz);
           cone.castShadow = true;
           group.add(cone);
         }
       } else if (treeType === 1) {
         // Broad deciduous
-        const tH = 2.5 + Math.random()*3;
+        const tH = 2.5 + rng()*3;
         const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.22, tH, 7), darkTrunk.clone());
-        trunk.position.set(wx, hy + tH/2, wz);
+        trunk.position.set(lx, hy + tH/2, lz);
         trunk.castShadow = true;
         group.add(trunk);
         // Multi-sphere canopy
-        const cr = 1.8 + Math.random()*1.4;
+        const cr = 1.8 + rng()*1.4;
         const canopy = new THREE.Mesh(new THREE.SphereGeometry(cr, 8, 7), leafMat.clone());
-        canopy.position.set(wx, hy + tH + cr*0.6, wz);
-        canopy.scale.y = 0.72 + Math.random()*0.2;
+        canopy.position.set(lx, hy + tH + cr*0.6, lz);
+        canopy.scale.y = 0.72 + rng()*0.2;
         canopy.castShadow = true;
         group.add(canopy);
         // Extra lobes
         for (let l = 0; l < 3; l++) {
-          const la = (l/3)*Math.PI*2 + Math.random()*0.8;
+          const la = (l/3)*Math.PI*2 + rng()*0.8;
           const lr = cr*0.55;
           const lobe = new THREE.Mesh(new THREE.SphereGeometry(lr, 6, 5), leafMat.clone());
-          lobe.position.set(wx+Math.cos(la)*cr*0.55, hy+tH+cr*0.3+Math.random()*0.5, wz+Math.sin(la)*cr*0.55);
+          lobe.position.set(wx+Math.cos(la)*cr*0.55, hy+tH+cr*0.3+rng()*0.5, wz+Math.sin(la)*cr*0.55);
           lobe.castShadow = true;
           group.add(lobe);
         }
       } else {
         // Tall slender birch
-        const tH = 4 + Math.random()*5;
+        const tH = 4 + rng()*5;
         const birchMat = new THREE.MeshStandardMaterial({ color: 0xddd8cc, roughness: 0.8 });
         const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.14, tH, 6), birchMat);
-        trunk.position.set(wx, hy + tH/2, wz);
+        trunk.position.set(lx, hy + tH/2, lz);
         trunk.castShadow = true;
         group.add(trunk);
         const brightLeaf = new THREE.MeshStandardMaterial({ color: 0x8ab840, roughness: 0.8 });
-        const cr = 1.2 + Math.random()*0.8;
+        const cr = 1.2 + rng()*0.8;
         const canopy = new THREE.Mesh(new THREE.SphereGeometry(cr, 7, 6), brightLeaf);
-        canopy.position.set(wx, hy + tH + cr*0.5, wz);
+        canopy.position.set(lx, hy + tH + cr*0.5, lz);
         canopy.scale.y = 1.1;
         canopy.castShadow = true;
         group.add(canopy);
@@ -1523,29 +1725,60 @@ const THREE_ENV = (() => {
   }
 
   // ── Buildings (urban) ─────────────────────────────────────────────
+  // Seeded layout so buildings don't shift on every rebuild
+  function _seededRand(seed) {
+    let s = seed;
+    return function() {
+      s = (s * 1664525 + 1013904223) & 0xffffffff;
+      return (s >>> 0) / 0xffffffff;
+    };
+  }
+
   function buildUrban() {
     const group = new THREE.Group();
     const bMats = [
       new THREE.MeshStandardMaterial({ color: 0x8090a0, roughness:0.7, metalness:0.2 }),
       new THREE.MeshStandardMaterial({ color: 0x607080, roughness:0.65, metalness:0.15 }),
       new THREE.MeshStandardMaterial({ color: 0x9aabbb, roughness:0.6, metalness:0.25 }),
+      new THREE.MeshStandardMaterial({ color: 0x70859a, roughness:0.55, metalness:0.3 }),
     ];
-    for (let i = 0; i < 40; i++) {
-      const x = (Math.random()-0.5)*200;
-      const z = (Math.random()-0.5)*200;
+    const rand = _seededRand(42); // Fixed seed = stable layout every rebuild
+    for (let i = 0; i < 42; i++) {
+      const x = (rand()-0.5)*200;
+      const z = (rand()-0.5)*200;
       const dist = Math.hypot(x,z);
-      if (dist < 12) continue;
-      const w = 4 + Math.random()*14, d = 4 + Math.random()*14, hh = 5 + Math.random()*35;
+      if (dist < 14) continue; // keep spawn area clear
+      const w = 4 + rand()*14, d = 4 + rand()*14, hh = 5 + rand()*38;
       const geo = new THREE.BoxGeometry(w, hh, d);
-      const mesh = new THREE.Mesh(geo, bMats[i%3]);
+      const mesh = new THREE.Mesh(geo, bMats[i%4]);
       mesh.position.set(x, hh/2, z);
       mesh.castShadow = true; mesh.receiveShadow = true;
       group.add(mesh);
+      // Store AABB with face normals for all 6 faces
+      // _checkColliders uses the stored normal to push drone away from the hit face
       PHYS.colliders.push({
-        min:{x:x-w/2, y:0, z:z-d/2}, max:{x:x+w/2, y:hh, z:z+d/2},
-        normal:{x:0,y:1,z:0},
+        min:{x:x-w/2, y:0,    z:z-d/2},
+        max:{x:x+w/2, y:hh,   z:z+d/2},
+        normal:{x:0,  y:1,    z:0},      // used by AABB hit — will be overridden per-face in _checkColliders
+        _w:w, _d:d, _h:hh, _cx:x, _cz:z // extra data for face-normal resolution
       });
     }
+    // Add road markings / ground detail
+    const roadMat = new THREE.MeshLambertMaterial({ color: 0x2a2a2a });
+    const roadGeo = new THREE.PlaneGeometry(200, 10);
+    roadGeo.rotateX(-Math.PI/2);
+    [-20,-5,10,25].forEach(rz => {
+      const road = new THREE.Mesh(roadGeo, roadMat.clone());
+      road.position.set(0, 0.01, rz);
+      group.add(road);
+    });
+    const roadGeo2 = new THREE.PlaneGeometry(10, 200);
+    roadGeo2.rotateX(-Math.PI/2);
+    [-20,-5,10,25].forEach(rx => {
+      const road = new THREE.Mesh(roadGeo2, roadMat.clone());
+      road.position.set(rx, 0.01, 0);
+      group.add(road);
+    });
     return group;
   }
 
@@ -1661,8 +1894,8 @@ const THREE_ENV = (() => {
     const group = new THREE.Group();
     // Two cloud layers
     const layers = [
-      { alt: 55, spread: 380, count: 32, minR: 5, maxR: 18, opacity: 0.78 },
-      { alt: 95, spread: 300, count: 18, minR: 8, maxR: 25, opacity: 0.55 },
+      { alt: 55, spread: 380, count: 8, minR: 5, maxR: 18, opacity: 0.78 },
+      { alt: 95, spread: 300, count: 5, minR: 8, maxR: 25, opacity: 0.55 },
     ];
     layers.forEach(layer => {
       const mat = new THREE.MeshLambertMaterial({
@@ -1673,7 +1906,7 @@ const THREE_ENV = (() => {
         const cx2 = (Math.random()-0.5)*layer.spread;
         const cz2 = (Math.random()-0.5)*layer.spread;
         const cy  = layer.alt + Math.random()*20;
-        const clumpCount = 4 + Math.floor(Math.random()*7);
+        const clumpCount = 2 + Math.floor(Math.random()*3);
         for (let j = 0; j < clumpCount; j++) {
           const r = layer.minR + Math.random()*(layer.maxR-layer.minR);
           const s = new THREE.Mesh(new THREE.SphereGeometry(r, 9, 7), mat.clone());
@@ -1689,19 +1922,27 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // ── Rain ────────────────────────────────────────────────────────────
+  // ── Rain (streak-based for better visibility) ───────────────────────
   function buildRain() {
-    const count = 5000;
+    const count = 4000;
+    // Each raindrop is a short line segment (2 vertices)
+    // positions: even = top of streak, odd = bottom
     const geo = new THREE.BufferGeometry();
-    const pos = new Float32Array(count * 3);
+    const pos = new Float32Array(count * 2 * 3); // 2 vertices per streak
     for (let i = 0; i < count; i++) {
-      pos[i*3  ] = (Math.random()-0.5)*90;
-      pos[i*3+1] = Math.random()*65;
-      pos[i*3+2] = (Math.random()-0.5)*90;
+      const x = (Math.random()-0.5)*80;
+      const y = Math.random()*60;
+      const z = (Math.random()-0.5)*80;
+      const streakLen = 0.45 + Math.random()*0.35;
+      pos[i*6  ] = x;     pos[i*6+1] = y;              pos[i*6+2] = z;   // top
+      pos[i*6+3] = x+0.05;pos[i*6+4] = y - streakLen;  pos[i*6+5] = z;   // bottom (streak angled slightly)
     }
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    const mat = new THREE.PointsMaterial({ color:0x99ccff, size:0.10, transparent:true, opacity:0.45, depthWrite:false });
-    return { pts: new THREE.Points(geo, mat), geo, pos };
+    const mat = new THREE.LineBasicMaterial({
+      color: 0xaad4ff, transparent: true, opacity: 0.55, depthWrite: false,
+    });
+    const lines = new THREE.LineSegments(geo, mat);
+    return { pts: lines, geo, pos, isLines: true };
   }
 
   // ── Drone mesh (premium PBR materials) ───────────────────────────
@@ -1917,19 +2158,24 @@ const THREE_ENV = (() => {
 
   function updateTrail() {
     const p = PHYS.pos;
-    const last = _trailPoints[_trailPoints.length-1] || {x:9999,y:9999,z:9999};
+    const last = _trailPoints[_trailPoints.length-1] || {x:p.x+999,y:p.y,z:p.z+999};
     if (V3.len(V3.sub(p, last)) > 0.3) {
+      // Store world coords (doubles) in trail array — convert to render space at draw time
       _trailPoints.push({ x:p.x, y:p.y, z:p.z });
-      if (_trailPoints.length > 500) _trailPoints.shift();
+      if (_trailPoints.length > 600) _trailPoints.shift();
     }
+    // Write trail buffer in render space to avoid float32 precision loss
     const buf = _trailLine.geometry.attributes.position.array;
+    const rox = _renderOriginX, roz = _renderOriginZ;
     for (let i = 0; i < _trailPoints.length; i++) {
-      buf[i*3  ] = _trailPoints[i].x;
+      buf[i*3  ] = _trailPoints[i].x - rox;
       buf[i*3+1] = _trailPoints[i].y;
-      buf[i*3+2] = _trailPoints[i].z;
+      buf[i*3+2] = _trailPoints[i].z - roz;
     }
     _trailLine.geometry.setDrawRange(0, _trailPoints.length);
     _trailLine.geometry.attributes.position.needsUpdate = true;
+    // Trail mesh stays at origin (render-space coords baked into vertices)
+    _trailLine.position.set(0, 0, 0);
   }
 
   // ── Waypoint markers ─────────────────────────────────────────────
@@ -1995,62 +2241,127 @@ const THREE_ENV = (() => {
   // ── Chunk management ─────────────────────────────────────────────
   function _chunkKey(cx, cz) { return `${cx},${cz}`; }
 
-  function _loadChunk(cx, cz) {
-    const key = _chunkKey(cx, cz);
-    if (_chunks.has(key)) return;
-    const chunkData = {};
-    // Terrain
-    const mesh = buildChunkMesh(cx, cz, _envName);
-    scene.add(mesh);
-    chunkData.mesh = mesh;
-    // Vegetation
-    if (_envName !== 'indoor') {
-      const veg = buildVegetation(cx, cz, _envName);
-      if (veg) { scene.add(veg); chunkData.veg = veg; }
-      const flowers = buildFlowers(cx, cz, _envName);
-      if (flowers) { scene.add(flowers); chunkData.flowers = flowers; }
-      const grass = buildGrassBlades(cx, cz, _envName);
-      if (grass)   { scene.add(grass);   chunkData.grass = grass; }
-      const rocks = buildRocks(cx, cz, _envName);
-      if (rocks)   { scene.add(rocks);   chunkData.rocks = rocks; }
-    }
-    chunkData.cx = cx; chunkData.cz = cz;
-    _chunks.set(key, chunkData);
-  }
-
-  function _unloadChunk(key) {
-    const cd = _chunks.get(key);
-    if (!cd) return;
+  // ── Dispose all Three objects in a chunk ──────────────────────────
+  function _disposeChunkData(cd) {
     ['mesh','veg','flowers','grass','rocks'].forEach(k => {
       if (!cd[k]) return;
       scene.remove(cd[k]);
       cd[k].traverse(o => {
         if (o.geometry) o.geometry.dispose();
         if (o.material) {
-          if (Array.isArray(o.material)) o.material.forEach(m=>m.dispose());
+          if (Array.isArray(o.material)) o.material.forEach(m => m.dispose());
           else o.material.dispose();
         }
       });
     });
+  }
+
+  // ── Build one chunk and place it in render space ──────────────────
+  function _buildChunk(cx, cz, lod) {
+    const key = _chunkKey(cx, cz);
+    const existing = _chunks.get(key);
+    if (existing) {
+      if (existing.lod <= lod) return;
+      _disposeChunkData(existing);
+      _chunks.delete(key);
+    }
+    const segs = lod === 0 ? CHUNK_SEGS : CHUNK_SEGS_L;
+    const chunkData = { cx, cz, lod };
+
+    // World-space origin of this chunk
+    const worldX = cx * CHUNK_SIZE;
+    const worldZ = cz * CHUNK_SIZE;
+    // Render-space offset (kept small regardless of world position)
+    const renderX = worldX - _renderOriginX;
+    const renderZ = worldZ - _renderOriginZ;
+
+    chunkData.mesh = buildChunkMesh(cx, cz, _envName, segs);
+    // buildChunkMesh places geometry relative to its own origin,
+    // then we position the mesh group in render space
+    chunkData.mesh.position.set(renderX, 0, renderZ);
+    scene.add(chunkData.mesh);
+
+    // Vegetation only on full-detail inner chunks
+    if (lod === 0 && _envName !== 'indoor' && _envName !== 'urban') {
+      const veg = buildVegetation(cx, cz, _envName);
+      if (veg)     { veg.position.set(renderX, 0, renderZ);     scene.add(veg);     chunkData.veg     = veg;     }
+      const flowers = buildFlowers(cx, cz, _envName);
+      if (flowers) { flowers.position.set(renderX, 0, renderZ); scene.add(flowers); chunkData.flowers = flowers; }
+      const grass = buildGrassBlades(cx, cz, _envName);
+      if (grass)   { grass.position.set(renderX, 0, renderZ);   scene.add(grass);   chunkData.grass   = grass;   }
+      const rocks = buildRocks(cx, cz, _envName);
+      if (rocks)   { rocks.position.set(renderX, 0, renderZ);   scene.add(rocks);   chunkData.rocks   = rocks;   }
+    }
+    _chunks.set(key, chunkData);
+  }
+
+  function _unloadChunk(key) {
+    const cd = _chunks.get(key);
+    if (!cd) return;
+    _disposeChunkData(cd);
     _chunks.delete(key);
   }
 
+  // ── Time-budgeted chunk drain — max 6ms per frame ────────────────
+  const CHUNK_BUDGET_MS = 6;
+  function _drainLoadQueue() {
+    const t0 = performance.now();
+    while (_loadQueue.length > 0) {
+      if (performance.now() - t0 > CHUNK_BUDGET_MS) break; // time budget exhausted
+      const { cx, cz, lod } = _loadQueue.shift();
+      const key = _chunkKey(cx, cz);
+      const ex  = _chunks.get(key);
+      if (!ex || ex.lod > lod) {
+        _buildChunk(cx, cz, lod);
+      }
+    }
+  }
+
+  // ── Called every render frame: determine which chunks are needed ──
   function _updateChunks() {
     const p = PHYS.pos;
     const cx = Math.round(p.x / CHUNK_SIZE);
     const cz = Math.round(p.z / CHUNK_SIZE);
+
+    // Always drain queue first (spread build cost over frames)
+    _drainLoadQueue();
+
+    // Only recompute needed set when drone crosses a chunk boundary
     if (cx === _lastChunkX && cz === _lastChunkZ) return;
     _lastChunkX = cx; _lastChunkZ = cz;
-    // Load needed chunks
-    const needed = new Set();
+
+    const needed = new Map(); // key -> lod (0=full, 1=low)
+
+    // Full-detail inner ring
     for (let dx = -RENDER_DIST; dx <= RENDER_DIST; dx++) {
       for (let dz = -RENDER_DIST; dz <= RENDER_DIST; dz++) {
-        const key = _chunkKey(cx+dx, cz+dz);
-        needed.add(key);
-        _loadChunk(cx+dx, cz+dz);
+        needed.set(_chunkKey(cx+dx, cz+dz), 0);
       }
     }
-    // Unload far chunks
+    // Low-detail outer ring
+    for (let dx = -LOD_DIST; dx <= LOD_DIST; dx++) {
+      for (let dz = -LOD_DIST; dz <= LOD_DIST; dz++) {
+        if (Math.abs(dx) <= RENDER_DIST && Math.abs(dz) <= RENDER_DIST) continue; // already full
+        needed.set(_chunkKey(cx+dx, cz+dz), 1);
+      }
+    }
+
+    // Queue new / upgraded chunks, sorted closest-first so nearest loads first
+    const toLoad = [];
+    for (const [key, lod] of needed) {
+      const ex = _chunks.get(key);
+      if (!ex || ex.lod > lod) {
+        // Parse cx/cz back from key for distance sort
+        const [kcx, kcz] = key.split(',').map(Number);
+        const dist2 = (kcx-cx)**2 + (kcz-cz)**2;
+        toLoad.push({ cx: kcx, cz: kcz, lod, dist2 });
+      }
+    }
+    toLoad.sort((a, b) => a.dist2 - b.dist2);
+    // Prepend to queue (priority: new closest chunks jump the line)
+    _loadQueue = [...toLoad, ..._loadQueue.filter(e => needed.has(_chunkKey(e.cx, e.cz)))];
+
+    // Unload chunks that are no longer in range — unload synchronously (GPU memory freed immediately)
     for (const [key] of _chunks) {
       if (!needed.has(key)) _unloadChunk(key);
     }
@@ -2080,7 +2391,7 @@ const THREE_ENV = (() => {
     const H = vp.clientHeight || 500;
 
     renderer = new THREE.WebGLRenderer({ canvas: _canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(W, H);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -2167,7 +2478,9 @@ const THREE_ENV = (() => {
     _envName = envName;
     PHYS.colliders = [];
 
-    // Clear all chunks
+    // Reset render origin and clear everything on env rebuild
+    _renderOriginX = 0; _renderOriginZ = 0;
+    _loadQueue = [];
     for (const [key] of _chunks) _unloadChunk(key);
     _chunks.clear();
     _lastChunkX = null; _lastChunkZ = null;
@@ -2211,25 +2524,65 @@ const THREE_ENV = (() => {
 
     // Indoor special-case
     if (envName === 'indoor') {
-      const wallMat = new THREE.MeshStandardMaterial({ color: 0xccccbb, roughness:0.9 });
-      const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), wallMat.clone());
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0xd0cfc2, roughness:0.85 });
+      const floorMat = new THREE.MeshStandardMaterial({ color: 0xb0aeaa, roughness:0.9 });
+      // Floor
+      const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), floorMat);
       floor.rotation.x = -Math.PI/2; floor.receiveShadow = true;
       scene.add(floor);
-      const wallGeo = new THREE.BoxGeometry(60, 20, 0.5);
-      [0,1,2,3].forEach(i => {
-        const w = new THREE.Mesh(wallGeo, wallMat.clone());
-        const a = i * Math.PI/2;
-        w.rotation.y = a; w.position.set(Math.sin(a)*30, 10, Math.cos(a)*30);
+      // Ceiling
+      const ceil = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), wallMat.clone());
+      ceil.rotation.x = Math.PI/2; ceil.position.y = 20;
+      scene.add(ceil);
+      // Floor grid lines for visual reference
+      const gridHelper = new THREE.GridHelper(60, 12, 0x888880, 0x666660);
+      gridHelper.position.y = 0.01;
+      scene.add(gridHelper);
+      // Walls — fixed normals per side
+      const wallDefs = [
+        { pos:[  0, 10,  30], size:[60,20,0.5], norm:{x:0,y:0,z:-1} }, // N wall
+        { pos:[  0, 10, -30], size:[60,20,0.5], norm:{x:0,y:0,z: 1} }, // S wall
+        { pos:[ 30, 10,   0], size:[0.5,20,60], norm:{x:-1,y:0,z:0} }, // E wall
+        { pos:[-30, 10,   0], size:[0.5,20,60], norm:{x: 1,y:0,z:0} }, // W wall
+      ];
+      wallDefs.forEach(wd => {
+        const wg = new THREE.BoxGeometry(...wd.size);
+        const w = new THREE.Mesh(wg, wallMat.clone());
+        w.position.set(...wd.pos);
         w.receiveShadow = true; w.castShadow = true;
         scene.add(w);
+        const [wx,wy,wz] = wd.pos; const [sw,sh,sd] = wd.size;
         PHYS.colliders.push({
-          min:{x:w.position.x-30, y:0, z:w.position.z-0.5},
-          max:{x:w.position.x+30, y:20, z:w.position.z+0.5},
-          normal:{x:0,y:0,z:1},
+          min:{x:wx-sw/2, y:0, z:wz-sd/2},
+          max:{x:wx+sw/2, y:sh, z:wz+sd/2},
+          normal: wd.norm,
         });
       });
-      hemiLight.intensity = 0.95;
-      shadowLight.intensity = 0.55;
+      // Warehouse shelving units for visual interest
+      const shelfMat = new THREE.MeshStandardMaterial({ color:0x8a7a6a, roughness:0.8, metalness:0.1 });
+      const shelfPositions = [[-15,0,-10],[-15,0,0],[-15,0,10],[15,0,-10],[15,0,0],[15,0,10]];
+      shelfPositions.forEach(([sx,sy,sz]) => {
+        const shelf = new THREE.Mesh(new THREE.BoxGeometry(2,5,1), shelfMat.clone());
+        shelf.position.set(sx, 2.5, sz);
+        shelf.castShadow = true; shelf.receiveShadow = true;
+        scene.add(shelf);
+        // Don't add shelf colliders — too small to affect flight meaningfully
+      });
+      // Overhead lighting rigs
+      const rigMat = new THREE.MeshStandardMaterial({ color:0x444444, roughness:0.6, metalness:0.5 });
+      [-15,0,15].forEach(lx => {
+        const rig = new THREE.Mesh(new THREE.BoxGeometry(1,0.2,50), rigMat.clone());
+        rig.position.set(lx, 19.8, 0);
+        scene.add(rig);
+        // Add point lights along rig
+        [-20,0,20].forEach(lz => {
+          const pl = new THREE.PointLight(0xfff5e0, 0.6, 40);
+          pl.position.set(lx, 18, lz);
+          scene.add(pl);
+        });
+      });
+      hemiLight.intensity = 0.85;
+      shadowLight.intensity = 0.45;
     }
 
     // Volumetric fog planes
@@ -2260,38 +2613,60 @@ const THREE_ENV = (() => {
     // Initial chunk load (around spawn)
     if (envName !== 'urban' && envName !== 'indoor') {
       _lastChunkX = null; _lastChunkZ = null;
+      // Build centre 3×3 immediately so there's terrain underfoot on first frame
+      const spawnCX = Math.round(PHYS.pos.x / CHUNK_SIZE);
+      const spawnCZ = Math.round(PHYS.pos.z / CHUNK_SIZE);
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dz = -1; dz <= 1; dz++) {
+          _buildChunk(spawnCX+dx, spawnCZ+dz, 0);
+        }
+      }
+      // Queue the rest for async streaming
       _updateChunks();
     }
   }
 
-  // ── Camera update ────────────────────────────────────────────────
+  // ── Camera update (render-space) ─────────────────────────────────
+  function _camMinY(wx, wz, margin) {
+    return terrainHeight(wx, wz, _envName) + (margin || 0.8);
+  }
+
   function updateCamera() {
-    const p = PHYS.pos;
+    const p  = PHYS.pos;
     const quat = PHYS.quat;
     const yaw  = PHYS.euler.yaw;
+    const rox  = _renderOriginX, roz = _renderOriginZ;
+
+    // Drone render-space position (always near origin)
+    const drx = p.x - rox, drz = p.z - roz;
 
     if (_camMode === 'third') {
       const dist = 4.5, height = 2.2;
-      const tx = p.x - Math.sin(yaw)*dist;
-      const tz = p.z - Math.cos(yaw)*dist;
-      camera.position.lerp(new THREE.Vector3(tx, p.y+height, tz), 0.12);
-      camera.lookAt(p.x, p.y+0.3, p.z);
+      const twx = p.x - Math.sin(yaw)*dist; // world
+      const twz = p.z - Math.cos(yaw)*dist;
+      const ty  = Math.max(p.y + height, _camMinY(twx, twz, 1.2));
+      camera.position.lerp(_camTargetV3.set(twx - rox, ty, twz - roz), 0.12);
+      camera.lookAt(drx, Math.max(p.y+0.3, PHYS.groundY+0.5), drz);
     } else if (_camMode === 'fpv') {
       const fwd = Q.rotVec(quat, {x:0, y:0.05, z:0.15});
-      camera.position.set(p.x+fwd.x, p.y+fwd.y, p.z+fwd.z);
+      const fpvY = Math.max(p.y + fwd.y, PHYS.groundY + 0.15);
+      camera.position.set(drx + fwd.x, fpvY, drz + fwd.z);
       const aim = Q.rotVec(quat, {x:0, y:-0.1, z:1.0});
-      camera.lookAt(p.x+aim.x, p.y+aim.y, p.z+aim.z);
+      const lookY = PHYS.crashed ? PHYS.groundY + 0.5 : p.y + aim.y;
+      camera.lookAt(drx + aim.x, lookY, drz + aim.z);
     } else if (_camMode === 'orbit') {
-      const ox = p.x + Math.sin(_orbitAngle)*_orbitDist;
-      const oz = p.z + Math.cos(_orbitAngle)*_orbitDist;
-      camera.position.lerp(new THREE.Vector3(ox, p.y+_orbitH, oz), 0.08);
-      camera.lookAt(p.x, p.y, p.z);
+      const owx = p.x + Math.sin(_orbitAngle)*_orbitDist;
+      const owz = p.z + Math.cos(_orbitAngle)*_orbitDist;
+      const oy  = Math.max(p.y + _orbitH, _camMinY(owx, owz, 1.5));
+      camera.position.lerp(_camTargetV3.set(owx - rox, oy, owz - roz), 0.08);
+      camera.lookAt(drx, Math.max(p.y, PHYS.groundY + 0.3), drz);
     } else if (_camMode === 'free') {
-      camera.position.lerp(new THREE.Vector3(_freeCam.x, _freeCam.y, _freeCam.z), 0.05);
-      camera.lookAt(p.x, p.y, p.z);
+      // Free cam stored in render space (small numbers)
+      camera.position.lerp(_camTargetV3.set(_freeCam.x, _freeCam.y, _freeCam.z), 0.05);
+      camera.lookAt(drx, p.y, drz);
     } else if (_camMode === 'top') {
-      camera.position.lerp(new THREE.Vector3(p.x, p.y+22, p.z+0.001), 0.06);
-      camera.lookAt(p.x, p.y, p.z);
+      camera.position.lerp(_camTargetV3.set(drx, p.y+22, drz+0.001), 0.06);
+      camera.lookAt(drx, p.y, drz);
     }
   }
 
@@ -2306,7 +2681,7 @@ const THREE_ENV = (() => {
   }
 
   function _drawBloom(W, H) {
-    if (!_bloomCanvas || !_bloomCtx) return;
+    if (!_bloomCanvas || !_bloomCtx || W < 4 || H < 4) return;
     _bloomCanvas.width  = Math.round(W * 0.25);
     _bloomCanvas.height = Math.round(H * 0.25);
     const bW = _bloomCanvas.width, bH = _bloomCanvas.height;
@@ -2326,11 +2701,16 @@ const THREE_ENV = (() => {
   // ── Render tick ──────────────────────────────────────────────────
   let _frame = 0, _fps = 60, _fpsSmooth = 60, _lastFPSTime = 0;
   let _simTime = 0;
+  const _camTargetV3 = new THREE.Vector3();
+  const _shadowOffsetV3 = new THREE.Vector3();
+  let _viewportEl = null;
   function render() {
     requestAnimationFrame(render);
     const dt = Math.min(0.05, clock.getDelta());
     _frame++;
     _simTime += dt;
+    // Render-origin for this frame (used by camera, shadow, drone, trail)
+    const rox = _renderOriginX, roz = _renderOriginZ;
 
     // FPS counter
     const now = performance.now();
@@ -2343,9 +2723,16 @@ const THREE_ENV = (() => {
       skyMesh.material.uniforms.time.value = _simTime;
     }
 
-    // Drone mesh from physics
+    // ── Floating-origin rebase check ──────────────────────────────────
+    // Rebase when the drone strays too far from render origin
     const p = PHYS.pos;
-    droneGroup.position.set(p.x, p.y, p.z);
+    const distFromOrigin = Math.max(Math.abs(p.x - _renderOriginX), Math.abs(p.z - _renderOriginZ));
+    if (distFromOrigin > REBASE_THRESHOLD) {
+      _rebaseRenderOrigin();
+    }
+
+    // Place drone in render space (world minus render origin)
+    droneGroup.position.set(p.x - rox, p.y, p.z - roz);
     droneGroup.quaternion.set(PHYS.quat.x, PHYS.quat.y, PHYS.quat.z, PHYS.quat.w);
 
     // Propeller spin
@@ -2368,28 +2755,51 @@ const THREE_ENV = (() => {
       });
     });
 
-    // Cloud drift with wind
+    // Cloud drift with wind — wrap within a max radius to prevent glitching
     if (cloudGroup) {
       cloudGroup.position.x += PHYS.windVec.x * dt * 0.12;
       cloudGroup.position.z += PHYS.windVec.z * dt * 0.12;
-      // Gentle bob
-      cloudGroup.position.y = Math.sin(_simTime * 0.06) * 1.2;
+      // Gentle bob — additive delta so it doesn't snap
+      const prevBob = cloudGroup.userData._lastBob || 0;
+      const newBob = Math.sin(_simTime * 0.06) * 1.2;
+      cloudGroup.position.y += newBob - prevBob;
+      cloudGroup.userData._lastBob = newBob;
+      // Wrap cloud group back around drone when it drifts too far
+      const maxDrift = 180;
+      if (Math.abs(cloudGroup.position.x - p.x) > maxDrift) cloudGroup.position.x = p.x + (Math.random()-0.5)*60;
+      if (Math.abs(cloudGroup.position.z - p.z) > maxDrift) cloudGroup.position.z = p.z + (Math.random()-0.5)*60;
     }
 
-    // Rain animation
+    // Rain animation (streak-based: stride 6)
     if (_rainOn && _rainPositions) {
-      for (let i = 0; i < _rainPositions.length/3; i++) {
-        _rainPositions[i*3+1] -= (14 + Math.random()*6) * dt;
-        _rainPositions[i*3  ] += PHYS.windVec.x * dt * 0.5;
-        _rainPositions[i*3+2] += PHYS.windVec.z * dt * 0.5;
-        if (_rainPositions[i*3+1] < -5) {
-          _rainPositions[i*3+1] = 60;
-          _rainPositions[i*3  ] = p.x + (Math.random()-0.5)*85;
-          _rainPositions[i*3+2] = p.z + (Math.random()-0.5)*85;
+      const dropCount = _rainPositions.length / 6;
+      const windX = PHYS.windVec.x * dt * 0.4;
+      const windZ = PHYS.windVec.z * dt * 0.4;
+      const fallSpeed = 20 * dt;
+      for (let i = 0; i < dropCount; i++) {
+        const b = i * 6;
+        _rainPositions[b+1] -= fallSpeed;   // top y
+        _rainPositions[b+4] -= fallSpeed;   // bottom y
+        _rainPositions[b  ] += windX;       // top x drift
+        _rainPositions[b+3] += windX;
+        _rainPositions[b+2] += windZ;       // top z drift
+        _rainPositions[b+5] += windZ;
+        if (_rainPositions[b+1] < -8) {
+          // Use render-space drone position (small numbers, no precision loss)
+          const drx2 = p.x - _renderOriginX, drz2 = p.z - _renderOriginZ;
+          const nx = drx2 + (Math.random()-0.5)*80;
+          const nz = drz2 + (Math.random()-0.5)*80;
+          const ny = 58 + Math.random()*5;
+          const sl = 0.45 + Math.random()*0.35;
+          _rainPositions[b  ] = nx;     _rainPositions[b+1] = ny;
+          _rainPositions[b+2] = nz;
+          _rainPositions[b+3] = nx+0.05;_rainPositions[b+4] = ny - sl;
+          _rainPositions[b+5] = nz;
         }
       }
       _rainGeo.attributes.position.needsUpdate = true;
-      if (_rainParticles) _rainParticles.position.set(p.x, 0, p.z);
+      // Keep rain centred on drone
+      if (_rainParticles) _rainParticles.position.set(0, 0, 0);
     }
 
     // Day cycle
@@ -2397,10 +2807,10 @@ const THREE_ENV = (() => {
     if (_dayTime > 1) _dayTime -= 1;
     if (!_nightMode) _updateSunFromTime(_dayTime);
 
-    // Shadow frustum follows drone
+    // Shadow frustum follows drone in render space
     if (shadowLight) {
-      shadowLight.shadow.camera.position.copy(shadowLight.position).add(new THREE.Vector3(p.x, 0, p.z));
-      shadowLight.target.position.set(p.x, 0, p.z);
+      const sdx = p.x - rox, sdz = p.z - roz;
+      shadowLight.target.position.set(sdx, 0, sdz);
       shadowLight.target.updateMatrixWorld();
     }
 
@@ -2408,13 +2818,15 @@ const THREE_ENV = (() => {
     _updateChunks();
 
     updateCamera();
+    // [FIX] Sky sphere follows camera so it never exits the sphere (eliminates black-hole gap)
+    if (skyMesh) skyMesh.position.copy(camera.position);
     updateTrail();
     renderer.render(scene, camera);
 
     // Software bloom (every 2nd frame for perf)
-    if (_bloomEnabled && _frame % 2 === 0) {
-      const vp = document.getElementById('viewport');
-      if (vp) _drawBloom(vp.clientWidth, vp.clientHeight);
+    if (_bloomEnabled && _frame % 4 === 0) {
+      if (!_viewportEl) _viewportEl = document.getElementById('viewport');
+      if (_viewportEl) _drawBloom(_viewportEl.clientWidth, _viewportEl.clientHeight);
     }
   }
 
@@ -2446,6 +2858,10 @@ const THREE_ENV = (() => {
     },
     getFPS() { return _fpsSmooth; },
     getTerrainHeight(x, z) { return terrainHeight(x, z, _envName); },
+    getSafeSpawnPoint() { return getSafeSpawnPoint(_envName); },
+    getChunkInfo() {
+      return { loaded: _chunks.size, queued: _loadQueue.length };
+    },
     render,
   };
 })();
@@ -2459,7 +2875,16 @@ const MINIMAP = {
   draw() {
     const canvas = document.getElementById('miniCanvas');
     if (!canvas) return;
-    const W = canvas.width || 220, H = canvas.height || 120;
+    // Always sync pixel dimensions to CSS-rendered size (fixes blank minimap)
+    const rect = canvas.getBoundingClientRect();
+    const newW = Math.round(rect.width)  || canvas.parentElement?.clientWidth  || 220;
+    const newH = Math.round(rect.height) || canvas.parentElement?.clientHeight || 120;
+    if (canvas.width !== newW || canvas.height !== newH) {
+      canvas.width  = newW;
+      canvas.height = newH;
+    }
+    if (!canvas.width || !canvas.height) return;
+    const W = canvas.width, H = canvas.height;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = '#1a2744';
@@ -2523,9 +2948,12 @@ const MINIMAP = {
     ctx.closePath(); ctx.fill();
     ctx.restore();
 
-    // Badge
+    // Badge — show world position + loaded chunk count
     const badge = document.getElementById('minimap-badge');
-    if (badge) badge.textContent = `${PHYS.pos.x.toFixed(1)}, ${PHYS.pos.z.toFixed(1)}`;
+    if (badge) {
+      const wx = PHYS.pos.x.toFixed(0), wz = PHYS.pos.z.toFixed(0);
+      badge.textContent = `${wx}, ${wz}`;
+    }
 
     // Trail update
     if (this._trail.length === 0 || Math.hypot(px - (this._trail[this._trail.length-1]?.x||0), pz - (this._trail[this._trail.length-1]?.z||0)) > 1) {
@@ -2769,12 +3197,24 @@ const ENV = {
     // Ground height for indoor/warehouse
     PHYS.groundY = 0;
     THREE_ENV.rebuild(name);
-    // After rebuild, sample terrain at origin so drone sits on surface
-    const gY = THREE_ENV.getTerrainHeight(0, 0);
+    // Use getSafeSpawnPoint to find lowest terrain valley — drone no longer spawns inside mountains
+    const _spawnPt = THREE_ENV.getSafeSpawnPoint();
+    const gY = _spawnPt.y;
+    // Set groundY BEFORE reset so PHYS.reset snaps to correct height
     PHYS.groundY = gY;
-    if (PHYS.grounded || PHYS.pos.y < gY + 0.5) {
-      PHYS.pos.y = gY + 0.15;
+    const _droneHalf = 0.074 * (PHYS.droneVisual.bodyScale || 1.0) * 5.0;
+    // Always respawn at safe location when switching environments or when clearly underground
+    const clearlyUnderground = PHYS.pos.y < gY + _droneHalf - 0.5;
+    if (PHYS.grounded || PHYS.crashed || clearlyUnderground) {
+      PHYS.crashed = false;
+      PHYS.grounded = true;
+      PHYS.pos.x = _spawnPt.x;
+      PHYS.pos.z = _spawnPt.z;
+      PHYS.pos.y = gY + _droneHalf;
       PHYS.vel = {x:0, y:0, z:0};
+      PHYS.angVel = {x:0, y:0, z:0};
+      PHYS.quat = {w:1,x:0,y:0,z:0};
+      PHYS.euler = {roll:0,pitch:0,yaw:0};
     }
     document.querySelectorAll('[data-env]').forEach(b => b.classList.toggle('on', b.dataset.env===name));
     UI.log(`Environment: ${name}`, 'ok');
@@ -2786,13 +3226,14 @@ const ENV = {
 ══════════════════════════════════════════════════════════════════════ */
 const State = {
   armed: false,
+  
   flightMode: 'stabilized',
   motorDamage: [0,0,0,0],
   flightTime: 0,
 };
 
 const SIM = {
-  _last: 0, _running: false, _paused: false, _speed: 2.0,
+  _last: 0, _running: false, _paused: false, _speed: 4.0,
   start() {
     this._running = true;
     this._paused = false;
@@ -2839,9 +3280,13 @@ const SIM = {
     const subDt = dt / substeps;
     INPUT.update(dt);
     const inp = INPUT.get();
-    for (let s = 0; s < substeps; s++) {
-      // Update groundY to actual terrain height each substep
+    // Cache terrain height once per frame — env-aware (flat envs stay at 0)
+    const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
+    if (_envName_sim !== 'indoor' && _envName_sim !== 'urban') {
       PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
+      if (PHYS.groundY < 0) PHYS.groundY = 0;
+    }
+    for (let s = 0; s < substeps; s++) {
       // [FIX-2.1] FC.update() runs the OUTER angle loop only (stores rate cmd).
       // The inner rate PID runs inside PHYS._substep() at full substep rate.
       FC.update(subDt, inp);
@@ -2857,28 +3302,59 @@ const SIM = {
     OBSTACLE_DIST.update();
     PID_TELEM.capture();
 
-    // [FIX-Bug-26b] Pass rawDt to _updateUI so wall clock runs at real time
-    this._updateUI(rawDt);
     // [FIX-Bug-26c] Use shared sim clock (same reference as sim-engine.js)
     BLACKBOX.tick(_simClock.t);
     TELEM_GRAPH.push(PHYS);
-    TELEM_GRAPH.draw();
-    DEBUG.draw();
-    MINIMAP.draw();
-    drawAttitude();
-    drawWindCompass();
-    updateRecordingUI();
+    
+    // Throttle UI and 2D canvas draws to ~20 Hz (every 3rd frame) to reduce CPU load
+    if (typeof this._simUIFrame === 'undefined') this._simUIFrame = 0;
+    this.this._simUIFrame++;
+    if (this._simUIFrame % 3 === 0) {
+      this._updateUI(rawDt); // Throttled DOM text updates
+      TELEM_GRAPH.draw();
+      DEBUG.draw();
+      MINIMAP.draw();
+      drawAttitude();
+      drawWindCompass();
+      updateRecordingUI();
+    }
+  },
+
+  // ── Cached DOM references — populated on first _updateUI call ──
+  _dom: null,
+  _initDomCache() {
+    const ids = [
+      't-alt','t-vel','t-hdng','t-pitch','t-roll','t-yaw',
+      't-vx','t-vy','t-vz','t-px','t-py','t-pz',
+      'batt-pct','batt-top','t-volt','t-curr','batt-bar',
+      't-wind','t-gust','top-clock','t-batt-eta',
+      'gps-lat','gps-lon','gps-alt','gps-sat-count','gps-hdop','gps-fix-badge',
+      'gps-sat-row','vslam-x','vslam-y','vslam-z','vslam-quality-val',
+      'vslam-badge','vslam-quality','fps-val','sys-dot','sys-status',
+      'm0-rpm','m1-rpm','m2-rpm','m3-rpm',
+      'm0-bar','m1-bar','m2-bar','m3-bar',
+      'obs-fwd','obs-right','obs-back','obs-left','obs-up',
+      'obs-fwd-v','obs-right-v','obs-back-v','obs-left-v','obs-up-v',
+      'pid-roll-kp','pid-roll-ki','pid-roll-kd','pid-roll-err-lbl','pid-roll-err',
+      'pid-pitch-kp','pid-pitch-ki','pid-pitch-kd','pid-pitch-err-lbl','pid-pitch-err',
+      'pid-yaw-kp','pid-yaw-ki','pid-yaw-kd','pid-yaw-err-lbl','pid-yaw-err',
+      'pid-thr-kp','pid-thr-ki','pid-thr-kd','pid-thr-err-lbl','pid-thr-err',
+    ];
+    this._dom = {};
+    for (const id of ids) this._dom[id] = document.getElementById(id);
   },
 
   _updateUI(dt) {
+    // Init DOM cache on first call (DOM must be ready)
+    if (!this._dom) this._initDomCache();
+    const D = this._dom;
+    const set = (id,v) => { const el=D[id]; if(el) el.textContent=v; };
     const p = PHYS, e = p.euler;
     const R2D = 180/Math.PI;
     const alt = Math.max(0, p.pos.y - p.groundY);
     const vel = V3.len(p.vel);
 
-    // Telemetry
-    const $ = id => document.getElementById(id);
-    const set = (id,v) => { const el=$(id); if(el) el.textContent=v; };
+    // Telemetry — all reads from cached elements
     set('t-alt', alt.toFixed(1));
     set('t-vel', vel.toFixed(1));
     set('t-hdng', (((e.yaw*R2D+360)%360)|0).toString().padStart(3,'0'));
@@ -2894,11 +3370,12 @@ const SIM = {
 
     // Battery
     const battPct = p.battPct;
-    set('batt-pct', battPct.toFixed(0)+'%');
-    set('batt-top', battPct.toFixed(0)+'%');
+    const battStr = battPct.toFixed(0)+'%';
+    set('batt-pct', battStr);
+    set('batt-top', battStr);
     set('t-volt', p.battVoltage.toFixed(2));
     set('t-curr', p.currentDraw.toFixed(1));
-    const bbar = $('batt-bar');
+    const bbar = D['batt-bar'];
     if (bbar) {
       bbar.style.width = battPct+'%';
       bbar.className = 'bgauge-fill ' + (battPct<20?'red':battPct<50?'orange':'green');
@@ -2917,39 +3394,26 @@ const SIM = {
 
     // Motors
     for (let i = 0; i < 4; i++) {
-      const rpmEl = $(`m${i}-rpm`); const barEl = $(`m${i}-bar`);
+      const rpmEl = D[`m${i}-rpm`]; const barEl = D[`m${i}-bar`];
       const rpm = Math.round(p.motorRPM[i]);
       if (rpmEl) rpmEl.textContent = rpm;
       if (barEl) {
-        const pct = (rpm/p.maxRPM*100).toFixed(1);
-        barEl.style.width = pct+'%';
+        barEl.style.width = (rpm/p.maxRPM*100).toFixed(1)+'%';
         const dmg = State.motorDamage[i]||0;
         barEl.className = 'motor-bar' + (dmg>0.5?' red':dmg>0.2?' orange':'');
       }
     }
 
-    // Clock — Wall-clock based (immune to frame throttling)
-    // _wallClockArmedStart tracks when arming began; _wallClockAccum accumulates paused time
-    if (State.armed) {
-      if (!SIM._wallClockArmedStart) SIM._wallClockArmedStart = Date.now() - (SIM._wallClockAccum || 0);
-    } else {
-      if (SIM._wallClockArmedStart) {
-        SIM._wallClockAccum = Date.now() - SIM._wallClockArmedStart;
-        SIM._wallClockArmedStart = 0;
-      }
-    }
-    const ft = SIM._wallClockArmedStart ? (Date.now() - SIM._wallClockArmedStart) / 1000 : (SIM._wallClockAccum || 0) / 1000;
-    State.flightTime = ft; // keep State in sync for other consumers
-    const mm = Math.floor(ft/60), ss = Math.floor(ft%60);
-    const clk = $('top-clock');
-    if (clk) clk.textContent = mm.toString().padStart(2,'0')+':'+ss.toString().padStart(2,'0');
+    // Clock (Session Time)
+    const ft = performance.now() / 1000;
+    const clk = D['top-clock'];
+    if (clk) clk.textContent = Math.floor(ft/60).toString().padStart(2,'0')+':'+Math.floor(ft%60).toString().padStart(2,'0');
 
     // Battery ETA
     const etaSec = getBattEstimatedFlightTime();
-    const etaMin = etaSec < 9999 ? (etaSec/60).toFixed(1) : '--';
-    set('t-batt-eta', etaMin);
+    set('t-batt-eta', etaSec < 9999 ? (etaSec/60).toFixed(1) : '--');
 
-    // ── GPS_RAW_INT (5 Hz) ────────────────────────────────────────────
+    // ── GPS_RAW_INT ────────────────────────────────────────────
     const gps = GPS_SIM;
     const fixType = gps.getFixType();
     const satCount = gps.getSatCount();
@@ -2959,93 +3423,98 @@ const SIM = {
     set('gps-alt', gps.getAltMSL().toFixed(1));
     set('gps-sat-count', satCount);
     set('gps-hdop', hdop.toFixed(2));
-    const fixBadge = $('gps-fix-badge');
+    const fixBadge = D['gps-fix-badge'];
     if (fixBadge) {
       const fixLabels = { 0:'NO FIX', 1:'NO FIX', 2:'2D FIX', 3:'3D FIX', 4:'DGPS', 5:'RTK' };
       const fixClasses= { 0:'gps-fix-none', 1:'gps-fix-none', 2:'gps-fix-2d', 3:'gps-fix-3d', 4:'gps-fix-3d', 5:'gps-fix-3d' };
       fixBadge.textContent = fixLabels[fixType]||'NO FIX';
       fixBadge.className = 'gps-fix-badge '+(fixClasses[fixType]||'gps-fix-none');
     }
-    // Satellite dots
-    const satRow = $('gps-sat-row');
+    // Satellite dots — lazy-build once, then update classes only
+    const satRow = D['gps-sat-row'];
     if (satRow && satRow.children.length !== 16) {
       satRow.innerHTML = Array(16).fill(0).map((_,i)=>`<div class="gps-sat-dot" id="sat-dot-${i}"></div>`).join('');
     }
-    for (let i = 0; i < 16; i++) {
-      const dot = $('sat-dot-'+i);
-      if (dot) dot.className = 'gps-sat-dot'+(i<satCount?' on':i<satCount+2?' dim':'');
+    if (satRow) {
+      const dots = satRow.children;
+      for (let i = 0; i < 16; i++) dots[i].className = 'gps-sat-dot'+(i<satCount?' on':i<satCount+2?' dim':'');
     }
 
-    // ── VISION_POSITION (30 Hz VSLAM) ────────────────────────────────
+    // ── VISION_POSITION ────────────────────────────────────────────
     const vp = VISION_POS.get();
     set('vslam-x', vp.x);
     set('vslam-y', vp.y);
     set('vslam-z', vp.z);
     set('vslam-quality-val', vp.quality+'%');
-    const vslamBadge = $('vslam-badge');
+    const vslamBadge = D['vslam-badge'];
     if (vslamBadge) {
       vslamBadge.textContent = vp.active ? 'VSLAM ACTIVE' : 'GPS ACTIVE';
       vslamBadge.className = 'vslam-badge '+(vp.active ? 'vslam-active' : 'vslam-idle');
     }
-    const vslamQ = $('vslam-quality');
+    const vslamQ = D['vslam-quality'];
     if (vslamQ) vslamQ.style.width = vp.quality+'%';
 
-    // ── OBSTACLE_DISTANCE (10 Hz) ─────────────────────────────────────
+    // ── OBSTACLE_DISTANCE ─────────────────────────────────────────
     const obs = OBSTACLE_DIST.get();
     const obsMax = OBSTACLE_DIST.SENSOR_RANGE;
     const obsIds = ['fwd','right','back','left','up'];
-    const obsSectors = ['FWD','RIGHT','BACK','LEFT','UP'];
-    obs.forEach((d, i) => {
-      const pct = Math.min(100, (d/obsMax)*100);
-      const barEl = $(('obs-'+obsIds[i]));
-      const valEl = $(('obs-'+obsIds[i]+'-v'));
+    for (let i = 0; i < 5; i++) {
+      const pct = Math.min(100, (obs[i]/obsMax)*100);
+      const barEl = D['obs-'+obsIds[i]];
+      const valEl = D['obs-'+obsIds[i]+'-v'];
       if (barEl) barEl.style.width = pct+'%';
-      if (valEl) valEl.textContent = d.toFixed(1)+'m';
-    });
-    // Update radar SVG sectors
+      if (valEl) valEl.textContent = obs[i].toFixed(1)+'m';
+    }
     _updateObstacleRadar(obs, obsMax);
 
-    // ── PID TELEMETRY (Live) ─────────────────────────────────────────
+    // ── PID TELEMETRY ─────────────────────────────────────────
     const pt = PID_TELEM.axes;
-    const pidAxes = [
-      { key:'roll',  id:'roll' },
-      { key:'pitch', id:'pitch' },
-      { key:'yaw',   id:'yaw' },
-      { key:'throttle', id:'thr' },
-    ];
-    const errScale = { roll:5, pitch:5, yaw:3, throttle:20 };
-    pidAxes.forEach(({ key, id }) => {
-      const ax = pt[key];
+    const pidKeys  = ['roll','pitch','yaw','throttle'];
+    const pidIds   = ['roll','pitch','yaw','thr'];
+    const errScale = [5,5,3,20];
+    for (let pi=0; pi<4; pi++) {
+      const key=pidKeys[pi], id=pidIds[pi], ax=pt[key];
       set(`pid-${id}-kp`, ax.kp.toFixed(3));
       set(`pid-${id}-ki`, ax.ki.toFixed(3));
       set(`pid-${id}-kd`, ax.kd.toFixed(3));
       set(`pid-${id}-err-lbl`, (ax.error >= 0 ? '+' : '') + ax.error.toFixed(3));
-      const errEl = $(`pid-${id}-err`);
+      const errEl = D[`pid-${id}-err`];
       if (errEl) {
-        const scale = errScale[key] || 5;
-        const norm = Math.max(-1, Math.min(1, ax.error / scale));
+        const norm = Math.max(-1, Math.min(1, ax.error / errScale[pi]));
         const w = Math.abs(norm) * 50;
         errEl.style.width = w+'%';
         errEl.style.left = (norm >= 0 ? 50 : 50-w)+'%';
         errEl.style.background = w > 35 ? 'var(--s)' : 'var(--p)';
       }
-    });
+    }
 
     // FPS
-    const fpsEl = $('fps-val');
+    const fpsEl = D['fps-val'];
     if (fpsEl) fpsEl.textContent = THREE_ENV.getFPS()+'fps';
 
+    // Chunk count (live)
+    const chunkEl = document.getElementById('chunk-count');
+    if (chunkEl) {
+      const info = THREE_ENV.getChunkInfo ? THREE_ENV.getChunkInfo() : null;
+      if (info) chunkEl.textContent = `${info.loaded} chunks · ${info.queued} queued`;
+    }
+
     // System status
-    const sysDot = $('sys-dot'), sysStat = $('sys-status');
+    const sysDot = D['sys-dot'], sysStat = D['sys-status'];
+    const crashOverlay = document.getElementById('crash-overlay');
     if (p.crashed) {
       if (sysDot) { sysDot.className='sdot e'; }
       if (sysStat) sysStat.textContent='CRASHED';
-    } else if (State.armed) {
-      if (sysDot) sysDot.className='sdot w';
-      if (sysStat) sysStat.textContent='ARMED';
+      if (crashOverlay && !crashOverlay.classList.contains('show')) crashOverlay.classList.add('show');
     } else {
-      if (sysDot) sysDot.className='sdot';
-      if (sysStat) sysStat.textContent='READY';
+      if (crashOverlay && crashOverlay.classList.contains('show')) crashOverlay.classList.remove('show');
+      if (State.armed) {
+        if (sysDot) sysDot.className='sdot w';
+        if (sysStat) sysStat.textContent='ARMED';
+      } else {
+        if (sysDot) sysDot.className='sdot';
+        if (sysStat) sysStat.textContent='READY';
+      }
     }
   },
 };
@@ -3147,6 +3616,23 @@ function cycleCamera() {
 function setEnvironment(name) {
   ENV.set(name);
   document.querySelectorAll('[data-env]').forEach(b => b.classList.toggle('on', b.dataset.env===name));
+}
+
+function applyWorldSeed() {
+  const el = document.getElementById('world-seed-input');
+  const seed = parseInt(el?.value || '12345', 10) || 12345;
+  if (typeof setWorldSeed === 'function') setWorldSeed(seed);
+  // Re-run current environment to regenerate terrain with new seed
+  ENV.set(typeof ENV !== 'undefined' ? ENV._name : 'field');
+  UI.toast('🌍 World seed: ' + seed);
+  UI.log('New seed: ' + seed, 'ok');
+}
+
+function randomWorldSeed() {
+  const seed = Math.floor(Math.random() * 999999);
+  const el = document.getElementById('world-seed-input');
+  if (el) el.value = seed;
+  applyWorldSeed();
 }
 
 function setDroneProfile(name) {
@@ -3323,18 +3809,24 @@ function emergStop() {
 }
 
 function resetDrone() {
-  const groundY = THREE_ENV.getTerrainHeight(0, 0);
+  // [FIX] Use getSafeSpawnPoint — avoids resetting drone into a mountainside
+  const _spawnPt = THREE_ENV.getSafeSpawnPoint();
+  const groundY = _spawnPt.y;
   PHYS.groundY = groundY;
-  PHYS.reset({x:0, y:groundY + 0.15, z:0});
+  const _droneHalfR = 0.074 * (PHYS.droneVisual.bodyScale || 1.0) * 5.0;
+  PHYS.reset({x: _spawnPt.x, y: groundY + _droneHalfR, z: _spawnPt.z});
   State.armed=false; State.flightMode='stabilized';
   State.motorDamage=[0,0,0,0];
   FC.altTarget=null; FC.posTarget=null; FC.rthPhase=0;
   INPUT._thrRaw=0;
   setFlightModeUI('stabilized');
   updateArmUI();
+  const co = document.getElementById('crash-overlay');
+  if (co) co.classList.remove('show');
   UI.toast('🔄 Drone reset');
   UI.log('Drone reset','ok');
 }
+function resetSim() { resetDrone(); }
 
 function addWaypoint() { MISSION.add(PHYS.pos); UI.toast('📍 Waypoint added'); }
 function startMission() { MISSION.start(); }
@@ -3889,7 +4381,8 @@ window.addEventListener('DOMContentLoaded', () => {
   PHYS.applyProfile('racing5');
   INPUT.init();
   PHYS.groundY = 0;
-  PHYS.reset({x:0, y:0.15, z:0});
+  const _initDroneHalf = 0.074 * (PHYS.droneVisual.bodyScale || 1.0) * 5.0;
+  PHYS.reset({x:0, y:_initDroneHalf, z:0});
   // [FIX-Bug-26c] Shared sim clock already initialised in sim-engine.js as _simClock = {t:0}
   rebuildProfileSelect('racing5');
   updateDroneProfileUI('racing5');
@@ -3942,6 +4435,89 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <script>
+/* [TIER-MAX] GLTF/GLB Custom Drone Upload Handler */
+function handleGLTFUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('gltf-upload-status');
+  if (statusEl) statusEl.textContent = `Loading: ${file.name}…`;
+  // Integration point: pass file URL to THREE_ENV drone mesh loader
+  const url = URL.createObjectURL(file);
+  if (typeof THREE_ENV !== 'undefined' && typeof THREE_ENV.loadCustomModel === 'function') {
+    THREE_ENV.loadCustomModel(url, file.name);
+  } else {
+    if (statusEl) statusEl.textContent = `✅ Model queued: ${file.name} (apply on next flight)`;
+    if (typeof UI !== 'undefined') UI.toast(`🚁 Custom model accepted: ${file.name}`);
+  }
+}
+
+/* [TIER-MAX] Motor Failure scenario (maps to State.motorDamage) */
+function activateMotorFailure(motorIndex) {
+  if (typeof State === 'undefined') { console.warn('State not ready'); return; }
+  if (!State.motorDamage) State.motorDamage = [0,0,0,0];
+  State.motorDamage[motorIndex] = 1.0;
+  if (typeof UI !== 'undefined') UI.toast(`⚠ Motor M${motorIndex+1} FAILURE activated`);
+}
+function clearMotorFailures() {
+  if (typeof State !== 'undefined') State.motorDamage = [0,0,0,0];
+
+  // 1. Recompute terrain-aware ground height at current drone XZ position
+  //    so recoverFromCrash snaps to the correct ground (not 0)
+  if (typeof THREE_ENV !== 'undefined') {
+    PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
+  }
+
+  // 2. Clear crash physics — resets crashed flag, zeroes vel/angVel,
+  //    levels attitude, snaps to ground, flushes PID integrators.
+  if (typeof PHYS !== 'undefined' && typeof PHYS.recoverFromCrash === 'function') {
+    PHYS.recoverFromCrash();
+  }
+
+  // 3. Arm
+  State.armed = true;
+  PHYS.saveHome();
+  PHYS._gyroBias = {x:0, y:0, z:0};
+
+  // 3. Set throttle to EXACTLY 0.5 immediately — NOT via animateThrottle().
+  //    animateThrottle ramps from 0→0.5, during which the althold FC sees
+  //    throttle < 0.5 and hits the manual branch (thrCmd = 0), so motors
+  //    never spool up.  Setting 0.5 instantly puts the stick in the deadband
+  //    so altPID engages from the very first frame.
+  INPUT._thrRaw = 0.5;
+  const slEl = document.getElementById('throttle-slider');
+  const tv   = document.getElementById('thr-val');
+  if (slEl) slEl.value = 50;
+  if (tv)   tv.textContent = '50%';
+
+  // 4. FC in althold targeting 3m
+  FC.resetPIDs();
+  FC.setMode('althold');
+  FC.altTarget = 3.0;
+  State.flightMode = 'althold';
+  setFlightModeUI('althold');
+  updateArmUI();
+
+  // 5. Dismiss the crash overlay — it was blocking the viewport and intercepting clicks
+  const co = document.getElementById('crash-overlay');
+  if (co) co.classList.remove('show');
+
+  if (typeof UI !== 'undefined') {
+    UI.toast('✅ Motors restored — taking off');
+    UI.log('Motors restored, auto-takeoff', 'ok');
+  }
+}
+
+/* [TIER-MAX] GPS Denied scenario */
+function activateGPSDenied(enable) {
+  if (typeof State !== 'undefined') {
+    State.gpsDenied = enable;
+    if (typeof UI !== 'undefined') UI.toast(enable ? '🚫 GPS DENIED — VSLAM mode' : '✅ GPS signal restored');
+  }
+}
+</script>
+
+
+<script>
 /* ══════════════════════════════════════════════════════════════════
    PLAN ENFORCEMENT ENGINE  — runs after DOMContentLoaded
    Reads PLAN constant above; applies all tier restrictions.
@@ -3971,29 +4547,17 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ─ 2. SESSION TIMER ───────────────────────────────────────── */
-  // [PLAN-SESSION] Enforce time-limited access (BASIC=1h, PRO=24h, MAX=∞)
-  if (isFinite(PLAN.sessionSeconds)) {
-    const EXPIRES_AT_MS = PLAN.planExpiresAt > 0 ? PLAN.planExpiresAt * 1000 : 0;
-    const SESSION_MS = PLAN.sessionSeconds * 1000;
+  // [PLAN-SESSION] Enforce time-limited access (BASIS=1h, PRO=24h, MAX=∞)
+  if (isFinite(PLAN.sessionMinutes)) {
+    const SESSION_MS = PLAN.sessionMinutes * 60000;
     const t0 = Date.now();
-    function fmt(ms) {
-      const total = Math.max(0, Math.floor(ms / 1000));
-      const days = Math.floor(total / 86400);
-      const hours = Math.floor((total % 86400) / 3600);
-      const mins = Math.floor((total % 3600) / 60);
-      const secs = total % 60;
-      const hh = String(hours).padStart(2, '0');
-      const mm = String(mins).padStart(2, '0');
-      const ss = String(secs).padStart(2, '0');
-      return days > 0 ? `${days}d ${hh}:${mm}:${ss}` : `${hh}:${mm}:${ss}`;
-    }
 
     // Countdown badge
     const cdBadge = document.createElement('div');
     cdBadge.style.cssText = `display:flex;align-items:center;gap:5px;padding:4px 11px;
       border-radius:20px;background:var(--n);box-shadow:inset 4px 4px 8px #0d1018,inset -4px -4px 8px #232a3a;
       font-size:11px;font-weight:600;font-family:var(--fh);color:var(--txt2);`;
-    cdBadge.innerHTML = `<span style="color:var(--s)">⏱</span><span id="ses-left">--:--:--</span>`;
+    cdBadge.innerHTML = `<span style="color:var(--s)">⏱</span><span id="ses-left">--:--</span>`;
     const tb = document.getElementById('topbar');
     if (tb) { const tsp = tb.querySelector('.tsp'); if (tsp) tb.insertBefore(cdBadge, tsp.nextSibling); }
 
@@ -4001,9 +4565,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const overlay = document.createElement('div');
     overlay.style.cssText = `position:fixed;inset:0;z-index:9999;background:rgba(10,12,20,0.97);
       display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;`;
-    const durationLabel = PLAN.sessionSeconds >= 3600
-      ? Math.round(PLAN.sessionSeconds/3600) + 'h'
-      : Math.max(1, Math.ceil(PLAN.sessionSeconds/60)) + 'min';
+    const durationLabel = PLAN.sessionMinutes >= 60
+      ? Math.round(PLAN.sessionMinutes/60) + 'h'
+      : PLAN.sessionMinutes + 'min';
     overlay.innerHTML = `
       <div style="font-family:var(--fh);font-size:32px;font-weight:700;color:var(--p)">⏱ Session Ended</div>
       <div style="font-size:14px;color:var(--txt2);text-align:center;max-width:380px;line-height:1.7">
@@ -4017,12 +4581,12 @@ window.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(overlay);
 
     function tick() {
-      const rem = EXPIRES_AT_MS > 0
-        ? Math.max(0, EXPIRES_AT_MS - Date.now())
-        : Math.max(0, SESSION_MS - (Date.now() - t0));
+      const rem = Math.max(0, SESSION_MS - (Date.now() - t0));
       const el = document.getElementById('ses-left');
       if (el) {
-        el.textContent = fmt(rem);
+        const m = String(Math.floor(rem/60000)).padStart(2,'0');
+        const s = String(Math.floor((rem%60000)/1000)).padStart(2,'0');
+        el.textContent = `${m}:${s}`;
       }
       if (rem < 300000) cdBadge.style.color = '#EE9346';
       if (rem < 60000)  cdBadge.style.color = '#F44336';
@@ -4031,7 +4595,7 @@ window.addEventListener('DOMContentLoaded', () => {
         overlay.style.display = 'flex';
         return;
       }
-      setTimeout(tick, 100);
+      setTimeout(tick, 1000);
     }
     tick();
   }
@@ -4086,7 +4650,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (t && t.textContent.includes('RATE PID TUNING')) pidCard = c;
   });
   if (PLAN.pidTuning === false) {
-    // [PLAN-PID-BASIC] Hide entirely
+    // [PLAN-PID-BASIS] Hide entirely
     if (pidCard) _hideEl(pidCard);
   } else if (PLAN.pidTuning === 'view') {
     // [PLAN-PID-PRO] Show values but disable all sliders
@@ -4173,8 +4737,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ─ 10. NIGHT MODE RESTRICTION (BASIC) ─────────────────────── */
-  // [PLAN-NIGHT] Disable night toggle for BASIC tier
+  /* ─ 10. NIGHT MODE RESTRICTION (BASIS) ─────────────────────── */
+  // [PLAN-NIGHT] Disable night toggle for BASIS tier
   if (!PLAN.nightMode) {
     const nightToggle = document.querySelector('[onclick*="toggleDayNight"]');
     if (nightToggle) {
@@ -4184,8 +4748,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ─ 11. WIND CONTROLS RESTRICTION (BASIC) ───────────────────── */
-  // [PLAN-WIND] Lock wind/weather controls for BASIC tier
+  /* ─ 11. WIND CONTROLS RESTRICTION (BASIS) ───────────────────── */
+  // [PLAN-WIND] Lock wind/weather controls for BASIS tier
   if (!PLAN.windScenario) {
     ['wind-speed','turbulence','wind-dir'].forEach(id => {
       const el = document.getElementById(id);
@@ -4386,6 +4950,7 @@ window.addEventListener('DOMContentLoaded', () => {
                   window.cloudTelemetryUrls.push({ time: new Date().toLocaleTimeString(), url: data.publicUrl });
                   if (typeof UI !== 'undefined' && UI.toast) UI.toast('✅ Telemetry saved to Cloudflare!');
                   else alert('✅ Telemetry saved to Cloudflare!');
+                  updateSavedTelemBtn();
                } else {
                  res.text().then(errText => {
                    console.error('R2 upload failed:', errText);

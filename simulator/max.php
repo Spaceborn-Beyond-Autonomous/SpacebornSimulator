@@ -2681,7 +2681,7 @@ const THREE_ENV = (() => {
   }
 
   function _drawBloom(W, H) {
-    if (!_bloomCanvas || !_bloomCtx) return;
+    if (!_bloomCanvas || !_bloomCtx || W < 4 || H < 4) return;
     _bloomCanvas.width  = Math.round(W * 0.25);
     _bloomCanvas.height = Math.round(H * 0.25);
     const bW = _bloomCanvas.width, bH = _bloomCanvas.height;
@@ -3310,13 +3310,13 @@ const SIM = {
     if (typeof this._simUIFrame === 'undefined') this._simUIFrame = 0;
     this.this._simUIFrame++;
     if (this._simUIFrame % 3 === 0) {
-      try { this._updateUI(rawDt); } catch (e) { console.error('_updateUI error:', e); }
+      this._updateUI(rawDt); // Throttled DOM text updates
       TELEM_GRAPH.draw();
       DEBUG.draw();
       MINIMAP.draw();
       drawAttitude();
       drawWindCompass();
-      try { updateRecordingUI(); } catch (e) { console.error('updateRecordingUI error:', e); }
+      updateRecordingUI();
     }
   },
 
@@ -3404,8 +3404,8 @@ const SIM = {
       }
     }
 
-    // Clock
-    const ft = State.flightTime;
+    // Clock (Session Time)
+    const ft = performance.now() / 1000;
     const clk = D['top-clock'];
     if (clk) clk.textContent = Math.floor(ft/60).toString().padStart(2,'0')+':'+Math.floor(ft%60).toString().padStart(2,'0');
 
