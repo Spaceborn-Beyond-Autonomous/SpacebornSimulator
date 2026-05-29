@@ -3310,13 +3310,13 @@ const SIM = {
     if (typeof this._simUIFrame === 'undefined') this._simUIFrame = 0;
     this.this._simUIFrame++;
     if (this._simUIFrame % 3 === 0) {
-      this._updateUI(rawDt); // Throttled DOM text updates
+      try { this._updateUI(rawDt); } catch (e) { console.error('_updateUI error:', e); }
       TELEM_GRAPH.draw();
       DEBUG.draw();
       MINIMAP.draw();
       drawAttitude();
       drawWindCompass();
-      updateRecordingUI();
+      try { updateRecordingUI(); } catch (e) { console.error('updateRecordingUI error:', e); }
     }
   },
 
