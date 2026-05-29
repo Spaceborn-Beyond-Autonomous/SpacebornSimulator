@@ -3302,22 +3302,22 @@ const SIM = {
     OBSTACLE_DIST.update();
     PID_TELEM.capture();
 
-    // [FIX-Bug-26b] Pass rawDt to _updateUI so wall clock runs at real time
-    this._updateUI(rawDt);
     // [FIX-Bug-26c] Use shared sim clock (same reference as sim-engine.js)
     BLACKBOX.tick(_simClock.t);
     TELEM_GRAPH.push(PHYS);
-    // Throttle 2D canvas draws to ~20 Hz (every 3rd frame) to reduce CPU load
+    
+    // Throttle UI and 2D canvas draws to ~20 Hz (every 3rd frame) to reduce CPU load
     if (typeof this._simUIFrame === 'undefined') this._simUIFrame = 0;
-    this._simUIFrame++;
+    this.this._simUIFrame++;
     if (this._simUIFrame % 3 === 0) {
+      this._updateUI(rawDt); // Throttled DOM text updates
       TELEM_GRAPH.draw();
       DEBUG.draw();
       MINIMAP.draw();
       drawAttitude();
       drawWindCompass();
+      updateRecordingUI();
     }
-    updateRecordingUI();
   },
 
   // ── Cached DOM references — populated on first _updateUI call ──
