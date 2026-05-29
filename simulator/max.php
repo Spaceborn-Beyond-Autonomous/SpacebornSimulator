@@ -3057,9 +3057,9 @@ const SIM = {
     BLACKBOX.tick(_simClock.t);
     TELEM_GRAPH.push(PHYS);
     // Throttle 2D canvas draws to ~20 Hz (every 3rd frame) to reduce CPU load
-    if (_simUIFrame === undefined) _simUIFrame = 0;
-    _simUIFrame++;
-    if (_simUIFrame % 3 === 0) {
+    if (typeof this._simUIFrame === 'undefined') this._simUIFrame = 0;
+    this._simUIFrame++;
+    if (this._simUIFrame % 3 === 0) {
       TELEM_GRAPH.draw();
       DEBUG.draw();
       MINIMAP.draw();
