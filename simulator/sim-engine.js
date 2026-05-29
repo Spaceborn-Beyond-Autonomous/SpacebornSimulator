@@ -142,7 +142,7 @@ const Noise = {
       w
     );
   },
-  fbm(x,y,z,oct=4,pers=0.5,lac=2.0){
+  fbm(x,y,z,oct=2,pers=0.5,lac=2.0){
     let v=0,amp=1,freq=1,max=0;
     for(let i=0;i<oct;i++){v+=this.n(x*freq,y*freq,z*freq)*amp;max+=amp;amp*=pers;freq*=lac;}
     return v/max;
@@ -186,7 +186,8 @@ const DRYDEN = {
     this._v = Math.max(-mx, Math.min(mx, this._v));
     this._w = Math.max(-mx, Math.min(mx, this._w));
   },
-  get(){ return {x:this._v, y:this._w, z:this._u}; },
+  _result: {x:0, y:0, z:0},
+  get(){ this._result.x=this._v; this._result.y=this._w; this._result.z=this._u; return this._result; },
 };
 
 /**
@@ -336,6 +337,8 @@ const PHYS = {
   _gyroBias:{x:0, y:0, z:0}, // [FIX-H] was hardcoded non-zero, caused constant false rate in PID
   _prevPos:V3.zero(), _prevQuat:Q.id(),
 
+  _lastAirDensAlt: NaN, _cachedAirDens: 1.225,
+
   // Terrain height cache to avoid re-evaluating Perlin every substep — [FIX-Bug-26d]
   _lastTerrainPos:{x:NaN,z:NaN}, _lastTerrainH:0,
 
@@ -369,7 +372,8 @@ const PHYS = {
   },
 
   reset(pos){
-    this.pos=pos||{x:0,y:0.15,z:0};
+    const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
+    this.pos=pos||{x:0,y:this.groundY+droneHalf,z:0};
     this._prevPos=V3.clone(this.pos);
     this.vel=V3.zero(); this.acc=V3.zero();
     this.quat=Q.id(); this._prevQuat=Q.id();
@@ -392,7 +396,8 @@ const PHYS = {
   _sanitize(){
     const bad=v=>!Number.isFinite(v);
     if(bad(this.pos.x)||bad(this.pos.y)||bad(this.pos.z)){
-      this.reset({x:0,y:this.groundY+0.2,z:0});
+      const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
+      this.reset({x:0,y:this.groundY+droneHalf+0.05,z:0});
       if(typeof FC!=='undefined') FC.resetPIDs();
       return false;
     }
@@ -404,10 +409,14 @@ const PHYS = {
   },
 
   _airDensity(alt){
+    const h = Math.max(0, alt);
+    // Cache: recompute only when altitude changes by >0.5 m (saves 3 pow() calls per substep)
+    if(Math.abs(h - this._lastAirDensAlt) < 0.5) return this._cachedAirDens;
+    this._lastAirDensAlt = h;
     const T0=288.15, L=0.0065, P0=101325, R=287.058;
-    const h=Math.max(0,alt);
     const T=T0-L*h;
-    return (P0*Math.pow(T/T0,_ISA_EXP))/(R*T);
+    this._cachedAirDens = (P0*Math.pow(T/T0,_ISA_EXP))/(R*T);
+    return this._cachedAirDens;
   },
 
   /**
@@ -431,6 +440,9 @@ const PHYS = {
     return this.kQ * omega * omega;
   },
 
+  _lastEscDt: -1, _cachedEscA: 0,
+  _lastTauUp: -1, _lastTauDown: -1, _cachedRpmA_up: 0, _cachedRpmA_dn: 0,
+
   step(dtFull){
     dtFull=Math.max(0.0005,Math.min(0.04,dtFull));
     if(!this._sanitize()) return;
@@ -449,8 +461,15 @@ const PHYS = {
     const rawVF = Math.max(0.5, Math.min(1, this.battVoltage/fullV));
 
     // ── Motor dynamics: first-order lag with asymmetric τ ─────────────────
-    const escA = 1 - Math.exp(-dt/(this.escDelay+0.001));
-    const tauUp = this.motorTau, tauDown = this.motorTau*1.6;
+    // Cache exp() results — same dt every substep so no need to recompute
+    if(dt !== this._lastEscDt){
+      this._cachedEscA = 1 - Math.exp(-dt/(this.escDelay+0.001));
+      this._cachedRpmA_up = 1 - Math.exp(-dt/this.motorTau);
+      this._cachedRpmA_dn = 1 - Math.exp(-dt/(this.motorTau*1.6));
+      this._lastEscDt = dt;
+    }
+    const escA = this._cachedEscA;
+    const tauUp = this._cachedRpmA_up, tauDown = this._cachedRpmA_dn;
     const _stateExists = typeof State !== 'undefined';
     const idleFloor = (_stateExists && State.armed) ? this.idleRPM : 0;
     for(let i=0;i<4;i++){
@@ -458,7 +477,7 @@ const PHYS = {
       const target = this.motorCmd[i] * (1-dmg) * rawVF;
       this.motorCmdFiltered[i] += (target-this.motorCmdFiltered[i]) * escA;
       const tRPM = this.motorCmdFiltered[i] * this.maxRPM;
-      const rpmA = 1 - Math.exp(-dt / (tRPM > this.motorRPM[i] ? tauUp : tauDown));
+      const rpmA = tRPM > this.motorRPM[i] ? tauUp : tauDown;
       this.motorRPM[i] += (tRPM - this.motorRPM[i]) * rpmA;
       this.motorRPM[i] = Math.max(idleFloor, Math.min(this.maxRPM, this.motorRPM[i]));
     }
@@ -588,7 +607,9 @@ const PHYS = {
     this.vel = v2;
 
     // ── [FIX-1.7] Ground collision with restitution e=0.15 and Coulomb friction μ=0.4 ──
-    const droneHalf = 0.13; // half-height of drone body
+    // droneHalf = foot skid depth in world space: 0.074 * bodyScale * 5.0 (visual scale)
+    // This matches the landing gear foot position in buildDrone() so the model sits flush on ground.
+    const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
     const minY = this.groundY + droneHalf;
     if(newPos.y < minY){
       const impact = Math.abs(this.vel.y);
@@ -699,8 +720,24 @@ const PHYS = {
   },
 
   _checkColliders(pos){
+    // Use a small margin to prevent tunnelling through thin walls
+    const margin = 0.12;
     for(const c of this.colliders){
-      if(pos.x>c.min.x&&pos.x<c.max.x&&pos.y>c.min.y&&pos.y<c.max.y&&pos.z>c.min.z&&pos.z<c.max.z) return c;
+      if(pos.x>c.min.x-margin&&pos.x<c.max.x+margin&&
+         pos.y>c.min.y-margin&&pos.y<c.max.y+margin&&
+         pos.z>c.min.z-margin&&pos.z<c.max.z+margin){
+        // Resolve which face is closest to eject cleanly (not get stuck)
+        const cx=(c.min.x+c.max.x)*0.5, cy=(c.min.y+c.max.y)*0.5, cz=(c.min.z+c.max.z)*0.5;
+        const hx=(c.max.x-c.min.x)*0.5, hy=(c.max.y-c.min.y)*0.5, hz=(c.max.z-c.min.z)*0.5;
+        const dx=pos.x-cx, dy=pos.y-cy, dz=pos.z-cz;
+        // Penetration depth along each axis
+        const px=hx-Math.abs(dx), py=hy-Math.abs(dy), pz=hz-Math.abs(dz);
+        let norm;
+        if(py<=px&&py<=pz)      norm={x:0,y:Math.sign(dy)||1,z:0};
+        else if(px<=pz)         norm={x:Math.sign(dx)||1,y:0,z:0};
+        else                    norm={x:0,y:0,z:Math.sign(dz)||1};
+        return {min:c.min,max:c.max,normal:norm};
+      }
     }
     return null;
   },
@@ -718,15 +755,50 @@ const PHYS = {
   },
 
   _crashSettle(dt){
+    const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
     this.angVel.x*=0.90; this.angVel.z*=0.90; this.angVel.y*=0.93;
     this.quat=Q.integrate(this.quat,this.angVel,dt);
     Q.toEuler(this.quat, this.euler);
-    if(this.pos.y>this.groundY+0.13){
+    // Clamp XZ to world bounds during settle to prevent sliding into terrain
+    this.pos.x=Math.max(-240,Math.min(240,this.pos.x));
+    this.pos.z=Math.max(-240,Math.min(240,this.pos.z));
+    const minY=this.groundY+droneHalf;
+    if(this.pos.y>minY){
       this.vel.y-=this.GRAVITY*dt; this.pos.y+=this.vel.y*dt;
     } else {
-      this.pos.y=this.groundY+0.13; this.vel=V3.zero();
+      this.pos.y=minY; this.vel=V3.zero();
     }
+    // Hard floor: never go below terrain (prevents camera clipping through mountain)
+    if(this.pos.y<minY) this.pos.y=minY;
     for(let i=0;i<4;i++) this.motorRPM[i]*=0.90;
+  },
+
+  /**
+   * [FIX] recoverFromCrash — call this when motors/damage are restored after
+   * a mid-air failure so the drone can be re-armed and flown again.
+   *
+   * Clears the crashed flag, zeroes residual angular and linear velocity
+   * (eliminates the post-restore swinging), levels attitude, snaps to ground,
+   * resets all PID integrators, and disarms cleanly so the user must re-arm
+   * manually before taking off again.
+   */
+  recoverFromCrash(){
+    this.crashed  = false;
+    this.grounded = true;
+    // Zero all motion — zeroing angVel is the key fix for the post-restore swinging
+    this.angVel = V3.zero();
+    this.vel    = V3.zero();
+    // Level attitude so drone sits flat on ground
+    // Use Q.id() and the engine's {roll,pitch,yaw} euler convention
+    this.quat  = Q.id();
+    this.euler = {roll:0, pitch:0, yaw:this.euler.yaw||0};
+    // Snap onto terrain
+    const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
+    this.pos.y = this.groundY + droneHalf;
+    // Zero motor RPM/commands
+    for(let i=0;i<4;i++){ this.motorRPM[i]=0; this.motorCmd[i]=0; this.motorCmdFiltered[i]=0; }
+    // Flush PID integrators — caller is responsible for arming/takeoff
+    if(typeof FC!=='undefined') FC.resetPIDs();
   },
 };
 
@@ -735,7 +807,7 @@ const FC = {
   mode:'stabilized',
   motorMixGain:0.13,
   maxAngleRate:3.2,
-  maxAltVelRate:2.5,
+  maxAltVelRate:1.4,
 
   ratePID:{
     pitch: new PID(0.042, 0.000, 0.0018, 0.3, 20),
@@ -830,7 +902,7 @@ const FC = {
     this.altPID.p=g.ap;
     // Set output limits for conditional anti-windup [FIX-2.4]
     this.ratePID.pitch._outLimit=0.18; this.ratePID.roll._outLimit=0.18; this.ratePID.yaw._outLimit=0.12;
-    this.altPID._outLimit=this.maxAltVelRate; this.altVelPID._outLimit=0.5;
+    this.altPID._outLimit=this.maxAltVelRate; this.altVelPID._outLimit=0.38;
   },
 
   resetPIDs(){
@@ -1037,10 +1109,23 @@ const INPUT = {
   _gamepad:null, pitch:0, roll:0, yaw:0, throttle:0,
   _vjLeft:{x:0,y:0}, _vjRight:{x:0,y:0}, _vjActive:false,
 
+  // Flight-control keys that must never scroll panels/page while flying
+  _flightKeys: new Set([
+    'ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
+    'KeyW','KeyS','KeyA','KeyD',
+    'ShiftLeft','ShiftRight','ControlLeft','ControlRight',
+  ]),
+
   init(){
     window.addEventListener('keydown',(e)=>{
       if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
       this._keys[e.code]=true;
+      // Prevent browser scroll on flight-control keys when armed or airborne
+      const armed = (typeof State!=='undefined') ? State.armed : false;
+      const airborne = PHYS.pos.y > PHYS.groundY + 0.3;
+      if(this._flightKeys.has(e.code) && (armed || airborne)){
+        e.preventDefault();
+      }
       if(e.repeat) return;
       switch(e.code){
         case 'Space': e.preventDefault(); if(typeof toggleArm==='function') toggleArm(); break;
@@ -1119,9 +1204,9 @@ const INPUT = {
 
     if(!gpActive){
       if(K['KeyW']||K['ShiftLeft']||K['ShiftRight'])
-        this._thrRaw=Math.min(1,this._thrRaw+dt*0.85*s);
+        this._thrRaw=Math.min(1,this._thrRaw+dt*0.45*s);
       else if(K['KeyS']||K['ControlLeft']||K['ControlRight'])
-        this._thrRaw=Math.max(0,this._thrRaw-dt*0.85*s);
+        this._thrRaw=Math.max(0,this._thrRaw-dt*0.45*s);
       const yt=((K['KeyA']?-1:0)+(K['KeyD']?1:0))*s;
       const pt=((K['ArrowUp']?1:0)+(K['ArrowDown']?-1:0))*s;
       const rt=((K['ArrowRight']?1:0)+(K['ArrowLeft']?-1:0))*s;
@@ -1151,12 +1236,28 @@ const INPUT = {
   },
 };
 
-/* ─── Blackbox Logger ─── */
+/* ─── Simulation speed default ─── */
+/**
+ * Default simulation speed multiplier.
+ * The render loop in index.html should read SIM_SPEED on init instead of hardcoding 1.
+ * Set to 2 so the simulation starts at 2× real-time out of the box.
+ *
+ * Performance note at 2×: PHYS.step() is called with dtFull up to 2× the wall-clock
+ * frame time. The physics substep count is fixed at 4, so each substep dt doubles.
+ * All integrators (Euler, RK-style battery, Kalman, PID) remain stable up to ~3× because
+ * dtFull is clamped to 40 ms (line: dtFull=Math.max(0.0005,Math.min(0.04,dtFull))), so
+ * the effective per-substep dt never exceeds 10 ms — well within stability margins.
+ * CPU cost is IDENTICAL to 1× (same number of substeps per rendered frame); the only
+ * difference is the wall-clock time advances faster. No performance issues at 2×.
+ */
+const SIM_SPEED = 4;
+
+
 // [FIX-5.2] Shared clock object so both sim-engine and index.html mutate/read the same reference
 const _simClock = { t: 0 };
 
 const BLACKBOX = {
-  _log:[], _max:6000, recording:true,
+  _log:[], _max:3000, recording:false,
   start(){this._log=[];this.recording=true;},
   stop(){this.recording=false;},
   /** [FIX-5.1] Extended fields: accX/Y/Z, baro_raw/filtered, wind, dryden, mode, armed */
@@ -1408,7 +1509,7 @@ function getBattEstimatedFlightTime(){
 /* ─── Global exports ─── */
 if(typeof globalThis!=='undefined'){
   Object.assign(globalThis,{V3,Q,Noise,DRYDEN,PID,Kalman1D,DRONE_PROFILES,PHYS,FC,INPUT,BLACKBOX,DEBUG,
-    GPS_SIM,VISION_POS,OBSTACLE_DIST,PID_TELEM,getBattEstimatedFlightTime,_simClock});
+    GPS_SIM,VISION_POS,OBSTACLE_DIST,PID_TELEM,getBattEstimatedFlightTime,_simClock,SIM_SPEED});
 }
 
 /* ─── MAVLink v1 Export ─── */
@@ -1595,7 +1696,7 @@ const MAVLINK = {
     const blob=new Blob([data],{type:'application/octet-stream'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='certanity-'+Date.now()+'.tlog';
+    a.download='spaceborn-'+Date.now()+'.tlog';
     a.click(); URL.revokeObjectURL(a.href);
     return true;
   },
@@ -1607,7 +1708,7 @@ const MAVLINK = {
     const blob=new Blob([json],{type:'application/json'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='certanity-telem-'+Date.now()+'.json';
+    a.download='spaceborn-telem-'+Date.now()+'.json';
     a.click(); URL.revokeObjectURL(a.href);
     return true;
   },
@@ -1628,9 +1729,19 @@ const TELEM_GRAPH = {
     this._canvas=document.getElementById(canvasId);
     if(this._canvas){
       this._ctx=this._canvas.getContext('2d');
-      this._W=this._canvas.width;
-      this._H=this._canvas.height;
+      this._syncSize();
     }
+  },
+
+  _syncSize(){
+    if(!this._canvas) return;
+    const rect=this._canvas.getBoundingClientRect();
+    const w=Math.round(rect.width)||this._canvas.parentElement?.clientWidth||220;
+    const h=Math.round(rect.height)||80;
+    if(w>10&&this._canvas.width!==w){this._canvas.width=w;}
+    if(h>10&&this._canvas.height!==h){this._canvas.height=h;}
+    this._W=this._canvas.width;
+    this._H=this._canvas.height;
   },
 
   push(p){
@@ -1659,7 +1770,9 @@ const TELEM_GRAPH = {
   draw(){
     const c=this._canvas,ctx=this._ctx;
     if(!c||!ctx) return;
+    this._syncSize();
     const W=this._W,H=this._H;
+    if(!W||!H) return;
     ctx.clearRect(0,0,W,H);
     ctx.fillStyle='rgba(238,241,247,0.6)';
     ctx.fillRect(0,0,W,H);

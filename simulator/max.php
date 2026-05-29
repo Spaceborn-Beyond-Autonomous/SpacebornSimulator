@@ -130,26 +130,8 @@ input,select{font-family:var(--fb)}
 #viewport{grid-row:2/3;grid-column:2/3;position:relative;overflow:hidden;background:#0a1020;min-width:0;min-height:0;width:100%;height:100%}
 #threeCanvas{position:absolute;top:0;left:0;right:0;bottom:0;width:100%!important;height:100%!important;display:block;background:#0a1628;z-index:0}
 
-/* Cinematic vignette */
-#viewport::after{
-  content:'';position:absolute;inset:0;pointer-events:none;z-index:3;
-  background:radial-gradient(ellipse 80% 80% at 50% 50%, transparent 55%, rgba(4,8,20,0.72) 100%);
-}
-/* Lens glow rim */
-#viewport::before{
-  content:'';position:absolute;inset:0;pointer-events:none;z-index:4;
-  box-shadow:inset 0 0 40px rgba(10,25,80,0.45), inset 0 0 2px rgba(238,147,70,0.15);
-  border-radius:2px;
-}
-/* Film grain overlay */
-#vp-grain{
-  position:absolute;inset:0;z-index:5;pointer-events:none;
-  opacity:0.028;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:128px 128px;
-  animation:grain 0.12s steps(1) infinite;
-  mix-blend-mode:overlay;
-}
+
+
 @keyframes grain{
   0%{background-position:0 0}10%{background-position:-32px -48px}20%{background-position:64px 16px}
   30%{background-position:-16px 80px}40%{background-position:80px -32px}50%{background-position:-48px 48px}
@@ -176,6 +158,14 @@ input,select{font-family:var(--fb)}
 .vp-warn{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(244,67,54,.85);color:white;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;backdrop-filter:blur(4px);opacity:0;transition:opacity .3s;pointer-events:none}
 .vp-warn.show{opacity:1}
 #toast.show{opacity:1!important;}
+#crash-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .35s;z-index:20;background:radial-gradient(ellipse at center,rgba(200,20,10,.45) 0%,rgba(0,0,0,.72) 100%)}
+#crash-overlay.show{opacity:1;pointer-events:auto}
+#crash-overlay .co-icon{font-size:52px;line-height:1;animation:co-pulse 1s ease-in-out infinite alternate}
+#crash-overlay .co-title{font-family:var(--fh,monospace);font-size:28px;font-weight:800;color:#ff3b30;letter-spacing:3px;text-shadow:0 0 24px rgba(255,59,48,.9),0 2px 8px rgba(0,0,0,.8);margin:8px 0 4px}
+#crash-overlay .co-sub{font-family:var(--fh,monospace);font-size:12px;color:rgba(255,255,255,.75);letter-spacing:2px;text-transform:uppercase}
+#crash-overlay .co-btn{margin-top:22px;padding:8px 24px;background:rgba(255,59,48,.22);border:1.5px solid rgba(255,59,48,.7);border-radius:20px;color:#ff6b60;font-family:var(--fh,monospace);font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;pointer-events:auto;backdrop-filter:blur(6px);transition:background .2s,color .2s}
+#crash-overlay .co-btn:hover{background:rgba(255,59,48,.45);color:#fff}
+@keyframes co-pulse{from{transform:scale(1) rotate(-5deg)}to{transform:scale(1.15) rotate(5deg)}}
 
 /* ── Card / Panel ── */
 .card{background:var(--surf);border-radius:var(--r3);padding:14px;box-shadow:var(--sh-out)}
@@ -491,20 +481,8 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       <button class="npill" id="nav-debug" onclick="showSection('debug')">Debug</button>
     </div>
     <div class="tsp"></div>
-    <button class="nbtn sm accent" id="cloud-save-btn" onclick="triggerCloudSave()" title="Save Telemetry to Cloudflare">☁️ Cloud Save</button>
-    <button class="nbtn sm accent" id="saved-telem-btn" style="display:none;background:var(--s);color:#fff;" onclick="openSavedTelemModal()">📥 Saved (0)</button>
-    <button class="nbtn sm danger" id="exit-sim-btn" onclick="exitSimulation()" title="Exit and Save Flight">🚪 Exit</button>
     <button class="nbtn sm" id="pause-btn" onclick="toggleSimPause()" title="Pause/Resume Simulation (Space)">⏸ Pause</button>
-    <div class="nfield" style="padding:3px 8px;gap:4px;">
-      <label style="font-size:10px;color:var(--txt4)">Speed</label>
-      <select id="sim-speed" onchange="setSimSpeed(this.value)" style="font-size:11px;font-weight:600;color:var(--txt);background:none;border:none;outline:none;cursor:pointer;">
-        <option value="0.25">0.25×</option>
-        <option value="0.5">0.5×</option>
-        <option value="1">1×</option>
-        <option value="2" selected>2×</option>
-        <option value="4">4×</option>
-      </select>
-    </div>
+
     <div class="top-stat"><div class="sdot" id="sys-dot"></div><span id="sys-status">READY</span></div>
     <span id="arm-status">DISARMED</span>
     <div class="top-stat"><span>⚡</span><span id="batt-top">100%</span></div>
@@ -750,6 +728,13 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <div class="cam-badge" id="cam-badge">THIRD PERSON</div>
     <div class="crosshair"><div class="ch-h"></div><div class="ch-v"></div></div>
     <div class="vp-warn" id="vp-warn">⚠ LOW ALTITUDE</div>
+    <div id="crash-overlay">
+      <div class="co-icon">💥</div>
+      <div class="co-title">DRONE CRASHED</div>
+      <div class="co-sub">Impact detected · Motors disarmed</div>
+      <button class="co-btn" onclick="clearMotorFailures()" style="background:rgba(0,200,80,.18);border-color:rgba(0,220,80,.6);color:#00e060;margin-bottom:4px">⚡ Restore Motors &amp; Fly</button>
+      <button class="co-btn" onclick="resetSim()">↺ &nbsp;RESET &amp; RETRY</button>
+    </div>
   </div>
 
   <!-- Right Panel -->
@@ -1197,7 +1182,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <!-- ══ TIER: MAX ══ -->
 <script>
 /* PLAN FLAGS — MAX tier
-   Duration: 30 days | All profiles + Custom
+   Duration: Unlimited | All profiles + Custom
    All 6 envs | Full HUD | Full PID | Full export
    Gamepad | Waypoints | GLTF upload | Priority support */
 const PLAN = {
@@ -1261,8 +1246,8 @@ const THREE_ENV = (() => {
 
   // Chunk system
   const CHUNK_SIZE = 80;
-  const CHUNK_SEGS = 48;
-  const RENDER_DIST = 3; // chunks in each direction
+  const CHUNK_SEGS = 28;
+  const RENDER_DIST = 2; // chunks in each direction
   let _chunks = new Map(); // key -> {mesh, veg, rocks, x, z}
   let _lastChunkX = null, _lastChunkZ = null;
 
@@ -1301,6 +1286,38 @@ const THREE_ENV = (() => {
     }
   }
 
+  // ── Safe spawn finder ─────────────────────────────────────────────
+  // Drone was spawning inside mountains because (0,0) can be mid-peak.
+  // Now searches a wider grid to find the lowest-elevation flat spot.
+  function getSafeSpawnPoint(envName) {
+    const env = envName || _envName;
+    if (env === 'indoor' || env === 'urban') {
+      return { x: 0, z: 0, y: 0 };
+    }
+    if (env === 'field' || env === 'windy') {
+      const h = terrainHeight(0, 0, env);
+      return { x: 0, z: 0, y: h };
+    }
+    // For mountains and desert, find the lowest valley point in a wide grid
+    let bestX = 0, bestZ = 0, bestH = Infinity;
+    const step = 6, range = 100;
+    for (let xi = -range; xi <= range; xi += step) {
+      for (let zi = -range; zi <= range; zi += step) {
+        const h = terrainHeight(xi, zi, env);
+        if (h < bestH) { bestH = h; bestX = xi; bestZ = zi; }
+      }
+    }
+    // Fine-search around best candidate
+    const fStep = 2, fRange = 8;
+    for (let xi = bestX - fRange; xi <= bestX + fRange; xi += fStep) {
+      for (let zi = bestZ - fRange; zi <= bestZ + fRange; zi += fStep) {
+        const h = terrainHeight(xi, zi, env);
+        if (h < bestH) { bestH = h; bestX = xi; bestZ = zi; }
+      }
+    }
+    return { x: bestX, z: bestZ, y: bestH };
+  }
+
   // ── Terrain colour helper ──────────────────────────────────────────
   function terrainColor(x, z, h, envName) {
     const env = envName || _envName;
@@ -1309,11 +1326,16 @@ const THREE_ENV = (() => {
       const v = Noise.n(x*0.18, 0, z*0.18)*0.06;
       r = 0.80 + h*0.005 + v; g = 0.65 + h*0.003 + v; b = 0.32 + v;
     } else if (env === 'mountains') {
-      if      (h < 2)  { r=0.32; g=0.52; b=0.20; }
-      else if (h < 12) { const t=h/12; r=0.28+t*0.22; g=0.46+t*0.06; b=0.16+t*0.12; }
-      else if (h < 30) { const t=(h-12)/18; r=0.50+t*0.18; g=0.44+t*0.04; b=0.38+t*0.08; }
-      else if (h < 45) { const t=(h-30)/15; r=0.68+t*0.14; g=0.62+t*0.18; b=0.58+t*0.22; }
-      else             { r=0.92; g=0.94; b=0.96; }
+      // h < 4  : valley floor — green grass
+      // h < 10 : lower slope — quick transition from grass to rock
+      // h < 40 : mountain body — rocky grey-brown (NOT sandy)
+      // h < 60 : upper rock — cooler grey scree
+      // else   : snow cap
+      if      (h < 4)  { r=0.30; g=0.50; b=0.18; }
+      else if (h < 10) { const t=(h-4)/6;   r=0.30+t*0.22; g=0.50-t*0.14; b=0.18+t*0.10; }
+      else if (h < 40) { const t=(h-10)/30; r=0.52+t*0.14; g=0.36+t*0.10; b=0.28+t*0.14; }
+      else if (h < 60) { const t=(h-40)/20; r=0.66+t*0.16; g=0.46+t*0.20; b=0.42+t*0.24; }
+      else             { r=0.90; g=0.92; b=0.95; }
     } else if (env === 'urban') {
       r=0.36; g=0.36; b=0.36;
     } else {
@@ -1550,29 +1572,60 @@ const THREE_ENV = (() => {
   }
 
   // ── Buildings (urban) ─────────────────────────────────────────────
+  // Seeded layout so buildings don't shift on every rebuild
+  function _seededRand(seed) {
+    let s = seed;
+    return function() {
+      s = (s * 1664525 + 1013904223) & 0xffffffff;
+      return (s >>> 0) / 0xffffffff;
+    };
+  }
+
   function buildUrban() {
     const group = new THREE.Group();
     const bMats = [
       new THREE.MeshStandardMaterial({ color: 0x8090a0, roughness:0.7, metalness:0.2 }),
       new THREE.MeshStandardMaterial({ color: 0x607080, roughness:0.65, metalness:0.15 }),
       new THREE.MeshStandardMaterial({ color: 0x9aabbb, roughness:0.6, metalness:0.25 }),
+      new THREE.MeshStandardMaterial({ color: 0x70859a, roughness:0.55, metalness:0.3 }),
     ];
-    for (let i = 0; i < 40; i++) {
-      const x = (Math.random()-0.5)*200;
-      const z = (Math.random()-0.5)*200;
+    const rand = _seededRand(42); // Fixed seed = stable layout every rebuild
+    for (let i = 0; i < 42; i++) {
+      const x = (rand()-0.5)*200;
+      const z = (rand()-0.5)*200;
       const dist = Math.hypot(x,z);
-      if (dist < 12) continue;
-      const w = 4 + Math.random()*14, d = 4 + Math.random()*14, hh = 5 + Math.random()*35;
+      if (dist < 14) continue; // keep spawn area clear
+      const w = 4 + rand()*14, d = 4 + rand()*14, hh = 5 + rand()*38;
       const geo = new THREE.BoxGeometry(w, hh, d);
-      const mesh = new THREE.Mesh(geo, bMats[i%3]);
+      const mesh = new THREE.Mesh(geo, bMats[i%4]);
       mesh.position.set(x, hh/2, z);
       mesh.castShadow = true; mesh.receiveShadow = true;
       group.add(mesh);
+      // Store AABB with face normals for all 6 faces
+      // _checkColliders uses the stored normal to push drone away from the hit face
       PHYS.colliders.push({
-        min:{x:x-w/2, y:0, z:z-d/2}, max:{x:x+w/2, y:hh, z:z+d/2},
-        normal:{x:0,y:1,z:0},
+        min:{x:x-w/2, y:0,    z:z-d/2},
+        max:{x:x+w/2, y:hh,   z:z+d/2},
+        normal:{x:0,  y:1,    z:0},      // used by AABB hit — will be overridden per-face in _checkColliders
+        _w:w, _d:d, _h:hh, _cx:x, _cz:z // extra data for face-normal resolution
       });
     }
+    // Add road markings / ground detail
+    const roadMat = new THREE.MeshLambertMaterial({ color: 0x2a2a2a });
+    const roadGeo = new THREE.PlaneGeometry(200, 10);
+    roadGeo.rotateX(-Math.PI/2);
+    [-20,-5,10,25].forEach(rz => {
+      const road = new THREE.Mesh(roadGeo, roadMat.clone());
+      road.position.set(0, 0.01, rz);
+      group.add(road);
+    });
+    const roadGeo2 = new THREE.PlaneGeometry(10, 200);
+    roadGeo2.rotateX(-Math.PI/2);
+    [-20,-5,10,25].forEach(rx => {
+      const road = new THREE.Mesh(roadGeo2, roadMat.clone());
+      road.position.set(rx, 0.01, 0);
+      group.add(road);
+    });
     return group;
   }
 
@@ -1688,8 +1741,8 @@ const THREE_ENV = (() => {
     const group = new THREE.Group();
     // Two cloud layers
     const layers = [
-      { alt: 55, spread: 380, count: 32, minR: 5, maxR: 18, opacity: 0.78 },
-      { alt: 95, spread: 300, count: 18, minR: 8, maxR: 25, opacity: 0.55 },
+      { alt: 55, spread: 380, count: 8, minR: 5, maxR: 18, opacity: 0.78 },
+      { alt: 95, spread: 300, count: 5, minR: 8, maxR: 25, opacity: 0.55 },
     ];
     layers.forEach(layer => {
       const mat = new THREE.MeshLambertMaterial({
@@ -1700,7 +1753,7 @@ const THREE_ENV = (() => {
         const cx2 = (Math.random()-0.5)*layer.spread;
         const cz2 = (Math.random()-0.5)*layer.spread;
         const cy  = layer.alt + Math.random()*20;
-        const clumpCount = 4 + Math.floor(Math.random()*7);
+        const clumpCount = 2 + Math.floor(Math.random()*3);
         for (let j = 0; j < clumpCount; j++) {
           const r = layer.minR + Math.random()*(layer.maxR-layer.minR);
           const s = new THREE.Mesh(new THREE.SphereGeometry(r, 9, 7), mat.clone());
@@ -1716,19 +1769,27 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // ── Rain ────────────────────────────────────────────────────────────
+  // ── Rain (streak-based for better visibility) ───────────────────────
   function buildRain() {
-    const count = 5000;
+    const count = 4000;
+    // Each raindrop is a short line segment (2 vertices)
+    // positions: even = top of streak, odd = bottom
     const geo = new THREE.BufferGeometry();
-    const pos = new Float32Array(count * 3);
+    const pos = new Float32Array(count * 2 * 3); // 2 vertices per streak
     for (let i = 0; i < count; i++) {
-      pos[i*3  ] = (Math.random()-0.5)*90;
-      pos[i*3+1] = Math.random()*65;
-      pos[i*3+2] = (Math.random()-0.5)*90;
+      const x = (Math.random()-0.5)*80;
+      const y = Math.random()*60;
+      const z = (Math.random()-0.5)*80;
+      const streakLen = 0.45 + Math.random()*0.35;
+      pos[i*6  ] = x;     pos[i*6+1] = y;              pos[i*6+2] = z;   // top
+      pos[i*6+3] = x+0.05;pos[i*6+4] = y - streakLen;  pos[i*6+5] = z;   // bottom (streak angled slightly)
     }
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    const mat = new THREE.PointsMaterial({ color:0x99ccff, size:0.10, transparent:true, opacity:0.45, depthWrite:false });
-    return { pts: new THREE.Points(geo, mat), geo, pos };
+    const mat = new THREE.LineBasicMaterial({
+      color: 0xaad4ff, transparent: true, opacity: 0.55, depthWrite: false,
+    });
+    const lines = new THREE.LineSegments(geo, mat);
+    return { pts: lines, geo, pos, isLines: true };
   }
 
   // ── Drone mesh (premium PBR materials) ───────────────────────────
@@ -2107,7 +2168,7 @@ const THREE_ENV = (() => {
     const H = vp.clientHeight || 500;
 
     renderer = new THREE.WebGLRenderer({ canvas: _canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     renderer.setSize(W, H);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -2238,25 +2299,65 @@ const THREE_ENV = (() => {
 
     // Indoor special-case
     if (envName === 'indoor') {
-      const wallMat = new THREE.MeshStandardMaterial({ color: 0xccccbb, roughness:0.9 });
-      const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), wallMat.clone());
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0xd0cfc2, roughness:0.85 });
+      const floorMat = new THREE.MeshStandardMaterial({ color: 0xb0aeaa, roughness:0.9 });
+      // Floor
+      const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), floorMat);
       floor.rotation.x = -Math.PI/2; floor.receiveShadow = true;
       scene.add(floor);
-      const wallGeo = new THREE.BoxGeometry(60, 20, 0.5);
-      [0,1,2,3].forEach(i => {
-        const w = new THREE.Mesh(wallGeo, wallMat.clone());
-        const a = i * Math.PI/2;
-        w.rotation.y = a; w.position.set(Math.sin(a)*30, 10, Math.cos(a)*30);
+      // Ceiling
+      const ceil = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), wallMat.clone());
+      ceil.rotation.x = Math.PI/2; ceil.position.y = 20;
+      scene.add(ceil);
+      // Floor grid lines for visual reference
+      const gridHelper = new THREE.GridHelper(60, 12, 0x888880, 0x666660);
+      gridHelper.position.y = 0.01;
+      scene.add(gridHelper);
+      // Walls — fixed normals per side
+      const wallDefs = [
+        { pos:[  0, 10,  30], size:[60,20,0.5], norm:{x:0,y:0,z:-1} }, // N wall
+        { pos:[  0, 10, -30], size:[60,20,0.5], norm:{x:0,y:0,z: 1} }, // S wall
+        { pos:[ 30, 10,   0], size:[0.5,20,60], norm:{x:-1,y:0,z:0} }, // E wall
+        { pos:[-30, 10,   0], size:[0.5,20,60], norm:{x: 1,y:0,z:0} }, // W wall
+      ];
+      wallDefs.forEach(wd => {
+        const wg = new THREE.BoxGeometry(...wd.size);
+        const w = new THREE.Mesh(wg, wallMat.clone());
+        w.position.set(...wd.pos);
         w.receiveShadow = true; w.castShadow = true;
         scene.add(w);
+        const [wx,wy,wz] = wd.pos; const [sw,sh,sd] = wd.size;
         PHYS.colliders.push({
-          min:{x:w.position.x-30, y:0, z:w.position.z-0.5},
-          max:{x:w.position.x+30, y:20, z:w.position.z+0.5},
-          normal:{x:0,y:0,z:1},
+          min:{x:wx-sw/2, y:0, z:wz-sd/2},
+          max:{x:wx+sw/2, y:sh, z:wz+sd/2},
+          normal: wd.norm,
         });
       });
-      hemiLight.intensity = 0.95;
-      shadowLight.intensity = 0.55;
+      // Warehouse shelving units for visual interest
+      const shelfMat = new THREE.MeshStandardMaterial({ color:0x8a7a6a, roughness:0.8, metalness:0.1 });
+      const shelfPositions = [[-15,0,-10],[-15,0,0],[-15,0,10],[15,0,-10],[15,0,0],[15,0,10]];
+      shelfPositions.forEach(([sx,sy,sz]) => {
+        const shelf = new THREE.Mesh(new THREE.BoxGeometry(2,5,1), shelfMat.clone());
+        shelf.position.set(sx, 2.5, sz);
+        shelf.castShadow = true; shelf.receiveShadow = true;
+        scene.add(shelf);
+        // Don't add shelf colliders — too small to affect flight meaningfully
+      });
+      // Overhead lighting rigs
+      const rigMat = new THREE.MeshStandardMaterial({ color:0x444444, roughness:0.6, metalness:0.5 });
+      [-15,0,15].forEach(lx => {
+        const rig = new THREE.Mesh(new THREE.BoxGeometry(1,0.2,50), rigMat.clone());
+        rig.position.set(lx, 19.8, 0);
+        scene.add(rig);
+        // Add point lights along rig
+        [-20,0,20].forEach(lz => {
+          const pl = new THREE.PointLight(0xfff5e0, 0.6, 40);
+          pl.position.set(lx, 18, lz);
+          scene.add(pl);
+        });
+      });
+      hemiLight.intensity = 0.85;
+      shadowLight.intensity = 0.45;
     }
 
     // Volumetric fog planes
@@ -2292,6 +2393,12 @@ const THREE_ENV = (() => {
   }
 
   // ── Camera update ────────────────────────────────────────────────
+  // Clamp camera Y above terrain + margin to prevent clipping inside mountains
+  function _camMinY(cx, cz, margin) {
+    const th = terrainHeight(cx, cz, _envName);
+    return th + (margin || 0.8);
+  }
+
   function updateCamera() {
     const p = PHYS.pos;
     const quat = PHYS.quat;
@@ -2301,23 +2408,29 @@ const THREE_ENV = (() => {
       const dist = 4.5, height = 2.2;
       const tx = p.x - Math.sin(yaw)*dist;
       const tz = p.z - Math.cos(yaw)*dist;
-      camera.position.lerp(new THREE.Vector3(tx, p.y+height, tz), 0.12);
-      camera.lookAt(p.x, p.y+0.3, p.z);
+      const ty = Math.max(p.y+height, _camMinY(tx, tz, 1.2));
+      camera.position.lerp(_camTargetV3.set(tx, ty, tz), 0.12);
+      camera.lookAt(p.x, Math.max(p.y+0.3, PHYS.groundY+0.5), p.z);
     } else if (_camMode === 'fpv') {
+      // FPV: camera IS the drone - clamp to at least 0.2 above ground
       const fwd = Q.rotVec(quat, {x:0, y:0.05, z:0.15});
-      camera.position.set(p.x+fwd.x, p.y+fwd.y, p.z+fwd.z);
+      const fpvY = Math.max(p.y+fwd.y, PHYS.groundY + 0.15);
+      camera.position.set(p.x+fwd.x, fpvY, p.z+fwd.z);
       const aim = Q.rotVec(quat, {x:0, y:-0.1, z:1.0});
-      camera.lookAt(p.x+aim.x, p.y+aim.y, p.z+aim.z);
+      // When crashed/inverted, look forward from the camera position
+      const lookY = PHYS.crashed ? PHYS.groundY + 0.5 : p.y+aim.y;
+      camera.lookAt(p.x+aim.x, lookY, p.z+aim.z);
     } else if (_camMode === 'orbit') {
       const ox = p.x + Math.sin(_orbitAngle)*_orbitDist;
       const oz = p.z + Math.cos(_orbitAngle)*_orbitDist;
-      camera.position.lerp(new THREE.Vector3(ox, p.y+_orbitH, oz), 0.08);
-      camera.lookAt(p.x, p.y, p.z);
+      const oy = Math.max(p.y+_orbitH, _camMinY(ox, oz, 1.5));
+      camera.position.lerp(_camTargetV3.set(ox, oy, oz), 0.08);
+      camera.lookAt(p.x, Math.max(p.y, PHYS.groundY+0.3), p.z);
     } else if (_camMode === 'free') {
-      camera.position.lerp(new THREE.Vector3(_freeCam.x, _freeCam.y, _freeCam.z), 0.05);
+      camera.position.lerp(_camTargetV3.set(_freeCam.x, _freeCam.y, _freeCam.z), 0.05);
       camera.lookAt(p.x, p.y, p.z);
     } else if (_camMode === 'top') {
-      camera.position.lerp(new THREE.Vector3(p.x, p.y+22, p.z+0.001), 0.06);
+      camera.position.lerp(_camTargetV3.set(p.x, p.y+22, p.z+0.001), 0.06);
       camera.lookAt(p.x, p.y, p.z);
     }
   }
@@ -2353,6 +2466,9 @@ const THREE_ENV = (() => {
   // ── Render tick ──────────────────────────────────────────────────
   let _frame = 0, _fps = 60, _fpsSmooth = 60, _lastFPSTime = 0;
   let _simTime = 0;
+  const _camTargetV3 = new THREE.Vector3();
+  const _shadowOffsetV3 = new THREE.Vector3();
+  let _viewportEl = null;
   function render() {
     requestAnimationFrame(render);
     const dt = Math.min(0.05, clock.getDelta());
@@ -2395,28 +2511,49 @@ const THREE_ENV = (() => {
       });
     });
 
-    // Cloud drift with wind
+    // Cloud drift with wind — wrap within a max radius to prevent glitching
     if (cloudGroup) {
       cloudGroup.position.x += PHYS.windVec.x * dt * 0.12;
       cloudGroup.position.z += PHYS.windVec.z * dt * 0.12;
-      // Gentle bob
-      cloudGroup.position.y = Math.sin(_simTime * 0.06) * 1.2;
+      // Gentle bob — additive delta so it doesn't snap
+      const prevBob = cloudGroup.userData._lastBob || 0;
+      const newBob = Math.sin(_simTime * 0.06) * 1.2;
+      cloudGroup.position.y += newBob - prevBob;
+      cloudGroup.userData._lastBob = newBob;
+      // Wrap cloud group back around drone when it drifts too far
+      const maxDrift = 180;
+      if (Math.abs(cloudGroup.position.x - p.x) > maxDrift) cloudGroup.position.x = p.x + (Math.random()-0.5)*60;
+      if (Math.abs(cloudGroup.position.z - p.z) > maxDrift) cloudGroup.position.z = p.z + (Math.random()-0.5)*60;
     }
 
-    // Rain animation
+    // Rain animation (streak-based: stride 6)
     if (_rainOn && _rainPositions) {
-      for (let i = 0; i < _rainPositions.length/3; i++) {
-        _rainPositions[i*3+1] -= (14 + Math.random()*6) * dt;
-        _rainPositions[i*3  ] += PHYS.windVec.x * dt * 0.5;
-        _rainPositions[i*3+2] += PHYS.windVec.z * dt * 0.5;
-        if (_rainPositions[i*3+1] < -5) {
-          _rainPositions[i*3+1] = 60;
-          _rainPositions[i*3  ] = p.x + (Math.random()-0.5)*85;
-          _rainPositions[i*3+2] = p.z + (Math.random()-0.5)*85;
+      const dropCount = _rainPositions.length / 6;
+      const windX = PHYS.windVec.x * dt * 0.4;
+      const windZ = PHYS.windVec.z * dt * 0.4;
+      const fallSpeed = 20 * dt;
+      for (let i = 0; i < dropCount; i++) {
+        const b = i * 6;
+        _rainPositions[b+1] -= fallSpeed;   // top y
+        _rainPositions[b+4] -= fallSpeed;   // bottom y
+        _rainPositions[b  ] += windX;       // top x drift
+        _rainPositions[b+3] += windX;
+        _rainPositions[b+2] += windZ;       // top z drift
+        _rainPositions[b+5] += windZ;
+        if (_rainPositions[b+1] < -8) {
+          const nx = p.x + (Math.random()-0.5)*80;
+          const nz = p.z + (Math.random()-0.5)*80;
+          const ny = 58 + Math.random()*5;
+          const sl = 0.45 + Math.random()*0.35;
+          _rainPositions[b  ] = nx;     _rainPositions[b+1] = ny;
+          _rainPositions[b+2] = nz;
+          _rainPositions[b+3] = nx+0.05;_rainPositions[b+4] = ny - sl;
+          _rainPositions[b+5] = nz;
         }
       }
       _rainGeo.attributes.position.needsUpdate = true;
-      if (_rainParticles) _rainParticles.position.set(p.x, 0, p.z);
+      // Keep rain centred on drone
+      if (_rainParticles) _rainParticles.position.set(0, 0, 0);
     }
 
     // Day cycle
@@ -2426,7 +2563,7 @@ const THREE_ENV = (() => {
 
     // Shadow frustum follows drone
     if (shadowLight) {
-      shadowLight.shadow.camera.position.copy(shadowLight.position).add(new THREE.Vector3(p.x, 0, p.z));
+      shadowLight.shadow.camera.position.copy(shadowLight.position).add(_shadowOffsetV3.set(p.x, 0, p.z));
       shadowLight.target.position.set(p.x, 0, p.z);
       shadowLight.target.updateMatrixWorld();
     }
@@ -2435,13 +2572,15 @@ const THREE_ENV = (() => {
     _updateChunks();
 
     updateCamera();
+    // [FIX] Sky sphere follows camera so it never exits the sphere (eliminates black-hole gap)
+    if (skyMesh) skyMesh.position.copy(camera.position);
     updateTrail();
     renderer.render(scene, camera);
 
     // Software bloom (every 2nd frame for perf)
-    if (_bloomEnabled && _frame % 2 === 0) {
-      const vp = document.getElementById('viewport');
-      if (vp) _drawBloom(vp.clientWidth, vp.clientHeight);
+    if (_bloomEnabled && _frame % 4 === 0) {
+      if (!_viewportEl) _viewportEl = document.getElementById('viewport');
+      if (_viewportEl) _drawBloom(_viewportEl.clientWidth, _viewportEl.clientHeight);
     }
   }
 
@@ -2473,6 +2612,7 @@ const THREE_ENV = (() => {
     },
     getFPS() { return _fpsSmooth; },
     getTerrainHeight(x, z) { return terrainHeight(x, z, _envName); },
+    getSafeSpawnPoint() { return getSafeSpawnPoint(_envName); },
     render,
   };
 })();
@@ -2486,7 +2626,16 @@ const MINIMAP = {
   draw() {
     const canvas = document.getElementById('miniCanvas');
     if (!canvas) return;
-    const W = canvas.width || 220, H = canvas.height || 120;
+    // Always sync pixel dimensions to CSS-rendered size (fixes blank minimap)
+    const rect = canvas.getBoundingClientRect();
+    const newW = Math.round(rect.width)  || canvas.parentElement?.clientWidth  || 220;
+    const newH = Math.round(rect.height) || canvas.parentElement?.clientHeight || 120;
+    if (canvas.width !== newW || canvas.height !== newH) {
+      canvas.width  = newW;
+      canvas.height = newH;
+    }
+    if (!canvas.width || !canvas.height) return;
+    const W = canvas.width, H = canvas.height;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = '#1a2744';
@@ -2796,12 +2945,24 @@ const ENV = {
     // Ground height for indoor/warehouse
     PHYS.groundY = 0;
     THREE_ENV.rebuild(name);
-    // After rebuild, sample terrain at origin so drone sits on surface
-    const gY = THREE_ENV.getTerrainHeight(0, 0);
+    // Use getSafeSpawnPoint to find lowest terrain valley — drone no longer spawns inside mountains
+    const _spawnPt = THREE_ENV.getSafeSpawnPoint();
+    const gY = _spawnPt.y;
+    // Set groundY BEFORE reset so PHYS.reset snaps to correct height
     PHYS.groundY = gY;
-    if (PHYS.grounded || PHYS.pos.y < gY + 0.5) {
-      PHYS.pos.y = gY + 0.15;
+    const _droneHalf = 0.074 * (PHYS.droneVisual.bodyScale || 1.0) * 5.0;
+    // Always respawn at safe location when switching environments or when clearly underground
+    const clearlyUnderground = PHYS.pos.y < gY + _droneHalf - 0.5;
+    if (PHYS.grounded || PHYS.crashed || clearlyUnderground) {
+      PHYS.crashed = false;
+      PHYS.grounded = true;
+      PHYS.pos.x = _spawnPt.x;
+      PHYS.pos.z = _spawnPt.z;
+      PHYS.pos.y = gY + _droneHalf;
       PHYS.vel = {x:0, y:0, z:0};
+      PHYS.angVel = {x:0, y:0, z:0};
+      PHYS.quat = {w:1,x:0,y:0,z:0};
+      PHYS.euler = {roll:0,pitch:0,yaw:0};
     }
     document.querySelectorAll('[data-env]').forEach(b => b.classList.toggle('on', b.dataset.env===name));
     UI.log(`Environment: ${name}`, 'ok');
@@ -2813,13 +2974,14 @@ const ENV = {
 ══════════════════════════════════════════════════════════════════════ */
 const State = {
   armed: false,
+  
   flightMode: 'stabilized',
   motorDamage: [0,0,0,0],
   flightTime: 0,
 };
 
 const SIM = {
-  _last: 0, _running: false, _paused: false, _speed: 2.0,
+  _last: 0, _running: false, _paused: false, _speed: 4.0,
   start() {
     this._running = true;
     this._paused = false;
@@ -2866,9 +3028,14 @@ const SIM = {
     const subDt = dt / substeps;
     INPUT.update(dt);
     const inp = INPUT.get();
-    for (let s = 0; s < substeps; s++) {
-      // Update groundY to actual terrain height each substep
+    // Cache terrain height once per frame — only for terrain-based envs (not flat indoor/urban)
+    const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
+    if (_envName_sim !== 'indoor' && _envName_sim !== 'urban') {
       PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
+    }
+    // Hard safety floor: never let groundY go negative
+    if (PHYS.groundY < 0) PHYS.groundY = 0;
+    for (let s = 0; s < substeps; s++) {
       // [FIX-2.1] FC.update() runs the OUTER angle loop only (stores rate cmd).
       // The inner rate PID runs inside PHYS._substep() at full substep rate.
       FC.update(subDt, inp);
@@ -2889,23 +3056,54 @@ const SIM = {
     // [FIX-Bug-26c] Use shared sim clock (same reference as sim-engine.js)
     BLACKBOX.tick(_simClock.t);
     TELEM_GRAPH.push(PHYS);
-    TELEM_GRAPH.draw();
-    DEBUG.draw();
-    MINIMAP.draw();
-    drawAttitude();
-    drawWindCompass();
+    // Throttle 2D canvas draws to ~20 Hz (every 3rd frame) to reduce CPU load
+    if (_simUIFrame === undefined) _simUIFrame = 0;
+    _simUIFrame++;
+    if (_simUIFrame % 3 === 0) {
+      TELEM_GRAPH.draw();
+      DEBUG.draw();
+      MINIMAP.draw();
+      drawAttitude();
+      drawWindCompass();
+    }
     updateRecordingUI();
   },
 
+  // ── Cached DOM references — populated on first _updateUI call ──
+  _dom: null,
+  _initDomCache() {
+    const ids = [
+      't-alt','t-vel','t-hdng','t-pitch','t-roll','t-yaw',
+      't-vx','t-vy','t-vz','t-px','t-py','t-pz',
+      'batt-pct','batt-top','t-volt','t-curr','batt-bar',
+      't-wind','t-gust','top-clock','t-batt-eta',
+      'gps-lat','gps-lon','gps-alt','gps-sat-count','gps-hdop','gps-fix-badge',
+      'gps-sat-row','vslam-x','vslam-y','vslam-z','vslam-quality-val',
+      'vslam-badge','vslam-quality','fps-val','sys-dot','sys-status',
+      'm0-rpm','m1-rpm','m2-rpm','m3-rpm',
+      'm0-bar','m1-bar','m2-bar','m3-bar',
+      'obs-fwd','obs-right','obs-back','obs-left','obs-up',
+      'obs-fwd-v','obs-right-v','obs-back-v','obs-left-v','obs-up-v',
+      'pid-roll-kp','pid-roll-ki','pid-roll-kd','pid-roll-err-lbl','pid-roll-err',
+      'pid-pitch-kp','pid-pitch-ki','pid-pitch-kd','pid-pitch-err-lbl','pid-pitch-err',
+      'pid-yaw-kp','pid-yaw-ki','pid-yaw-kd','pid-yaw-err-lbl','pid-yaw-err',
+      'pid-thr-kp','pid-thr-ki','pid-thr-kd','pid-thr-err-lbl','pid-thr-err',
+    ];
+    this._dom = {};
+    for (const id of ids) this._dom[id] = document.getElementById(id);
+  },
+
   _updateUI(dt) {
+    // Init DOM cache on first call (DOM must be ready)
+    if (!this._dom) this._initDomCache();
+    const D = this._dom;
+    const set = (id,v) => { const el=D[id]; if(el) el.textContent=v; };
     const p = PHYS, e = p.euler;
     const R2D = 180/Math.PI;
     const alt = Math.max(0, p.pos.y - p.groundY);
     const vel = V3.len(p.vel);
 
-    // Telemetry
-    const $ = id => document.getElementById(id);
-    const set = (id,v) => { const el=$(id); if(el) el.textContent=v; };
+    // Telemetry — all reads from cached elements
     set('t-alt', alt.toFixed(1));
     set('t-vel', vel.toFixed(1));
     set('t-hdng', (((e.yaw*R2D+360)%360)|0).toString().padStart(3,'0'));
@@ -2921,11 +3119,12 @@ const SIM = {
 
     // Battery
     const battPct = p.battPct;
-    set('batt-pct', battPct.toFixed(0)+'%');
-    set('batt-top', battPct.toFixed(0)+'%');
+    const battStr = battPct.toFixed(0)+'%';
+    set('batt-pct', battStr);
+    set('batt-top', battStr);
     set('t-volt', p.battVoltage.toFixed(2));
     set('t-curr', p.currentDraw.toFixed(1));
-    const bbar = $('batt-bar');
+    const bbar = D['batt-bar'];
     if (bbar) {
       bbar.style.width = battPct+'%';
       bbar.className = 'bgauge-fill ' + (battPct<20?'red':battPct<50?'orange':'green');
@@ -2944,39 +3143,26 @@ const SIM = {
 
     // Motors
     for (let i = 0; i < 4; i++) {
-      const rpmEl = $(`m${i}-rpm`); const barEl = $(`m${i}-bar`);
+      const rpmEl = D[`m${i}-rpm`]; const barEl = D[`m${i}-bar`];
       const rpm = Math.round(p.motorRPM[i]);
       if (rpmEl) rpmEl.textContent = rpm;
       if (barEl) {
-        const pct = (rpm/p.maxRPM*100).toFixed(1);
-        barEl.style.width = pct+'%';
+        barEl.style.width = (rpm/p.maxRPM*100).toFixed(1)+'%';
         const dmg = State.motorDamage[i]||0;
         barEl.className = 'motor-bar' + (dmg>0.5?' red':dmg>0.2?' orange':'');
       }
     }
 
-    // Clock — Wall-clock based (immune to frame throttling)
-    // _wallClockArmedStart tracks when arming began; _wallClockAccum accumulates paused time
-    if (State.armed) {
-      if (!SIM._wallClockArmedStart) SIM._wallClockArmedStart = Date.now() - (SIM._wallClockAccum || 0);
-    } else {
-      if (SIM._wallClockArmedStart) {
-        SIM._wallClockAccum = Date.now() - SIM._wallClockArmedStart;
-        SIM._wallClockArmedStart = 0;
-      }
-    }
-    const ft = SIM._wallClockArmedStart ? (Date.now() - SIM._wallClockArmedStart) / 1000 : (SIM._wallClockAccum || 0) / 1000;
-    State.flightTime = ft; // keep State in sync for other consumers
-    const mm = Math.floor(ft/60), ss = Math.floor(ft%60);
-    const clk = $('top-clock');
-    if (clk) clk.textContent = mm.toString().padStart(2,'0')+':'+ss.toString().padStart(2,'0');
+    // Clock
+    const ft = State.flightTime;
+    const clk = D['top-clock'];
+    if (clk) clk.textContent = Math.floor(ft/60).toString().padStart(2,'0')+':'+Math.floor(ft%60).toString().padStart(2,'0');
 
     // Battery ETA
     const etaSec = getBattEstimatedFlightTime();
-    const etaMin = etaSec < 9999 ? (etaSec/60).toFixed(1) : '--';
-    set('t-batt-eta', etaMin);
+    set('t-batt-eta', etaSec < 9999 ? (etaSec/60).toFixed(1) : '--');
 
-    // ── GPS_RAW_INT (5 Hz) ────────────────────────────────────────────
+    // ── GPS_RAW_INT ────────────────────────────────────────────
     const gps = GPS_SIM;
     const fixType = gps.getFixType();
     const satCount = gps.getSatCount();
@@ -2986,93 +3172,91 @@ const SIM = {
     set('gps-alt', gps.getAltMSL().toFixed(1));
     set('gps-sat-count', satCount);
     set('gps-hdop', hdop.toFixed(2));
-    const fixBadge = $('gps-fix-badge');
+    const fixBadge = D['gps-fix-badge'];
     if (fixBadge) {
       const fixLabels = { 0:'NO FIX', 1:'NO FIX', 2:'2D FIX', 3:'3D FIX', 4:'DGPS', 5:'RTK' };
       const fixClasses= { 0:'gps-fix-none', 1:'gps-fix-none', 2:'gps-fix-2d', 3:'gps-fix-3d', 4:'gps-fix-3d', 5:'gps-fix-3d' };
       fixBadge.textContent = fixLabels[fixType]||'NO FIX';
       fixBadge.className = 'gps-fix-badge '+(fixClasses[fixType]||'gps-fix-none');
     }
-    // Satellite dots
-    const satRow = $('gps-sat-row');
+    // Satellite dots — lazy-build once, then update classes only
+    const satRow = D['gps-sat-row'];
     if (satRow && satRow.children.length !== 16) {
       satRow.innerHTML = Array(16).fill(0).map((_,i)=>`<div class="gps-sat-dot" id="sat-dot-${i}"></div>`).join('');
     }
-    for (let i = 0; i < 16; i++) {
-      const dot = $('sat-dot-'+i);
-      if (dot) dot.className = 'gps-sat-dot'+(i<satCount?' on':i<satCount+2?' dim':'');
+    if (satRow) {
+      const dots = satRow.children;
+      for (let i = 0; i < 16; i++) dots[i].className = 'gps-sat-dot'+(i<satCount?' on':i<satCount+2?' dim':'');
     }
 
-    // ── VISION_POSITION (30 Hz VSLAM) ────────────────────────────────
+    // ── VISION_POSITION ────────────────────────────────────────────
     const vp = VISION_POS.get();
     set('vslam-x', vp.x);
     set('vslam-y', vp.y);
     set('vslam-z', vp.z);
     set('vslam-quality-val', vp.quality+'%');
-    const vslamBadge = $('vslam-badge');
+    const vslamBadge = D['vslam-badge'];
     if (vslamBadge) {
       vslamBadge.textContent = vp.active ? 'VSLAM ACTIVE' : 'GPS ACTIVE';
       vslamBadge.className = 'vslam-badge '+(vp.active ? 'vslam-active' : 'vslam-idle');
     }
-    const vslamQ = $('vslam-quality');
+    const vslamQ = D['vslam-quality'];
     if (vslamQ) vslamQ.style.width = vp.quality+'%';
 
-    // ── OBSTACLE_DISTANCE (10 Hz) ─────────────────────────────────────
+    // ── OBSTACLE_DISTANCE ─────────────────────────────────────────
     const obs = OBSTACLE_DIST.get();
     const obsMax = OBSTACLE_DIST.SENSOR_RANGE;
     const obsIds = ['fwd','right','back','left','up'];
-    const obsSectors = ['FWD','RIGHT','BACK','LEFT','UP'];
-    obs.forEach((d, i) => {
-      const pct = Math.min(100, (d/obsMax)*100);
-      const barEl = $(('obs-'+obsIds[i]));
-      const valEl = $(('obs-'+obsIds[i]+'-v'));
+    for (let i = 0; i < 5; i++) {
+      const pct = Math.min(100, (obs[i]/obsMax)*100);
+      const barEl = D['obs-'+obsIds[i]];
+      const valEl = D['obs-'+obsIds[i]+'-v'];
       if (barEl) barEl.style.width = pct+'%';
-      if (valEl) valEl.textContent = d.toFixed(1)+'m';
-    });
-    // Update radar SVG sectors
+      if (valEl) valEl.textContent = obs[i].toFixed(1)+'m';
+    }
     _updateObstacleRadar(obs, obsMax);
 
-    // ── PID TELEMETRY (Live) ─────────────────────────────────────────
+    // ── PID TELEMETRY ─────────────────────────────────────────
     const pt = PID_TELEM.axes;
-    const pidAxes = [
-      { key:'roll',  id:'roll' },
-      { key:'pitch', id:'pitch' },
-      { key:'yaw',   id:'yaw' },
-      { key:'throttle', id:'thr' },
-    ];
-    const errScale = { roll:5, pitch:5, yaw:3, throttle:20 };
-    pidAxes.forEach(({ key, id }) => {
-      const ax = pt[key];
+    const pidKeys  = ['roll','pitch','yaw','throttle'];
+    const pidIds   = ['roll','pitch','yaw','thr'];
+    const errScale = [5,5,3,20];
+    for (let pi=0; pi<4; pi++) {
+      const key=pidKeys[pi], id=pidIds[pi], ax=pt[key];
       set(`pid-${id}-kp`, ax.kp.toFixed(3));
       set(`pid-${id}-ki`, ax.ki.toFixed(3));
       set(`pid-${id}-kd`, ax.kd.toFixed(3));
       set(`pid-${id}-err-lbl`, (ax.error >= 0 ? '+' : '') + ax.error.toFixed(3));
-      const errEl = $(`pid-${id}-err`);
+      const errEl = D[`pid-${id}-err`];
       if (errEl) {
-        const scale = errScale[key] || 5;
-        const norm = Math.max(-1, Math.min(1, ax.error / scale));
+        const norm = Math.max(-1, Math.min(1, ax.error / errScale[pi]));
         const w = Math.abs(norm) * 50;
         errEl.style.width = w+'%';
         errEl.style.left = (norm >= 0 ? 50 : 50-w)+'%';
         errEl.style.background = w > 35 ? 'var(--s)' : 'var(--p)';
       }
-    });
+    }
 
     // FPS
-    const fpsEl = $('fps-val');
+    const fpsEl = D['fps-val'];
     if (fpsEl) fpsEl.textContent = THREE_ENV.getFPS()+'fps';
 
     // System status
-    const sysDot = $('sys-dot'), sysStat = $('sys-status');
+    const sysDot = D['sys-dot'], sysStat = D['sys-status'];
+    const crashOverlay = document.getElementById('crash-overlay');
     if (p.crashed) {
       if (sysDot) { sysDot.className='sdot e'; }
       if (sysStat) sysStat.textContent='CRASHED';
-    } else if (State.armed) {
-      if (sysDot) sysDot.className='sdot w';
-      if (sysStat) sysStat.textContent='ARMED';
+      if (crashOverlay && !crashOverlay.classList.contains('show')) crashOverlay.classList.add('show');
     } else {
-      if (sysDot) sysDot.className='sdot';
-      if (sysStat) sysStat.textContent='READY';
+      if (crashOverlay && crashOverlay.classList.contains('show')) crashOverlay.classList.remove('show');
+      if (State.armed) {
+        if (sysDot) sysDot.className='sdot w';
+        if (sysStat) sysStat.textContent='ARMED';
+      } else {
+        if (sysDot) sysDot.className='sdot';
+        if (sysStat) sysStat.textContent='READY';
+      }
     }
   },
 };
@@ -3350,18 +3534,24 @@ function emergStop() {
 }
 
 function resetDrone() {
-  const groundY = THREE_ENV.getTerrainHeight(0, 0);
+  // [FIX] Use getSafeSpawnPoint — avoids resetting drone into a mountainside
+  const _spawnPt = THREE_ENV.getSafeSpawnPoint();
+  const groundY = _spawnPt.y;
   PHYS.groundY = groundY;
-  PHYS.reset({x:0, y:groundY + 0.15, z:0});
+  const _droneHalfR = 0.074 * (PHYS.droneVisual.bodyScale || 1.0) * 5.0;
+  PHYS.reset({x: _spawnPt.x, y: groundY + _droneHalfR, z: _spawnPt.z});
   State.armed=false; State.flightMode='stabilized';
   State.motorDamage=[0,0,0,0];
   FC.altTarget=null; FC.posTarget=null; FC.rthPhase=0;
   INPUT._thrRaw=0;
   setFlightModeUI('stabilized');
   updateArmUI();
+  const co = document.getElementById('crash-overlay');
+  if (co) co.classList.remove('show');
   UI.toast('🔄 Drone reset');
   UI.log('Drone reset','ok');
 }
+function resetSim() { resetDrone(); }
 
 function addWaypoint() { MISSION.add(PHYS.pos); UI.toast('📍 Waypoint added'); }
 function startMission() { MISSION.start(); }
@@ -3916,7 +4106,8 @@ window.addEventListener('DOMContentLoaded', () => {
   PHYS.applyProfile('racing5');
   INPUT.init();
   PHYS.groundY = 0;
-  PHYS.reset({x:0, y:0.15, z:0});
+  const _initDroneHalf = 0.074 * (PHYS.droneVisual.bodyScale || 1.0) * 5.0;
+  PHYS.reset({x:0, y:_initDroneHalf, z:0});
   // [FIX-Bug-26c] Shared sim clock already initialised in sim-engine.js as _simClock = {t:0}
   rebuildProfileSelect('racing5');
   updateDroneProfileUI('racing5');
@@ -3994,7 +4185,51 @@ function activateMotorFailure(motorIndex) {
 }
 function clearMotorFailures() {
   if (typeof State !== 'undefined') State.motorDamage = [0,0,0,0];
-  if (typeof UI !== 'undefined') UI.toast('✅ Motors restored');
+
+  // 1. Recompute terrain-aware ground height at current drone XZ position
+  //    so recoverFromCrash snaps to the correct ground (not 0)
+  if (typeof THREE_ENV !== 'undefined') {
+    PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
+  }
+
+  // 2. Clear crash physics — resets crashed flag, zeroes vel/angVel,
+  //    levels attitude, snaps to ground, flushes PID integrators.
+  if (typeof PHYS !== 'undefined' && typeof PHYS.recoverFromCrash === 'function') {
+    PHYS.recoverFromCrash();
+  }
+
+  // 3. Arm
+  State.armed = true;
+  PHYS.saveHome();
+  PHYS._gyroBias = {x:0, y:0, z:0};
+
+  // 3. Set throttle to EXACTLY 0.5 immediately — NOT via animateThrottle().
+  //    animateThrottle ramps from 0→0.5, during which the althold FC sees
+  //    throttle < 0.5 and hits the manual branch (thrCmd = 0), so motors
+  //    never spool up.  Setting 0.5 instantly puts the stick in the deadband
+  //    so altPID engages from the very first frame.
+  INPUT._thrRaw = 0.5;
+  const slEl = document.getElementById('throttle-slider');
+  const tv   = document.getElementById('thr-val');
+  if (slEl) slEl.value = 50;
+  if (tv)   tv.textContent = '50%';
+
+  // 4. FC in althold targeting 3m
+  FC.resetPIDs();
+  FC.setMode('althold');
+  FC.altTarget = 3.0;
+  State.flightMode = 'althold';
+  setFlightModeUI('althold');
+  updateArmUI();
+
+  // 5. Dismiss the crash overlay — it was blocking the viewport and intercepting clicks
+  const co = document.getElementById('crash-overlay');
+  if (co) co.classList.remove('show');
+
+  if (typeof UI !== 'undefined') {
+    UI.toast('✅ Motors restored — taking off');
+    UI.log('Motors restored, auto-takeoff', 'ok');
+  }
 }
 
 /* [TIER-MAX] GPS Denied scenario */
@@ -4037,10 +4272,9 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ─ 2. SESSION TIMER ───────────────────────────────────────── */
-  // [PLAN-SESSION] Enforce time-limited access (BASIC=1h, PRO=24h, MAX=30d)
-  if (isFinite(PLAN.sessionSeconds)) {
-    const EXPIRES_AT_MS = PLAN.planExpiresAt > 0 ? PLAN.planExpiresAt * 1000 : 0;
-    const SESSION_MS = PLAN.sessionSeconds * 1000;
+  // [PLAN-SESSION] Enforce time-limited access (BASIS=1h, PRO=24h, MAX=∞)
+  if (isFinite(PLAN.sessionMinutes)) {
+    const SESSION_MS = PLAN.sessionMinutes * 60000;
     const t0 = Date.now();
 
     // Countdown badge
@@ -4048,18 +4282,7 @@ window.addEventListener('DOMContentLoaded', () => {
     cdBadge.style.cssText = `display:flex;align-items:center;gap:5px;padding:4px 11px;
       border-radius:20px;background:var(--n);box-shadow:inset 4px 4px 8px #0d1018,inset -4px -4px 8px #232a3a;
       font-size:11px;font-weight:600;font-family:var(--fh);color:var(--txt2);`;
-    function fmt(ms) {
-      const total = Math.max(0, Math.floor(ms / 1000));
-      const days = Math.floor(total / 86400);
-      const hours = Math.floor((total % 86400) / 3600);
-      const mins = Math.floor((total % 3600) / 60);
-      const secs = total % 60;
-      const hh = String(hours).padStart(2, '0');
-      const mm = String(mins).padStart(2, '0');
-      const ss = String(secs).padStart(2, '0');
-      return days > 0 ? `${days}d ${hh}:${mm}:${ss}` : `${hh}:${mm}:${ss}`;
-    }
-    cdBadge.innerHTML = `<span style="color:var(--s)">⏱</span><span id="ses-left">--:--:--</span>`;
+    cdBadge.innerHTML = `<span style="color:var(--s)">⏱</span><span id="ses-left">--:--</span>`;
     const tb = document.getElementById('topbar');
     if (tb) { const tsp = tb.querySelector('.tsp'); if (tsp) tb.insertBefore(cdBadge, tsp.nextSibling); }
 
@@ -4067,14 +4290,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const overlay = document.createElement('div');
     overlay.style.cssText = `position:fixed;inset:0;z-index:9999;background:rgba(10,12,20,0.97);
       display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;`;
-    const durationLabel = PLAN.sessionSeconds >= 3600
-      ? Math.round(PLAN.sessionSeconds/3600) + 'h'
-      : Math.max(1, Math.ceil(PLAN.sessionSeconds/60)) + 'min';
+    const durationLabel = PLAN.sessionMinutes >= 60
+      ? Math.round(PLAN.sessionMinutes/60) + 'h'
+      : PLAN.sessionMinutes + 'min';
     overlay.innerHTML = `
       <div style="font-family:var(--fh);font-size:32px;font-weight:700;color:var(--p)">⏱ Session Ended</div>
       <div style="font-size:14px;color:var(--txt2);text-align:center;max-width:380px;line-height:1.7">
         Your <strong>${PLAN.tierLabel}</strong> session (${durationLabel}) has expired.<br>
-        Renew your MAX plan to continue flying.
+        Upgrade to <strong style="color:var(--s)">MAX</strong> for unlimited access.
       </div>
       <button onclick="location.reload()" style="background:var(--p);color:#fff;border:none;
         padding:10px 28px;border-radius:20px;font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer;">
@@ -4083,12 +4306,12 @@ window.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(overlay);
 
     function tick() {
-      const rem = EXPIRES_AT_MS > 0
-        ? Math.max(0, EXPIRES_AT_MS - Date.now())
-        : Math.max(0, SESSION_MS - (Date.now() - t0));
+      const rem = Math.max(0, SESSION_MS - (Date.now() - t0));
       const el = document.getElementById('ses-left');
       if (el) {
-        el.textContent = fmt(rem);
+        const m = String(Math.floor(rem/60000)).padStart(2,'0');
+        const s = String(Math.floor((rem%60000)/1000)).padStart(2,'0');
+        el.textContent = `${m}:${s}`;
       }
       if (rem < 300000) cdBadge.style.color = '#EE9346';
       if (rem < 60000)  cdBadge.style.color = '#F44336';
@@ -4097,7 +4320,7 @@ window.addEventListener('DOMContentLoaded', () => {
         overlay.style.display = 'flex';
         return;
       }
-      setTimeout(tick, 100);
+      setTimeout(tick, 1000);
     }
     tick();
   }
@@ -4152,7 +4375,7 @@ window.addEventListener('DOMContentLoaded', () => {
     if (t && t.textContent.includes('RATE PID TUNING')) pidCard = c;
   });
   if (PLAN.pidTuning === false) {
-    // [PLAN-PID-BASIC] Hide entirely
+    // [PLAN-PID-BASIS] Hide entirely
     if (pidCard) _hideEl(pidCard);
   } else if (PLAN.pidTuning === 'view') {
     // [PLAN-PID-PRO] Show values but disable all sliders
@@ -4239,8 +4462,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ─ 10. NIGHT MODE RESTRICTION (BASIC) ─────────────────────── */
-  // [PLAN-NIGHT] Disable night toggle for BASIC tier
+  /* ─ 10. NIGHT MODE RESTRICTION (BASIS) ─────────────────────── */
+  // [PLAN-NIGHT] Disable night toggle for BASIS tier
   if (!PLAN.nightMode) {
     const nightToggle = document.querySelector('[onclick*="toggleDayNight"]');
     if (nightToggle) {
@@ -4250,8 +4473,8 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  /* ─ 11. WIND CONTROLS RESTRICTION (BASIC) ───────────────────── */
-  // [PLAN-WIND] Lock wind/weather controls for BASIC tier
+  /* ─ 11. WIND CONTROLS RESTRICTION (BASIS) ───────────────────── */
+  // [PLAN-WIND] Lock wind/weather controls for BASIS tier
   if (!PLAN.windScenario) {
     ['wind-speed','turbulence','wind-dir'].forEach(id => {
       const el = document.getElementById(id);
