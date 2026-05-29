@@ -7,6 +7,7 @@ require_once __DIR__ . '/../includes/simulator_launch.php';
 $email = $_SESSION['email'] ?? '';
 $user = $db->users->findOne(['email' => $email]);
 $sub_id = (int)($user['sub_id'] ?? 0);
+$wallet = (float)($user['wallet_balance'] ?? 0.0);
 $run_plan = strtoupper($_GET['run_plan'] ?? '');
 $paidState = sb_paid_plan_state($user, true);
 $paidSessionSeconds = max(0, (int) ($paidState['remaining_seconds'] ?? 0));
