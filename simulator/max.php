@@ -3308,7 +3308,7 @@ const SIM = {
     
     // Throttle UI and 2D canvas draws to ~20 Hz (every 3rd frame) to reduce CPU load
     if (typeof this._simUIFrame === 'undefined') this._simUIFrame = 0;
-    this.this._simUIFrame++;
+    this._simUIFrame++;
     if (this._simUIFrame % 3 === 0) {
       this._updateUI(rawDt); // Throttled DOM text updates
       TELEM_GRAPH.draw();
