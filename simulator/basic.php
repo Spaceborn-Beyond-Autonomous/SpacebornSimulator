@@ -2680,7 +2680,7 @@ const THREE_ENV = (() => {
   }
 
   // ── Software bloom (additive overdraw) ───────────────────────────
-  let _bloomCanvas = null, _bloomCtx = null, _bloomEnabled = true;
+  let _bloomCanvas = null, _bloomCtx = null, _bloomEnabled = false;
   function _initBloom() {
     _bloomCanvas = document.createElement('canvas');
     _bloomCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;mix-blend-mode:screen;opacity:0.28;';
