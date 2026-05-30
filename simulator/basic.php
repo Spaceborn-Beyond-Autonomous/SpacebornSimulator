@@ -1216,7 +1216,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <!-- Sim Engine (external) -->
-<script src="sim-engine.js"></script>
+<script src="sim-engine.js?v=<?= time() ?>"></script>
 
 <!-- ══ TIER: MAX ══ -->
 <script>
