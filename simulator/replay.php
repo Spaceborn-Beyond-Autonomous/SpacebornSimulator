@@ -45,7 +45,7 @@ if (empty($telemetry_url)) {
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CERTANITY · Telemetry Replay</title>
+<title>CERTANITY Â· Telemetry Replay</title>
 <link rel="icon" type="image/png" href="../assets/logo-iso.png" />
 <link rel="apple-touch-icon" href="../assets/logo-iso.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,7 +80,7 @@ input,select{font-family:var(--fb)}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--n4);border-radius:2px}
 
-/* ── Startup ── */
+/* â”€â”€ Startup â”€â”€ */
 #startup{
   position:fixed;inset:0;z-index:999;
   background:var(--bg);
@@ -95,10 +95,10 @@ input,select{font-family:var(--fb)}
 .sb{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--p),var(--s));width:0;transition:width 2.6s var(--ease)}
 .st{font-size:11px;color:var(--txt4);font-family:var(--fh);min-height:16px}
 
-/* ── App Shell ── */
+/* â”€â”€ App Shell â”€â”€ */
 #app{width:100%;height:100%;display:grid;grid-template-rows:52px 1fr 80px;grid-template-columns:272px 1fr 272px}
 
-/* ── Topbar ── */
+/* â”€â”€ Topbar â”€â”€ */
 #topbar{
   grid-column:1/-1;
   background:var(--surf);
@@ -122,16 +122,16 @@ input,select{font-family:var(--fb)}
 @keyframes bp{0%,100%{opacity:1}50%{opacity:.35}}
 .top-clock{font-family:var(--fh);font-size:13px;font-weight:600;color:var(--txt);min-width:58px;text-align:center}
 
-/* ── Left Panel ── */
+/* â”€â”€ Left Panel â”€â”€ */
 #lpanel{grid-row:2/4;background:var(--bg);padding:14px 12px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;border-right:1px solid var(--n3)}
 
-/* ── Right Panel ── */
+/* â”€â”€ Right Panel â”€â”€ */
 #rpanel{grid-row:2/4;background:var(--bg);padding:14px 12px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;border-left:1px solid var(--n3)}
 
-/* ── Bottom Bar ── */
+/* â”€â”€ Bottom Bar â”€â”€ */
 #bottombar{grid-column:2/3;background:var(--bg);border-top:1px solid var(--n3);padding:12px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 
-/* ── 3D Viewport ── */
+/* â”€â”€ 3D Viewport â”€â”€ */
 #viewport{grid-row:2/3;grid-column:2/3;position:relative;overflow:hidden;background:#0a1020;min-width:0;min-height:0;width:100%;height:100%}
 #threeCanvas{position:absolute;top:0;left:0;right:0;bottom:0;width:100%!important;height:100%!important;display:block;background:#0a1628;z-index:0}
 
@@ -182,13 +182,13 @@ input,select{font-family:var(--fb)}
 .vp-warn.show{opacity:1}
 #toast.show{opacity:1!important;}
 
-/* ── Card / Panel ── */
+/* â”€â”€ Card / Panel â”€â”€ */
 .card{background:var(--surf);border-radius:var(--r3);padding:14px;box-shadow:var(--sh-out)}
 .card-sm{border-radius:var(--r2);padding:11px}
 .card-title{font-family:var(--fh);font-size:11px;font-weight:600;color:var(--txt3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px}
 .card-title .ct-dot{width:6px;height:6px;border-radius:50%;background:var(--s);flex-shrink:0}
 
-/* ── Neumorphic Button ── */
+/* â”€â”€ Neumorphic Button â”€â”€ */
 .nbtn{border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-btn);padding:8px 14px;font-size:12px;font-weight:500;color:var(--txt2);transition:all .15s var(--ease);display:inline-flex;align-items:center;gap:6px}
 .nbtn:active,.nbtn.active-btn{box-shadow:var(--sh-btn-press);transform:translateY(1px)}
 .nbtn.primary{background:var(--p);color:white;box-shadow:3px 3px 7px rgba(0,0,0,.4),-2px -2px 6px rgba(79,142,247,.15)}
@@ -200,12 +200,12 @@ input,select{font-family:var(--fb)}
 .nbtn.icon.sm{width:28px;height:28px;padding:5px}
 .nbtn-row{display:flex;gap:7px;flex-wrap:wrap}
 
-/* ── Inset Field ── */
+/* â”€â”€ Inset Field â”€â”€ */
 .nfield{border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in);padding:8px 12px;display:flex;align-items:center;gap:8px}
 .nfield input,.nfield select{background:none;border:none;outline:none;font-size:12px;color:var(--txt);width:100%}
 .nfield label{font-size:11px;color:var(--txt4);font-weight:500;white-space:nowrap}
 
-/* ── Slider ── */
+/* â”€â”€ Slider â”€â”€ */
 .nslider-wrap{display:flex;flex-direction:column;gap:5px}
 .nslider-label{display:flex;justify-content:space-between;font-size:11px;color:var(--txt3)}
 .nslider-label span{font-weight:600;color:var(--txt);font-family:var(--fh)}
@@ -214,7 +214,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 input[type=range]::-webkit-slider-thumb:hover{border-color:var(--p);transform:scale(1.1)}
 input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,70,.4)}
 
-/* ── Toggle ── */
+/* â”€â”€ Toggle â”€â”€ */
 .ntoggle{display:flex;align-items:center;gap:10px;cursor:pointer}
 .ntoggle-track{width:38px;height:21px;border-radius:11px;background:var(--n2);box-shadow:var(--sh-in-sm);position:relative;transition:background .2s;flex-shrink:0}
 .ntoggle-track.on{background:var(--p)}
@@ -222,7 +222,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .ntoggle-track.on .ntoggle-thumb{transform:translateX(17px);background:white}
 .ntoggle-text{font-size:12px;color:var(--txt2);font-weight:500}
 
-/* ── Telemetry Value ── */
+/* â”€â”€ Telemetry Value â”€â”€ */
 .tval{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:var(--r2);background:var(--surf);box-shadow:var(--sh-in-sm)}
 .tval-label{font-size:10px;color:var(--txt4);font-weight:500;letter-spacing:.8px;text-transform:uppercase}
 .tval-num{font-family:var(--fh);font-size:17px;font-weight:600;color:var(--txt);line-height:1}
@@ -232,7 +232,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .tval-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .tval-row2{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
 
-/* ── Bar Gauge ── */
+/* â”€â”€ Bar Gauge â”€â”€ */
 .bgauge-wrap{display:flex;flex-direction:column;gap:4px}
 .bgauge-label{display:flex;justify-content:space-between;font-size:10px;color:var(--txt3)}
 .bgauge-label span{font-family:var(--fh);font-weight:600}
@@ -243,17 +243,17 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .bgauge-fill.green{background:linear-gradient(90deg,#2E7D32,#4CAF50)}
 .bgauge-fill.red{background:linear-gradient(90deg,#c62828,#EF5350)}
 
-/* ── Circular Gauge ── */
+/* â”€â”€ Circular Gauge â”€â”€ */
 .cgauge{position:relative;display:flex;align-items:center;justify-content:center}
 .cgauge canvas{border-radius:50%}
 .cgauge-val{position:absolute;text-align:center;font-family:var(--fh);font-weight:700;font-size:15px;color:var(--txt);line-height:1}
 .cgauge-val small{display:block;font-size:9px;color:var(--txt4);font-weight:500;margin-top:2px}
 
-/* ── Attitude Indicator ── */
+/* â”€â”€ Attitude Indicator â”€â”€ */
 .attitude-wrap{display:flex;align-items:center;justify-content:center;padding:6px;border-radius:var(--r2);background:var(--surf);box-shadow:var(--sh-in)}
 #attCanvas{border-radius:50%}
 
-/* ── Motor Indicators ── */
+/* â”€â”€ Motor Indicators â”€â”€ */
 .motors-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .motor-item{border-radius:var(--r2);background:var(--surf);box-shadow:var(--sh-in-sm);padding:8px;display:flex;flex-direction:column;gap:4px}
 .motor-header{display:flex;justify-content:space-between;align-items:center}
@@ -262,45 +262,45 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .motor-bar-wrap{height:5px;border-radius:3px;background:var(--n2);overflow:hidden}
 .motor-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--p),var(--s));transition:width .1s}
 
-/* ── Map / Minimap ── */
+/* â”€â”€ Map / Minimap â”€â”€ */
 .minimap{border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh-in);height:120px;position:relative;background:#1a2744}
 .minimap canvas{width:100%;height:100%;display:block}
 .minimap-badge{position:absolute;bottom:6px;left:6px;background:rgba(30,45,100,.9);color:rgba(255,255,255,.9);font-size:9px;padding:2px 7px;border-radius:10px;font-weight:600;letter-spacing:.5px}
 
-/* ── Flight Modes ── */
+/* â”€â”€ Flight Modes â”€â”€ */
 .fmode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .fmode-btn{padding:7px 4px;border-radius:var(--r1);font-size:10px;font-weight:600;text-align:center;color:var(--txt3);background:var(--surf);box-shadow:var(--sh-sm);transition:all .2s var(--ease);letter-spacing:.3px;display:flex;flex-direction:column;align-items:center;gap:3px}
 .fmode-btn .fm-icon{font-size:14px}
 .fmode-btn.on{background:var(--p);color:white;box-shadow:3px 3px 7px rgba(0,0,0,.4),-2px -2px 6px rgba(79,142,247,.15)}
 .fmode-btn:not(.on):hover{background:var(--n2)}
 
-/* ── Camera Selector ── */
+/* â”€â”€ Camera Selector â”€â”€ */
 .cam-row{display:flex;gap:6px}
 .cam-btn{flex:1;padding:6px;border-radius:var(--r1);font-size:10px;font-weight:600;text-align:center;color:var(--txt3);background:var(--surf);box-shadow:var(--sh-sm);transition:all .2s}
 .cam-btn.on{background:var(--s);color:white;box-shadow:3px 3px 7px rgba(238,147,70,.3),-2px -2px 6px rgba(255,255,255,.08)}
 
-/* ── Graph ── */
+/* â”€â”€ Graph â”€â”€ */
 .graph-canvas{border-radius:var(--r1);width:100%;box-shadow:var(--sh-in-sm)}
 
-/* ── Wind Indicator ── */
+/* â”€â”€ Wind Indicator â”€â”€ */
 .wind-wrap{display:flex;align-items:center;gap:12px}
 .wind-compass{position:relative;width:52px;height:52px;flex-shrink:0}
 .wind-compass canvas{width:100%;height:100%}
 
-/* ── Tab System ── */
+/* â”€â”€ Tab System â”€â”€ */
 .tabs{display:flex;gap:4px;margin-bottom:10px}
 .tab{padding:5px 12px;border-radius:var(--r4);font-size:11px;font-weight:500;color:var(--txt3);background:transparent;transition:all .2s}
 .tab.on{background:var(--surf);box-shadow:var(--sh-sm);color:var(--p);font-weight:600}
 .tab-content{display:none}
 .tab-content.on{display:block}
 
-/* ── Mission Panel ── */
+/* â”€â”€ Mission Panel â”€â”€ */
 .wp-list{display:flex;flex-direction:column;gap:5px;max-height:100px;overflow-y:auto}
 .wp-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in-sm);font-size:11px;color:var(--txt2)}
 .wp-num{width:18px;height:18px;border-radius:50%;background:var(--p);color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .wp-coords{font-family:var(--fh);font-size:10px;color:var(--txt4);margin-left:auto}
 
-/* ── Warning System ── */
+/* â”€â”€ Warning System â”€â”€ */
 .warn-list{display:flex;flex-direction:column;gap:4px}
 .warn-item{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in-sm);font-size:11px}
 .warn-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
@@ -308,12 +308,12 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .warn-dot.warn{background:var(--s)}
 .warn-dot.err{background:#F44336}
 
-/* ── Keyboard ── */
+/* â”€â”€ Keyboard â”€â”€ */
 .kbd-row{display:flex;flex-wrap:wrap;gap:5px}
 .kbd{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--txt3);font-weight:500}
 .kd{background:var(--surf);box-shadow:var(--sh-sm);border-radius:6px;padding:4px 7px;font-size:11px;font-family:var(--fh);font-weight:600;color:var(--txt2);min-width:24px;text-align:center}
 
-/* ── Log ── */
+/* â”€â”€ Log â”€â”€ */
 .log-list{display:flex;flex-direction:column;gap:3px;max-height:80px;overflow-y:auto}
 .log-item{font-size:10px;color:var(--txt3);padding:3px 6px;border-radius:6px;background:var(--surf);box-shadow:var(--sh-in-sm);display:flex;gap:6px}
 .log-item.ok .log-tag{color:#4CAF50}
@@ -321,7 +321,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .log-item.warn .log-tag{color:var(--s)}
 .log-tag{font-weight:600;font-family:var(--fh)}
 
-/* ── Hover Throttle ── */
+/* â”€â”€ Hover Throttle â”€â”€ */
 .ht-row{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--txt3)}
 .ht-val{font-family:var(--fh);font-weight:700;font-size:13px;color:var(--p);min-width:36px}
 
@@ -339,7 +339,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .tgl-item.on{opacity:1;box-shadow:var(--sh-btn);}
 .tgl-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 
-/* ── Drone Customize Panel ── */
+/* â”€â”€ Drone Customize Panel â”€â”€ */
 .profile-customize{display:none;flex-direction:column;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--n3)}
 .profile-customize.open{display:flex}
 .profile-section-title{font-size:10px;font-weight:700;color:var(--txt4);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
@@ -352,7 +352,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .profile-color-row label{font-size:10px;color:var(--txt3);font-weight:500;flex:1}
 .profile-color-row input[type=color]{width:34px;height:28px;border-radius:7px;border:none;cursor:pointer;padding:2px;background:var(--surf);box-shadow:var(--sh-sm)}
 
-/* ── Custom Profile Modal ── */
+/* â”€â”€ Custom Profile Modal â”€â”€ */
 #custom-profile-modal{
   position:fixed;inset:0;z-index:900;
   background:rgba(0,0,0,.65);backdrop-filter:blur(6px);
@@ -384,7 +384,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .profile-card:hover{border-color:var(--p4)}
 .profile-card.active{border-color:var(--p);color:var(--p)}
 .profile-card .pc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-/* ── Virtual Joystick ── */
+/* â”€â”€ Virtual Joystick â”€â”€ */
 .vj-pad{
   position:relative;width:88px;height:88px;flex-shrink:0;
   border-radius:50%;background:var(--n);
@@ -414,7 +414,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .vj-label-l{left:3px;top:50%;transform:translateY(-50%)}
 .vj-label-r{right:3px;top:50%;transform:translateY(-50%)}
 
-/* ── Stick Meters ── */
+/* â”€â”€ Stick Meters â”€â”€ */
 .stick-meter-wrap{display:flex;align-items:center;gap:5px}
 .stick-meter-lbl{font-size:8px;font-weight:700;color:var(--txt4);width:20px;flex-shrink:0;letter-spacing:.3px}
 .stick-meter-track{flex:1;height:5px;border-radius:3px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden;position:relative}
@@ -426,7 +426,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .stick-meter-fill.accent{background:var(--s)}
 .stick-meter-fill.primary{background:var(--p)}
 
-/* ── Obstacle Radar ── */
+/* â”€â”€ Obstacle Radar â”€â”€ */
 .obstacle-radar{position:relative;display:flex;align-items:center;justify-content:center;padding:6px}
 .obs-ring{stroke:rgba(96,125,139,0.25);fill:none}
 .obs-sector-label{font-size:8px;fill:var(--txt4);font-family:'Inter',sans-serif;font-weight:600}
@@ -435,7 +435,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .obs-bar-track{height:5px;border-radius:3px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden}
 .obs-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#F44336,#EE9346,#4CAF50);transition:width .1s}
 
-/* ── GPS Panel ── */
+/* â”€â”€ GPS Panel â”€â”€ */
 .gps-fix-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .gps-fix-3d{background:#4CAF50;color:white}
 .gps-fix-2d{background:var(--s);color:white}
@@ -446,14 +446,14 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .gps-sat-dot.on{background:#4CAF50}
 .gps-sat-dot.dim{background:var(--s);opacity:.5}
 
-/* ── VSLAM Panel ── */
+/* â”€â”€ VSLAM Panel â”€â”€ */
 .vslam-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
 .vslam-active{background:var(--p);color:white;animation:bp 1.2s ease infinite}
 .vslam-idle{background:var(--n2);color:var(--txt4)}
 .vslam-quality{height:4px;border-radius:2px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden;margin-top:5px}
 .vslam-quality-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--p),var(--s));transition:width .2s}
 
-/* ── PID Telemetry Panel ── */
+/* â”€â”€ PID Telemetry Panel â”€â”€ */
 .pid-telem-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .pid-axis-card{border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in-sm);padding:7px}
 .pid-axis-title{font-size:9px;font-weight:700;color:var(--txt4);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between}
@@ -466,7 +466,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .pid-err-track::before{content:'';position:absolute;left:50%;top:0;width:1px;height:100%;background:var(--n4);z-index:1}
 .pid-err-fill{position:absolute;height:100%;border-radius:2px;background:var(--s);transition:width .06s,left .06s}
 
-/* ── Rate Hz badges ── */
+/* â”€â”€ Rate Hz badges â”€â”€ */
 .hz-badge{display:inline-block;font-size:8px;font-weight:700;padding:1px 5px;border-radius:6px;background:var(--n);box-shadow:var(--sh-in-sm);color:var(--txt4);letter-spacing:.3px;margin-left:4px;vertical-align:middle}
 
 </style>
@@ -475,9 +475,9 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <!-- Startup -->
 <div id="startup">
   <div class="sl">CERTANITY</div>
-  <div class="ss">Aerospace Drone Simulator · v2.0</div>
+  <div class="ss">Aerospace Drone Simulator Â· v2.0</div>
   <div class="sbw"><div class="sb" id="sbar"></div></div>
-  <div class="st" id="sstat">Initializing physics engine…</div>
+  <div class="st" id="sstat">Initializing physics engineâ€¦</div>
 </div>
 
 <!-- App -->
@@ -491,11 +491,11 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     </a>
     <div class="vsep"></div>
     <div class="tsp"></div>
-    <button class="nbtn sm danger" id="exit-sim-btn" onclick="closeReplay()" title="Close Replay Window">🚪 Close</button>
+    <button class="nbtn sm danger" id="exit-sim-btn" onclick="closeReplay()" title="Close Replay Window">ðŸšª Close</button>
     <div class="top-stat"><div class="sdot" id="sys-dot"></div><span id="sys-status">REPLAYING</span></div>
     <span id="arm-status">DISARMED</span>
-    <div class="top-stat"><span>⚡</span><span id="batt-top">100%</span></div>
-    <div class="top-stat"><span>🌡</span><span id="fps-val">60fps</span></div>
+    <div class="top-stat"><span>âš¡</span><span id="batt-top">100%</span></div>
+    <div class="top-stat"><span>ðŸŒ¡</span><span id="fps-val">60fps</span></div>
     <div class="top-clock" id="top-clock">00:00</div>
   </div>
 
@@ -518,12 +518,12 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <div class="card card-sm" style="pointer-events:none;opacity:0.85;">
       <div class="card-title"><span class="ct-dot"></span>FLIGHT MODE (RECORDED)</div>
       <div class="fmode-grid">
-        <button class="fmode-btn" data-mode="stabilized"><span class="fm-icon">⚖️</span>Stabilized</button>
-        <button class="fmode-btn" data-mode="angle"><span class="fm-icon">📐</span>Angle</button>
-        <button class="fmode-btn" data-mode="acro"><span class="fm-icon">🎯</span>Acro</button>
-        <button class="fmode-btn" data-mode="althold"><span class="fm-icon">🔒</span>Alt Hold</button>
-        <button class="fmode-btn" data-mode="gpshold"><span class="fm-icon">📡</span>GPS Hold</button>
-        <button class="fmode-btn" data-mode="rth"><span class="fm-icon">🏠</span>RTH</button>
+        <button class="fmode-btn" data-mode="stabilized"><span class="fm-icon">âš–ï¸</span>Stabilized</button>
+        <button class="fmode-btn" data-mode="angle"><span class="fm-icon">ðŸ“</span>Angle</button>
+        <button class="fmode-btn" data-mode="acro"><span class="fm-icon">ðŸŽ¯</span>Acro</button>
+        <button class="fmode-btn" data-mode="althold"><span class="fm-icon">ðŸ”’</span>Alt Hold</button>
+        <button class="fmode-btn" data-mode="gpshold"><span class="fm-icon">ðŸ“¡</span>GPS Hold</button>
+        <button class="fmode-btn" data-mode="rth"><span class="fm-icon">ðŸ </span>RTH</button>
       </div>
     </div>
 
@@ -531,12 +531,12 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <div class="card card-sm">
       <div class="card-title"><span class="ct-dot"></span>ENVIRONMENT OVERRIDE</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px">
-        <button class="fmode-btn on" data-env="field" onclick="setEnvironment('field')"><span class="fm-icon">🌾</span>Field</button>
-        <button class="fmode-btn" data-env="mountains" onclick="setEnvironment('mountains')"><span class="fm-icon">⛰️</span>Mountains</button>
-        <button class="fmode-btn" data-env="urban" onclick="setEnvironment('urban')"><span class="fm-icon">🏙️</span>Urban</button>
-        <button class="fmode-btn" data-env="indoor" onclick="setEnvironment('indoor')"><span class="fm-icon">🏭</span>Warehouse</button>
-        <button class="fmode-btn" data-env="desert" onclick="setEnvironment('desert')"><span class="fm-icon">🏜️</span>Desert</button>
-        <button class="fmode-btn" data-env="windy" onclick="setEnvironment('windy')"><span class="fm-icon">🌪️</span>Windy</button>
+        <button class="fmode-btn on" data-env="field" onclick="setEnvironment('field')"><span class="fm-icon">ðŸŒ¾</span>Field</button>
+        <button class="fmode-btn" data-env="mountains" onclick="setEnvironment('mountains')"><span class="fm-icon">â›°ï¸</span>Mountains</button>
+        <button class="fmode-btn" data-env="urban" onclick="setEnvironment('urban')"><span class="fm-icon">ðŸ™ï¸</span>Urban</button>
+        <button class="fmode-btn" data-env="indoor" onclick="setEnvironment('indoor')"><span class="fm-icon">ðŸ­</span>Warehouse</button>
+        <button class="fmode-btn" data-env="desert" onclick="setEnvironment('desert')"><span class="fm-icon">ðŸœï¸</span>Desert</button>
+        <button class="fmode-btn" data-env="windy" onclick="setEnvironment('windy')"><span class="fm-icon">ðŸŒªï¸</span>Windy</button>
       </div>
       <div style="display:flex;gap:7px;flex-wrap:wrap">
         <div class="ntoggle" onclick="toggleWeather('rain',this)">
@@ -578,7 +578,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <div class="vp-bl"></div><div class="vp-br"></div>
     <div class="cam-badge" id="cam-badge">THIRD PERSON</div>
     <div class="crosshair"><div class="ch-h"></div><div class="ch-v"></div></div>
-    <div class="vp-warn" id="vp-warn">⚠ LOW ALTITUDE</div>
+    <div class="vp-warn" id="vp-warn">âš  LOW ALTITUDE</div>
   </div>
 
   <!-- Right Panel -->
@@ -636,8 +636,8 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         <div style="display:flex;flex-direction:column;gap:3px">
           <div style="font-size:9px;color:var(--txt4);font-weight:600;letter-spacing:.6px;text-transform:uppercase">Coordinates</div>
           <div style="display:flex;gap:4px">
-            <div class="tval" style="flex:1"><div class="tval-label">LAT</div><div class="tval-num" style="font-size:12px" id="gps-lat">17.0005</div><div class="tval-unit">°N</div></div>
-            <div class="tval" style="flex:1"><div class="tval-label">LON</div><div class="tval-num" style="font-size:12px" id="gps-lon">82.2458</div><div class="tval-unit">°E</div></div>
+            <div class="tval" style="flex:1"><div class="tval-label">LAT</div><div class="tval-num" style="font-size:12px" id="gps-lat">17.0005</div><div class="tval-unit">Â°N</div></div>
+            <div class="tval" style="flex:1"><div class="tval-label">LON</div><div class="tval-num" style="font-size:12px" id="gps-lon">82.2458</div><div class="tval-unit">Â°E</div></div>
           </div>
           <div class="tval"><div class="tval-label">ALT MSL</div><div class="tval-num" id="gps-alt">12.0</div><div class="tval-unit">m</div></div>
         </div>
@@ -710,7 +710,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       <div class="pid-telem-grid">
         <!-- Roll axis -->
         <div class="pid-axis-card">
-          <div class="pid-axis-title">ROLL <span class="pid-axis-live" id="pid-roll-err-lbl">±0.000</span></div>
+          <div class="pid-axis-title">ROLL <span class="pid-axis-live" id="pid-roll-err-lbl">Â±0.000</span></div>
           <div class="pid-gains-row">
             <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-roll-kp">0.042</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-roll-ki">0.000</div></div>
@@ -720,7 +720,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         </div>
         <!-- Pitch axis -->
         <div class="pid-axis-card">
-          <div class="pid-axis-title">PITCH <span class="pid-axis-live" id="pid-pitch-err-lbl">±0.000</span></div>
+          <div class="pid-axis-title">PITCH <span class="pid-axis-live" id="pid-pitch-err-lbl">Â±0.000</span></div>
           <div class="pid-gains-row">
             <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-pitch-kp">0.042</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-pitch-ki">0.000</div></div>
@@ -730,7 +730,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         </div>
         <!-- Yaw axis -->
         <div class="pid-axis-card">
-          <div class="pid-axis-title">YAW <span class="pid-axis-live" id="pid-yaw-err-lbl">±0.000</span></div>
+          <div class="pid-axis-title">YAW <span class="pid-axis-live" id="pid-yaw-err-lbl">Â±0.000</span></div>
           <div class="pid-gains-row">
             <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-yaw-kp">0.065</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-yaw-ki">0.012</div></div>
@@ -740,7 +740,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         </div>
         <!-- Throttle/Alt axis -->
         <div class="pid-axis-card">
-          <div class="pid-axis-title">THR/ALT <span class="pid-axis-live" id="pid-thr-err-lbl">±0.000</span></div>
+          <div class="pid-axis-title">THR/ALT <span class="pid-axis-live" id="pid-thr-err-lbl">Â±0.000</span></div>
           <div class="pid-gains-row">
             <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-thr-kp">1.6</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-thr-ki">0.10</div></div>
@@ -749,7 +749,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
           <div class="pid-err-track"><div class="pid-err-fill" id="pid-thr-err" style="width:0%;left:50%"></div></div>
         </div>
       </div>
-      <div style="margin-top:6px;font-size:9px;color:var(--txt4);text-align:center">Error signal ← centre=0 →  |  copy Kp/Ki/Kd directly to Betaflight/ArduPilot/PX4</div>
+      <div style="margin-top:6px;font-size:9px;color:var(--txt4);text-align:center">Error signal â† centre=0 â†’  |  copy Kp/Ki/Kd directly to Betaflight/ArduPilot/PX4</div>
     </div>
 
     <!-- Minimap -->
@@ -808,12 +808,12 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <!-- Export / Blackbox -->
     <div class="card card-sm" id="export-card">
-      <div class="card-title"><span class="ct-dot"></span>FLIGHT LOG · BLACKBOX <span class="hz-badge">Physics tick</span></div>
+      <div class="card-title"><span class="ct-dot"></span>FLIGHT LOG Â· BLACKBOX <span class="hz-badge">Physics tick</span></div>
       <div class="export-panel">
         <div class="nbtn-row">
-          <button class="nbtn sm accent" id="rec-btn" onclick="toggleRecording()">⏺ Record</button>
-          <button class="nbtn sm" onclick="BLACKBOX.stop();BLACKBOX.download();UI.toast('💾 CSV saved')">💾 CSV</button>
-          <button class="nbtn sm primary" onclick="exportMAVLink()">📡 MAVLink</button>
+          <button class="nbtn sm accent" id="rec-btn" onclick="toggleRecording()">âº Record</button>
+          <button class="nbtn sm" onclick="BLACKBOX.stop();BLACKBOX.download();UI.toast('ðŸ’¾ CSV saved')">ðŸ’¾ CSV</button>
+          <button class="nbtn sm primary" onclick="exportMAVLink()">ðŸ“¡ MAVLink</button>
           <button class="nbtn sm" onclick="exportJSON()">{ } JSON</button>
         </div>
         <div id="export-stats" class="export-stat-row" style="display:none">
@@ -826,7 +826,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     </div>
 
 
-      <!-- [TIER-MAX] Advanced Scenario Panel — Motor Failure & GPS Denied -->
+      <!-- [TIER-MAX] Advanced Scenario Panel â€” Motor Failure & GPS Denied -->
       <div class="card card-sm" id="advanced-scenarios-card">
         <div class="card-title"><span class="ct-dot"></span>ADVANCED SCENARIOS</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
@@ -837,10 +837,10 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
             <button class="nbtn sm danger" onclick="activateMotorFailure(2)" title="Fail Back-Left motor">M3</button>
             <button class="nbtn sm danger" onclick="activateMotorFailure(3)" title="Fail Back-Right motor">M4</button>
           </div>
-          <button class="nbtn sm" onclick="clearMotorFailures()" style="width:100%">✅ Restore All Motors</button>
+          <button class="nbtn sm" onclick="clearMotorFailures()" style="width:100%">âœ… Restore All Motors</button>
           <div style="margin-top:4px;display:flex;gap:7px;">
-            <button class="nbtn sm accent" onclick="activateGPSDenied(true)" style="flex:1">🚫 GPS Denied</button>
-            <button class="nbtn sm" onclick="activateGPSDenied(false)" style="flex:1">✅ GPS Restore</button>
+            <button class="nbtn sm accent" onclick="activateGPSDenied(true)" style="flex:1">ðŸš« GPS Denied</button>
+            <button class="nbtn sm" onclick="activateGPSDenied(false)" style="flex:1">âœ… GPS Restore</button>
           </div>
         </div>
       </div>
@@ -852,16 +852,16 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       <div style="margin-top:8px"></div>
       <canvas class="graph-canvas" id="gyroGraph" width="220" height="60"></canvas>
       <div style="margin-top:8px">
-        <button class="nbtn sm" onclick="DEBUG.toggle();document.getElementById('debug-section').style.display=DEBUG.enabled?'block':'none'">🔬 Toggle Debug</button>
+        <button class="nbtn sm" onclick="DEBUG.toggle();document.getElementById('debug-section').style.display=DEBUG.enabled?'block':'none'">ðŸ”¬ Toggle Debug</button>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Bar — Virtual Joysticks + Stick Visualizer -->
+  <!-- Bottom Bar â€” Virtual Joysticks + Stick Visualizer -->
   <div id="bottombar" style="grid-column:2/3;background:var(--surf);border-top:1px solid var(--n3);padding:10px 20px;display:flex;align-items:center;gap:18px;height:80px;">
     <!-- Play/Pause -->
     <button class="nbtn primary icon" id="play-btn-bottom" onclick="togglePlayback()" style="width:40px;height:40px;border-radius:50%;flex-shrink:0;">
-      <span style="font-size:16px;" id="play-icon-bottom">⏸</span>
+      <span style="font-size:16px;" id="play-icon-bottom">â¸</span>
     </button>
     
     <!-- Time display -->
@@ -877,11 +877,11 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <!-- Speed control -->
     <div class="nfield" style="padding:4px 10px;gap:6px;width:100px;flex-shrink:0;">
       <select id="playback-speed" onchange="setPlaybackSpeed(this.value)" style="font-size:11px;font-weight:600;color:var(--txt);background:none;border:none;outline:none;cursor:pointer;width:100%;">
-        <option value="0.25">0.25×</option>
-        <option value="0.5">0.5×</option>
-        <option value="1" selected>1×</option>
-        <option value="2">2×</option>
-        <option value="4">4×</option>
+        <option value="0.25">0.25Ã—</option>
+        <option value="0.5">0.5Ã—</option>
+        <option value="1" selected>1Ã—</option>
+        <option value="2">2Ã—</option>
+        <option value="4">4Ã—</option>
       </select>
     </div>
   </div><!-- end #bottombar -->
@@ -892,33 +892,33 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <div id="custom-profile-modal">
   <div class="modal-card">
     <div class="modal-header">
-      <div class="modal-title">🚁 Create Custom Drone Profile</div>
-      <div class="modal-close" onclick="closeCustomProfileModal()">✕</div>
+      <div class="modal-title">ðŸš Create Custom Drone Profile</div>
+      <div class="modal-close" onclick="closeCustomProfileModal()">âœ•</div>
     </div>
 
     <div class="modal-section">
-      <div class="modal-section-label">📋 Identity</div>
+      <div class="modal-section-label">ðŸ“‹ Identity</div>
       <div class="modal-grid">
         <div class="modal-field full"><label>Profile Name</label><input type="text" id="cp-name" placeholder='e.g. My 7" Long-Range'></div>
       </div>
     </div>
 
     <div class="modal-section">
-      <div class="modal-section-label">⚙ Physical Frame</div>
+      <div class="modal-section-label">âš™ Physical Frame</div>
       <div class="modal-grid">
         <div class="modal-field"><label>Mass (kg)</label><input type="number" id="cp-mass" value="1.24" step="0.01" min="0.05" max="20"></div>
         <div class="modal-field"><label>Arm Length (m)</label><input type="number" id="cp-arm" value="0.19" step="0.005" min="0.05" max="1"></div>
         <div class="modal-field"><label>Body Scale</label><input type="number" id="cp-bodyscale" value="1.0" step="0.05" min="0.3" max="3"></div>
         <div class="modal-field"><label>Rotor Radius (m)</label><input type="number" id="cp-rotor" value="0.09" step="0.005" min="0.03" max="0.5"></div>
-        <div class="modal-field"><label>Max Tilt Angle (°)</label><input type="number" id="cp-tilt" value="55" step="1" min="10" max="85"></div>
-        <div class="modal-field"><label>Drag Area (m²)</label><input type="number" id="cp-drag" value="0.022" step="0.001" min="0.001" max="0.5"></div>
+        <div class="modal-field"><label>Max Tilt Angle (Â°)</label><input type="number" id="cp-tilt" value="55" step="1" min="10" max="85"></div>
+        <div class="modal-field"><label>Drag Area (mÂ²)</label><input type="number" id="cp-drag" value="0.022" step="0.001" min="0.001" max="0.5"></div>
         <div class="modal-field"><label>Drag Coefficient</label><input type="number" id="cp-cd" value="1.12" step="0.01" min="0.3" max="3"></div>
         <div class="modal-field"><label>Angular Drag</label><input type="number" id="cp-angdrag" value="0.0028" step="0.0001" min="0.0001" max="0.05"></div>
       </div>
     </div>
 
     <div class="modal-section">
-      <div class="modal-section-label">⚡ Motors &amp; Propulsion</div>
+      <div class="modal-section-label">âš¡ Motors &amp; Propulsion</div>
       <div class="modal-grid">
         <div class="modal-field"><label>Max RPM</label><input type="number" id="cp-maxrpm" value="14000" step="500" min="2000" max="50000"></div>
         <div class="modal-field"><label>Idle RPM</label><input type="number" id="cp-idlerpm" value="500" step="50" min="100" max="3000"></div>
@@ -932,7 +932,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     </div>
 
     <div class="modal-section">
-      <div class="modal-section-label">🔋 Battery</div>
+      <div class="modal-section-label">ðŸ”‹ Battery</div>
       <div class="modal-grid">
         <div class="modal-field"><label>Cell Count (S)</label><input type="number" id="cp-cells" value="4" step="1" min="1" max="12"></div>
         <div class="modal-field"><label>Capacity (Ah)</label><input type="number" id="cp-batt" value="1.65" step="0.1" min="0.1" max="30"></div>
@@ -940,7 +940,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     </div>
 
     <div class="modal-section">
-      <div class="modal-section-label">🎨 Visual</div>
+      <div class="modal-section-label">ðŸŽ¨ Visual</div>
       <div class="modal-grid">
         <div class="modal-field"><label>Drone Color</label><input type="color" id="cp-color" value="#1e88e5" style="width:100%;height:34px;border-radius:8px;border:none;cursor:pointer;background:var(--surf);box-shadow:var(--sh-sm);padding:3px"></div>
         <div class="modal-field"><label>Max Pitch Rate</label><input type="number" id="cp-ratepitch" value="10" step="0.5" min="1" max="30"></div>
@@ -951,8 +951,8 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <div style="display:flex;gap:8px;margin-top:4px">
       <button class="nbtn" onclick="closeCustomProfileModal()" style="flex:1">Cancel</button>
-      <button class="nbtn accent" onclick="loadPresetIntoModal('racing5')" style="flex:1">📋 Load Preset</button>
-      <button class="nbtn primary" onclick="createCustomProfile()" style="flex:1">✅ Create</button>
+      <button class="nbtn accent" onclick="loadPresetIntoModal('racing5')" style="flex:1">ðŸ“‹ Load Preset</button>
+      <button class="nbtn primary" onclick="createCustomProfile()" style="flex:1">âœ… Create</button>
     </div>
     <!-- Preset quick-load -->
     <div style="margin-top:12px">
@@ -968,9 +968,9 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <!-- Sim Engine (external) -->
 <script src="sim-engine.js"></script>
 
-<!-- ══ TIER: MAX ══ -->
+<!-- â•â• TIER: MAX â•â• -->
 <script>
-/* PLAN FLAGS — MAX tier
+/* PLAN FLAGS â€” MAX tier
    Duration: 30 days | All profiles + Custom
    All 6 envs | Full HUD | Full PID | Full export
    Gamepad | Waypoints | GLTF upload | Priority support */
@@ -1000,9 +1000,9 @@ const PLAN = {
 <script>
 'use strict';
 
-/* ══════════════════════════════════════════════════════════════════════
-   THREE.JS ENVIRONMENT — v3.0  BSL CINEMATIC VISUAL UPGRADE
-   Visual Enhancements Only — All physics/controls untouched
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   THREE.JS ENVIRONMENT â€” v3.0  BSL CINEMATIC VISUAL UPGRADE
+   Visual Enhancements Only â€” All physics/controls untouched
    - BSL-inspired sky shader with atmospheric scattering & god rays
    - Volumetric fog layers with animated drift
    - Bloom post-processing via additive compositing
@@ -1012,7 +1012,7 @@ const PLAN = {
    - Soft PCF shadows, ACES tonemapping, high-quality rendering
    - Animated grass blades via vertex shader
    - Cinematic depth haze and horizon glow
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 const THREE_ENV = (() => {
   let renderer, scene, camera, clock;
@@ -1047,7 +1047,7 @@ const THREE_ENV = (() => {
   let _bloomRT, _bloomScene, _bloomCamera, _bloomQuad;
   let _mainRT;
 
-  // ── Terrain heightmap (chunk-aware) ──────────────────────────────
+  // â”€â”€ Terrain heightmap (chunk-aware) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function terrainHeight(x, z, envName) {
     const env = envName || _envName;
     switch(env) {
@@ -1075,7 +1075,7 @@ const THREE_ENV = (() => {
     }
   }
 
-  // ── Terrain colour helper ──────────────────────────────────────────
+  // â”€â”€ Terrain colour helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function terrainColor(x, z, h, envName) {
     const env = envName || _envName;
     let r, g, b;
@@ -1091,7 +1091,7 @@ const THREE_ENV = (() => {
     } else if (env === 'urban') {
       r=0.36; g=0.36; b=0.36;
     } else {
-      // Lush field — variation between meadow greens
+      // Lush field â€” variation between meadow greens
       const v  = Noise.n(x*0.12, 0, z*0.12)*0.10;
       const v2 = Noise.n(x*0.35, 1, z*0.35)*0.04;
       const moisture = Noise.fbm(x*0.02, 3, z*0.02, 2, 0.5, 2)*0.5+0.5;
@@ -1102,7 +1102,7 @@ const THREE_ENV = (() => {
     return [Math.min(1,Math.max(0,r)), Math.min(1,Math.max(0,g)), Math.min(1,Math.max(0,b))];
   }
 
-  // ── Single chunk terrain mesh ──────────────────────────────────────
+  // â”€â”€ Single chunk terrain mesh â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function buildChunkMesh(cx, cz, envName) {
     const geo = new THREE.PlaneGeometry(CHUNK_SIZE, CHUNK_SIZE, CHUNK_SEGS, CHUNK_SEGS);
     geo.rotateX(-Math.PI/2);
@@ -1128,7 +1128,7 @@ const THREE_ENV = (() => {
     return mesh;
   }
 
-  // ── Grass blade system (per-chunk) ────────────────────────────────
+  // â”€â”€ Grass blade system (per-chunk) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let _grassTime = 0;
   function buildGrassBlades(cx, cz, envName) {
     const env = envName || _envName;
@@ -1166,7 +1166,7 @@ const THREE_ENV = (() => {
     return mesh;
   }
 
-  // ── Flowers ────────────────────────────────────────────────────────
+  // â”€â”€ Flowers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function buildFlowers(cx, cz, envName) {
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert' || env === 'mountains') return null;
@@ -1206,7 +1206,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // ── Rocks ──────────────────────────────────────────────────────────
+  // â”€â”€ Rocks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function buildRocks(cx, cz, envName) {
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor') return null;
@@ -1241,7 +1241,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // ── Trees (lush, varied) ──────────────────────────────────────────
+  // â”€â”€ Trees (lush, varied) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function buildVegetation(cx, cz, envName) {
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert') return null;
@@ -1323,7 +1323,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // ── Buildings (urban) ─────────────────────────────────────────────
+  // â”€â”€ Buildings (urban) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function buildUrban() {
     const group = new THREE.Group();
     const bMats = [
@@ -1350,7 +1350,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // ── Sky Dome (BSL-inspired: Mie scatter, god rays, horizon glow) ──
+  // â”€â”€ Sky Dome (BSL-inspired: Mie scatter, god rays, horizon glow) â”€â”€
   function buildSky(night) {
     const geo = new THREE.SphereGeometry(490, 48, 24);
     geo.scale(-1, 1, -1);
@@ -1457,7 +1457,7 @@ const THREE_ENV = (() => {
     return new THREE.Mesh(geo, mat);
   }
 
-  // ── Volumetric Clouds ─────────────────────────────────────────────
+  // â”€â”€ Volumetric Clouds â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function buildClouds() {
     const group = new THREE.Group();
     // Two cloud layers
@@ -1490,7 +1490,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // ── Rain ────────────────────────────────────────────────────────────
+  // â”€â”€ Rain â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function buildRain() {
     const count = 5000;
     const geo = new THREE.BufferGeometry();
@@ -1505,14 +1505,14 @@ const THREE_ENV = (() => {
     return { pts: new THREE.Points(geo, mat), geo, pos };
   }
 
-  // ── Drone mesh (premium PBR materials) ───────────────────────────
+  // â”€â”€ Drone mesh (premium PBR materials) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function buildDrone(color) {
     const g = new THREE.Group();
     const L  = PHYS.armLen || 0.19;
     const rr = PHYS.droneVisual.rotorRadius || 0.09;
     const bs = PHYS.droneVisual.bodyScale   || 1.0;
 
-    // Materials — MeshStandardMaterial for PBR sheen
+    // Materials â€” MeshStandardMaterial for PBR sheen
     const bodyMat  = new THREE.MeshStandardMaterial({ color: color||0x1e88e5, roughness:0.25, metalness:0.55, envMapIntensity:1.2 });
     const darkMat  = new THREE.MeshStandardMaterial({ color: 0x111111, roughness:0.35, metalness:0.6 });
     const carbonMat= new THREE.MeshStandardMaterial({ color: 0x1a1a1e, roughness:0.5, metalness:0.3 });
@@ -1521,8 +1521,8 @@ const THREE_ENV = (() => {
     const propMat  = new THREE.MeshStandardMaterial({ color: 0x0d0d10, roughness:0.55, metalness:0.1, transparent:true, opacity:0.88 });
     const glassMat = new THREE.MeshStandardMaterial({ color: 0x223366, roughness:0.05, metalness:0.0, transparent:true, opacity:0.65 });
 
-    // ── Central body ─────────────────────────────────────────────────
-    // Top plate — slightly tapered
+    // â”€â”€ Central body â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Top plate â€” slightly tapered
     const topPlate = new THREE.Mesh(new THREE.BoxGeometry(0.19*bs, 0.020*bs, 0.19*bs), bodyMat);
     topPlate.position.y = 0.020*bs;
     topPlate.castShadow = true;
@@ -1586,7 +1586,7 @@ const THREE_ENV = (() => {
       g.add(ant);
     });
 
-    // ── 4 Arms + Motors + Props ───────────────────────────────────────
+    // â”€â”€ 4 Arms + Motors + Props â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const motorPositions = [
       [ L*0.707,  0,  L*0.707],
       [-L*0.707,  0,  L*0.707],
@@ -1601,7 +1601,7 @@ const THREE_ENV = (() => {
     motorPositions.forEach((mpos, i) => {
       const [mx,,mz] = mpos;
 
-      // Arm — tapered trapezoid profile
+      // Arm â€” tapered trapezoid profile
       const armLength = Math.hypot(mx, mz);
       const armAngle  = Math.atan2(mx, mz);
       const arm = new THREE.Mesh(new THREE.BoxGeometry(0.022*bs, 0.013*bs, armLength), armMat.clone());
@@ -1633,7 +1633,7 @@ const THREE_ENV = (() => {
       cap.position.set(mx, -0.001*bs, mz);
       g.add(cap);
 
-      // ── Propeller group ────────────────────────────────────────────
+      // â”€â”€ Propeller group â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       const propGroup = new THREE.Group();
       propGroup.position.set(mx, 0.026*bs, mz);
 
@@ -1671,7 +1671,7 @@ const THREE_ENV = (() => {
       g.add(propGroup);
       propMeshes.push(propGroup);
 
-      // ── Landing gear ──────────────────────────────────────────────
+      // â”€â”€ Landing gear â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       const legMat = new THREE.MeshStandardMaterial({ color: 0x2a2a2e, roughness:0.7, metalness:0.3 });
       // Main strut
       const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.005*bs, 0.005*bs, 0.065*bs, 6), legMat);
@@ -1688,7 +1688,7 @@ const THREE_ENV = (() => {
       brace.rotation.x = mz > 0 ? 0.4 : -0.4;
       g.add(brace);
 
-      // ── LED / running light ───────────────────────────────────────
+      // â”€â”€ LED / running light â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
       const led = new THREE.Mesh(new THREE.SphereGeometry(0.009*bs, 8, 6), new THREE.MeshBasicMaterial({ color: ledColors[i] }));
       led.position.set(mx, 0.028*bs, mz);
       g.add(led);
@@ -1704,7 +1704,7 @@ const THREE_ENV = (() => {
     return g;
   }
 
-  // ── Flight path trail ─────────────────────────────────────────────
+  // â”€â”€ Flight path trail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function initTrail() {
     const mat = new THREE.LineBasicMaterial({ color: 0xEE9346, transparent: true, opacity: 0.60, linewidth: 1 });
     const geo = new THREE.BufferGeometry();
@@ -1733,7 +1733,7 @@ const THREE_ENV = (() => {
     _trailLine.geometry.attributes.position.needsUpdate = true;
   }
 
-  // ── Waypoint markers ─────────────────────────────────────────────
+  // â”€â”€ Waypoint markers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function addWaypointMarker(pos) {
     const mat = new THREE.MeshStandardMaterial({ color: 0x10256D, transparent:true, opacity:0.88, roughness:0.5 });
     const mesh = new THREE.Mesh(new THREE.ConeGeometry(0.4, 1.2, 6), mat);
@@ -1746,7 +1746,7 @@ const THREE_ENV = (() => {
     _waypointMarkers = [];
   }
 
-  // ── Sun update ───────────────────────────────────────────────────
+  // â”€â”€ Sun update â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function _updateSunFromTime(t) {
     const angle = (t - 0.25) * Math.PI * 2;
     const sunX  = Math.cos(angle) * 0.65;
@@ -1793,7 +1793,7 @@ const THREE_ENV = (() => {
     }
   }
 
-  // ── Chunk management ─────────────────────────────────────────────
+  // â”€â”€ Chunk management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function _chunkKey(cx, cz) { return `${cx},${cz}`; }
 
   function _loadChunk(cx, cz) {
@@ -1857,7 +1857,7 @@ const THREE_ENV = (() => {
     }
   }
 
-  // ── Volumetric fog planes ─────────────────────────────────────────
+  // â”€â”€ Volumetric fog planes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function buildFogLayers() {
     const group = new THREE.Group();
     const fogMat = new THREE.MeshBasicMaterial({
@@ -1873,7 +1873,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // ── Init ──────────────────────────────────────────────────────────
+  // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function init(canvasId) {
     _canvas = document.getElementById(canvasId);
     const vp = _canvas.parentElement;
@@ -1899,15 +1899,15 @@ const THREE_ENV = (() => {
 
     clock = new THREE.Clock();
 
-    // ── Lighting setup ───────────────────────────────────────────────
+    // â”€â”€ Lighting setup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     hemiLight = new THREE.HemisphereLight(0xb0d0f8, 0x4a7040, 0.58);
     scene.add(hemiLight);
 
     shadowLight = new THREE.DirectionalLight(0xfff5e0, 1.8);
     shadowLight.position.set(90, 180, 70);
     shadowLight.castShadow = true;
-    shadowLight.shadow.mapSize.width  = 4096;
-    shadowLight.shadow.mapSize.height = 4096;
+    shadowLight.shadow.mapSize.width  = 2048;
+    shadowLight.shadow.mapSize.height = 2048;
     shadowLight.shadow.camera.near    = 1;
     shadowLight.shadow.camera.far     = 600;
     shadowLight.shadow.camera.left    = shadowLight.shadow.camera.bottom = -140;
@@ -1916,7 +1916,7 @@ const THREE_ENV = (() => {
     shadowLight.shadow.normalBias = 0.02;
     scene.add(shadowLight);
 
-    // Fill light — soft blue from opposite direction
+    // Fill light â€” soft blue from opposite direction
     const fillLight = new THREE.DirectionalLight(0x6688bb, 0.28);
     fillLight.position.set(-60, 80, -40);
     scene.add(fillLight);
@@ -1963,7 +1963,7 @@ const THREE_ENV = (() => {
     if(mc) { mc.width=mc.parentElement.clientWidth; mc.height=mc.parentElement.clientHeight; }
   }
 
-  // ── Rebuild scene (env presets) ──────────────────────────────────
+  // â”€â”€ Rebuild scene (env presets) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function rebuild(envName) {
     _envName = envName;
     PHYS.colliders = [];
@@ -2065,7 +2065,7 @@ const THREE_ENV = (() => {
     }
   }
 
-  // ── Camera update ────────────────────────────────────────────────
+  // â”€â”€ Camera update â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   function updateCamera() {
     const p = PHYS.pos;
     const quat = PHYS.quat;
@@ -2096,8 +2096,8 @@ const THREE_ENV = (() => {
     }
   }
 
-  // ── Software bloom (additive overdraw) ───────────────────────────
-  let _bloomCanvas = null, _bloomCtx = null, _bloomEnabled = true;
+  // â”€â”€ Software bloom (additive overdraw) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  let _bloomCanvas = null, _bloomCtx = null, _bloomEnabled = false;
   function _initBloom() {
     _bloomCanvas = document.createElement('canvas');
     _bloomCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;mix-blend-mode:screen;opacity:0.28;';
@@ -2119,12 +2119,12 @@ const THREE_ENV = (() => {
     ctx.globalCompositeOperation = 'source-over';
     ctx.drawImage(_bloomCanvas, 0, 0);
     ctx.filter = 'none';
-    // Scale back up via CSS — the browser handles the upscale blur
+    // Scale back up via CSS â€” the browser handles the upscale blur
     _bloomCanvas.style.width  = W + 'px';
     _bloomCanvas.style.height = H + 'px';
   }
 
-  // ── Render tick ──────────────────────────────────────────────────
+  // â”€â”€ Render tick â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let _frame = 0, _fps = 60, _fpsSmooth = 60, _lastFPSTime = 0;
   let _simTime = 0;
   function render() {
@@ -2157,7 +2157,7 @@ const THREE_ENV = (() => {
       if (propMeshes[i]) propMeshes[i].rotation.y = propAngle[i];
     }
 
-    // Propeller disc blur effect — scale up disc opacity with RPM
+    // Propeller disc blur effect â€” scale up disc opacity with RPM
     propMeshes.forEach((pm, i) => {
       const pct = Math.min(1, (PHYS.motorRPM[i]||0) / (PHYS.maxRPM||14000));
       pm.children.forEach(child => {
@@ -2222,7 +2222,7 @@ const THREE_ENV = (() => {
   // Init bloom canvas after a short delay (DOM ready)
   setTimeout(_initBloom, 500);
 
-  // Public API — exactly matching original
+  // Public API â€” exactly matching original
   return {
     init,
     _resize,
@@ -2272,9 +2272,9 @@ const THREE_ENV = (() => {
 })();
 
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MINIMAP
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const MINIMAP = {
   _trail: [],
   draw() {
@@ -2317,14 +2317,14 @@ const MINIMAP = {
       });
     }
 
-    // Home marker — [FIX-6.23] clamp to minimap bounds if drone flew far
+    // Home marker â€” [FIX-6.23] clamp to minimap bounds if drone flew far
     if (PHYS.homePos) {
       const rawHx = cx + (PHYS.homePos.x-px)*scale;
       const rawHy = cy + (PHYS.homePos.z-pz)*scale;
       const margin = 8;
       const hx = Math.max(margin, Math.min(W-margin, rawHx));
       const hy = Math.max(margin, Math.min(H-margin, rawHy));
-      ctx.fillStyle = '#4CAF50'; ctx.font = '12px Arial'; ctx.fillText('⌂', hx-6, hy+4);
+      ctx.fillStyle = '#4CAF50'; ctx.font = '12px Arial'; ctx.fillText('âŒ‚', hx-6, hy+4);
       // Draw arrow pointing toward true home if it's off-screen
       if(rawHx !== hx || rawHy !== hy){
         ctx.strokeStyle='#4CAF50'; ctx.lineWidth=1;
@@ -2356,25 +2356,25 @@ const MINIMAP = {
   },
 };
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ATTITUDE INDICATOR
    [FIX-6.22] Correct sign convention: positive roll = right bank (CW from pilot POV)
    [FIX-6.22] Horizon drawn using actual roll quaternion, not Euler-only
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function drawAttitude() {
   const canvas = document.getElementById('attCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const cx = W/2, cy = H/2, r = W/2 - 2;
-  // [FIX-6.22] Use quaternion directly for roll to avoid gimbal lock at ±90° pitch
+  // [FIX-6.22] Use quaternion directly for roll to avoid gimbal lock at Â±90Â° pitch
   // Extract roll from quaternion: avoids Euler singularity
   const q = PHYS.quat;
   const pitch = PHYS.euler.pitch;
   // Roll angle from quat (rotation about Z in body frame)
   const sinr = 2*(q.w*q.z + q.x*q.y);
   const cosr = 1 - 2*(q.y*q.y + q.z*q.z);
-  const roll = Math.atan2(sinr, cosr); // positive = right bank ✓
+  const roll = Math.atan2(sinr, cosr); // positive = right bank âœ“
 
   ctx.clearRect(0, 0, W, H);
   ctx.save();
@@ -2402,7 +2402,7 @@ function drawAttitude() {
     const y = -pitchPx - (deg*Math.PI/180) * (H*0.9);
     const ll = Math.abs(deg) === 20 ? r*0.5 : r*0.3;
     ctx.beginPath(); ctx.moveTo(-ll, y); ctx.lineTo(ll, y); ctx.stroke();
-    ctx.fillText(deg+'°', ll+3, y+3);
+    ctx.fillText(deg+'Â°', ll+3, y+3);
   }
   ctx.restore();
 
@@ -2428,9 +2428,9 @@ function drawAttitude() {
   ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
 }
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WIND COMPASS
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function drawWindCompass() {
   const canvas = document.getElementById('windCanvas');
   if (!canvas) return;
@@ -2458,17 +2458,17 @@ function drawWindCompass() {
   }
 }
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WARNING SYSTEM
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const WARN = {
   _active: {},
   trigger(type) {
     const msgs = {
-      lowbatt: { txt:'⚡ Battery Critical', level:'err' },
-      lowalt:  { txt:'⚠ Low Altitude', level:'warn' },
-      crash:   { txt:'💥 Crash Detected', level:'err' },
-      wind:    { txt:'💨 High Wind', level:'warn' },
+      lowbatt: { txt:'âš¡ Battery Critical', level:'err' },
+      lowalt:  { txt:'âš  Low Altitude', level:'warn' },
+      crash:   { txt:'ðŸ’¥ Crash Detected', level:'err' },
+      wind:    { txt:'ðŸ’¨ High Wind', level:'warn' },
     };
     const m = msgs[type]; if (!m) return;
     this._active[type] = m;
@@ -2491,9 +2491,9 @@ const WARN = {
   },
 };
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    UI UTILITIES
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const UI = {
   _logItems: [],
   toast(msg) {
@@ -2514,9 +2514,9 @@ const UI = {
   },
 };
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MISSION PLANNER
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const MISSION = {
   waypoints: [],
   active: false, paused: false, _idx: 0,
@@ -2531,20 +2531,20 @@ const MISSION = {
     if (!this.waypoints.length) return;
     this.active=true; this.paused=false; this._idx=0;
     FC.setMode('gpshold'); State.armed=true; updateArmUI();
-    UI.toast('▶ Mission started'); UI.log('Mission start','ok');
+    UI.toast('â–¶ Mission started'); UI.log('Mission start','ok');
   },
   pause() {
     this.paused=!this.paused;
-    UI.toast(this.paused?'⏸ Mission paused':'▶ Mission resumed');
+    UI.toast(this.paused?'â¸ Mission paused':'â–¶ Mission resumed');
   },
   clear() {
     this.waypoints=[]; this.active=false; this._idx=0;
     this._updateUI(); THREE_ENV.clearWaypointMarkers();
-    UI.toast('✕ Mission cleared');
+    UI.toast('âœ• Mission cleared');
   },
   update() {
     if (!this.active || this.paused || !this.waypoints.length) return;
-    if (this._idx >= this.waypoints.length) { this.active=false; FC.setMode('althold'); UI.toast('✅ Mission complete'); return; }
+    if (this._idx >= this.waypoints.length) { this.active=false; FC.setMode('althold'); UI.toast('âœ… Mission complete'); return; }
     const wp = this.waypoints[this._idx];
     const dx = wp.x - PHYS.pos.x, dz = wp.z - PHYS.pos.z;
     FC.altTarget = wp.y - PHYS.groundY;
@@ -2562,9 +2562,9 @@ const MISSION = {
   },
 };
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ENVIRONMENT CONFIG
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const ENV = {
   _name: 'field',
   set(name) {
@@ -2602,9 +2602,9 @@ const ENV = {
   },
 };
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SIMULATION LOOP
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const State = {
   armed: false,
   flightMode: 'stabilized',
@@ -2624,23 +2624,23 @@ const SIM = {
   pause() {
     this._paused = true;
     const btn = document.getElementById('pause-btn');
-    if (btn) { btn.textContent = '▶ Resume'; btn.classList.add('paused'); }
+    if (btn) { btn.textContent = 'â–¶ Resume'; btn.classList.add('paused'); }
     const sysStat = document.getElementById('sys-status');
     if (sysStat) sysStat.textContent = 'PAUSED';
     const sysDot = document.getElementById('sys-dot');
     if (sysDot) sysDot.className = 'sdot w';
-    UI.toast('⏸ Simulation paused');
+    UI.toast('â¸ Simulation paused');
   },
   resume() {
     this._paused = false;
     this._last = performance.now(); // reset to avoid dt spike
     const btn = document.getElementById('pause-btn');
-    if (btn) { btn.textContent = '⏸ Pause'; btn.classList.remove('paused'); }
-    UI.toast('▶ Simulation resumed');
+    if (btn) { btn.textContent = 'â¸ Pause'; btn.classList.remove('paused'); }
+    UI.toast('â–¶ Simulation resumed');
   },
   setSpeed(s) {
     this._speed = parseFloat(s) || 1.0;
-    UI.toast('⏩ Speed: ' + this._speed + '×');
+    UI.toast('â© Speed: ' + this._speed + 'Ã—');
   },
   _loop() {
     if (!this._running) return;
@@ -2749,7 +2749,7 @@ const SIM = {
       }
     }
 
-    // Clock — Wall-clock based (immune to frame throttling)
+    // Clock â€” Wall-clock based (immune to frame throttling)
     // _wallClockArmedStart tracks when arming began; _wallClockAccum accumulates paused time
     if (State.armed) {
       if (!SIM._wallClockArmedStart) SIM._wallClockArmedStart = Date.now() - (SIM._wallClockAccum || 0);
@@ -2770,7 +2770,7 @@ const SIM = {
     const etaMin = etaSec < 9999 ? (etaSec/60).toFixed(1) : '--';
     set('t-batt-eta', etaMin);
 
-    // ── GPS_RAW_INT (5 Hz) ────────────────────────────────────────────
+    // â”€â”€ GPS_RAW_INT (5 Hz) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const gps = GPS_SIM;
     const fixType = gps.getFixType();
     const satCount = gps.getSatCount();
@@ -2797,7 +2797,7 @@ const SIM = {
       if (dot) dot.className = 'gps-sat-dot'+(i<satCount?' on':i<satCount+2?' dim':'');
     }
 
-    // ── VISION_POSITION (30 Hz VSLAM) ────────────────────────────────
+    // â”€â”€ VISION_POSITION (30 Hz VSLAM) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const vp = VISION_POS.get();
     set('vslam-x', vp.x);
     set('vslam-y', vp.y);
@@ -2811,7 +2811,7 @@ const SIM = {
     const vslamQ = $('vslam-quality');
     if (vslamQ) vslamQ.style.width = vp.quality+'%';
 
-    // ── OBSTACLE_DISTANCE (10 Hz) ─────────────────────────────────────
+    // â”€â”€ OBSTACLE_DISTANCE (10 Hz) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const obs = OBSTACLE_DIST.get();
     const obsMax = OBSTACLE_DIST.SENSOR_RANGE;
     const obsIds = ['fwd','right','back','left','up'];
@@ -2826,7 +2826,7 @@ const SIM = {
     // Update radar SVG sectors
     _updateObstacleRadar(obs, obsMax);
 
-    // ── PID TELEMETRY (Live) ─────────────────────────────────────────
+    // â”€â”€ PID TELEMETRY (Live) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const pt = PID_TELEM.axes;
     const pidAxes = [
       { key:'roll',  id:'roll' },
@@ -2871,12 +2871,12 @@ const SIM = {
   },
 };
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    UI CALLBACKS (called from HTML onclick / oninput)
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Obstacle Radar SVG updater ──
- * [FIX-6.25] Line length ∝ INVERSE of distance (close=long, far=short)
+/* â”€â”€ Obstacle Radar SVG updater â”€â”€
+ * [FIX-6.25] Line length âˆ INVERSE of distance (close=long, far=short)
  * [FIX-6.25] UP sector shown as separate vertical bar gauge (can't show on plan-view radar)
  */
 function _updateObstacleRadar(obs, maxRange) {
@@ -2884,10 +2884,10 @@ function _updateObstacleRadar(obs, maxRange) {
   if (!svg) return;
   const R = 35;
   const dirs = [
-    { idx:0, angle:-Math.PI/2 },   // FWD → up
-    { idx:1, angle:0 },            // RIGHT → right
-    { idx:2, angle:Math.PI/2 },    // BACK → down
-    { idx:3, angle:Math.PI },      // LEFT → left
+    { idx:0, angle:-Math.PI/2 },   // FWD â†’ up
+    { idx:1, angle:0 },            // RIGHT â†’ right
+    { idx:2, angle:Math.PI/2 },    // BACK â†’ down
+    { idx:3, angle:Math.PI },      // LEFT â†’ left
   ];
   svg.innerHTML = '';
   dirs.forEach(({ idx, angle }) => {
@@ -2911,7 +2911,7 @@ function _updateObstacleRadar(obs, maxRange) {
     svg.appendChild(circle);
   });
   // [FIX-6.25] UP sector: separate vertical bar gauge (right of radar, already in HTML as obs-up bar)
-  // The obs-up bar in the right-side table already handles this — no SVG needed for up/down
+  // The obs-up bar in the right-side table already handles this â€” no SVG needed for up/down
 }
 
 function updateArmUI() {
@@ -2946,7 +2946,7 @@ function setFlightMode(mode) {
     animateThrottle(0.5, 300);
   }
   UI.toast('Mode: '+mode.toUpperCase());
-  UI.log('Mode → '+mode, 'ok');
+  UI.log('Mode â†’ '+mode, 'ok');
 }
 
 function setCamera(mode) {
@@ -2975,7 +2975,7 @@ function setDroneProfile(name) {
   updateDroneProfileUI(name);
   THREE_ENV.rebuildDrone(PHYS.droneVisual.color);
   UI.toast('Profile: '+(DRONE_PROFILES[name]?.label||name));
-  UI.log('Profile → '+name, 'ok');
+  UI.log('Profile â†’ '+name, 'ok');
   // Sync customize panel if open
   const panel = document.getElementById('profile-customize-panel');
   if (panel && panel.classList.contains('open')) populateCustomizeFields(name);
@@ -2998,7 +2998,7 @@ function setWindDir(val) {
   const dirs = ['N','NE','E','SE','S','SW','W','NW'];
   const dIdx = Math.round(dir/45)%8;
   const el = document.getElementById('wdir-val');
-  if (el) el.textContent = dirs[dIdx]+' '+Math.round(dir)+'°';
+  if (el) el.textContent = dirs[dIdx]+' '+Math.round(dir)+'Â°';
 }
 
 function setTurbulence(val) {
@@ -3014,7 +3014,7 @@ function toggleWeather(type, el) {
   track.classList.toggle('on', on);
   if (type === 'rain') THREE_ENV.setRain(on);
   if (type === 'fog')  THREE_ENV.setFog(on);
-  UI.toast((on?'🌧 ':'☀ ')+(type.charAt(0).toUpperCase()+type.slice(1))+' '+(on?'on':'off'));
+  UI.toast((on?'ðŸŒ§ ':'â˜€ ')+(type.charAt(0).toUpperCase()+type.slice(1))+' '+(on?'on':'off'));
 }
 
 function toggleDayNight(el) {
@@ -3023,7 +3023,7 @@ function toggleDayNight(el) {
   const night = !track.classList.contains('on');
   track.classList.toggle('on', night);
   THREE_ENV.setNight(night);
-  UI.toast(night?'🌙 Night mode':'☀ Day mode');
+  UI.toast(night?'ðŸŒ™ Night mode':'â˜€ Day mode');
 }
 
 function setPID(param, val) {
@@ -3062,7 +3062,7 @@ function toggleArm() {
     FC.resetPIDs();
   }
   updateArmUI();
-  UI.toast(State.armed ? '✅ Armed' : '🔴 Disarmed');
+  UI.toast(State.armed ? 'âœ… Armed' : 'ðŸ”´ Disarmed');
   UI.log(State.armed?'Armed':'Disarmed', State.armed?'ok':'warn');
 }
 
@@ -3078,12 +3078,12 @@ function takeoff() {
     setFlightModeUI('althold');
     animateThrottle(0.5, 300);
     updateArmUI();
-    UI.toast('🚁 Auto-takeoff to 3m');
+    UI.toast('ðŸš Auto-takeoff to 3m');
     UI.log('Auto-takeoff','ok');
   } else {
     FC.altTarget = Math.max(FC.altTarget||3, PHYS.pos.y - PHYS.groundY)+3;
     FC.setMode('althold');
-    UI.toast('↑ Climbing');
+    UI.toast('â†‘ Climbing');
   }
 }
 
@@ -3120,7 +3120,7 @@ function doHover() {
   setFlightModeUI('althold');
   // Snap throttle to center so PID deadzone activates immediately
   animateThrottle(0.5, 350);
-  UI.toast('⏸ Hovering — throttle locked to altitude hold');
+  UI.toast('â¸ Hovering â€” throttle locked to altitude hold');
 }
 
 function returnHome() {
@@ -3128,7 +3128,7 @@ function returnHome() {
   FC.setMode('rth');
   State.flightMode = 'rth';
   setFlightModeUI('rth');
-  UI.toast('🏠 Return To Home');
+  UI.toast('ðŸ  Return To Home');
   UI.log('RTH initiated','ok');
 }
 
@@ -3139,7 +3139,7 @@ function emergStop() {
   INPUT._thrRaw=0;
   FC.resetPIDs();
   updateArmUI();
-  UI.toast('⛔ EMERGENCY STOP');
+  UI.toast('â›” EMERGENCY STOP');
   UI.log('Emergency stop!','err');
 }
 
@@ -3153,16 +3153,16 @@ function resetDrone() {
   INPUT._thrRaw=0;
   setFlightModeUI('stabilized');
   updateArmUI();
-  UI.toast('🔄 Drone reset');
+  UI.toast('ðŸ”„ Drone reset');
   UI.log('Drone reset','ok');
 }
 
-function addWaypoint() { MISSION.add(PHYS.pos); UI.toast('📍 Waypoint added'); }
+function addWaypoint() { MISSION.add(PHYS.pos); UI.toast('ðŸ“ Waypoint added'); }
 function startMission() { MISSION.start(); }
 function pauseMission() { MISSION.pause(); }
 function clearMission()  { MISSION.clear(); }
 
-/* ── Sim Pause / Speed ── */
+/* â”€â”€ Sim Pause / Speed â”€â”€ */
 function toggleSimPause() {
   if (SIM._paused) SIM.resume(); else SIM.pause();
 }
@@ -3170,19 +3170,19 @@ function setSimSpeed(v) {
   SIM.setSpeed(v);
 }
 
-/* ── Recording / Export ── */
+/* â”€â”€ Recording / Export â”€â”€ */
 let _recording = false;
 function toggleRecording() {
   _recording = !_recording;
   const btn = document.getElementById('rec-btn');
   if (_recording) {
     BLACKBOX.start();
-    if (btn) { btn.textContent = '⏹ Stop'; btn.classList.add('active-btn'); }
-    UI.toast('⏺ Recording started');
+    if (btn) { btn.textContent = 'â¹ Stop'; btn.classList.add('active-btn'); }
+    UI.toast('âº Recording started');
   } else {
     BLACKBOX.stop();
-    if (btn) { btn.textContent = '⏺ Record'; btn.classList.remove('active-btn'); }
-    UI.toast('⏹ Recording stopped — ' + BLACKBOX.getLog().length + ' frames');
+    if (btn) { btn.textContent = 'âº Record'; btn.classList.remove('active-btn'); }
+    UI.toast('â¹ Recording stopped â€” ' + BLACKBOX.getLog().length + ' frames');
     updateExportStats();
   }
 }
@@ -3191,7 +3191,7 @@ function updateRecordingUI() {
   if (!_recording) return;
   const n = BLACKBOX.getLog().length;
   const btn = document.getElementById('rec-btn');
-  if (btn && n % 30 === 0) btn.textContent = '⏹ ' + n + 'f';
+  if (btn && n % 30 === 0) btn.textContent = 'â¹ ' + n + 'f';
 }
 
 function updateExportStats() {
@@ -3208,20 +3208,20 @@ function updateExportStats() {
 
 function exportMAVLink() {
   const log = BLACKBOX.getLog();
-  if (!log.length) { UI.toast('⚠ No data — start recording first'); return; }
+  if (!log.length) { UI.toast('âš  No data â€” start recording first'); return; }
   const ok = MAVLINK.downloadTlog();
-  if (ok) UI.toast('📡 MAVLink .tlog exported (' + log.length + ' frames)');
-  else UI.toast('⚠ Export failed');
+  if (ok) UI.toast('ðŸ“¡ MAVLink .tlog exported (' + log.length + ' frames)');
+  else UI.toast('âš  Export failed');
 }
 
 function exportJSON() {
   const log = BLACKBOX.getLog();
-  if (!log.length) { UI.toast('⚠ No data — start recording first'); return; }
+  if (!log.length) { UI.toast('âš  No data â€” start recording first'); return; }
   const ok = MAVLINK.downloadJSON();
   if (ok) UI.toast('{ } JSON telemetry exported');
 }
 
-/* ── Telemetry Graph Legend Toggle ── */
+/* â”€â”€ Telemetry Graph Legend Toggle â”€â”€ */
 function toggleTGraph(ch) {
   TELEM_GRAPH.toggle(ch);
   const el = document.getElementById('tgl-' + ch);
@@ -3234,11 +3234,11 @@ function showSection(sec) {
   if (dbg) dbg.style.display = (sec==='debug') ? 'block' : 'none';
 }
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DRONE PROFILE CUSTOMIZATION
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Rebuild the profile select dropdown ── */
+/* â”€â”€ Rebuild the profile select dropdown â”€â”€ */
 function rebuildProfileSelect(activeKey) {
   const sel = document.getElementById('drone-profile-select');
   if (!sel) return;
@@ -3252,17 +3252,17 @@ function rebuildProfileSelect(activeKey) {
   }
 }
 
-/* ── Toggle inline customize panel ── */
+/* â”€â”€ Toggle inline customize panel â”€â”€ */
 function toggleProfileCustomize() {
   const panel = document.getElementById('profile-customize-panel');
   const btn   = document.getElementById('customize-toggle-btn');
   if (!panel) return;
   const open = panel.classList.toggle('open');
-  if (btn) btn.textContent = open ? '✕ Close' : '✏️ Customize';
+  if (btn) btn.textContent = open ? 'âœ• Close' : 'âœï¸ Customize';
   if (open) populateCustomizeFields(PHYS.droneProfile);
 }
 
-/* ── Fill customize fields from named profile ── */
+/* â”€â”€ Fill customize fields from named profile â”€â”€ */
 function populateCustomizeFields(profileName) {
   const p = DRONE_PROFILES[profileName] || PHYS;
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
@@ -3287,7 +3287,7 @@ function populateCustomizeFields(profileName) {
   }
 }
 
-/* ── Live-apply customize fields to running sim ── */
+/* â”€â”€ Live-apply customize fields to running sim â”€â”€ */
 function applyCustomize() {
   const get = id => parseFloat(document.getElementById(id)?.value) || 0;
   const mass    = get('cust-mass')    || PHYS.mass;
@@ -3315,14 +3315,14 @@ function applyCustomize() {
   if (htv) htv.textContent = Math.round(PHYS.hoverThrottle * 100);
 }
 
-/* ── Apply color tweak ── */
+/* â”€â”€ Apply color tweak â”€â”€ */
 function applyCustomizeColor(hexStr) {
   const c = parseInt(hexStr.replace('#', ''), 16);
   PHYS.droneVisual = { ...PHYS.droneVisual, color: c };
   if (typeof THREE_ENV !== 'undefined') THREE_ENV.rebuildDrone(c);
 }
 
-/* ── Save the customized values as a brand new profile ── */
+/* â”€â”€ Save the customized values as a brand new profile â”€â”€ */
 function saveCustomizeAsProfile() {
   const name = prompt('Enter a name for this custom profile:', 'My Custom Drone');
   if (!name) return;
@@ -3357,13 +3357,13 @@ function saveCustomizeAsProfile() {
   };
   rebuildProfileSelect(key);
   setDroneProfile(key);
-  UI.toast('💾 Profile "' + name + '" saved!');
+  UI.toast('ðŸ’¾ Profile "' + name + '" saved!');
   UI.log('Custom profile saved: ' + name, 'ok');
 }
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CUSTOM PROFILE MODAL
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 function openCustomProfileModal() {
   const modal = document.getElementById('custom-profile-modal');
   if (modal) modal.classList.add('open');
@@ -3469,29 +3469,29 @@ function createCustomProfile() {
   rebuildProfileSelect(key);
   setDroneProfile(key);
   closeCustomProfileModal();
-  UI.toast('🚁 Custom profile "' + name + '" created!');
+  UI.toast('ðŸš Custom profile "' + name + '" created!');
   UI.log('New custom profile: ' + name, 'ok');
 }
 
-/* ── Close modal on backdrop click ── */
+/* â”€â”€ Close modal on backdrop click â”€â”€ */
 document.addEventListener('click', e => {
   const modal = document.getElementById('custom-profile-modal');
   if (modal && e.target === modal) closeCustomProfileModal();
 });
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    STARTUP SEQUENCE
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 const STARTUP_STEPS = [
-  {msg:'Initializing physics engine…',    pct:8},
-  {msg:'Loading Three.js renderer…',      pct:20},
-  {msg:'Building terrain & environment…', pct:35},
-  {msg:'Compiling flight controller…',    pct:50},
-  {msg:'Calibrating PID controllers…',    pct:62},
-  {msg:'Initializing sensor systems…',    pct:74},
-  {msg:'Loading mission planner…',        pct:84},
-  {msg:'Warming up motors…',              pct:92},
-  {msg:'Systems nominal — launching…',    pct:100},
+  {msg:'Initializing physics engineâ€¦',    pct:8},
+  {msg:'Loading Three.js rendererâ€¦',      pct:20},
+  {msg:'Building terrain & environmentâ€¦', pct:35},
+  {msg:'Compiling flight controllerâ€¦',    pct:50},
+  {msg:'Calibrating PID controllersâ€¦',    pct:62},
+  {msg:'Initializing sensor systemsâ€¦',    pct:74},
+  {msg:'Loading mission plannerâ€¦',        pct:84},
+  {msg:'Warming up motorsâ€¦',              pct:92},
+  {msg:'Systems nominal â€” launchingâ€¦',    pct:100},
 ];
 
 function runStartup() {
@@ -3515,12 +3515,12 @@ function runStartup() {
   step();
 }
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DOM INIT
-══════════════════════════════════════════════════════════════════════ */
-/* ══════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    VIRTUAL JOYSTICK + STICK VISUALIZER
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 // Virtual joystick interaction
 (function(){
@@ -3649,8 +3649,8 @@ function _drawStickCanvas(canvasId, x, y, label, accentColor) {
 
 function _updateStickViz() {
   const inp = INPUT.get();
-  // Left stick: X=yaw, Y=throttle (0..1 → center at 0.5)
-  const ly = inp.throttle * 2 - 1; // 0..1 → -1..1
+  // Left stick: X=yaw, Y=throttle (0..1 â†’ center at 0.5)
+  const ly = inp.throttle * 2 - 1; // 0..1 â†’ -1..1
   _drawStickCanvas('stick-viz-l', inp.yaw, ly, 'LEFT (THR/YAW)', '#EE9346');
   // Right stick: X=roll, Y=pitch
   _drawStickCanvas('stick-viz-r', inp.roll, inp.pitch, 'RIGHT (PITCH/ROLL)', '#10256D');
@@ -3674,11 +3674,11 @@ function _updateStickViz() {
   setM('sm-roll',  inp.roll,  true);
 }
 
-// Position readouts (t-px, t-py, t-pz) — update in SIM loop via existing _updateUI
+// Position readouts (t-px, t-py, t-pz) â€” update in SIM loop via existing _updateUI
 
-/* ══════════════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DOM INIT
-══════════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 window.addEventListener('DOMContentLoaded', () => {
   // Toast element
   if (!document.getElementById('toast')) {
@@ -3768,14 +3768,14 @@ function handleGLTFUpload(input) {
   const file = input.files[0];
   if (!file) return;
   const statusEl = document.getElementById('gltf-upload-status');
-  if (statusEl) statusEl.textContent = `Loading: ${file.name}…`;
+  if (statusEl) statusEl.textContent = `Loading: ${file.name}â€¦`;
   // Integration point: pass file URL to THREE_ENV drone mesh loader
   const url = URL.createObjectURL(file);
   if (typeof THREE_ENV !== 'undefined' && typeof THREE_ENV.loadCustomModel === 'function') {
     THREE_ENV.loadCustomModel(url, file.name);
   } else {
-    if (statusEl) statusEl.textContent = `✅ Model queued: ${file.name} (apply on next flight)`;
-    if (typeof UI !== 'undefined') UI.toast(`🚁 Custom model accepted: ${file.name}`);
+    if (statusEl) statusEl.textContent = `âœ… Model queued: ${file.name} (apply on next flight)`;
+    if (typeof UI !== 'undefined') UI.toast(`ðŸš Custom model accepted: ${file.name}`);
   }
 }
 
@@ -3784,29 +3784,29 @@ function activateMotorFailure(motorIndex) {
   if (typeof State === 'undefined') { console.warn('State not ready'); return; }
   if (!State.motorDamage) State.motorDamage = [0,0,0,0];
   State.motorDamage[motorIndex] = 1.0;
-  if (typeof UI !== 'undefined') UI.toast(`⚠ Motor M${motorIndex+1} FAILURE activated`);
+  if (typeof UI !== 'undefined') UI.toast(`âš  Motor M${motorIndex+1} FAILURE activated`);
 }
 function clearMotorFailures() {
   if (typeof State !== 'undefined') State.motorDamage = [0,0,0,0];
-  if (typeof UI !== 'undefined') UI.toast('✅ Motors restored');
+  if (typeof UI !== 'undefined') UI.toast('âœ… Motors restored');
 }
 
 /* [TIER-MAX] GPS Denied scenario */
 function activateGPSDenied(enable) {
   if (typeof State !== 'undefined') {
     State.gpsDenied = enable;
-    if (typeof UI !== 'undefined') UI.toast(enable ? '🚫 GPS DENIED — VSLAM mode' : '✅ GPS signal restored');
+    if (typeof UI !== 'undefined') UI.toast(enable ? 'ðŸš« GPS DENIED â€” VSLAM mode' : 'âœ… GPS signal restored');
   }
 }
 </script>
 
 
 <script>
-/* ══════════════════════════════════════════════════════════════════
-   PLAN ENFORCEMENT ENGINE  — runs after DOMContentLoaded
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PLAN ENFORCEMENT ENGINE  â€” runs after DOMContentLoaded
    Reads PLAN constant above; applies all tier restrictions.
    Flight mechanics in sim-engine.js are NEVER modified.
-══════════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 function _hideEl(el) { if (el) el.style.display = 'none'; }
 function _lockEl(el, tip) {
@@ -3818,7 +3818,7 @@ function _lockEl(el, tip) {
 
 window.addEventListener('DOMContentLoaded', () => {
 
-  /* ─ 1. TIER BADGE ──────────────────────────────────────────── */
+  /* â”€ 1. TIER BADGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-BADGE] Inject tier badge beside SIM tag in topbar
   const simTag = document.querySelector('.brand-tag');
   if (simTag) {
@@ -3830,7 +3830,7 @@ window.addEventListener('DOMContentLoaded', () => {
     simTag.parentNode.insertBefore(badge, simTag.nextSibling);
   }
 
-  /* ─ 2. SESSION TIMER ───────────────────────────────────────── */
+  /* â”€ 2. SESSION TIMER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-SESSION] Enforce time-limited access (BASIC=1h, PRO=24h, MAX=30d)
   if (isFinite(PLAN.sessionSeconds)) {
     const EXPIRES_AT_MS = PLAN.planExpiresAt > 0 ? PLAN.planExpiresAt * 1000 : 0;
@@ -3853,7 +3853,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const ss = String(secs).padStart(2, '0');
       return days > 0 ? `${days}d ${hh}:${mm}:${ss}` : `${hh}:${mm}:${ss}`;
     }
-    cdBadge.innerHTML = `<span style="color:var(--s)">⏱</span><span id="ses-left">--:--:--</span>`;
+    cdBadge.innerHTML = `<span style="color:var(--s)">â±</span><span id="ses-left">--:--:--</span>`;
     const tb = document.getElementById('topbar');
     if (tb) { const tsp = tb.querySelector('.tsp'); if (tsp) tb.insertBefore(cdBadge, tsp.nextSibling); }
 
@@ -3865,14 +3865,14 @@ window.addEventListener('DOMContentLoaded', () => {
       ? Math.round(PLAN.sessionSeconds/3600) + 'h'
       : Math.max(1, Math.ceil(PLAN.sessionSeconds/60)) + 'min';
     overlay.innerHTML = `
-      <div style="font-family:var(--fh);font-size:32px;font-weight:700;color:var(--p)">⏱ Session Ended</div>
+      <div style="font-family:var(--fh);font-size:32px;font-weight:700;color:var(--p)">â± Session Ended</div>
       <div style="font-size:14px;color:var(--txt2);text-align:center;max-width:380px;line-height:1.7">
         Your <strong>${PLAN.tierLabel}</strong> session (${durationLabel}) has expired.<br>
         Renew your MAX plan to continue flying.
       </div>
       <button onclick="location.reload()" style="background:var(--p);color:#fff;border:none;
         padding:10px 28px;border-radius:20px;font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer;">
-        🔄 Start New Session
+        ðŸ”„ Start New Session
       </button>`;
     document.body.appendChild(overlay);
 
@@ -3896,7 +3896,7 @@ window.addEventListener('DOMContentLoaded', () => {
     tick();
   }
 
-  /* ─ 3. ENVIRONMENT RESTRICTIONS ────────────────────────────── */
+  /* â”€ 3. ENVIRONMENT RESTRICTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-ENV] Disable environment buttons not in plan
   const ALL_ENVS = ['field','mountains','urban','indoor','desert','windy'];
   ALL_ENVS.forEach(env => {
@@ -3908,12 +3908,12 @@ window.addEventListener('DOMContentLoaded', () => {
         btn.title = `Upgrade to unlock ${env} environment`;
         // Add lock icon without changing flight mechanics
         const icon = btn.querySelector('.fm-icon');
-        if (icon) icon.textContent = '🔒';
+        if (icon) icon.textContent = 'ðŸ”’';
       }
     }
   });
 
-  /* ─ 4. DRONE PROFILE RESTRICTIONS ──────────────────────────── */
+  /* â”€ 4. DRONE PROFILE RESTRICTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-DRONE] Restrict profile dropdown to allowed profiles
   setTimeout(() => {
     const sel = document.getElementById('drone-profile-select');
@@ -3938,7 +3938,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }, 600);
 
-  /* ─ 5. PID TUNING PANEL ─────────────────────────────────────── */
+  /* â”€ 5. PID TUNING PANEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-PID] Manage PID panel access: false=hide, 'view'=read-only, 'full'=unrestricted
   let pidCard = null;
   document.querySelectorAll('.card-sm').forEach(c => {
@@ -3958,93 +3958,93 @@ window.addEventListener('DOMContentLoaded', () => {
       });
       const notice = document.createElement('div');
       notice.style.cssText = 'font-size:10px;color:var(--s);font-weight:700;text-align:center;padding:5px 0 2px;letter-spacing:.4px;';
-      notice.textContent = '👁 VIEW ONLY — Upgrade to MAX to live-tune';
+      notice.textContent = 'ðŸ‘ VIEW ONLY â€” Upgrade to MAX to live-tune';
       pidCard.appendChild(notice);
     }
   }
   // PLAN.pidTuning === 'full': no changes (MAX)
 
-  /* ─ 6. EXPORT / BLACKBOX ────────────────────────────────────── */
+  /* â”€ 6. EXPORT / BLACKBOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-EXPORT] Replace export card content for non-MAX tiers
   if (!PLAN.dataExport) {
     const exportCard = document.getElementById('export-card');
     if (exportCard) {
       exportCard.innerHTML = `
-        <div class="card-title"><span class="ct-dot"></span>FLIGHT LOG · BLACKBOX</div>
+        <div class="card-title"><span class="ct-dot"></span>FLIGHT LOG Â· BLACKBOX</div>
         <div style="text-align:center;padding:16px 8px;color:var(--txt4);">
-          <div style="font-size:18px;margin-bottom:6px">🔒</div>
+          <div style="font-size:18px;margin-bottom:6px">ðŸ”’</div>
           <div style="font-size:11px;font-weight:700;color:var(--txt3)">Data Export (JSON / CSV / MAVLog)</div>
           <div style="font-size:10px;margin-top:4px;color:var(--txt4)">Available on MAX plan only</div>
         </div>`;
     }
   }
 
-  /* ─ 7. MAVLINK BUTTONS ──────────────────────────────────────── */
+  /* â”€ 7. MAVLINK BUTTONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-MAVLINK] Handle MAVLink export access
   document.querySelectorAll('button').forEach(btn => {
     if (!btn.textContent.includes('MAVLink')) return;
     if (PLAN.mavlinkLogs === false) {
       _hideEl(btn);
     } else if (PLAN.mavlinkLogs === 'readonly') {
-      btn.textContent = '📡 MAVLink (Read)';
-      btn.title = 'Read-only on PRO — upgrade to MAX to download';
+      btn.textContent = 'ðŸ“¡ MAVLink (Read)';
+      btn.title = 'Read-only on PRO â€” upgrade to MAX to download';
       btn.onclick = (e) => {
         e.preventDefault();
-        if (typeof UI !== 'undefined') UI.toast('📡 MAVLink view-only on PRO — upgrade to MAX');
+        if (typeof UI !== 'undefined') UI.toast('ðŸ“¡ MAVLink view-only on PRO â€” upgrade to MAX');
       };
     }
     // 'download' = MAX, no change
   });
 
-  /* ─ 8. WAYPOINT MISSION NAV ─────────────────────────────────── */
+  /* â”€ 8. WAYPOINT MISSION NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-MISSION] Lock mission planner nav for non-MAX
   if (!PLAN.waypointMissions) {
     const mNav = document.getElementById('nav-mission');
     if (mNav) {
-      mNav.textContent = '🔒 Mission';
+      mNav.textContent = 'ðŸ”’ Mission';
       mNav.style.pointerEvents = 'none';
       mNav.style.opacity = '0.32';
       mNav.title = 'Waypoint missions available on MAX plan';
     }
   }
 
-  /* ─ 9. GAMEPAD / JOYSTICK ───────────────────────────────────── */
+  /* â”€ 9. GAMEPAD / JOYSTICK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-GAMEPAD] Block gamepad API for non-MAX tiers
   if (!PLAN.joystickGamepad) {
     window.addEventListener('gamepadconnected', e => {
       e.stopImmediatePropagation();
-      if (typeof UI !== 'undefined') UI.toast('🎮 Gamepad/Joystick requires MAX plan');
+      if (typeof UI !== 'undefined') UI.toast('ðŸŽ® Gamepad/Joystick requires MAX plan');
     }, true);
     // Update hint text in controls card
     document.querySelectorAll('.card-sm').forEach(card => {
       Array.from(card.childNodes).forEach(node => {
         if (node.nodeType === 3) return;
         if (node.textContent && node.textContent.includes('Gamepad supported')) {
-          node.textContent = '🎮 Gamepad support: MAX plan only 🔒';
+          node.textContent = 'ðŸŽ® Gamepad support: MAX plan only ðŸ”’';
           node.style.color = 'var(--txt4)';
         }
       });
     });
     // Target the specific div
     document.querySelectorAll('div').forEach(div => {
-      if (div.textContent && div.textContent.trim() === '🎮 Gamepad supported — plug in for analog input') {
-        div.textContent = '🎮 Gamepad: MAX plan only 🔒';
+      if (div.textContent && div.textContent.trim() === 'ðŸŽ® Gamepad supported â€” plug in for analog input') {
+        div.textContent = 'ðŸŽ® Gamepad: MAX plan only ðŸ”’';
       }
     });
   }
 
-  /* ─ 10. NIGHT MODE RESTRICTION (BASIC) ─────────────────────── */
+  /* â”€ 10. NIGHT MODE RESTRICTION (BASIC) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-NIGHT] Disable night toggle for BASIC tier
   if (!PLAN.nightMode) {
     const nightToggle = document.querySelector('[onclick*="toggleDayNight"]');
     if (nightToggle) {
       _lockEl(nightToggle, 'Night mode requires PRO or MAX plan');
       const lbl = nightToggle.querySelector('.ntoggle-text');
-      if (lbl) lbl.textContent = 'Night 🔒';
+      if (lbl) lbl.textContent = 'Night ðŸ”’';
     }
   }
 
-  /* ─ 11. WIND CONTROLS RESTRICTION (BASIC) ───────────────────── */
+  /* â”€ 11. WIND CONTROLS RESTRICTION (BASIC) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-WIND] Lock wind/weather controls for BASIC tier
   if (!PLAN.windScenario) {
     ['wind-speed','turbulence','wind-dir'].forEach(id => {
@@ -4062,7 +4062,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ─ 12. BASIC HUD — hide advanced panels ────────────────────── */
+  /* â”€ 12. BASIC HUD â€” hide advanced panels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-HUD] For hudLevel='basic': hide advanced telemetry panels
   if (PLAN.hudLevel === 'basic') {
     const HIDE_TITLES = ['GPS_RAW_INT','VISION_POSITION','OBSTACLE_DISTANCE','PID TELEMETRY','LIVE TELEMETRY GRAPH'];
@@ -4079,7 +4079,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ─ 13. SUPPORT LABEL ───────────────────────────────────────── */
+  /* â”€ 13. SUPPORT LABEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   // [PLAN-SUPPORT] Inject support info into controls card
   document.querySelectorAll('.card-sm').forEach(card => {
     const title = card.querySelector('.card-title');
@@ -4087,14 +4087,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const sEl = document.createElement('div');
     sEl.style.cssText = 'font-size:10px;color:var(--txt4);margin-top:8px;padding-top:8px;border-top:1px solid var(--n3);';
     if (PLAN.support === 'priority') {
-      sEl.innerHTML = '✅ <strong style="color:var(--s)">Priority email support</strong> included with your MAX plan';
+      sEl.innerHTML = 'âœ… <strong style="color:var(--s)">Priority email support</strong> included with your MAX plan';
     } else {
-      sEl.innerHTML = '💬 Support: <a href="#" style="color:var(--p)">Community Forum</a>';
+      sEl.innerHTML = 'ðŸ’¬ Support: <a href="#" style="color:var(--p)">Community Forum</a>';
     }
     card.appendChild(sEl);
   });
 
-  /* ─ 14. SESSION LIMITS & CLOUD SAVE ─────────────────────────── */
+  /* â”€ 14. SESSION LIMITS & CLOUD SAVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   let simTimeRemaining = -1;
   let simPlanName = 'FREE';
   let flightDurationSeconds = 0;
@@ -4148,7 +4148,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
     const btn = document.getElementById('exit-sim-btn');
     if (btn) {
-      btn.innerHTML = '⏳ Exiting...';
+      btn.innerHTML = 'â³ Exiting...';
       btn.disabled = true;
     }
     
@@ -4217,14 +4217,14 @@ window.addEventListener('DOMContentLoaded', () => {
   window.triggerCloudSave = function() {
     if (simPlanName === 'FREE' || simPlanName === 'BASIC') {
        if (typeof UI !== 'undefined' && UI.toast) {
-         UI.toast('☁️ Cloud Save requires PRO tier. Please upgrade.');
+         UI.toast('â˜ï¸ Cloud Save requires PRO tier. Please upgrade.');
        } else {
-         alert('☁️ Cloud Save is a premium feature. Please upgrade to the PRO tier to save telemetry to Cloudflare.');
+         alert('â˜ï¸ Cloud Save is a premium feature. Please upgrade to the PRO tier to save telemetry to Cloudflare.');
        }
        return;
     }
     const btn = document.getElementById('cloud-save-btn');
-    if (btn) btn.innerHTML = '⏳ Saving...';
+    if (btn) btn.innerHTML = 'â³ Saving...';
     
     fetch('../api/get_r2_upload_url.php', { method: 'POST' })
       .then(r => r.json())
@@ -4244,8 +4244,8 @@ window.addEventListener('DOMContentLoaded', () => {
                   cloudTelemetryUrl = data.publicUrl;
                   window.cloudTelemetryUrls = window.cloudTelemetryUrls || [];
                   window.cloudTelemetryUrls.push({ time: new Date().toLocaleTimeString(), url: data.publicUrl });
-                  if (typeof UI !== 'undefined' && UI.toast) UI.toast('✅ Telemetry saved to Cloudflare!');
-                  else alert('✅ Telemetry saved to Cloudflare!');
+                  if (typeof UI !== 'undefined' && UI.toast) UI.toast('âœ… Telemetry saved to Cloudflare!');
+                  else alert('âœ… Telemetry saved to Cloudflare!');
                } else {
                  res.text().then(errText => {
                    console.error('R2 upload failed:', errText);
@@ -4256,14 +4256,14 @@ window.addEventListener('DOMContentLoaded', () => {
               console.error('Upload network error:', err);
               alert('Network/CORS error uploading to R2. Please check CORS settings on your bucket.');
            }).finally(() => {
-              if (btn) btn.innerHTML = '☁️ Cloud Save';
+              if (btn) btn.innerHTML = 'â˜ï¸ Cloud Save';
            });
         } else {
-           if (btn) btn.innerHTML = '☁️ Cloud Save';
+           if (btn) btn.innerHTML = 'â˜ï¸ Cloud Save';
            alert('Failed to get Cloudflare URL: ' + (data.message || data.error));
         }
       }).catch(err => {
-         if (btn) btn.innerHTML = '☁️ Cloud Save';
+         if (btn) btn.innerHTML = 'â˜ï¸ Cloud Save';
          alert('Error fetching pre-signed URL: ' + err.message);
       });
   };
@@ -4275,7 +4275,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <!-- Time Limit Modal -->
 <div id="sim-time-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(5px);align-items:center;justify-content:center;">
   <div class="card" style="width:360px;text-align:center;padding:32px;">
-    <div style="font-size:32px;margin-bottom:12px;">⏳</div>
+    <div style="font-size:32px;margin-bottom:12px;">â³</div>
     <h2 style="font-family:var(--fh);font-size:20px;color:var(--txt);margin-bottom:8px;">Time Limit Reached</h2>
     <p style="font-size:13px;color:var(--txt2);margin-bottom:24px;line-height:1.5;">Your available simulation time has ended. Please add balance to your wallet or upgrade your plan to continue flying.</p>
     <div class="nbtn-row" style="justify-content:center;gap:12px;">
@@ -4290,7 +4290,7 @@ window.addEventListener('DOMContentLoaded', () => {
   <div class="card" style="width:400px;max-height:80vh;display:flex;flex-direction:column;padding:24px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <h2 style="font-family:var(--fh);font-size:18px;color:var(--txt);">Saved Telemetry</h2>
-      <button class="nbtn sm" onclick="document.getElementById('saved-telem-modal').style.display='none'">✕</button>
+      <button class="nbtn sm" onclick="document.getElementById('saved-telem-modal').style.display='none'">âœ•</button>
     </div>
     <div id="saved-telem-list" style="display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-right:4px;">
     </div>
@@ -4316,7 +4316,7 @@ function updateSavedTelemBtn() {
    const btn = document.getElementById('saved-telem-btn');
    if (btn && window.cloudTelemetryUrls && window.cloudTelemetryUrls.length > 0) {
       btn.style.display = 'inline-block';
-      btn.innerHTML = `📥 Saved (${window.cloudTelemetryUrls.length})`;
+      btn.innerHTML = `ðŸ“¥ Saved (${window.cloudTelemetryUrls.length})`;
    }
 }
 </script>
@@ -4530,3 +4530,4 @@ function applyReplayFrame(pt) {
 </script>
 </body>
 </html>
+
