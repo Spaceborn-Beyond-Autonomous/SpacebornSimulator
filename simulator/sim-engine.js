@@ -1276,7 +1276,8 @@ const _simClock = { t: 0 };
 
 const BLACKBOX = {
   _log:[], _max:3000, recording:false,
-  start(){this._log=[];this.recording=true;},
+  _lastTick:0,
+    start(){this._log=[];this.recording=true;this._lastTick=0;},
   stop(){this.recording=false;},
   /** [FIX-5.1] Extended fields: accX/Y/Z, baro_raw/filtered, wind, dryden, mode, armed */
   tick(t){

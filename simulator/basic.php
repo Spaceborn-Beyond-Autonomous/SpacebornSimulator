@@ -3859,14 +3859,7 @@ function setSimSpeed(v) {
 }
 
 /* ── Recording / Export ── */
-let _recording = false;
-function toggleRecording() {
-  _recording = !_recording;
-  const btn = document.getElementById('rec-btn');
-  if (_recording) {
-    BLACKBOX.start();
-    if (btn) { btn.textContent = '⏹ Stop'; btn.classList.add('active-btn'); }
-    UI.toast('⏺ Recording started');
+UI.toast('⏺ Recording started');
   } else {
     BLACKBOX.stop();
     if (btn) { btn.textContent = '⏺ Record'; btn.classList.remove('active-btn'); }
