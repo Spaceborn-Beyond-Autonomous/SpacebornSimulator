@@ -3281,18 +3281,6 @@ const SIM = {
     const subDt = dt / substeps;
     INPUT.update(dt);
     const inp = INPUT.get();
-    // Cache terrain height once per frame — env-aware (flat envs stay at 0)
-    const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
-    if (_envName_sim !== 'indoor' && _envName_sim !== 'urban') {
-      PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
-      if (PHYS.groundY < 0) PHYS.groundY = 0;
-    }
-    for (let s = 0; s < substeps; s++) {
-      // [FIX-2.1] FC.update() runs the OUTER angle loop only (stores rate cmd).
-      // The inner rate PID runs inside PHYS._substep() at full substep rate.
-      FC.update(subDt, inp);
-      PHYS.step(subDt);
-    }
     MISSION.update();
 
     if (State.armed) State.flightTime += rawDt;  // [FIX-Bug-26b] use real time for clock

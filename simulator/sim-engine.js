@@ -57,6 +57,11 @@ const V3 = {
   clone: (a)    => ({ x: a.x, y: a.y, z: a.z }),
   zero:  ()     => ({ x: 0, y: 0, z: 0 }),
   lerp:  (a,b,t)=> ({ x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t, z:a.z+(b.z-a.z)*t }),
+  addOut:   (out, a, b) => { out.x=a.x+b.x; out.y=a.y+b.y; out.z=a.z+b.z; return out; },
+  subOut:   (out, a, b) => { out.x=a.x-b.x; out.y=a.y-b.y; out.z=a.z-b.z; return out; },
+  scaleOut: (out, a, s) => { out.x=a.x*s; out.y=a.y*s; out.z=a.z*s; return out; },
+  crossOut: (out, a, b) => { const x=a.y*b.z-a.z*b.y, y=a.z*b.x-a.x*b.z, z=a.x*b.y-a.y*b.x; out.x=x; out.y=y; out.z=z; return out; },
+  normOut:  (out, a)    => { const l=Math.hypot(a.x,a.y,a.z)||1; out.x=a.x/l; out.y=a.y/l; out.z=a.z/l; return out; },
 };
 
 /* ─── Quaternion Math ─── */
@@ -74,14 +79,26 @@ const Q = {
   }),
   /** Rotate vector v by quaternion q (body→world): v' = q⊗[0,v]⊗q* */
   rotVec: (q, v) => {
-    // Rodrigues formula: v' = v + 2w(q×v) + 2(q×(q×v))
-    const u  = { x:q.x, y:q.y, z:q.z };
-    const uv = V3.cross(u, v);
-    const uuv= V3.cross(u, uv);
-    return { x:v.x+2*(q.w*uv.x+uuv.x), y:v.y+2*(q.w*uv.y+uuv.y), z:v.z+2*(q.w*uv.z+uuv.z) };
-  },
-  /** Rotate vector v by conjugate of q (world→body) */
-  invRotVec: (q, v) => Q.rotVec(Q.conj(q), v),
+      // Rodrigues formula: v' = v + 2w(qA-v) + 2(qA-(qA-v))
+      const u  = { x:q.x, y:q.y, z:q.z };
+      const uv = V3.cross(u, v);
+      const uuv= V3.cross(u, uv);
+      return { x:v.x+2*(q.w*uv.x+uuv.x), y:v.y+2*(q.w*uv.y+uuv.y), z:v.z+2*(q.w*uv.z+uuv.z) };
+    },
+    rotVecOut: (out, q, v, scr) => {
+      scr.u.x=q.x; scr.u.y=q.y; scr.u.z=q.z;
+      V3.crossOut(scr.uv, scr.u, v);
+      V3.crossOut(scr.uuv, scr.u, scr.uv);
+      out.x = v.x+2*(q.w*scr.uv.x+scr.uuv.x);
+      out.y = v.y+2*(q.w*scr.uv.y+scr.uuv.y);
+      out.z = v.z+2*(q.w*scr.uv.z+scr.uuv.z);
+      return out;
+    },
+    invRotVec: (q, v) => Q.rotVec(Q.conj(q), v),
+    invRotVecOut: (out, q, v, scr) => {
+      const inv={w:q.w,x:-q.x,y:-q.y,z:-q.z};
+      return Q.rotVecOut(out, inv, v, scr);
+    },
   /**
    * Quaternion integration: q̇ = ½·q⊗ω_quat  (Hamilton 1843)
    * ω_quat = [0, ωx, ωy, ωz] in body frame
@@ -308,7 +325,8 @@ const PHYS = {
   motorDir:[1,-1,1,-1],
   motorLabels:['FR','FL','BL','BR'],
 
-  pos:V3.zero(), vel:V3.zero(), acc:V3.zero(),
+  _scr:{wind:V3.zero(), vRel:V3.zero(), dragF:V3.zero(), acc1:V3.zero(), acc2:V3.zero(), accBody:V3.zero(), thrustW:V3.zero(), dVel:V3.zero(), dPos:V3.zero(), u:V3.zero(), uv:V3.zero(), uuv:V3.zero(), tau:V3.zero(), dAngVel:V3.zero(), angDrag:V3.zero(), gyroT:V3.zero(), rotV:V3.zero()},
+    pos:V3.zero(), vel:V3.zero(), acc:V3.zero(),
   quat:Q.id(), angVel:V3.zero(),
   gyro:V3.zero(), accelBody:V3.zero(),
 
