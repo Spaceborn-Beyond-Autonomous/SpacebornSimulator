@@ -3489,9 +3489,9 @@ const SIM = {
       const errEl = D[`pid-${id}-err`];
       if (errEl) {
         const norm = Math.max(-1, Math.min(1, ax.error / errScale[pi]));
-        const w = Math.abs(norm) * 50;
-        errEl.style.width = w+'%';
-        errEl.style.left = (norm >= 0 ? 50 : 50-w)+'%';
+        const w = Math.abs(norm) * 0.5;
+          const start = norm >= 0 ? 0.5 : 0.5 - w;
+          errEl.style.transform = 'translateX('+(start*100)+'%) scaleX('+w+')';
         errEl.style.background = w > 35 ? 'var(--s)' : 'var(--p)';
       }
     }
@@ -3850,21 +3850,7 @@ function setSimSpeed(v) {
 }
 
 /* ── Recording / Export ── */
-UI.toast('⏺ Recording started');
-  } else {
-    BLACKBOX.stop();
-    if (btn) { btn.textContent = '⏺ Record'; btn.classList.remove('active-btn'); }
-    UI.toast('⏹ Recording stopped — ' + BLACKBOX.getLog().length + ' frames');
-    updateExportStats();
-  }
-}
 
-function updateRecordingUI() {
-  if (!_recording) return;
-  const n = BLACKBOX.getLog().length;
-  const btn = document.getElementById('rec-btn');
-  if (btn && n % 30 === 0) btn.textContent = '⏹ ' + n + 'f';
-}
 
 function updateExportStats() {
   const stats = BLACKBOX.getStats();
@@ -4332,12 +4318,11 @@ function _updateStickViz() {
     const el = document.getElementById(id); if (!el) return;
     if (left !== undefined) {
       // bidirectional: centre at 50%, width = |val|*50%, left = 50% or (50%-width)
-      const w = Math.abs(pct) * 50;
-      el.style.width = w + '%';
-      el.style.left  = (pct >= 0 ? 50 : 50 - w) + '%';
+      const w = Math.abs(pct) * 0.005;
+      const start = pct >= 0 ? 0.5 : 0.5 - w;
+      el.style.transform = 'translateX('+(start*100)+'%) scaleX('+w+')';
     } else {
-      el.style.width = pct + '%';
-      el.style.left  = '0';
+      el.style.transform = 'scaleX('+(pct/100)+')';
     }
   };
   setM('sm-thr',   inp.throttle * 100);

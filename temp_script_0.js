@@ -1,4 +1,6 @@
 
+const _setTxt = (el, txt) => { if (el && el.textContent !== String(txt)) el.textContent = txt; };
+
 /* PLAN FLAGS — MAX tier
    Duration: Unlimited | All profiles + Custom
    All 6 envs | Full HUD | Full PID | Full export
