@@ -2655,30 +2655,18 @@ const SIM = {
     const dt = rawDt * this._speed;
 
     // [FIX-Bug-26c] Absolute sim time always advances (not only when armed)
-    _simClock.t += dt;
-
-          // Fixed Accumulator for perfect physics stability
-      if (typeof this._acc === 'undefined') this._acc = 0;
-      const FIXED_DT = 1 / 60; // 60Hz physics base rate
-      this._acc += rawDt * this._speed;
-      
-      // Update inputs once per visual frame
-      INPUT.update(rawDt * this._speed);
-      const inp = INPUT.get();
-      
-      // Environment check
-      const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
-      const checkGround = _envName_sim !== 'indoor' && _envName_sim !== 'urban';
-      
-      while (this._acc >= FIXED_DT) {
+    _simClock.t += dt;        // Smooth variable timestep for perfect render synchronization
+        INPUT.update(dt);
+        const inp = INPUT.get();
+        
+        const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
+        const checkGround = _envName_sim !== 'indoor' && _envName_sim !== 'urban';
         if (checkGround) {
           PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
           if (PHYS.groundY < 0) PHYS.groundY = 0;
         }
-        FC.update(FIXED_DT, inp);
-        PHYS.step(FIXED_DT);
-        this._acc -= FIXED_DT;
-      }
+        FC.update(dt, inp);
+        PHYS.step(dt);
       MISSION.update();
 
     if (State.armed) State.flightTime += rawDt;  // [FIX-Bug-26b] use real time for clock
@@ -2699,7 +2687,7 @@ const SIM = {
     MINIMAP.draw();
     drawAttitude();
     drawWindCompass();
-    updateRecordingUI();
+    
   },
 
   _updateUI(dt) {
@@ -3065,10 +3053,12 @@ function setSensitivity(val) {
 function toggleArm() {
   State.armed = !State.armed;
   if (!State.armed) {
-    FC.altTarget = null; FC.posTarget = null;
-    FC.resetPIDs();
-  } else {
-    PHYS.saveHome();
+      if (typeof BLACKBOX !== 'undefined') BLACKBOX.stop();
+      FC.altTarget = null; FC.posTarget = null;
+      FC.resetPIDs();
+    } else {
+      if (typeof BLACKBOX !== 'undefined') BLACKBOX.start();
+      PHYS.saveHome();
     PHYS._gyroBias={x:0,y:0,z:0}; // [FIX-H] zero gyro bias on arm
     FC.resetPIDs();
   }
@@ -3079,8 +3069,9 @@ function toggleArm() {
 
 function takeoff() {
   if (!State.armed) {
-    State.armed = true;
-    PHYS.saveHome();
+      State.armed = true;
+      if (typeof BLACKBOX !== 'undefined') BLACKBOX.start();
+      PHYS.saveHome();
     PHYS._gyroBias={x:0,y:0,z:0}; // [FIX-H] zero gyro bias on takeoff
     FC.resetPIDs();
     FC.setMode('althold');

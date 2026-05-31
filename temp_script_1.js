@@ -1017,7 +1017,7 @@ const THREE_ENV = (() => {
   }
 
   // ── Build one chunk and place it in render space ──────────────────
-  function _buildChunk(cx, cz, lod) {
+    async function _buildChunk(cx, cz, lod) {
     const key = _chunkKey(cx, cz);
     const existing = _chunks.get(key);
     if (existing) {
@@ -1027,32 +1027,35 @@ const THREE_ENV = (() => {
     }
     const segs = lod === 0 ? CHUNK_SEGS : CHUNK_SEGS_L;
     const chunkData = { cx, cz, lod };
+    _chunks.set(key, chunkData); // Set immediately to prevent duplicates
 
-    // World-space origin of this chunk
     const worldX = cx * CHUNK_SIZE;
     const worldZ = cz * CHUNK_SIZE;
-    // Render-space offset (kept small regardless of world position)
     const renderX = worldX - _renderOriginX;
     const renderZ = worldZ - _renderOriginZ;
 
     chunkData.mesh = buildChunkMesh(cx, cz, _envName, segs);
-    // buildChunkMesh places geometry relative to its own origin,
-    // then we position the mesh group in render space
     chunkData.mesh.position.set(renderX, 0, renderZ);
     scene.add(chunkData.mesh);
+    
+    await new Promise(r => setTimeout(r, 0)); // Yield to main thread
 
-    // Vegetation only on full-detail inner chunks
     if (lod === 0 && _envName !== 'indoor' && _envName !== 'urban') {
       const veg = buildVegetation(cx, cz, _envName);
-      if (veg)     { veg.position.set(renderX, 0, renderZ);     scene.add(veg);     chunkData.veg     = veg;     }
+      if (veg) { veg.position.set(renderX, 0, renderZ); scene.add(veg); chunkData.veg = veg; }
+      await new Promise(r => setTimeout(r, 0)); // Yield
+
       const flowers = buildFlowers(cx, cz, _envName);
       if (flowers) { flowers.position.set(renderX, 0, renderZ); scene.add(flowers); chunkData.flowers = flowers; }
+      await new Promise(r => setTimeout(r, 0)); // Yield
+
       const grass = buildGrassBlades(cx, cz, _envName);
-      if (grass)   { grass.position.set(renderX, 0, renderZ);   scene.add(grass);   chunkData.grass   = grass;   }
+      if (grass) { grass.position.set(renderX, 0, renderZ); scene.add(grass); chunkData.grass = grass; }
+      await new Promise(r => setTimeout(r, 0)); // Yield
+
       const rocks = buildRocks(cx, cz, _envName);
-      if (rocks)   { rocks.position.set(renderX, 0, renderZ);   scene.add(rocks);   chunkData.rocks   = rocks;   }
+      if (rocks) { rocks.position.set(renderX, 0, renderZ); scene.add(rocks); chunkData.rocks = rocks; }
     }
-    _chunks.set(key, chunkData);
   }
 
   function _unloadChunk(key) {
@@ -1064,16 +1067,15 @@ const THREE_ENV = (() => {
 
   // ── Time-budgeted chunk drain — max 6ms per frame ────────────────
   const CHUNK_BUDGET_MS = 6;
+    let _isBuildingChunk = false;
   function _drainLoadQueue() {
-    const t0 = performance.now();
-    while (_loadQueue.length > 0) {
-      if (performance.now() - t0 > CHUNK_BUDGET_MS) break; // time budget exhausted
-      const { cx, cz, lod } = _loadQueue.shift();
-      const key = _chunkKey(cx, cz);
-      const ex  = _chunks.get(key);
-      if (!ex || ex.lod > lod) {
-        _buildChunk(cx, cz, lod);
-      }
+    if (_isBuildingChunk || _loadQueue.length === 0) return;
+    const { cx, cz, lod } = _loadQueue.shift();
+    const key = _chunkKey(cx, cz);
+    const ex  = _chunks.get(key);
+    if (!ex || ex.lod > lod) {
+      _isBuildingChunk = true;
+      _buildChunk(cx, cz, lod).then(() => { _isBuildingChunk = false; }).catch(e => { console.error(e); _isBuildingChunk = false; });
     }
   }
 
@@ -2034,30 +2036,18 @@ const SIM = {
     const dt = rawDt * this._speed;
 
     // [FIX-Bug-26c] Absolute sim time always advances (not only when armed)
-    _simClock.t += dt;
-
-          // Fixed Accumulator for perfect physics stability
-      if (typeof this._acc === 'undefined') this._acc = 0;
-      const FIXED_DT = 1 / 60; // 60Hz physics base rate
-      this._acc += rawDt * this._speed;
-      
-      // Update inputs once per visual frame
-      INPUT.update(rawDt * this._speed);
-      const inp = INPUT.get();
-      
-      // Environment check
-      const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
-      const checkGround = _envName_sim !== 'indoor' && _envName_sim !== 'urban';
-      
-      while (this._acc >= FIXED_DT) {
+    _simClock.t += dt;        // Smooth variable timestep for perfect render synchronization
+        INPUT.update(dt);
+        const inp = INPUT.get();
+        
+        const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
+        const checkGround = _envName_sim !== 'indoor' && _envName_sim !== 'urban';
         if (checkGround) {
           PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
           if (PHYS.groundY < 0) PHYS.groundY = 0;
         }
-        FC.update(FIXED_DT, inp);
-        PHYS.step(FIXED_DT);
-        this._acc -= FIXED_DT;
-      }
+        FC.update(dt, inp);
+        PHYS.step(dt);
       MISSION.update();
 
     if (State.armed) State.flightTime += rawDt;  // [FIX-Bug-26b] use real time for clock
@@ -2082,7 +2072,7 @@ const SIM = {
       MINIMAP.draw();
       drawAttitude();
       drawWindCompass();
-      updateRecordingUI();
+      
     }
   },
 
@@ -2485,10 +2475,12 @@ function setSensitivity(val) {
 function toggleArm() {
   State.armed = !State.armed;
   if (!State.armed) {
-    FC.altTarget = null; FC.posTarget = null;
-    FC.resetPIDs();
-  } else {
-    PHYS.saveHome();
+      if (typeof BLACKBOX !== 'undefined') BLACKBOX.stop();
+      FC.altTarget = null; FC.posTarget = null;
+      FC.resetPIDs();
+    } else {
+      if (typeof BLACKBOX !== 'undefined') BLACKBOX.start();
+      PHYS.saveHome();
     PHYS._gyroBias={x:0,y:0,z:0}; // [FIX-H] zero gyro bias on arm
     FC.resetPIDs();
   }
@@ -2499,8 +2491,9 @@ function toggleArm() {
 
 function takeoff() {
   if (!State.armed) {
-    State.armed = true;
-    PHYS.saveHome();
+      State.armed = true;
+      if (typeof BLACKBOX !== 'undefined') BLACKBOX.start();
+      PHYS.saveHome();
     PHYS._gyroBias={x:0,y:0,z:0}; // [FIX-H] zero gyro bias on takeoff
     FC.resetPIDs();
     FC.setMode('althold');
