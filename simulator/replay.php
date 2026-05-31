@@ -1113,6 +1113,7 @@ const THREE_ENV = (() => {
     const worldOffX = cx * CHUNK_SIZE;
     const worldOffZ = cz * CHUNK_SIZE;
     for (let i = 0; i < pos.count; i++) {
+        if (i % 400 === 0 && i !== 0) await new Promise(r => setTimeout(r, 0));
       const wx = pos.getX(i) + worldOffX;
       const wz = pos.getZ(i) + worldOffZ;
       const h = terrainHeight(wx, wz, envName);
@@ -1808,13 +1809,13 @@ const THREE_ENV = (() => {
     chunkData.mesh = mesh;
     // Vegetation
     if (_envName !== 'indoor') {
-      const veg = buildVegetation(cx, cz, _envName);
+      const veg = await buildVegetation(cx, cz, _envName);
       if (veg) { scene.add(veg); chunkData.veg = veg; }
-      const flowers = buildFlowers(cx, cz, _envName);
+      const flowers = await buildFlowers(cx, cz, _envName);
       if (flowers) { scene.add(flowers); chunkData.flowers = flowers; }
-      const grass = buildGrassBlades(cx, cz, _envName);
+      const grass = await buildGrassBlades(cx, cz, _envName);
       if (grass)   { scene.add(grass);   chunkData.grass = grass; }
-      const rocks = buildRocks(cx, cz, _envName);
+      const rocks = await buildRocks(cx, cz, _envName);
       if (rocks)   { scene.add(rocks);   chunkData.rocks = rocks; }
     }
     chunkData.cx = cx; chunkData.cz = cz;

@@ -1495,7 +1495,7 @@ const THREE_ENV = (() => {
   }
 
   // ── Single chunk terrain mesh ──────────────────────────────────────
-  function buildChunkMesh(cx, cz, envName, segs) {
+  async function buildChunkMesh(cx, cz, envName, segs) {
     const s = segs || CHUNK_SEGS;
     const geo = new THREE.PlaneGeometry(CHUNK_SIZE, CHUNK_SIZE, s, s);
     geo.rotateX(-Math.PI/2);
@@ -1505,6 +1505,7 @@ const THREE_ENV = (() => {
     const worldOffX = cx * CHUNK_SIZE;
     const worldOffZ = cz * CHUNK_SIZE;
     for (let i = 0; i < pos.count; i++) {
+        if (i % 400 === 0 && i !== 0) await new Promise(r => setTimeout(r, 0));
       // Vertex is chunk-local (PlaneGeometry centred at 0)
       const localX = pos.getX(i);
       const localZ = pos.getZ(i);
@@ -1529,7 +1530,7 @@ const THREE_ENV = (() => {
 
   // ── Grass blade system (per-chunk) ────────────────────────────────
   let _grassTime = 0;
-  function buildGrassBlades(cx, cz, envName){
+  async function buildGrassBlades(cx, cz, envName){
     const rng = _chunkRng(cx, cz);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert') return null;
@@ -1540,7 +1541,8 @@ const THREE_ENV = (() => {
     let vi = 0;
     // Each blade: 3 quads (6 verts)
     for (let i = 0; i < count; i++) {
-      const lx = (rng()-0.5)*CHUNK_SIZE;
+        if (i % 100 === 0 && i !== 0) await new Promise(r => setTimeout(r, 0));
+        const lx = (rng()-0.5)*CHUNK_SIZE;
       const lz = (rng()-0.5)*CHUNK_SIZE;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
       const hy = terrainHeight(wx, lz, env);
@@ -1567,7 +1569,7 @@ const THREE_ENV = (() => {
   }
 
   // ── Flowers ────────────────────────────────────────────────────────
-  function buildFlowers(cx, cz, envName){
+  async function buildFlowers(cx, cz, envName){
     const rng = _chunkRng(cx + 1000, cz + 2000);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert' || env === 'mountains') return null;
@@ -1608,7 +1610,7 @@ const THREE_ENV = (() => {
   }
 
   // ── Rocks ──────────────────────────────────────────────────────────
-  function buildRocks(cx, cz, envName){
+  async function buildRocks(cx, cz, envName){
     const rng = _chunkRng(cx + 5000, cz + 6000);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor') return null;
@@ -1644,7 +1646,7 @@ const THREE_ENV = (() => {
   }
 
   // ── Trees (lush, varied) ──────────────────────────────────────────
-  function buildVegetation(cx, cz, envName){
+  async function buildVegetation(cx, cz, envName){
     const rng = _chunkRng(cx + 3000, cz + 4000);
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor' || env === 'desert') return null;
@@ -1658,7 +1660,8 @@ const THREE_ENV = (() => {
       : [0x3a8a2e, 0x2e7a24, 0x4a9a3c, 0x338030, 0x28701e];
     const count = env === 'mountains' ? 12 : 20;
     for (let i = 0; i < count; i++) {
-      const lx = (rng()-0.5)*CHUNK_SIZE*0.85;
+        if (i % 5 === 0 && i !== 0) await new Promise(r => setTimeout(r, 0));
+        const lx = (rng()-0.5)*CHUNK_SIZE*0.85;
       const lz = (rng()-0.5)*CHUNK_SIZE*0.85;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
       const hy = terrainHeight(wx, lz, env);
@@ -2276,26 +2279,26 @@ const THREE_ENV = (() => {
     const renderX = worldX - _renderOriginX;
     const renderZ = worldZ - _renderOriginZ;
 
-    chunkData.mesh = buildChunkMesh(cx, cz, _envName, segs);
+    chunkData.mesh = await buildChunkMesh(cx, cz, _envName, segs);
     chunkData.mesh.position.set(renderX, 0, renderZ);
     scene.add(chunkData.mesh);
     
     await new Promise(r => setTimeout(r, 0)); // Yield to main thread
 
     if (lod === 0 && _envName !== 'indoor' && _envName !== 'urban') {
-      const veg = buildVegetation(cx, cz, _envName);
+      const veg = await buildVegetation(cx, cz, _envName);
       if (veg) { veg.position.set(renderX, 0, renderZ); scene.add(veg); chunkData.veg = veg; }
       await new Promise(r => setTimeout(r, 0)); // Yield
 
-      const flowers = buildFlowers(cx, cz, _envName);
+      const flowers = await buildFlowers(cx, cz, _envName);
       if (flowers) { flowers.position.set(renderX, 0, renderZ); scene.add(flowers); chunkData.flowers = flowers; }
       await new Promise(r => setTimeout(r, 0)); // Yield
 
-      const grass = buildGrassBlades(cx, cz, _envName);
+      const grass = await buildGrassBlades(cx, cz, _envName);
       if (grass) { grass.position.set(renderX, 0, renderZ); scene.add(grass); chunkData.grass = grass; }
       await new Promise(r => setTimeout(r, 0)); // Yield
 
-      const rocks = buildRocks(cx, cz, _envName);
+      const rocks = await buildRocks(cx, cz, _envName);
       if (rocks) { rocks.position.set(renderX, 0, renderZ); scene.add(rocks); chunkData.rocks = rocks; }
     }
   }
