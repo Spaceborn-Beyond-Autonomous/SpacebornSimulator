@@ -3284,21 +3284,55 @@ const SIM = {
     // [FIX-Bug-26b] rawDt = real wall time (unscaled) for clock display
     const rawDt = Math.min(0.05, (now - this._last) / 1000);
     this._last = now;
-    const dt = rawDt * this._speed;
+    const dt = rawDt * this._speed;      // [FIX-Bug-26c] Absolute sim time always advances (not only when armed)
+      _simClock.t += dt;
+      
+      if (typeof this._acc === 'undefined') this._acc = 0;
+      const FIXED_DT = 1 / 60;
+      this._acc += dt;
 
-    // [FIX-Bug-26c] Absolute sim time always advances (not only when armed)
-    _simClock.t += dt;        // Smooth variable timestep for perfect render synchronization
-        INPUT.update(dt);
-        const inp = INPUT.get();
-        
-        const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
-        const checkGround = _envName_sim !== 'indoor' && _envName_sim !== 'urban';
+      INPUT.update(dt);
+      const inp = INPUT.get();
+
+      const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
+      const checkGround = _envName_sim !== 'indoor' && _envName_sim !== 'urban';
+
+      while (this._acc >= FIXED_DT) {
         if (checkGround) {
           PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
           if (PHYS.groundY < 0) PHYS.groundY = 0;
         }
-        FC.update(dt, inp);
-        PHYS.step(dt);
+        
+        PHYS._prevPos = { x:PHYS.pos.x, y:PHYS.pos.y, z:PHYS.pos.z };
+        PHYS._prevQuat = { w:PHYS.quat.w, x:PHYS.quat.x, y:PHYS.quat.y, z:PHYS.quat.z };
+
+        FC.update(FIXED_DT, inp);
+        PHYS.step(FIXED_DT);
+
+        PHYS._realPos = { x:PHYS.pos.x, y:PHYS.pos.y, z:PHYS.pos.z };
+        PHYS._realQuat = { w:PHYS.quat.w, x:PHYS.quat.x, y:PHYS.quat.y, z:PHYS.quat.z };
+
+        this._acc -= FIXED_DT;
+      }
+
+      // Interpolate for buttery smooth rendering at high refresh rates
+      const alpha = Math.min(1.0, Math.max(0.0, this._acc / FIXED_DT));
+      if (PHYS._prevPos && PHYS._realPos) {
+        PHYS.pos.x = PHYS._prevPos.x + (PHYS._realPos.x - PHYS._prevPos.x) * alpha;
+        PHYS.pos.y = PHYS._prevPos.y + (PHYS._realPos.y - PHYS._prevPos.y) * alpha;
+        PHYS.pos.z = PHYS._prevPos.z + (PHYS._realPos.z - PHYS._prevPos.z) * alpha;
+
+        const a = PHYS._prevQuat, b = PHYS._realQuat;
+        const dot = a.w*b.w + a.x*b.x + a.y*b.y + a.z*b.z;
+        const sign = dot < 0 ? -1 : 1;
+        const w = a.w + (b.w * sign - a.w) * alpha;
+        const x = a.x + (b.x * sign - a.x) * alpha;
+        const y = a.y + (b.y * sign - a.y) * alpha;
+        const z = a.z + (b.z * sign - a.z) * alpha;
+        const l = Math.hypot(w,x,y,z) || 1;
+        PHYS.quat.w = w/l; PHYS.quat.x = x/l; PHYS.quat.y = y/l; PHYS.quat.z = z/l;
+      }
+
       MISSION.update();
 
     if (State.armed) State.flightTime += rawDt;  // [FIX-Bug-26b] use real time for clock
