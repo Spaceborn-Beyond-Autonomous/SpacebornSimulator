@@ -49,7 +49,7 @@ $accessExpiresAt = $accessSeconds > 0 ? time() + $accessSeconds : 0;
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CERTANITY Â· Drone Simulator â€” MAX</title>
+<title>CERTANITY · Drone Simulator � MAX</title>
 <link rel="icon" type="image/png" href="../assets/logo-iso.png" />
 <link rel="apple-touch-icon" href="../assets/logo-iso.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,7 +84,7 @@ input,select{font-family:var(--fb)}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--n4);border-radius:2px}
 
-/* â”€â”€ Startup â”€â”€ */
+/* ���� Startup ���� */
 #startup{
   position:fixed;inset:0;z-index:999;
   background:var(--bg);
@@ -99,10 +99,10 @@ input,select{font-family:var(--fb)}
 .sb{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--p),var(--s));width:0;transition:width 2.6s var(--ease)}
 .st{font-size:11px;color:var(--txt4);font-family:var(--fh);min-height:16px}
 
-/* â”€â”€ App Shell â”€â”€ */
+/* ���� App Shell ���� */
 #app{width:100%;height:100%;display:grid;grid-template-rows:52px 1fr 190px;grid-template-columns:272px 1fr 272px}
 
-/* â”€â”€ Topbar â”€â”€ */
+/* ���� Topbar ���� */
 #topbar{
   grid-column:1/-1;
   background:var(--surf);
@@ -126,16 +126,16 @@ input,select{font-family:var(--fb)}
 @keyframes bp{0%,100%{opacity:1}50%{opacity:.35}}
 .top-clock{font-family:var(--fh);font-size:13px;font-weight:600;color:var(--txt);min-width:58px;text-align:center}
 
-/* â”€â”€ Left Panel â”€â”€ */
+/* ���� Left Panel ���� */
 #lpanel{grid-row:2/4;background:var(--bg);padding:14px 12px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;border-right:1px solid var(--n3)}
 
-/* â”€â”€ Right Panel â”€â”€ */
+/* ���� Right Panel ���� */
 #rpanel{grid-row:2/4;background:var(--bg);padding:14px 12px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;border-left:1px solid var(--n3)}
 
-/* â”€â”€ Bottom Bar â”€â”€ */
+/* ���� Bottom Bar ���� */
 #bottombar{grid-column:2/3;background:var(--bg);border-top:1px solid var(--n3);padding:12px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 
-/* â”€â”€ 3D Viewport â”€â”€ */
+/* ���� 3D Viewport ���� */
 #viewport{grid-row:2/3;grid-column:2/3;position:relative;overflow:hidden;background:#0a1020;min-width:0;min-height:0;width:100%;height:100%}
 #threeCanvas{position:absolute;top:0;left:0;right:0;bottom:0;width:100%!important;height:100%!important;display:block;background:#0a1628;z-index:0}
 
@@ -194,13 +194,13 @@ input,select{font-family:var(--fb)}
 #crash-overlay .co-btn:hover{background:rgba(255,59,48,.45);color:#fff}
 @keyframes co-pulse{from{transform:scale(1) rotate(-5deg)}to{transform:scale(1.15) rotate(5deg)}}
 
-/* â”€â”€ Card / Panel â”€â”€ */
+/* ���� Card / Panel ���� */
 .card{background:var(--surf);border-radius:var(--r3);padding:14px;box-shadow:var(--sh-out)}
 .card-sm{border-radius:var(--r2);padding:11px}
 .card-title{font-family:var(--fh);font-size:11px;font-weight:600;color:var(--txt3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px}
 .card-title .ct-dot{width:6px;height:6px;border-radius:50%;background:var(--s);flex-shrink:0}
 
-/* â”€â”€ Neumorphic Button â”€â”€ */
+/* ���� Neumorphic Button ���� */
 .nbtn{border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-btn);padding:8px 14px;font-size:12px;font-weight:500;color:var(--txt2);transition:all .15s var(--ease);display:inline-flex;align-items:center;gap:6px}
 .nbtn:active,.nbtn.active-btn{box-shadow:var(--sh-btn-press);transform:translateY(1px)}
 .nbtn.primary{background:var(--p);color:white;box-shadow:3px 3px 7px rgba(0,0,0,.4),-2px -2px 6px rgba(79,142,247,.15)}
@@ -212,12 +212,12 @@ input,select{font-family:var(--fb)}
 .nbtn.icon.sm{width:28px;height:28px;padding:5px}
 .nbtn-row{display:flex;gap:7px;flex-wrap:wrap}
 
-/* â”€â”€ Inset Field â”€â”€ */
+/* ���� Inset Field ���� */
 .nfield{border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in);padding:8px 12px;display:flex;align-items:center;gap:8px}
 .nfield input,.nfield select{background:none;border:none;outline:none;font-size:12px;color:var(--txt);width:100%}
 .nfield label{font-size:11px;color:var(--txt4);font-weight:500;white-space:nowrap}
 
-/* â”€â”€ Slider â”€â”€ */
+/* ���� Slider ���� */
 .nslider-wrap{display:flex;flex-direction:column;gap:5px}
 .nslider-label{display:flex;justify-content:space-between;font-size:11px;color:var(--txt3)}
 .nslider-label span{font-weight:600;color:var(--txt);font-family:var(--fh)}
@@ -226,7 +226,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
 input[type=range]::-webkit-slider-thumb:hover{border-color:var(--p);transform:scale(1.1)}
 input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,70,.4)}
 
-/* â”€â”€ Toggle â”€â”€ */
+/* ���� Toggle ���� */
 .ntoggle{display:flex;align-items:center;gap:10px;cursor:pointer}
 .ntoggle-track{width:38px;height:21px;border-radius:11px;background:var(--n2);box-shadow:var(--sh-in-sm);position:relative;transition:background .2s;flex-shrink:0}
 .ntoggle-track.on{background:var(--p)}
@@ -234,7 +234,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .ntoggle-track.on .ntoggle-thumb{transform:translateX(17px);background:white}
 .ntoggle-text{font-size:12px;color:var(--txt2);font-weight:500}
 
-/* â”€â”€ Telemetry Value â”€â”€ */
+/* ���� Telemetry Value ���� */
 .tval{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:var(--r2);background:var(--surf);box-shadow:var(--sh-in-sm)}
 .tval-label{font-size:10px;color:var(--txt4);font-weight:500;letter-spacing:.8px;text-transform:uppercase}
 .tval-num{font-family:var(--fh);font-size:17px;font-weight:600;color:var(--txt);line-height:1}
@@ -244,7 +244,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .tval-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .tval-row2{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
 
-/* â”€â”€ Bar Gauge â”€â”€ */
+/* ���� Bar Gauge ���� */
 .bgauge-wrap{display:flex;flex-direction:column;gap:4px}
 .bgauge-label{display:flex;justify-content:space-between;font-size:10px;color:var(--txt3)}
 .bgauge-label span{font-family:var(--fh);font-weight:600}
@@ -255,17 +255,17 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .bgauge-fill.green{background:linear-gradient(90deg,#2E7D32,#4CAF50)}
 .bgauge-fill.red{background:linear-gradient(90deg,#c62828,#EF5350)}
 
-/* â”€â”€ Circular Gauge â”€â”€ */
+/* ���� Circular Gauge ���� */
 .cgauge{position:relative;display:flex;align-items:center;justify-content:center}
 .cgauge canvas{border-radius:50%}
 .cgauge-val{position:absolute;text-align:center;font-family:var(--fh);font-weight:700;font-size:15px;color:var(--txt);line-height:1}
 .cgauge-val small{display:block;font-size:9px;color:var(--txt4);font-weight:500;margin-top:2px}
 
-/* â”€â”€ Attitude Indicator â”€â”€ */
+/* ���� Attitude Indicator ���� */
 .attitude-wrap{display:flex;align-items:center;justify-content:center;padding:6px;border-radius:var(--r2);background:var(--surf);box-shadow:var(--sh-in)}
 #attCanvas{border-radius:50%}
 
-/* â”€â”€ Motor Indicators â”€â”€ */
+/* ���� Motor Indicators ���� */
 .motors-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .motor-item{border-radius:var(--r2);background:var(--surf);box-shadow:var(--sh-in-sm);padding:8px;display:flex;flex-direction:column;gap:4px}
 .motor-header{display:flex;justify-content:space-between;align-items:center}
@@ -274,45 +274,45 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .motor-bar-wrap{height:5px;border-radius:3px;background:var(--n2);overflow:hidden}
 .motor-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--p),var(--s));transition:width .1s}
 
-/* â”€â”€ Map / Minimap â”€â”€ */
+/* ���� Map / Minimap ���� */
 .minimap{border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh-in);height:120px;position:relative;background:#1a2744}
 .minimap canvas{width:100%;height:100%;display:block}
 .minimap-badge{position:absolute;bottom:6px;left:6px;background:rgba(30,45,100,.9);color:rgba(255,255,255,.9);font-size:9px;padding:2px 7px;border-radius:10px;font-weight:600;letter-spacing:.5px}
 
-/* â”€â”€ Flight Modes â”€â”€ */
+/* ���� Flight Modes ���� */
 .fmode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .fmode-btn{padding:7px 4px;border-radius:var(--r1);font-size:10px;font-weight:600;text-align:center;color:var(--txt3);background:var(--surf);box-shadow:var(--sh-sm);transition:all .2s var(--ease);letter-spacing:.3px;display:flex;flex-direction:column;align-items:center;gap:3px}
 .fmode-btn .fm-icon{font-size:14px}
 .fmode-btn.on{background:var(--p);color:white;box-shadow:3px 3px 7px rgba(0,0,0,.4),-2px -2px 6px rgba(79,142,247,.15)}
 .fmode-btn:not(.on):hover{background:var(--n2)}
 
-/* â”€â”€ Camera Selector â”€â”€ */
+/* ���� Camera Selector ���� */
 .cam-row{display:flex;gap:6px}
 .cam-btn{flex:1;padding:6px;border-radius:var(--r1);font-size:10px;font-weight:600;text-align:center;color:var(--txt3);background:var(--surf);box-shadow:var(--sh-sm);transition:all .2s}
 .cam-btn.on{background:var(--s);color:white;box-shadow:3px 3px 7px rgba(238,147,70,.3),-2px -2px 6px rgba(255,255,255,.08)}
 
-/* â”€â”€ Graph â”€â”€ */
+/* ���� Graph ���� */
 .graph-canvas{border-radius:var(--r1);width:100%;box-shadow:var(--sh-in-sm)}
 
-/* â”€â”€ Wind Indicator â”€â”€ */
+/* ���� Wind Indicator ���� */
 .wind-wrap{display:flex;align-items:center;gap:12px}
 .wind-compass{position:relative;width:52px;height:52px;flex-shrink:0}
 .wind-compass canvas{width:100%;height:100%}
 
-/* â”€â”€ Tab System â”€â”€ */
+/* ���� Tab System ���� */
 .tabs{display:flex;gap:4px;margin-bottom:10px}
 .tab{padding:5px 12px;border-radius:var(--r4);font-size:11px;font-weight:500;color:var(--txt3);background:transparent;transition:all .2s}
 .tab.on{background:var(--surf);box-shadow:var(--sh-sm);color:var(--p);font-weight:600}
 .tab-content{display:none}
 .tab-content.on{display:block}
 
-/* â”€â”€ Mission Panel â”€â”€ */
+/* ���� Mission Panel ���� */
 .wp-list{display:flex;flex-direction:column;gap:5px;max-height:100px;overflow-y:auto}
 .wp-item{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in-sm);font-size:11px;color:var(--txt2)}
 .wp-num{width:18px;height:18px;border-radius:50%;background:var(--p);color:white;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .wp-coords{font-family:var(--fh);font-size:10px;color:var(--txt4);margin-left:auto}
 
-/* â”€â”€ Warning System â”€â”€ */
+/* ���� Warning System ���� */
 .warn-list{display:flex;flex-direction:column;gap:4px}
 .warn-item{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in-sm);font-size:11px}
 .warn-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
@@ -320,12 +320,12 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .warn-dot.warn{background:var(--s)}
 .warn-dot.err{background:#F44336}
 
-/* â”€â”€ Keyboard â”€â”€ */
+/* ���� Keyboard ���� */
 .kbd-row{display:flex;flex-wrap:wrap;gap:5px}
 .kbd{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--txt3);font-weight:500}
 .kd{background:var(--surf);box-shadow:var(--sh-sm);border-radius:6px;padding:4px 7px;font-size:11px;font-family:var(--fh);font-weight:600;color:var(--txt2);min-width:24px;text-align:center}
 
-/* â”€â”€ Log â”€â”€ */
+/* ���� Log ���� */
 .log-list{display:flex;flex-direction:column;gap:3px;max-height:80px;overflow-y:auto}
 .log-item{font-size:10px;color:var(--txt3);padding:3px 6px;border-radius:6px;background:var(--surf);box-shadow:var(--sh-in-sm);display:flex;gap:6px}
 .log-item.ok .log-tag{color:#4CAF50}
@@ -333,7 +333,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .log-item.warn .log-tag{color:var(--s)}
 .log-tag{font-weight:600;font-family:var(--fh)}
 
-/* â”€â”€ Hover Throttle â”€â”€ */
+/* ���� Hover Throttle ���� */
 .ht-row{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--txt3)}
 .ht-val{font-family:var(--fh);font-weight:700;font-size:13px;color:var(--p);min-width:36px}
 
@@ -351,7 +351,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .tgl-item.on{opacity:1;box-shadow:var(--sh-btn);}
 .tgl-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 
-/* â”€â”€ Drone Customize Panel â”€â”€ */
+/* ���� Drone Customize Panel ���� */
 .profile-customize{display:none;flex-direction:column;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid var(--n3)}
 .profile-customize.open{display:flex}
 .profile-section-title{font-size:10px;font-weight:700;color:var(--txt4);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
@@ -364,7 +364,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .profile-color-row label{font-size:10px;color:var(--txt3);font-weight:500;flex:1}
 .profile-color-row input[type=color]{width:34px;height:28px;border-radius:7px;border:none;cursor:pointer;padding:2px;background:var(--surf);box-shadow:var(--sh-sm)}
 
-/* â”€â”€ Custom Profile Modal â”€â”€ */
+/* ���� Custom Profile Modal ���� */
 #custom-profile-modal{
   position:fixed;inset:0;z-index:900;
   background:rgba(0,0,0,.65);backdrop-filter:blur(6px);
@@ -396,7 +396,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .profile-card:hover{border-color:var(--p4)}
 .profile-card.active{border-color:var(--p);color:var(--p)}
 .profile-card .pc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-/* â”€â”€ Virtual Joystick â”€â”€ */
+/* ���� Virtual Joystick ���� */
 .vj-pad{
   position:relative;width:88px;height:88px;flex-shrink:0;
   border-radius:50%;background:var(--n);
@@ -426,7 +426,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .vj-label-l{left:3px;top:50%;transform:translateY(-50%)}
 .vj-label-r{right:3px;top:50%;transform:translateY(-50%)}
 
-/* â”€â”€ Stick Meters â”€â”€ */
+/* ���� Stick Meters ���� */
 .stick-meter-wrap{display:flex;align-items:center;gap:5px}
 .stick-meter-lbl{font-size:8px;font-weight:700;color:var(--txt4);width:20px;flex-shrink:0;letter-spacing:.3px}
 .stick-meter-track{flex:1;height:5px;border-radius:3px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden;position:relative}
@@ -438,7 +438,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .stick-meter-fill.accent{background:var(--s)}
 .stick-meter-fill.primary{background:var(--p)}
 
-/* â”€â”€ Obstacle Radar â”€â”€ */
+/* ���� Obstacle Radar ���� */
 .obstacle-radar{position:relative;display:flex;align-items:center;justify-content:center;padding:6px}
 .obs-ring{stroke:rgba(96,125,139,0.25);fill:none}
 .obs-sector-label{font-size:8px;fill:var(--txt4);font-family:'Inter',sans-serif;font-weight:600}
@@ -447,7 +447,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .obs-bar-track{height:5px;border-radius:3px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden}
 .obs-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#F44336,#EE9346,#4CAF50);transition:width .1s}
 
-/* â”€â”€ GPS Panel â”€â”€ */
+/* ���� GPS Panel ���� */
 .gps-fix-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .gps-fix-3d{background:#4CAF50;color:white}
 .gps-fix-2d{background:var(--s);color:white}
@@ -458,14 +458,14 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .gps-sat-dot.on{background:#4CAF50}
 .gps-sat-dot.dim{background:var(--s);opacity:.5}
 
-/* â”€â”€ VSLAM Panel â”€â”€ */
+/* ���� VSLAM Panel ���� */
 .vslam-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
 .vslam-active{background:var(--p);color:white;animation:bp 1.2s ease infinite}
 .vslam-idle{background:var(--n2);color:var(--txt4)}
 .vslam-quality{height:4px;border-radius:2px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden;margin-top:5px}
 .vslam-quality-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--p),var(--s));transition:width .2s}
 
-/* â”€â”€ PID Telemetry Panel â”€â”€ */
+/* ���� PID Telemetry Panel ���� */
 .pid-telem-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .pid-axis-card{border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in-sm);padding:7px}
 .pid-axis-title{font-size:9px;font-weight:700;color:var(--txt4);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between}
@@ -478,7 +478,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .pid-err-track::before{content:'';position:absolute;left:50%;top:0;width:1px;height:100%;background:var(--n4);z-index:1}
 .pid-err-fill{position:absolute;height:100%;border-radius:2px;background:var(--s);transition:width .06s,left .06s}
 
-/* â”€â”€ Rate Hz badges â”€â”€ */
+/* ���� Rate Hz badges ���� */
 .hz-badge{display:inline-block;font-size:8px;font-weight:700;padding:1px 5px;border-radius:6px;background:var(--n);box-shadow:var(--sh-in-sm);color:var(--txt4);letter-spacing:.3px;margin-left:4px;vertical-align:middle}
 
 </style>
@@ -487,9 +487,9 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <!-- Startup -->
 <div id="startup">
   <div class="sl">CERTANITY</div>
-  <div class="ss">Aerospace Drone Simulator Â· v2.0</div>
+  <div class="ss">Aerospace Drone Simulator · v2.0</div>
   <div class="sbw"><div class="sb" id="sbar"></div></div>
-  <div class="st" id="sstat">Initializing physics engineâ€¦</div>
+  <div class="st" id="sstat">Initializing physics engine⬦</div>
 </div>
 
 <!-- App -->
@@ -508,16 +508,16 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       <button class="npill" id="nav-debug" onclick="showSection('debug')">Debug</button>
     </div>
         <div class="tsp"></div>
-    <button class="nbtn sm accent" id="cloud-save-btn" onclick="triggerCloudSave()" title="Save Telemetry to Cloudflare">â˜ï¸ Cloud Save</button>
-    <button class="nbtn sm accent" id="saved-telem-btn" style="display:none;background:var(--s);color:#fff;" onclick="openSavedTelemModal()">ðŸ“¥ Saved (0)</button>
-    <button class="nbtn sm danger" id="exit-sim-btn" onclick="exitSimulation()" title="Exit and Save Flight">ðŸšª Exit</button>
-    <button class="nbtn sm" id="pause-btn" onclick="toggleSimPause()" title="Pause/Resume Simulation (Space)">â¸ Pause</button>
+    <button class="nbtn sm accent" id="cloud-save-btn" onclick="triggerCloudSave()" title="Save Telemetry to Cloudflare">�܁️ Cloud Save</button>
+    <button class="nbtn sm accent" id="saved-telem-btn" style="display:none;background:var(--s);color:#fff;" onclick="openSavedTelemModal()">�x� Saved (0)</button>
+    <button class="nbtn sm danger" id="exit-sim-btn" onclick="exitSimulation()" title="Exit and Save Flight">�xa� Exit</button>
+    <button class="nbtn sm" id="pause-btn" onclick="toggleSimPause()" title="Pause/Resume Simulation (Space)">⏸ Pause</button>
 
     <div class="top-stat"><div class="sdot" id="sys-dot"></div><span id="sys-status">READY</span></div>
     <span id="arm-status">DISARMED</span>
-    <div class="top-stat"><span>âš¡</span><span id="batt-top">100%</span></div>
-    <div class="top-stat"><span>ðŸŒ¡</span><span id="fps-val">60fps</span></div>
-    <div class="top-stat"><span>ðŸ—º</span><span id="chunk-count">0 chunks</span></div>
+    <div class="top-stat"><span>�a�</span><span id="batt-top">100%</span></div>
+    <div class="top-stat"><span>�xR�</span><span id="fps-val">60fps</span></div>
+    <div class="top-stat"><span>�x�</span><span id="chunk-count">0 chunks</span></div>
     <div class="top-clock" id="top-clock">00:00</div>
   </div>
 
@@ -528,11 +528,11 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <div class="card card-sm">
       <div class="card-title"><span class="ct-dot"></span>FLIGHT CONTROLS</div>
       <div class="nbtn-row" style="margin-bottom:8px">
-        <button class="nbtn accent" onclick="takeoff()">ðŸš Takeoff</button>
-        <button class="nbtn primary" onclick="doHover()">â¸ Hover</button>
-        <button class="nbtn" onclick="returnHome()">ðŸ  RTH</button>
-        <button class="nbtn danger" onclick="emergStop()">â›” Stop</button>
-        <button class="nbtn sm" onclick="resetDrone()">ðŸ”„ Reset</button>
+        <button class="nbtn accent" onclick="takeoff()">�xa� Takeoff</button>
+        <button class="nbtn primary" onclick="doHover()">⏸ Hover</button>
+        <button class="nbtn" onclick="returnHome()">�x�� RTH</button>
+        <button class="nbtn danger" onclick="emergStop()">�: Stop</button>
+        <button class="nbtn sm" onclick="resetDrone()">�x Reset</button>
       </div>
       <div class="nslider-wrap">
         <div class="nslider-label"><span>Throttle</span><span id="thr-val">0%</span></div>
@@ -548,12 +548,12 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <div class="card card-sm">
       <div class="card-title"><span class="ct-dot"></span>FLIGHT MODE</div>
       <div class="fmode-grid">
-        <button class="fmode-btn on" data-mode="stabilized" onclick="setFlightMode('stabilized')"><span class="fm-icon">âš–ï¸</span>Stabilized</button>
-        <button class="fmode-btn" data-mode="angle" onclick="setFlightMode('angle')"><span class="fm-icon">ðŸ“</span>Angle</button>
-        <button class="fmode-btn" data-mode="acro" onclick="setFlightMode('acro')"><span class="fm-icon">ðŸŽ¯</span>Acro</button>
-        <button class="fmode-btn" data-mode="althold" onclick="setFlightMode('althold')"><span class="fm-icon">ðŸ”’</span>Alt Hold</button>
-        <button class="fmode-btn" data-mode="gpshold" onclick="setFlightMode('gpshold')"><span class="fm-icon">ðŸ“¡</span>GPS Hold</button>
-        <button class="fmode-btn" data-mode="rth" onclick="setFlightMode('rth')"><span class="fm-icon">ðŸ </span>RTH</button>
+        <button class="fmode-btn on" data-mode="stabilized" onclick="setFlightMode('stabilized')"><span class="fm-icon">�a️</span>Stabilized</button>
+        <button class="fmode-btn" data-mode="angle" onclick="setFlightMode('angle')"><span class="fm-icon">�x�</span>Angle</button>
+        <button class="fmode-btn" data-mode="acro" onclick="setFlightMode('acro')"><span class="fm-icon">�x}�</span>Acro</button>
+        <button class="fmode-btn" data-mode="althold" onclick="setFlightMode('althold')"><span class="fm-icon">�x</span>Alt Hold</button>
+        <button class="fmode-btn" data-mode="gpshold" onclick="setFlightMode('gpshold')"><span class="fm-icon">�x�</span>GPS Hold</button>
+        <button class="fmode-btn" data-mode="rth" onclick="setFlightMode('rth')"><span class="fm-icon">�x��</span>RTH</button>
       </div>
     </div>
 
@@ -573,20 +573,20 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <div class="card card-sm">
       <div class="card-title"><span class="ct-dot"></span>ENVIRONMENT</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px">
-        <button class="fmode-btn on" data-env="field" onclick="setEnvironment('field')"><span class="fm-icon">ðŸŒ¾</span>Field</button>
-        <button class="fmode-btn" data-env="mountains" onclick="setEnvironment('mountains')"><span class="fm-icon">â›°ï¸</span>Mountains</button>
-        <button class="fmode-btn" data-env="urban" onclick="setEnvironment('urban')"><span class="fm-icon">ðŸ™ï¸</span>Urban</button>
-        <button class="fmode-btn" data-env="indoor" onclick="setEnvironment('indoor')"><span class="fm-icon">ðŸ­</span>Warehouse</button>
-        <button class="fmode-btn" data-env="desert" onclick="setEnvironment('desert')"><span class="fm-icon">ðŸœï¸</span>Desert</button>
-        <button class="fmode-btn" data-env="windy" onclick="setEnvironment('windy')"><span class="fm-icon">ðŸŒªï¸</span>Windy</button>
+        <button class="fmode-btn on" data-env="field" onclick="setEnvironment('field')"><span class="fm-icon">�xR�</span>Field</button>
+        <button class="fmode-btn" data-env="mountains" onclick="setEnvironment('mountains')"><span class="fm-icon">�:�️</span>Mountains</button>
+        <button class="fmode-btn" data-env="urban" onclick="setEnvironment('urban')"><span class="fm-icon">�x�"️</span>Urban</button>
+        <button class="fmode-btn" data-env="indoor" onclick="setEnvironment('indoor')"><span class="fm-icon">�x��</span>Warehouse</button>
+        <button class="fmode-btn" data-env="desert" onclick="setEnvironment('desert')"><span class="fm-icon">�x�S️</span>Desert</button>
+        <button class="fmode-btn" data-env="windy" onclick="setEnvironment('windy')"><span class="fm-icon">�xR�️</span>Windy</button>
       </div>
       <div style="display:flex;gap:6px;align-items:center;margin-top:4px">
         <div class="nfield" style="flex:1">
-          <label style="font-size:10px;color:var(--txt4);white-space:nowrap">ðŸŒ Seed</label>
+          <label style="font-size:10px;color:var(--txt4);white-space:nowrap">�xR� Seed</label>
           <input type="number" id="world-seed-input" value="12345" min="0" max="999999" style="background:none;border:none;outline:none;font-size:12px;color:var(--txt);width:80px;font-family:var(--fh);font-weight:600">
         </div>
         <button class="nbtn sm primary" onclick="applyWorldSeed()">Apply</button>
-        <button class="nbtn sm" onclick="randomWorldSeed()">ðŸŽ²</button>
+        <button class="nbtn sm" onclick="randomWorldSeed()">�x}�</button>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px">
         <div class="nslider-wrap">
@@ -598,7 +598,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
           <input type="range" min="0" max="100" value="0" id="turbulence" oninput="setTurbulence(this.value)">
         </div>
         <div class="nslider-wrap">
-          <div class="nslider-label"><span>Wind Dir</span><span id="wdir-val">N 0Â°</span></div>
+          <div class="nslider-label"><span>Wind Dir</span><span id="wdir-val">N 0°</span></div>
           <input type="range" min="0" max="360" value="0" class="accent-range" id="wind-dir" oninput="setWindDir(this.value)">
         </div>
         <div style="display:flex;gap:7px;flex-wrap:wrap">
@@ -634,20 +634,20 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         </div>
         <!-- Action buttons -->
         <div class="nbtn-row" style="margin-top:2px">
-          <button class="nbtn sm" id="customize-toggle-btn" onclick="toggleProfileCustomize()" style="flex:1">âœï¸ Customize</button>
-          <button class="nbtn sm accent" onclick="openCustomProfileModal()" style="flex:1">ï¼‹ New Profile</button>
+          <button class="nbtn sm" id="customize-toggle-btn" onclick="toggleProfileCustomize()" style="flex:1">�S�️ Customize</button>
+          <button class="nbtn sm accent" onclick="openCustomProfileModal()" style="flex:1">�9 New Profile</button>
         </div>
 
       <!-- [TIER-MAX] GLTF/GLB Upload Section (inserted before customize panel) -->
       <div id="gltf-upload-section" style="margin-top:6px;padding:8px;border-radius:var(--r1);background:var(--n);box-shadow:var(--sh-in-sm);">
-        <div style="font-size:10px;font-weight:700;color:var(--s);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">ðŸš Custom GLTF/GLB Drone</div>
+        <div style="font-size:10px;font-weight:700;color:var(--s);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">�xa� Custom GLTF/GLB Drone</div>
         <input type="file" id="gltf-upload-input" accept=".gltf,.glb" style="display:none" onchange="handleGLTFUpload(this)">
-        <button class="nbtn sm accent" onclick="document.getElementById('gltf-upload-input').click()" style="width:100%">ðŸ“ Upload Drone Model (.gltf/.glb)</button>
+        <button class="nbtn sm accent" onclick="document.getElementById('gltf-upload-input').click()" style="width:100%">�x� Upload Drone Model (.gltf/.glb)</button>
         <div id="gltf-upload-status" style="font-size:10px;color:var(--txt4);margin-top:4px;text-align:center;">No custom model loaded</div>
       </div>
         <!-- Inline customize panel -->
         <div class="profile-customize" id="profile-customize-panel">
-          <div class="profile-section-title">âš™ Physics Parameters</div>
+          <div class="profile-section-title">�a" Physics Parameters</div>
           <div class="profile-grid">
             <div class="profile-field"><label>Mass (kg)</label><input type="number" id="cust-mass" step="0.01" min="0.05" max="20" oninput="applyCustomize()"></div>
             <div class="profile-field"><label>Arm Length (m)</label><input type="number" id="cust-arm" step="0.01" min="0.05" max="1" oninput="applyCustomize()"></div>
@@ -657,14 +657,14 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
             <div class="profile-field"><label>Torque Coeff (kQ)</label><input type="number" id="cust-kq" step="0.0000001" min="0.0000001" max="0.000005" oninput="applyCustomize()"></div>
             <div class="profile-field"><label>Battery Cells (S)</label><input type="number" id="cust-cells" step="1" min="1" max="12" oninput="applyCustomize()"></div>
             <div class="profile-field"><label>Battery (Ah)</label><input type="number" id="cust-batt" step="0.1" min="0.1" max="30" oninput="applyCustomize()"></div>
-            <div class="profile-field"><label>Max Tilt (Â°)</label><input type="number" id="cust-tilt" step="1" min="10" max="85" oninput="applyCustomize()"></div>
-            <div class="profile-field"><label>Drag Area (mÂ²)</label><input type="number" id="cust-drag" step="0.001" min="0.001" max="0.5" oninput="applyCustomize()"></div>
+            <div class="profile-field"><label>Max Tilt (°)</label><input type="number" id="cust-tilt" step="1" min="10" max="85" oninput="applyCustomize()"></div>
+            <div class="profile-field"><label>Drag Area (m²)</label><input type="number" id="cust-drag" step="0.001" min="0.001" max="0.5" oninput="applyCustomize()"></div>
           </div>
           <div class="profile-color-row">
             <label>Drone Color</label>
             <input type="color" id="cust-color" value="#1e88e5" oninput="applyCustomizeColor(this.value)">
           </div>
-          <button class="nbtn sm primary" onclick="saveCustomizeAsProfile()" style="margin-top:4px;width:100%">ðŸ’¾ Save as Custom Profile</button>
+          <button class="nbtn sm primary" onclick="saveCustomizeAsProfile()" style="margin-top:4px;width:100%">�x� Save as Custom Profile</button>
         </div>
       </div>
     </div>
@@ -702,8 +702,8 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <!-- Controls Ref -->
     <div class="card card-sm">
-      <div class="card-title"><span class="ct-dot"></span>CONTROLS Â· MODE 2</div>
-      <div style="font-size:10px;color:var(--txt4);margin-bottom:8px">ðŸŽ® Gamepad supported â€” plug in for analog input</div>
+      <div class="card-title"><span class="ct-dot"></span>CONTROLS · MODE 2</div>
+      <div style="font-size:10px;color:var(--txt4);margin-bottom:8px">�x}� Gamepad supported � plug in for analog input</div>
 
       <!-- Two-stick diagram -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
@@ -711,20 +711,20 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         <div style="background:var(--n);border-radius:var(--r2);padding:8px;box-shadow:var(--sh-in-sm)">
           <div style="font-size:9px;font-weight:700;color:var(--s);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;text-align:center">LEFT STICK</div>
           <div style="display:flex;flex-direction:column;gap:3px">
-            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">â†‘ Throttle+</span><div class="kd" style="font-size:9px">W</div></div>
-            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">â†“ Throttleâˆ’</span><div class="kd" style="font-size:9px">S</div></div>
-            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">â† Yaw Left</span><div class="kd" style="font-size:9px">A</div></div>
-            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">â†’ Yaw Right</span><div class="kd" style="font-size:9px">D</div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">�  Throttle+</span><div class="kd" style="font-size:9px">W</div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">�  Throttle��</span><div class="kd" style="font-size:9px">S</div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">� � Yaw Left</span><div class="kd" style="font-size:9px">A</div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">�  Yaw Right</span><div class="kd" style="font-size:9px">D</div></div>
           </div>
         </div>
         <!-- Right stick -->
         <div style="background:var(--n);border-radius:var(--r2);padding:8px;box-shadow:var(--sh-in-sm)">
           <div style="font-size:9px;font-weight:700;color:var(--p);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;text-align:center">RIGHT STICK</div>
           <div style="display:flex;flex-direction:column;gap:3px">
-            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">â†‘ Pitch Fwd</span><div class="kd" style="font-size:9px">â†‘</div></div>
-            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">â†“ Pitch Back</span><div class="kd" style="font-size:9px">â†“</div></div>
-            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">â† Roll Left</span><div class="kd" style="font-size:9px">â†</div></div>
-            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">â†’ Roll Right</span><div class="kd" style="font-size:9px">â†’</div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">�  Pitch Fwd</span><div class="kd" style="font-size:9px">� </div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">�  Pitch Back</span><div class="kd" style="font-size:9px">� </div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">� � Roll Left</span><div class="kd" style="font-size:9px">� �</div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px"><span style="color:var(--txt4)">�  Roll Right</span><div class="kd" style="font-size:9px">� </div></div>
           </div>
         </div>
       </div>
@@ -732,7 +732,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       <!-- Hotkeys grid -->
       <div style="font-size:9px;font-weight:700;color:var(--txt4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">ACTION HOTKEYS</div>
       <div class="kbd-row">
-        <div class="kbd"><div class="kd">â£</div>Arm</div>
+        <div class="kbd"><div class="kd">␣</div>Arm</div>
         <div class="kbd"><div class="kd">T</div>Takeoff</div>
         <div class="kbd"><div class="kd">H</div>Hover</div>
         <div class="kbd"><div class="kd">G</div>GPS</div>
@@ -751,8 +751,8 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         <div class="kbd"><div class="kd">1</div>Stab</div>
         <div class="kbd"><div class="kd">2</div>Angle</div>
         <div class="kbd"><div class="kd">3</div>Acro</div>
-        <div class="kbd"><div class="kd">4</div>Altâœ¦</div>
-        <div class="kbd"><div class="kd">5</div>GPSâœ¦</div>
+        <div class="kbd"><div class="kd">4</div>Alt�S�</div>
+        <div class="kbd"><div class="kd">5</div>GPS�S�</div>
       </div>
     </div>
   </div>
@@ -766,13 +766,13 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     <div class="vp-bl"></div><div class="vp-br"></div>
     <div class="cam-badge" id="cam-badge">THIRD PERSON</div>
     <div class="crosshair"><div class="ch-h"></div><div class="ch-v"></div></div>
-    <div class="vp-warn" id="vp-warn">âš  LOW ALTITUDE</div>
+    <div class="vp-warn" id="vp-warn">�a� LOW ALTITUDE</div>
     <div id="crash-overlay">
-      <div class="co-icon">ðŸ’¥</div>
+      <div class="co-icon">�x�</div>
       <div class="co-title">DRONE CRASHED</div>
-      <div class="co-sub">Impact detected Â· Motors disarmed</div>
-      <button class="co-btn" onclick="clearMotorFailures()" style="background:rgba(0,200,80,.18);border-color:rgba(0,220,80,.6);color:#00e060;margin-bottom:4px">âš¡ Restore Motors &amp; Fly</button>
-      <button class="co-btn" onclick="resetSim()">â†º &nbsp;RESET &amp; RETRY</button>
+      <div class="co-sub">Impact detected · Motors disarmed</div>
+      <button class="co-btn" onclick="clearMotorFailures()" style="background:rgba(0,200,80,.18);border-color:rgba(0,220,80,.6);color:#00e060;margin-bottom:4px">�a� Restore Motors &amp; Fly</button>
+      <button class="co-btn" onclick="resetSim()">� � &nbsp;RESET &amp; RETRY</button>
     </div>
   </div>
 
@@ -831,8 +831,8 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         <div style="display:flex;flex-direction:column;gap:3px">
           <div style="font-size:9px;color:var(--txt4);font-weight:600;letter-spacing:.6px;text-transform:uppercase">Coordinates</div>
           <div style="display:flex;gap:4px">
-            <div class="tval" style="flex:1"><div class="tval-label">LAT</div><div class="tval-num" style="font-size:12px" id="gps-lat">17.0005</div><div class="tval-unit">Â°N</div></div>
-            <div class="tval" style="flex:1"><div class="tval-label">LON</div><div class="tval-num" style="font-size:12px" id="gps-lon">82.2458</div><div class="tval-unit">Â°E</div></div>
+            <div class="tval" style="flex:1"><div class="tval-label">LAT</div><div class="tval-num" style="font-size:12px" id="gps-lat">17.0005</div><div class="tval-unit">°N</div></div>
+            <div class="tval" style="flex:1"><div class="tval-label">LON</div><div class="tval-num" style="font-size:12px" id="gps-lon">82.2458</div><div class="tval-unit">°E</div></div>
           </div>
           <div class="tval"><div class="tval-label">ALT MSL</div><div class="tval-num" id="gps-alt">12.0</div><div class="tval-unit">m</div></div>
         </div>
@@ -905,7 +905,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       <div class="pid-telem-grid">
         <!-- Roll axis -->
         <div class="pid-axis-card">
-          <div class="pid-axis-title">ROLL <span class="pid-axis-live" id="pid-roll-err-lbl">Â±0.000</span></div>
+          <div class="pid-axis-title">ROLL <span class="pid-axis-live" id="pid-roll-err-lbl">±0.000</span></div>
           <div class="pid-gains-row">
             <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-roll-kp">0.042</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-roll-ki">0.000</div></div>
@@ -915,7 +915,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         </div>
         <!-- Pitch axis -->
         <div class="pid-axis-card">
-          <div class="pid-axis-title">PITCH <span class="pid-axis-live" id="pid-pitch-err-lbl">Â±0.000</span></div>
+          <div class="pid-axis-title">PITCH <span class="pid-axis-live" id="pid-pitch-err-lbl">±0.000</span></div>
           <div class="pid-gains-row">
             <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-pitch-kp">0.042</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-pitch-ki">0.000</div></div>
@@ -925,7 +925,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         </div>
         <!-- Yaw axis -->
         <div class="pid-axis-card">
-          <div class="pid-axis-title">YAW <span class="pid-axis-live" id="pid-yaw-err-lbl">Â±0.000</span></div>
+          <div class="pid-axis-title">YAW <span class="pid-axis-live" id="pid-yaw-err-lbl">±0.000</span></div>
           <div class="pid-gains-row">
             <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-yaw-kp">0.065</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-yaw-ki">0.012</div></div>
@@ -935,7 +935,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         </div>
         <!-- Throttle/Alt axis -->
         <div class="pid-axis-card">
-          <div class="pid-axis-title">THR/ALT <span class="pid-axis-live" id="pid-thr-err-lbl">Â±0.000</span></div>
+          <div class="pid-axis-title">THR/ALT <span class="pid-axis-live" id="pid-thr-err-lbl">±0.000</span></div>
           <div class="pid-gains-row">
             <div class="pid-gain"><div class="pid-gain-lbl">Kp</div><div class="pid-gain-val" id="pid-thr-kp">1.6</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-thr-ki">0.10</div></div>
@@ -944,7 +944,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
           <div class="pid-err-track"><div class="pid-err-fill" id="pid-thr-err" style="width:0%;left:50%"></div></div>
         </div>
       </div>
-      <div style="margin-top:6px;font-size:9px;color:var(--txt4);text-align:center">Error signal â† centre=0 â†’  |  copy Kp/Ki/Kd directly to Betaflight/ArduPilot/PX4</div>
+      <div style="margin-top:6px;font-size:9px;color:var(--txt4);text-align:center">Error signal � � centre=0 �   |  copy Kp/Ki/Kd directly to Betaflight/ArduPilot/PX4</div>
     </div>
 
     <!-- Minimap -->
@@ -1003,12 +1003,12 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <!-- Export / Blackbox -->
     <div class="card card-sm" id="export-card">
-      <div class="card-title"><span class="ct-dot"></span>FLIGHT LOG Â· BLACKBOX <span class="hz-badge">Physics tick</span></div>
+      <div class="card-title"><span class="ct-dot"></span>FLIGHT LOG · BLACKBOX <span class="hz-badge">Physics tick</span></div>
       <div class="export-panel">
         <div class="nbtn-row">
-          <button class="nbtn sm accent" id="rec-btn" onclick="toggleRecording()">âº Record</button>
-          <button class="nbtn sm" onclick="BLACKBOX.stop();BLACKBOX.download();UI.toast('ðŸ’¾ CSV saved')">ðŸ’¾ CSV</button>
-          <button class="nbtn sm primary" onclick="exportMAVLink()">ðŸ“¡ MAVLink</button>
+          <button class="nbtn sm accent" id="rec-btn" onclick="toggleRecording()">⏺ Record</button>
+          <button class="nbtn sm" onclick="BLACKBOX.stop();BLACKBOX.download();UI.toast('�x� CSV saved')">�x� CSV</button>
+          <button class="nbtn sm primary" onclick="exportMAVLink()">�x� MAVLink</button>
           <button class="nbtn sm" onclick="exportJSON()">{ } JSON</button>
         </div>
         <div id="export-stats" class="export-stat-row" style="display:none">
@@ -1021,7 +1021,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     </div>
 
 
-      <!-- [TIER-MAX] Advanced Scenario Panel â€” Motor Failure & GPS Denied -->
+      <!-- [TIER-MAX] Advanced Scenario Panel � Motor Failure & GPS Denied -->
       <div class="card card-sm" id="advanced-scenarios-card">
         <div class="card-title"><span class="ct-dot"></span>ADVANCED SCENARIOS</div>
         <div style="display:flex;flex-direction:column;gap:8px;">
@@ -1032,10 +1032,10 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
             <button class="nbtn sm danger" onclick="activateMotorFailure(2)" title="Fail Back-Left motor">M3</button>
             <button class="nbtn sm danger" onclick="activateMotorFailure(3)" title="Fail Back-Right motor">M4</button>
           </div>
-          <button class="nbtn sm" onclick="clearMotorFailures()" style="width:100%">âœ… Restore All Motors</button>
+          <button class="nbtn sm" onclick="clearMotorFailures()" style="width:100%">�S& Restore All Motors</button>
           <div style="margin-top:4px;display:flex;gap:7px;">
-            <button class="nbtn sm accent" onclick="activateGPSDenied(true)" style="flex:1">ðŸš« GPS Denied</button>
-            <button class="nbtn sm" onclick="activateGPSDenied(false)" style="flex:1">âœ… GPS Restore</button>
+            <button class="nbtn sm accent" onclick="activateGPSDenied(true)" style="flex:1">�xa� GPS Denied</button>
+            <button class="nbtn sm" onclick="activateGPSDenied(false)" style="flex:1">�S& GPS Restore</button>
           </div>
         </div>
       </div>
@@ -1047,23 +1047,23 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
       <div style="margin-top:8px"></div>
       <canvas class="graph-canvas" id="gyroGraph" width="220" height="60"></canvas>
       <div style="margin-top:8px">
-        <button class="nbtn sm" onclick="DEBUG.toggle();document.getElementById('debug-section').style.display=DEBUG.enabled?'block':'none'">ðŸ”¬ Toggle Debug</button>
+        <button class="nbtn sm" onclick="DEBUG.toggle();document.getElementById('debug-section').style.display=DEBUG.enabled?'block':'none'">�x� Toggle Debug</button>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Bar â€” Virtual Joysticks + Stick Visualizer -->
+  <!-- Bottom Bar � Virtual Joysticks + Stick Visualizer -->
   <div id="bottombar">
 
     <!-- Left Virtual Joystick (Throttle / Yaw) -->
     <div class="card card-sm" style="padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px">
-      <div class="card-title" style="margin-bottom:0;align-self:flex-start"><span class="ct-dot" style="background:var(--s)"></span>LEFT STICK Â· THR/YAW</div>
+      <div class="card-title" style="margin-bottom:0;align-self:flex-start"><span class="ct-dot" style="background:var(--s)"></span>LEFT STICK · THR/YAW</div>
       <div style="display:flex;align-items:center;gap:10px;width:100%">
         <div id="vj-left" class="vj-pad" data-stick="left" style="touch-action:none">
           <div class="vj-center"></div>
           <div class="vj-knob" id="vj-left-knob"></div>
           <div class="vj-label-t">THR+</div>
-          <div class="vj-label-b">THRâˆ’</div>
+          <div class="vj-label-b">THR��</div>
           <div class="vj-label-l">YAW L</div>
           <div class="vj-label-r">YAW R</div>
         </div>
@@ -1085,7 +1085,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <!-- Centre: Stick Visualizer + Mission -->
     <div class="card card-sm" style="padding:10px">
-      <div class="card-title" style="margin-bottom:6px"><span class="ct-dot"></span>STICK MONITOR Â· NAVIGATION</div>
+      <div class="card-title" style="margin-bottom:6px"><span class="ct-dot"></span>STICK MONITOR · NAVIGATION</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
         <!-- Left stick XY canvas -->
         <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
@@ -1108,11 +1108,11 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <!-- Right Virtual Joystick (Pitch / Roll) -->
     <div class="card card-sm" style="padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px">
-      <div class="card-title" style="margin-bottom:0;align-self:flex-start"><span class="ct-dot"></span>RIGHT STICK Â· PITCH/ROLL</div>
+      <div class="card-title" style="margin-bottom:0;align-self:flex-start"><span class="ct-dot"></span>RIGHT STICK · PITCH/ROLL</div>
       <div style="display:flex;align-items:center;gap:10px;width:100%">
         <div style="flex:1;display:flex;flex-direction:column;gap:5px">
-          <div style="font-size:9px;color:var(--txt4);font-weight:600;text-transform:uppercase;letter-spacing:.8px">â†‘â†“ = Pitch</div>
-          <div style="font-size:9px;color:var(--txt4);font-weight:600;text-transform:uppercase;letter-spacing:.8px">â†â†’ = Roll</div>
+          <div style="font-size:9px;color:var(--txt4);font-weight:600;text-transform:uppercase;letter-spacing:.8px">� �  = Pitch</div>
+          <div style="font-size:9px;color:var(--txt4);font-weight:600;text-transform:uppercase;letter-spacing:.8px">� ��  = Roll</div>
           <div style="font-size:9px;color:var(--txt4);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Live Input</div>
           <div class="stick-meter-wrap">
             <div class="stick-meter-lbl">PCH</div>
@@ -1126,8 +1126,8 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
         <div id="vj-right" class="vj-pad" data-stick="right" style="touch-action:none">
           <div class="vj-center"></div>
           <div class="vj-knob" id="vj-right-knob"></div>
-          <div class="vj-label-t">PITCHâ†‘</div>
-          <div class="vj-label-b">PITCHâ†“</div>
+          <div class="vj-label-t">PITCH� </div>
+          <div class="vj-label-b">PITCH� </div>
           <div class="vj-label-l">ROLL L</div>
           <div class="vj-label-r">ROLL R</div>
         </div>
@@ -1142,33 +1142,33 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <div id="custom-profile-modal">
   <div class="modal-card">
     <div class="modal-header">
-      <div class="modal-title">ðŸš Create Custom Drone Profile</div>
-      <div class="modal-close" onclick="closeCustomProfileModal()">âœ•</div>
+      <div class="modal-title">�xa� Create Custom Drone Profile</div>
+      <div class="modal-close" onclick="closeCustomProfileModal()">�S"</div>
     </div>
 
     <div class="modal-section">
-      <div class="modal-section-label">ðŸ“‹ Identity</div>
+      <div class="modal-section-label">�x9 Identity</div>
       <div class="modal-grid">
         <div class="modal-field full"><label>Profile Name</label><input type="text" id="cp-name" placeholder='e.g. My 7" Long-Range'></div>
       </div>
     </div>
 
     <div class="modal-section">
-      <div class="modal-section-label">âš™ Physical Frame</div>
+      <div class="modal-section-label">�a" Physical Frame</div>
       <div class="modal-grid">
         <div class="modal-field"><label>Mass (kg)</label><input type="number" id="cp-mass" value="1.24" step="0.01" min="0.05" max="20"></div>
         <div class="modal-field"><label>Arm Length (m)</label><input type="number" id="cp-arm" value="0.19" step="0.005" min="0.05" max="1"></div>
         <div class="modal-field"><label>Body Scale</label><input type="number" id="cp-bodyscale" value="1.0" step="0.05" min="0.3" max="3"></div>
         <div class="modal-field"><label>Rotor Radius (m)</label><input type="number" id="cp-rotor" value="0.09" step="0.005" min="0.03" max="0.5"></div>
-        <div class="modal-field"><label>Max Tilt Angle (Â°)</label><input type="number" id="cp-tilt" value="55" step="1" min="10" max="85"></div>
-        <div class="modal-field"><label>Drag Area (mÂ²)</label><input type="number" id="cp-drag" value="0.022" step="0.001" min="0.001" max="0.5"></div>
+        <div class="modal-field"><label>Max Tilt Angle (°)</label><input type="number" id="cp-tilt" value="55" step="1" min="10" max="85"></div>
+        <div class="modal-field"><label>Drag Area (m²)</label><input type="number" id="cp-drag" value="0.022" step="0.001" min="0.001" max="0.5"></div>
         <div class="modal-field"><label>Drag Coefficient</label><input type="number" id="cp-cd" value="1.12" step="0.01" min="0.3" max="3"></div>
         <div class="modal-field"><label>Angular Drag</label><input type="number" id="cp-angdrag" value="0.0028" step="0.0001" min="0.0001" max="0.05"></div>
       </div>
     </div>
 
     <div class="modal-section">
-      <div class="modal-section-label">âš¡ Motors &amp; Propulsion</div>
+      <div class="modal-section-label">�a� Motors &amp; Propulsion</div>
       <div class="modal-grid">
         <div class="modal-field"><label>Max RPM</label><input type="number" id="cp-maxrpm" value="14000" step="500" min="2000" max="50000"></div>
         <div class="modal-field"><label>Idle RPM</label><input type="number" id="cp-idlerpm" value="500" step="50" min="100" max="3000"></div>
@@ -1182,7 +1182,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     </div>
 
     <div class="modal-section">
-      <div class="modal-section-label">ðŸ”‹ Battery</div>
+      <div class="modal-section-label">�x9 Battery</div>
       <div class="modal-grid">
         <div class="modal-field"><label>Cell Count (S)</label><input type="number" id="cp-cells" value="4" step="1" min="1" max="12"></div>
         <div class="modal-field"><label>Capacity (Ah)</label><input type="number" id="cp-batt" value="1.65" step="0.1" min="0.1" max="30"></div>
@@ -1190,7 +1190,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
     </div>
 
     <div class="modal-section">
-      <div class="modal-section-label">ðŸŽ¨ Visual</div>
+      <div class="modal-section-label">�x}� Visual</div>
       <div class="modal-grid">
         <div class="modal-field"><label>Drone Color</label><input type="color" id="cp-color" value="#1e88e5" style="width:100%;height:34px;border-radius:8px;border:none;cursor:pointer;background:var(--surf);box-shadow:var(--sh-sm);padding:3px"></div>
         <div class="modal-field"><label>Max Pitch Rate</label><input type="number" id="cp-ratepitch" value="10" step="0.5" min="1" max="30"></div>
@@ -1201,8 +1201,8 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
     <div style="display:flex;gap:8px;margin-top:4px">
       <button class="nbtn" onclick="closeCustomProfileModal()" style="flex:1">Cancel</button>
-      <button class="nbtn accent" onclick="loadPresetIntoModal('racing5')" style="flex:1">ðŸ“‹ Load Preset</button>
-      <button class="nbtn primary" onclick="createCustomProfile()" style="flex:1">âœ… Create</button>
+      <button class="nbtn accent" onclick="loadPresetIntoModal('racing5')" style="flex:1">�x9 Load Preset</button>
+      <button class="nbtn primary" onclick="createCustomProfile()" style="flex:1">�S& Create</button>
     </div>
     <!-- Preset quick-load -->
     <div style="margin-top:12px">
@@ -1218,9 +1218,9 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 <!-- Sim Engine (external) -->
 <script src="sim-engine.js?v=<?= time() ?>"></script>
 
-<!-- â•â• TIER: MAX â•â• -->
+<!-- �"��"� TIER: MAX �"��"� -->
 <script>
-/* PLAN FLAGS â€” MAX tier
+/* PLAN FLAGS � MAX tier
    Duration: Unlimited | All profiles + Custom
    All 6 envs | Full HUD | Full PID | Full export
    Gamepad | Waypoints | GLTF upload | Priority support */
@@ -1250,9 +1250,9 @@ const PLAN = {
 <script>
 'use strict';
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   THREE.JS ENVIRONMENT â€” v3.0  BSL CINEMATIC VISUAL UPGRADE
-   Visual Enhancements Only â€” All physics/controls untouched
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
+   THREE.JS ENVIRONMENT � v3.0  BSL CINEMATIC VISUAL UPGRADE
+   Visual Enhancements Only � All physics/controls untouched
    - BSL-inspired sky shader with atmospheric scattering & god rays
    - Volumetric fog layers with animated drift
    - Bloom post-processing via additive compositing
@@ -1262,7 +1262,7 @@ const PLAN = {
    - Soft PCF shadows, ACES tonemapping, high-quality rendering
    - Animated grass blades via vertex shader
    - Cinematic depth haze and horizon glow
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 
 const THREE_ENV = (() => {
   let renderer, scene, camera, clock;
@@ -1283,7 +1283,7 @@ const THREE_ENV = (() => {
   let _waypointMarkers = [];
   let _propSpinRate = [0,0,0,0];
 
-  // â”€â”€ Chunk streaming constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Chunk streaming constants ����������������������������������������������������������������������������
   const CHUNK_SIZE   = 80;
   const CHUNK_SEGS   = 24;   // full-detail segment count (reduced for perf)
   const CHUNK_SEGS_L = 8;    // low-detail segment count (outer ring)
@@ -1291,11 +1291,11 @@ const THREE_ENV = (() => {
   const LOD_DIST     = 6;    // low-detail ring radius (chunks)
   let _chunks        = new Map(); // key -> chunkData
   let _lastChunkX    = null, _lastChunkZ = null;
-  // Async load queue â€” process at most N chunks per render frame
+  // Async load queue � process at most N chunks per render frame
   let _loadQueue     = [];
   const MAX_LOADS_PER_FRAME = 1; // 1 full chunk/frame = smooth 60fps
 
-  // â”€â”€ Floating-origin render space â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Floating-origin render space ����������������������������������������������������������������������
   // Physics is in world space (true JS doubles, unlimited range).
   // Three.js scene is rebased so the camera is always near origin,
   // preventing float32 precision loss at large coordinates.
@@ -1350,16 +1350,16 @@ const THREE_ENV = (() => {
   let _bloomRT, _bloomScene, _bloomCamera, _bloomQuad;
   let _mainRT;
 
-  // â”€â”€ Multi-biome terrain heightmap â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Multi-biome terrain heightmap ����������������������������������������������������������������
   // Uses domain-warped FBM + continent mask to blend biomes seamlessly.
   // The same (x,z) always returns the same height for a given seed.
-  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ����������������������������������������������������������������������������������������������������������������������������������
   // Terrain architecture (for procedural/infinite envs):
-  //   continent(x,z) âˆˆ [0,1]  â€” low-frequency "where is high ground?"
-  //   erosion(x,z)   âˆˆ [0,1]  â€” medium-freq ridges vs smooth slopes
-  //   detail(x,z)    âˆˆ [-1,1] â€” high-freq surface texture
+  //   continent(x,z) ��� [0,1]  � low-frequency "where is high ground?"
+  //   erosion(x,z)   ��� [0,1]  � medium-freq ridges vs smooth slopes
+  //   detail(x,z)    ��� [-1,1] � high-freq surface texture
   //   h = continent^2 * 80 + erosion * 20 + detail * 3
-  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ����������������������������������������������������������������������������������������������������������������������������������
 
   // Cache last result per env to avoid recalculating same point twice
   let _thCache = null;
@@ -1376,7 +1376,7 @@ const THREE_ENV = (() => {
     const continent = Math.max(0, Noise.fbm(cx + wx*0.004, 0, cz + wz*0.004, 4, 0.55, 2.0) * 0.5 + 0.5);
 
     if (env === 'field' || env === 'windy') {
-      // Gentle rolling hills â€” continent kept low, heavy smoothing
+      // Gentle rolling hills � continent kept low, heavy smoothing
       const base = Math.pow(continent * 0.55, 1.6) * 14;
       const mid  = Noise.fbm(x*0.022, 1.2, z*0.022, 4, 0.48, 2.0) * 6;
       const fine = Noise.n(x*0.14, 2.3, z*0.14) * 1.2;
@@ -1394,7 +1394,7 @@ const THREE_ENV = (() => {
 
     if (env === 'mountains') {
       // Sharp, varied peaks using ridged noise + domain warp
-      // Ridged noise: 1 - |fbm|  â†’ inverted valleys, sharp ridges
+      // Ridged noise: 1 - |fbm|  �  inverted valleys, sharp ridges
       const raw   = Noise.warpedFbm(x, z, 5, 0.55, 2.1, 40);
       const ridge = Math.pow(Math.max(0, continent * 0.8 + raw * 0.5 + 0.1), 1.5);
       const peak  = ridge * 80;
@@ -1411,7 +1411,7 @@ const THREE_ENV = (() => {
     return Math.max(0, height + detail);
   }
 
-  // â”€â”€ Safe spawn finder â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Safe spawn finder ������������������������������������������������������������������������������������������
   // Drone was spawning inside mountains because (0,0) can be mid-peak.
   // Now searches a wider grid to find the lowest-elevation flat spot.
   function getSafeSpawnPoint(envName) {
@@ -1443,7 +1443,7 @@ const THREE_ENV = (() => {
     return { x: bestX, z: bestZ, y: bestH };
   }
 
-  // â”€â”€ Terrain colour helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Terrain colour helper ������������������������������������������������������������������������������������
   // Layered colour with micro-variation and slope-based darkening
   function terrainColor(x, z, h, envName) {
     const env = envName || _envName;
@@ -1460,7 +1460,7 @@ const THREE_ENV = (() => {
       g = 0.66 + nv*0.7;
       b = 0.30 + nv*0.3;
     } else if (env === 'mountains') {
-      // Smooth height-based blend: grass â†’ rock â†’ scree â†’ snow
+      // Smooth height-based blend: grass �  rock �  scree �  snow
       if (h < 3) {
         r=0.28+nv; g=0.52+nv*0.6; b=0.16+nv*0.3;
       } else if (h < 12) {
@@ -1473,13 +1473,13 @@ const THREE_ENV = (() => {
         const t=(h-42)/23;
         r=0.68+t*0.18+nv*0.3; g=0.44+t*0.22+nv*0.2; b=0.42+t*0.26+nv*0.2;
       } else {
-        // Snow â€” slight blue tint in shadows
+        // Snow � slight blue tint in shadows
         r=0.90+nv*0.1; g=0.93+nv*0.08; b=0.98+nv*0.05;
       }
     } else if (env === 'urban') {
       r=0.34+nv; g=0.34+nv; b=0.34+nv;
     } else {
-      // Field / procedural â€” moisture-driven greens
+      // Field / procedural � moisture-driven greens
       const moisture = Noise.fbm(x*0.018, 3.3, z*0.018, 2, 0.5, 2) * 0.5 + 0.5;
       r = 0.16 + nv - moisture*0.04 + h*0.006;
       g = 0.46 + nv*0.5 + moisture*0.10 + h*0.012;
@@ -1489,7 +1489,7 @@ const THREE_ENV = (() => {
   }
 
 
-  // â”€â”€ Per-chunk seeded RNG â€” identical output every time a chunk is rebuilt â”€â”€
+  // ���� Per-chunk seeded RNG � identical output every time a chunk is rebuilt ����
   // Uses a simple xorshift32 so each (cx,cz) produces the same vegetation layout.
   function _chunkRng(cx, cz) {
     let s = (cx * 73856093) ^ (cz * 19349663);
@@ -1501,7 +1501,7 @@ const THREE_ENV = (() => {
     };
   }
 
-  // â”€â”€ Single chunk terrain mesh â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Single chunk terrain mesh ����������������������������������������������������������������������������
   function buildChunkMesh(cx, cz, envName, segs) {
     const s = segs || CHUNK_SEGS;
     const geo = new THREE.PlaneGeometry(CHUNK_SIZE, CHUNK_SIZE, s, s);
@@ -1527,14 +1527,14 @@ const THREE_ENV = (() => {
     geo.computeVertexNormals();
     const mat = new THREE.MeshLambertMaterial({ vertexColors: true });
     const mesh = new THREE.Mesh(geo, mat);
-    // Position set by _buildChunk in render space â€” leave at zero here
+    // Position set by _buildChunk in render space � leave at zero here
     mesh.position.set(0, 0, 0);
     mesh.receiveShadow = true;
     mesh.name = 'terrain_chunk';
     return mesh;
   }
 
-  // â”€â”€ Grass blade system (per-chunk) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Grass blade system (per-chunk) ����������������������������������������������������������������
   let _grassTime = 0;
   function buildGrassBlades(cx, cz, envName){
     const rng = _chunkRng(cx, cz);
@@ -1573,7 +1573,7 @@ const THREE_ENV = (() => {
     return mesh;
   }
 
-  // â”€â”€ Flowers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Flowers ����������������������������������������������������������������������������������������������������������������
   function buildFlowers(cx, cz, envName){
     const rng = _chunkRng(cx + 1000, cz + 2000);
     const env = envName || _envName;
@@ -1614,7 +1614,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // â”€â”€ Rocks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Rocks ��������������������������������������������������������������������������������������������������������������������
   function buildRocks(cx, cz, envName){
     const rng = _chunkRng(cx + 5000, cz + 6000);
     const env = envName || _envName;
@@ -1650,7 +1650,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // â”€â”€ Trees (lush, varied) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Trees (lush, varied) ������������������������������������������������������������������������������������
   function buildVegetation(cx, cz, envName){
     const rng = _chunkRng(cx + 3000, cz + 4000);
     const env = envName || _envName;
@@ -1733,7 +1733,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // â”€â”€ Buildings (urban) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Buildings (urban) ������������������������������������������������������������������������������������������
   // Seeded layout so buildings don't shift on every rebuild
   function _seededRand(seed) {
     let s = seed;
@@ -1768,7 +1768,7 @@ const THREE_ENV = (() => {
       PHYS.colliders.push({
         min:{x:x-w/2, y:0,    z:z-d/2},
         max:{x:x+w/2, y:hh,   z:z+d/2},
-        normal:{x:0,  y:1,    z:0},      // used by AABB hit â€” will be overridden per-face in _checkColliders
+        normal:{x:0,  y:1,    z:0},      // used by AABB hit � will be overridden per-face in _checkColliders
         _w:w, _d:d, _h:hh, _cx:x, _cz:z // extra data for face-normal resolution
       });
     }
@@ -1791,7 +1791,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // â”€â”€ Sky Dome (BSL-inspired: Mie scatter, god rays, horizon glow) â”€â”€
+  // ���� Sky Dome (BSL-inspired: Mie scatter, god rays, horizon glow) ����
   function buildSky(night) {
     const geo = new THREE.SphereGeometry(490, 48, 24);
     geo.scale(-1, 1, -1);
@@ -1898,7 +1898,7 @@ const THREE_ENV = (() => {
     return new THREE.Mesh(geo, mat);
   }
 
-  // â”€â”€ Volumetric Clouds â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Volumetric Clouds ������������������������������������������������������������������������������������������
   function buildClouds() {
     const group = new THREE.Group();
     // Two cloud layers
@@ -1931,7 +1931,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // â”€â”€ Rain (streak-based for better visibility) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Rain (streak-based for better visibility) ����������������������������������������������
   function buildRain() {
     const count = 4000;
     // Each raindrop is a short line segment (2 vertices)
@@ -1954,14 +1954,14 @@ const THREE_ENV = (() => {
     return { pts: lines, geo, pos, isLines: true };
   }
 
-  // â”€â”€ Drone mesh (premium PBR materials) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Drone mesh (premium PBR materials) ������������������������������������������������������
   function buildDrone(color) {
     const g = new THREE.Group();
     const L  = PHYS.armLen || 0.19;
     const rr = PHYS.droneVisual.rotorRadius || 0.09;
     const bs = PHYS.droneVisual.bodyScale   || 1.0;
 
-    // Materials â€” MeshStandardMaterial for PBR sheen
+    // Materials � MeshStandardMaterial for PBR sheen
     const bodyMat  = new THREE.MeshStandardMaterial({ color: color||0x1e88e5, roughness:0.25, metalness:0.55, envMapIntensity:1.2 });
     const darkMat  = new THREE.MeshStandardMaterial({ color: 0x111111, roughness:0.35, metalness:0.6 });
     const carbonMat= new THREE.MeshStandardMaterial({ color: 0x1a1a1e, roughness:0.5, metalness:0.3 });
@@ -1970,8 +1970,8 @@ const THREE_ENV = (() => {
     const propMat  = new THREE.MeshStandardMaterial({ color: 0x0d0d10, roughness:0.55, metalness:0.1, transparent:true, opacity:0.88 });
     const glassMat = new THREE.MeshStandardMaterial({ color: 0x223366, roughness:0.05, metalness:0.0, transparent:true, opacity:0.65 });
 
-    // â”€â”€ Central body â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    // Top plate â€” slightly tapered
+    // ���� Central body ��������������������������������������������������������������������������������������������������
+    // Top plate � slightly tapered
     const topPlate = new THREE.Mesh(new THREE.BoxGeometry(0.19*bs, 0.020*bs, 0.19*bs), bodyMat);
     topPlate.position.y = 0.020*bs;
     topPlate.castShadow = true;
@@ -2035,7 +2035,7 @@ const THREE_ENV = (() => {
       g.add(ant);
     });
 
-    // â”€â”€ 4 Arms + Motors + Props â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ���� 4 Arms + Motors + Props ������������������������������������������������������������������������������
     const motorPositions = [
       [ L*0.707,  0,  L*0.707],
       [-L*0.707,  0,  L*0.707],
@@ -2050,7 +2050,7 @@ const THREE_ENV = (() => {
     motorPositions.forEach((mpos, i) => {
       const [mx,,mz] = mpos;
 
-      // Arm â€” tapered trapezoid profile
+      // Arm � tapered trapezoid profile
       const armLength = Math.hypot(mx, mz);
       const armAngle  = Math.atan2(mx, mz);
       const arm = new THREE.Mesh(new THREE.BoxGeometry(0.022*bs, 0.013*bs, armLength), armMat.clone());
@@ -2082,7 +2082,7 @@ const THREE_ENV = (() => {
       cap.position.set(mx, -0.001*bs, mz);
       g.add(cap);
 
-      // â”€â”€ Propeller group â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ���� Propeller group ����������������������������������������������������������������������������������������
       const propGroup = new THREE.Group();
       propGroup.position.set(mx, 0.026*bs, mz);
 
@@ -2120,7 +2120,7 @@ const THREE_ENV = (() => {
       g.add(propGroup);
       propMeshes.push(propGroup);
 
-      // â”€â”€ Landing gear â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ���� Landing gear ��������������������������������������������������������������������������������������������
       const legMat = new THREE.MeshStandardMaterial({ color: 0x2a2a2e, roughness:0.7, metalness:0.3 });
       // Main strut
       const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.005*bs, 0.005*bs, 0.065*bs, 6), legMat);
@@ -2137,7 +2137,7 @@ const THREE_ENV = (() => {
       brace.rotation.x = mz > 0 ? 0.4 : -0.4;
       g.add(brace);
 
-      // â”€â”€ LED / running light â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // ���� LED / running light ������������������������������������������������������������������������������
       const led = new THREE.Mesh(new THREE.SphereGeometry(0.009*bs, 8, 6), new THREE.MeshBasicMaterial({ color: ledColors[i] }));
       led.position.set(mx, 0.028*bs, mz);
       g.add(led);
@@ -2153,7 +2153,7 @@ const THREE_ENV = (() => {
     return g;
   }
 
-  // â”€â”€ Flight path trail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Flight path trail ������������������������������������������������������������������������������������������
   function initTrail() {
     const mat = new THREE.LineBasicMaterial({ color: 0xEE9346, transparent: true, opacity: 0.60, linewidth: 1 });
     const geo = new THREE.BufferGeometry();
@@ -2169,7 +2169,7 @@ const THREE_ENV = (() => {
     const p = PHYS.pos;
     const last = _trailPoints[_trailPoints.length-1] || {x:p.x+999,y:p.y,z:p.z+999};
     if (V3.len(V3.sub(p, last)) > 0.3) {
-      // Store world coords (doubles) in trail array â€” convert to render space at draw time
+      // Store world coords (doubles) in trail array � convert to render space at draw time
       _trailPoints.push({ x:p.x, y:p.y, z:p.z });
       if (_trailPoints.length > 600) _trailPoints.shift();
     }
@@ -2187,7 +2187,7 @@ const THREE_ENV = (() => {
     _trailLine.position.set(0, 0, 0);
   }
 
-  // â”€â”€ Waypoint markers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Waypoint markers ������������������������������������������������������������������������������������������
   function addWaypointMarker(pos) {
     const mat = new THREE.MeshStandardMaterial({ color: 0x10256D, transparent:true, opacity:0.88, roughness:0.5 });
     const mesh = new THREE.Mesh(new THREE.ConeGeometry(0.4, 1.2, 6), mat);
@@ -2200,7 +2200,7 @@ const THREE_ENV = (() => {
     _waypointMarkers = [];
   }
 
-  // â”€â”€ Sun update â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Sun update ������������������������������������������������������������������������������������������������������
   function _updateSunFromTime(t) {
     const angle = (t - 0.25) * Math.PI * 2;
     const sunX  = Math.cos(angle) * 0.65;
@@ -2247,10 +2247,10 @@ const THREE_ENV = (() => {
     }
   }
 
-  // â”€â”€ Chunk management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Chunk management ������������������������������������������������������������������������������������������
   function _chunkKey(cx, cz) { return `${cx},${cz}`; }
 
-  // â”€â”€ Dispose all Three objects in a chunk â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Dispose all Three objects in a chunk ����������������������������������������������������
   function _disposeChunkData(cd) {
     ['mesh','veg','flowers','grass','rocks'].forEach(k => {
       if (!cd[k]) return;
@@ -2265,7 +2265,7 @@ const THREE_ENV = (() => {
     });
   }
 
-  // â”€â”€ Build one chunk and place it in render space â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Build one chunk and place it in render space ������������������������������������
   function _buildChunk(cx, cz, lod) {
     const key = _chunkKey(cx, cz);
     const existing = _chunks.get(key);
@@ -2311,7 +2311,7 @@ const THREE_ENV = (() => {
     _chunks.delete(key);
   }
 
-  // â”€â”€ Time-budgeted chunk drain â€” max 6ms per frame â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Time-budgeted chunk drain � max 6ms per frame ��������������������������������
   const CHUNK_BUDGET_MS = 6;
   function _drainLoadQueue() {
     const t0 = performance.now();
@@ -2326,7 +2326,7 @@ const THREE_ENV = (() => {
     }
   }
 
-  // â”€â”€ Called every render frame: determine which chunks are needed â”€â”€
+  // ���� Called every render frame: determine which chunks are needed ����
   function _updateChunks() {
     const p = PHYS.pos;
     const cx = Math.round(p.x / CHUNK_SIZE);
@@ -2370,13 +2370,13 @@ const THREE_ENV = (() => {
     // Prepend to queue (priority: new closest chunks jump the line)
     _loadQueue = [...toLoad, ..._loadQueue.filter(e => needed.has(_chunkKey(e.cx, e.cz)))];
 
-    // Unload chunks that are no longer in range â€” unload synchronously (GPU memory freed immediately)
+    // Unload chunks that are no longer in range � unload synchronously (GPU memory freed immediately)
     for (const [key] of _chunks) {
       if (!needed.has(key)) _unloadChunk(key);
     }
   }
 
-  // â”€â”€ Volumetric fog planes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Volumetric fog planes ����������������������������������������������������������������������������������
   function buildFogLayers() {
     const group = new THREE.Group();
     const fogMat = new THREE.MeshBasicMaterial({
@@ -2392,7 +2392,7 @@ const THREE_ENV = (() => {
     return group;
   }
 
-  // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Init ��������������������������������������������������������������������������������������������������������������������
   function init(canvasId) {
     _canvas = document.getElementById(canvasId);
     const vp = _canvas.parentElement;
@@ -2418,7 +2418,7 @@ const THREE_ENV = (() => {
 
     clock = new THREE.Clock();
 
-    // â”€â”€ Lighting setup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ���� Lighting setup ����������������������������������������������������������������������������������������������
     hemiLight = new THREE.HemisphereLight(0xb0d0f8, 0x4a7040, 0.58);
     scene.add(hemiLight);
 
@@ -2435,7 +2435,7 @@ const THREE_ENV = (() => {
     shadowLight.shadow.normalBias = 0.02;
     scene.add(shadowLight);
 
-    // Fill light â€” soft blue from opposite direction
+    // Fill light � soft blue from opposite direction
     const fillLight = new THREE.DirectionalLight(0x6688bb, 0.28);
     fillLight.position.set(-60, 80, -40);
     scene.add(fillLight);
@@ -2482,7 +2482,7 @@ const THREE_ENV = (() => {
     if(mc) { mc.width=mc.parentElement.clientWidth; mc.height=mc.parentElement.clientHeight; }
   }
 
-  // â”€â”€ Rebuild scene (env presets) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Rebuild scene (env presets) ��������������������������������������������������������������������
   function rebuild(envName) {
     _envName = envName;
     PHYS.colliders = [];
@@ -2547,7 +2547,7 @@ const THREE_ENV = (() => {
       const gridHelper = new THREE.GridHelper(60, 12, 0x888880, 0x666660);
       gridHelper.position.y = 0.01;
       scene.add(gridHelper);
-      // Walls â€” fixed normals per side
+      // Walls � fixed normals per side
       const wallDefs = [
         { pos:[  0, 10,  30], size:[60,20,0.5], norm:{x:0,y:0,z:-1} }, // N wall
         { pos:[  0, 10, -30], size:[60,20,0.5], norm:{x:0,y:0,z: 1} }, // S wall
@@ -2575,7 +2575,7 @@ const THREE_ENV = (() => {
         shelf.position.set(sx, 2.5, sz);
         shelf.castShadow = true; shelf.receiveShadow = true;
         scene.add(shelf);
-        // Don't add shelf colliders â€” too small to affect flight meaningfully
+        // Don't add shelf colliders � too small to affect flight meaningfully
       });
       // Overhead lighting rigs
       const rigMat = new THREE.MeshStandardMaterial({ color:0x444444, roughness:0.6, metalness:0.5 });
@@ -2622,7 +2622,7 @@ const THREE_ENV = (() => {
     // Initial chunk load (around spawn)
     if (envName !== 'urban' && envName !== 'indoor') {
       _lastChunkX = null; _lastChunkZ = null;
-      // Build centre 3Ã—3 immediately so there's terrain underfoot on first frame
+      // Build centre 3�3 immediately so there's terrain underfoot on first frame
       const spawnCX = Math.round(PHYS.pos.x / CHUNK_SIZE);
       const spawnCZ = Math.round(PHYS.pos.z / CHUNK_SIZE);
       for (let dx = -1; dx <= 1; dx++) {
@@ -2635,7 +2635,7 @@ const THREE_ENV = (() => {
     }
   }
 
-  // â”€â”€ Camera update (render-space) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Camera update (render-space) ������������������������������������������������������������������
   function _camMinY(wx, wz, margin) {
     return terrainHeight(wx, wz, _envName) + (margin || 0.8);
   }
@@ -2679,7 +2679,7 @@ const THREE_ENV = (() => {
     }
   }
 
-  // â”€â”€ Software bloom (additive overdraw) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Software bloom (additive overdraw) ������������������������������������������������������
   let _bloomCanvas = null, _bloomCtx = null, _bloomEnabled = false;
   function _initBloom() {
     _bloomCanvas = document.createElement('canvas');
@@ -2702,12 +2702,12 @@ const THREE_ENV = (() => {
     ctx.globalCompositeOperation = 'source-over';
     ctx.drawImage(_bloomCanvas, 0, 0);
     ctx.filter = 'none';
-    // Scale back up via CSS â€” the browser handles the upscale blur
+    // Scale back up via CSS � the browser handles the upscale blur
     _bloomCanvas.style.width  = W + 'px';
     _bloomCanvas.style.height = H + 'px';
   }
 
-  // â”€â”€ Render tick â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ���� Render tick ����������������������������������������������������������������������������������������������������
   let _frame = 0, _fps = 60, _fpsSmooth = 60, _lastFPSTime = 0;
   let _simTime = 0;
   const _camTargetV3 = new THREE.Vector3();
@@ -2732,7 +2732,7 @@ const THREE_ENV = (() => {
       skyMesh.material.uniforms.time.value = _simTime;
     }
 
-    // â”€â”€ Floating-origin rebase check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ���� Floating-origin rebase check ��������������������������������������������������������������������
     // Rebase when the drone strays too far from render origin
     const p = PHYS.pos;
     const distFromOrigin = Math.max(Math.abs(p.x - _renderOriginX), Math.abs(p.z - _renderOriginZ));
@@ -2752,7 +2752,7 @@ const THREE_ENV = (() => {
       if (propMeshes[i]) propMeshes[i].rotation.y = propAngle[i];
     }
 
-    // Propeller disc blur effect â€” scale up disc opacity with RPM
+    // Propeller disc blur effect � scale up disc opacity with RPM
     propMeshes.forEach((pm, i) => {
       const pct = Math.min(1, (PHYS.motorRPM[i]||0) / (PHYS.maxRPM||14000));
       pm.children.forEach(child => {
@@ -2764,11 +2764,11 @@ const THREE_ENV = (() => {
       });
     });
 
-    // Cloud drift with wind â€” wrap within a max radius to prevent glitching
+    // Cloud drift with wind � wrap within a max radius to prevent glitching
     if (cloudGroup) {
       cloudGroup.position.x += PHYS.windVec.x * dt * 0.12;
       cloudGroup.position.z += PHYS.windVec.z * dt * 0.12;
-      // Gentle bob â€” additive delta so it doesn't snap
+      // Gentle bob � additive delta so it doesn't snap
       const prevBob = cloudGroup.userData._lastBob || 0;
       const newBob = Math.sin(_simTime * 0.06) * 1.2;
       cloudGroup.position.y += newBob - prevBob;
@@ -2842,7 +2842,7 @@ const THREE_ENV = (() => {
   // Init bloom canvas after a short delay (DOM ready)
   setTimeout(_initBloom, 500);
 
-  // Public API â€” exactly matching original
+  // Public API � exactly matching original
   return {
     init,
     _resize,
@@ -2876,16 +2876,16 @@ const THREE_ENV = (() => {
 })();
 
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    MINIMAP
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 const MINIMAP = {
   _trail: [],
   draw() {
     const canvas = document.getElementById('miniCanvas');
     if (!canvas) return;
     // Always sync pixel dimensions to CSS-rendered size (fixes blank minimap)
-    const rect = canvas.getBoundingClientRect();
+    const rect = {width: canvas.clientWidth, height: canvas.clientHeight};
     const newW = Math.round(rect.width)  || canvas.parentElement?.clientWidth  || 220;
     const newH = Math.round(rect.height) || canvas.parentElement?.clientHeight || 120;
     if (canvas.width !== newW || canvas.height !== newH) {
@@ -2930,14 +2930,14 @@ const MINIMAP = {
       });
     }
 
-    // Home marker â€” [FIX-6.23] clamp to minimap bounds if drone flew far
+    // Home marker � [FIX-6.23] clamp to minimap bounds if drone flew far
     if (PHYS.homePos) {
       const rawHx = cx + (PHYS.homePos.x-px)*scale;
       const rawHy = cy + (PHYS.homePos.z-pz)*scale;
       const margin = 8;
       const hx = Math.max(margin, Math.min(W-margin, rawHx));
       const hy = Math.max(margin, Math.min(H-margin, rawHy));
-      ctx.fillStyle = '#4CAF50'; ctx.font = '12px Arial'; ctx.fillText('âŒ‚', hx-6, hy+4);
+      ctx.fillStyle = '#4CAF50'; ctx.font = '12px Arial'; ctx.fillText('�R', hx-6, hy+4);
       // Draw arrow pointing toward true home if it's off-screen
       if(rawHx !== hx || rawHy !== hy){
         ctx.strokeStyle='#4CAF50'; ctx.lineWidth=1;
@@ -2957,7 +2957,7 @@ const MINIMAP = {
     ctx.closePath(); ctx.fill();
     ctx.restore();
 
-    // Badge â€” show world position + loaded chunk count
+    // Badge � show world position + loaded chunk count
     const badge = document.getElementById('minimap-badge');
     if (badge) {
       const wx = PHYS.pos.x.toFixed(0), wz = PHYS.pos.z.toFixed(0);
@@ -2972,25 +2972,25 @@ const MINIMAP = {
   },
 };
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    ATTITUDE INDICATOR
    [FIX-6.22] Correct sign convention: positive roll = right bank (CW from pilot POV)
    [FIX-6.22] Horizon drawn using actual roll quaternion, not Euler-only
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 function drawAttitude() {
   const canvas = document.getElementById('attCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const cx = W/2, cy = H/2, r = W/2 - 2;
-  // [FIX-6.22] Use quaternion directly for roll to avoid gimbal lock at Â±90Â° pitch
+  // [FIX-6.22] Use quaternion directly for roll to avoid gimbal lock at ±90° pitch
   // Extract roll from quaternion: avoids Euler singularity
   const q = PHYS.quat;
   const pitch = PHYS.euler.pitch;
   // Roll angle from quat (rotation about Z in body frame)
   const sinr = 2*(q.w*q.z + q.x*q.y);
   const cosr = 1 - 2*(q.y*q.y + q.z*q.z);
-  const roll = Math.atan2(sinr, cosr); // positive = right bank âœ“
+  const roll = Math.atan2(sinr, cosr); // positive = right bank �S
 
   ctx.clearRect(0, 0, W, H);
   ctx.save();
@@ -3018,7 +3018,7 @@ function drawAttitude() {
     const y = -pitchPx - (deg*Math.PI/180) * (H*0.9);
     const ll = Math.abs(deg) === 20 ? r*0.5 : r*0.3;
     ctx.beginPath(); ctx.moveTo(-ll, y); ctx.lineTo(ll, y); ctx.stroke();
-    ctx.fillText(deg+'Â°', ll+3, y+3);
+    ctx.fillText(deg+'°', ll+3, y+3);
   }
   ctx.restore();
 
@@ -3044,9 +3044,9 @@ function drawAttitude() {
   ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    WIND COMPASS
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 function drawWindCompass() {
   const canvas = document.getElementById('windCanvas');
   if (!canvas) return;
@@ -3074,17 +3074,17 @@ function drawWindCompass() {
   }
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    WARNING SYSTEM
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 const WARN = {
   _active: {},
   trigger(type) {
     const msgs = {
-      lowbatt: { txt:'âš¡ Battery Critical', level:'err' },
-      lowalt:  { txt:'âš  Low Altitude', level:'warn' },
-      crash:   { txt:'ðŸ’¥ Crash Detected', level:'err' },
-      wind:    { txt:'ðŸ’¨ High Wind', level:'warn' },
+      lowbatt: { txt:'�a� Battery Critical', level:'err' },
+      lowalt:  { txt:'�a� Low Altitude', level:'warn' },
+      crash:   { txt:'�x� Crash Detected', level:'err' },
+      wind:    { txt:'�x� High Wind', level:'warn' },
     };
     const m = msgs[type]; if (!m) return;
     this._active[type] = m;
@@ -3107,9 +3107,9 @@ const WARN = {
   },
 };
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    UI UTILITIES
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 const UI = {
   _logItems: [],
   toast(msg) {
@@ -3130,9 +3130,9 @@ const UI = {
   },
 };
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    MISSION PLANNER
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 const MISSION = {
   waypoints: [],
   active: false, paused: false, _idx: 0,
@@ -3147,20 +3147,20 @@ const MISSION = {
     if (!this.waypoints.length) return;
     this.active=true; this.paused=false; this._idx=0;
     FC.setMode('gpshold'); State.armed=true; updateArmUI();
-    UI.toast('â–¶ Mission started'); UI.log('Mission start','ok');
+    UI.toast('�� Mission started'); UI.log('Mission start','ok');
   },
   pause() {
     this.paused=!this.paused;
-    UI.toast(this.paused?'â¸ Mission paused':'â–¶ Mission resumed');
+    UI.toast(this.paused?'⏸ Mission paused':'�� Mission resumed');
   },
   clear() {
     this.waypoints=[]; this.active=false; this._idx=0;
     this._updateUI(); THREE_ENV.clearWaypointMarkers();
-    UI.toast('âœ• Mission cleared');
+    UI.toast('�S" Mission cleared');
   },
   update() {
     if (!this.active || this.paused || !this.waypoints.length) return;
-    if (this._idx >= this.waypoints.length) { this.active=false; FC.setMode('althold'); UI.toast('âœ… Mission complete'); return; }
+    if (this._idx >= this.waypoints.length) { this.active=false; FC.setMode('althold'); UI.toast('�S& Mission complete'); return; }
     const wp = this.waypoints[this._idx];
     const dx = wp.x - PHYS.pos.x, dz = wp.z - PHYS.pos.z;
     FC.altTarget = wp.y - PHYS.groundY;
@@ -3178,9 +3178,9 @@ const MISSION = {
   },
 };
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    ENVIRONMENT CONFIG
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 const ENV = {
   _name: 'field',
   set(name) {
@@ -3206,7 +3206,7 @@ const ENV = {
     // Ground height for indoor/warehouse
     PHYS.groundY = 0;
     THREE_ENV.rebuild(name);
-    // Use getSafeSpawnPoint to find lowest terrain valley â€” drone no longer spawns inside mountains
+    // Use getSafeSpawnPoint to find lowest terrain valley � drone no longer spawns inside mountains
     const _spawnPt = THREE_ENV.getSafeSpawnPoint();
     const gY = _spawnPt.y;
     // Set groundY BEFORE reset so PHYS.reset snaps to correct height
@@ -3230,9 +3230,9 @@ const ENV = {
   },
 };
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    SIMULATION LOOP
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 const State = {
   armed: false,
   
@@ -3253,23 +3253,23 @@ const SIM = {
   pause() {
     this._paused = true;
     const btn = document.getElementById('pause-btn');
-    if (btn) { btn.textContent = 'â–¶ Resume'; btn.classList.add('paused'); }
+    if (btn) { btn.textContent = '�� Resume'; btn.classList.add('paused'); }
     const sysStat = document.getElementById('sys-status');
     if (sysStat) sysStat.textContent = 'PAUSED';
     const sysDot = document.getElementById('sys-dot');
     if (sysDot) sysDot.className = 'sdot w';
-    UI.toast('â¸ Simulation paused');
+    UI.toast('⏸ Simulation paused');
   },
   resume() {
     this._paused = false;
     this._last = performance.now(); // reset to avoid dt spike
     const btn = document.getElementById('pause-btn');
-    if (btn) { btn.textContent = 'â¸ Pause'; btn.classList.remove('paused'); }
-    UI.toast('â–¶ Simulation resumed');
+    if (btn) { btn.textContent = '⏸ Pause'; btn.classList.remove('paused'); }
+    UI.toast('�� Simulation resumed');
   },
   setSpeed(s) {
     this._speed = parseFloat(s) || 1.0;
-    UI.toast('â© Speed: ' + this._speed + 'Ã—');
+    UI.toast('⏩ Speed: ' + this._speed + '�');
   },
   _loop() {
     if (!this._running) return;
@@ -3289,7 +3289,7 @@ const SIM = {
     const subDt = dt / substeps;
     INPUT.update(dt);
     const inp = INPUT.get();
-    // Cache terrain height once per frame â€” env-aware (flat envs stay at 0)
+    // Cache terrain height once per frame � env-aware (flat envs stay at 0)
     const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
     if (_envName_sim !== 'indoor' && _envName_sim !== 'urban') {
       PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
@@ -3329,7 +3329,7 @@ const SIM = {
     }
   },
 
-  // â”€â”€ Cached DOM references â€” populated on first _updateUI call â”€â”€
+  // ���� Cached DOM references � populated on first _updateUI call ����
   _dom: null,
   _initDomCache() {
     const ids = [
@@ -3363,7 +3363,7 @@ const SIM = {
     const alt = Math.max(0, p.pos.y - p.groundY);
     const vel = V3.len(p.vel);
 
-    // Telemetry â€” all reads from cached elements
+    // Telemetry � all reads from cached elements
     set('t-alt', alt.toFixed(1));
     set('t-vel', vel.toFixed(1));
     set('t-hdng', (((e.yaw*R2D+360)%360)|0).toString().padStart(3,'0'));
@@ -3422,7 +3422,7 @@ const SIM = {
     const etaSec = getBattEstimatedFlightTime();
     set('t-batt-eta', etaSec < 9999 ? (etaSec/60).toFixed(1) : '--');
 
-    // â”€â”€ GPS_RAW_INT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ���� GPS_RAW_INT ����������������������������������������������������������������������������������������
     const gps = GPS_SIM;
     const fixType = gps.getFixType();
     const satCount = gps.getSatCount();
@@ -3439,7 +3439,7 @@ const SIM = {
       fixBadge.textContent = fixLabels[fixType]||'NO FIX';
       fixBadge.className = 'gps-fix-badge '+(fixClasses[fixType]||'gps-fix-none');
     }
-    // Satellite dots â€” lazy-build once, then update classes only
+    // Satellite dots � lazy-build once, then update classes only
     const satRow = D['gps-sat-row'];
     if (satRow && satRow.children.length !== 16) {
       satRow.innerHTML = Array(16).fill(0).map((_,i)=>`<div class="gps-sat-dot" id="sat-dot-${i}"></div>`).join('');
@@ -3449,7 +3449,7 @@ const SIM = {
       for (let i = 0; i < 16; i++) dots[i].className = 'gps-sat-dot'+(i<satCount?' on':i<satCount+2?' dim':'');
     }
 
-    // â”€â”€ VISION_POSITION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ���� VISION_POSITION ����������������������������������������������������������������������������������������
     const vp = VISION_POS.get();
     set('vslam-x', vp.x);
     set('vslam-y', vp.y);
@@ -3463,7 +3463,7 @@ const SIM = {
     const vslamQ = D['vslam-quality'];
     if (vslamQ) vslamQ.style.width = vp.quality+'%';
 
-    // â”€â”€ OBSTACLE_DISTANCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ���� OBSTACLE_DISTANCE ����������������������������������������������������������������������������������
     const obs = OBSTACLE_DIST.get();
     const obsMax = OBSTACLE_DIST.SENSOR_RANGE;
     const obsIds = ['fwd','right','back','left','up'];
@@ -3476,7 +3476,7 @@ const SIM = {
     }
     _updateObstacleRadar(obs, obsMax);
 
-    // â”€â”€ PID TELEMETRY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ���� PID TELEMETRY ����������������������������������������������������������������������������������
     const pt = PID_TELEM.axes;
     const pidKeys  = ['roll','pitch','yaw','throttle'];
     const pidIds   = ['roll','pitch','yaw','thr'];
@@ -3505,7 +3505,7 @@ const SIM = {
     const chunkEl = document.getElementById('chunk-count');
     if (chunkEl) {
       const info = THREE_ENV.getChunkInfo ? THREE_ENV.getChunkInfo() : null;
-      if (info) chunkEl.textContent = `${info.loaded} chunks Â· ${info.queued} queued`;
+      if (info) chunkEl.textContent = `${info.loaded} chunks · ${info.queued} queued`;
     }
 
     // System status
@@ -3528,12 +3528,12 @@ const SIM = {
   },
 };
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    UI CALLBACKS (called from HTML onclick / oninput)
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 
-/* â”€â”€ Obstacle Radar SVG updater â”€â”€
- * [FIX-6.25] Line length âˆ INVERSE of distance (close=long, far=short)
+/* ���� Obstacle Radar SVG updater ����
+ * [FIX-6.25] Line length �Ɲ INVERSE of distance (close=long, far=short)
  * [FIX-6.25] UP sector shown as separate vertical bar gauge (can't show on plan-view radar)
  */
 function _updateObstacleRadar(obs, maxRange) {
@@ -3541,10 +3541,10 @@ function _updateObstacleRadar(obs, maxRange) {
   if (!svg) return;
   const R = 35;
   const dirs = [
-    { idx:0, angle:-Math.PI/2 },   // FWD â†’ up
-    { idx:1, angle:0 },            // RIGHT â†’ right
-    { idx:2, angle:Math.PI/2 },    // BACK â†’ down
-    { idx:3, angle:Math.PI },      // LEFT â†’ left
+    { idx:0, angle:-Math.PI/2 },   // FWD �  up
+    { idx:1, angle:0 },            // RIGHT �  right
+    { idx:2, angle:Math.PI/2 },    // BACK �  down
+    { idx:3, angle:Math.PI },      // LEFT �  left
   ];
   svg.innerHTML = '';
   dirs.forEach(({ idx, angle }) => {
@@ -3568,7 +3568,7 @@ function _updateObstacleRadar(obs, maxRange) {
     svg.appendChild(circle);
   });
   // [FIX-6.25] UP sector: separate vertical bar gauge (right of radar, already in HTML as obs-up bar)
-  // The obs-up bar in the right-side table already handles this â€” no SVG needed for up/down
+  // The obs-up bar in the right-side table already handles this � no SVG needed for up/down
 }
 
 function updateArmUI() {
@@ -3603,7 +3603,7 @@ function setFlightMode(mode) {
     animateThrottle(0.5, 300);
   }
   UI.toast('Mode: '+mode.toUpperCase());
-  UI.log('Mode â†’ '+mode, 'ok');
+  UI.log('Mode �  '+mode, 'ok');
 }
 
 function setCamera(mode) {
@@ -3633,7 +3633,7 @@ function applyWorldSeed() {
   if (typeof setWorldSeed === 'function') setWorldSeed(seed);
   // Re-run current environment to regenerate terrain with new seed
   ENV.set(typeof ENV !== 'undefined' ? ENV._name : 'field');
-  UI.toast('ðŸŒ World seed: ' + seed);
+  UI.toast('�xR� World seed: ' + seed);
   UI.log('New seed: ' + seed, 'ok');
 }
 
@@ -3649,7 +3649,7 @@ function setDroneProfile(name) {
   updateDroneProfileUI(name);
   THREE_ENV.rebuildDrone(PHYS.droneVisual.color);
   UI.toast('Profile: '+(DRONE_PROFILES[name]?.label||name));
-  UI.log('Profile â†’ '+name, 'ok');
+  UI.log('Profile �  '+name, 'ok');
   // Sync customize panel if open
   const panel = document.getElementById('profile-customize-panel');
   if (panel && panel.classList.contains('open')) populateCustomizeFields(name);
@@ -3672,7 +3672,7 @@ function setWindDir(val) {
   const dirs = ['N','NE','E','SE','S','SW','W','NW'];
   const dIdx = Math.round(dir/45)%8;
   const el = document.getElementById('wdir-val');
-  if (el) el.textContent = dirs[dIdx]+' '+Math.round(dir)+'Â°';
+  if (el) el.textContent = dirs[dIdx]+' '+Math.round(dir)+'°';
 }
 
 function setTurbulence(val) {
@@ -3688,7 +3688,7 @@ function toggleWeather(type, el) {
   track.classList.toggle('on', on);
   if (type === 'rain') THREE_ENV.setRain(on);
   if (type === 'fog')  THREE_ENV.setFog(on);
-  UI.toast((on?'ðŸŒ§ ':'â˜€ ')+(type.charAt(0).toUpperCase()+type.slice(1))+' '+(on?'on':'off'));
+  UI.toast((on?'�xR� ':'�ܬ ')+(type.charAt(0).toUpperCase()+type.slice(1))+' '+(on?'on':'off'));
 }
 
 function toggleDayNight(el) {
@@ -3697,7 +3697,7 @@ function toggleDayNight(el) {
   const night = !track.classList.contains('on');
   track.classList.toggle('on', night);
   THREE_ENV.setNight(night);
-  UI.toast(night?'ðŸŒ™ Night mode':'â˜€ Day mode');
+  UI.toast(night?'�xR" Night mode':'�ܬ Day mode');
 }
 
 function setPID(param, val) {
@@ -3736,7 +3736,7 @@ function toggleArm() {
     FC.resetPIDs();
   }
   updateArmUI();
-  UI.toast(State.armed ? 'âœ… Armed' : 'ðŸ”´ Disarmed');
+  UI.toast(State.armed ? '�S& Armed' : '�x� Disarmed');
   UI.log(State.armed?'Armed':'Disarmed', State.armed?'ok':'warn');
 }
 
@@ -3752,12 +3752,12 @@ function takeoff() {
     setFlightModeUI('althold');
     animateThrottle(0.5, 300);
     updateArmUI();
-    UI.toast('ðŸš Auto-takeoff to 3m');
+    UI.toast('�xa� Auto-takeoff to 3m');
     UI.log('Auto-takeoff','ok');
   } else {
     FC.altTarget = Math.max(FC.altTarget||3, PHYS.pos.y - PHYS.groundY)+3;
     FC.setMode('althold');
-    UI.toast('â†‘ Climbing');
+    UI.toast('�  Climbing');
   }
 }
 
@@ -3794,7 +3794,7 @@ function doHover() {
   setFlightModeUI('althold');
   // Snap throttle to center so PID deadzone activates immediately
   animateThrottle(0.5, 350);
-  UI.toast('â¸ Hovering â€” throttle locked to altitude hold');
+  UI.toast('⏸ Hovering � throttle locked to altitude hold');
 }
 
 function returnHome() {
@@ -3802,7 +3802,7 @@ function returnHome() {
   FC.setMode('rth');
   State.flightMode = 'rth';
   setFlightModeUI('rth');
-  UI.toast('ðŸ  Return To Home');
+  UI.toast('�x�� Return To Home');
   UI.log('RTH initiated','ok');
 }
 
@@ -3813,12 +3813,12 @@ function emergStop() {
   INPUT._thrRaw=0;
   FC.resetPIDs();
   updateArmUI();
-  UI.toast('â›” EMERGENCY STOP');
+  UI.toast('�: EMERGENCY STOP');
   UI.log('Emergency stop!','err');
 }
 
 function resetDrone() {
-  // [FIX] Use getSafeSpawnPoint â€” avoids resetting drone into a mountainside
+  // [FIX] Use getSafeSpawnPoint � avoids resetting drone into a mountainside
   const _spawnPt = THREE_ENV.getSafeSpawnPoint();
   const groundY = _spawnPt.y;
   PHYS.groundY = groundY;
@@ -3832,17 +3832,17 @@ function resetDrone() {
   updateArmUI();
   const co = document.getElementById('crash-overlay');
   if (co) co.classList.remove('show');
-  UI.toast('ðŸ”„ Drone reset');
+  UI.toast('�x Drone reset');
   UI.log('Drone reset','ok');
 }
 function resetSim() { resetDrone(); }
 
-function addWaypoint() { MISSION.add(PHYS.pos); UI.toast('ðŸ“ Waypoint added'); }
+function addWaypoint() { MISSION.add(PHYS.pos); UI.toast('�x� Waypoint added'); }
 function startMission() { MISSION.start(); }
 function pauseMission() { MISSION.pause(); }
 function clearMission()  { MISSION.clear(); }
 
-/* â”€â”€ Sim Pause / Speed â”€â”€ */
+/* ���� Sim Pause / Speed ���� */
 function toggleSimPause() {
   if (SIM._paused) SIM.resume(); else SIM.pause();
 }
@@ -3850,19 +3850,19 @@ function setSimSpeed(v) {
   SIM.setSpeed(v);
 }
 
-/* â”€â”€ Recording / Export â”€â”€ */
+/* ���� Recording / Export ���� */
 let _recording = false;
 function toggleRecording() {
   _recording = !_recording;
   const btn = document.getElementById('rec-btn');
   if (_recording) {
     BLACKBOX.start();
-    if (btn) { btn.textContent = 'â¹ Stop'; btn.classList.add('active-btn'); }
-    UI.toast('âº Recording started');
+    if (btn) { btn.textContent = '⏹ Stop'; btn.classList.add('active-btn'); }
+    UI.toast('⏺ Recording started');
   } else {
     BLACKBOX.stop();
-    if (btn) { btn.textContent = 'âº Record'; btn.classList.remove('active-btn'); }
-    UI.toast('â¹ Recording stopped â€” ' + BLACKBOX.getLog().length + ' frames');
+    if (btn) { btn.textContent = '⏺ Record'; btn.classList.remove('active-btn'); }
+    UI.toast('⏹ Recording stopped � ' + BLACKBOX.getLog().length + ' frames');
     updateExportStats();
   }
 }
@@ -3871,7 +3871,7 @@ function updateRecordingUI() {
   if (!_recording) return;
   const n = BLACKBOX.getLog().length;
   const btn = document.getElementById('rec-btn');
-  if (btn && n % 30 === 0) btn.textContent = 'â¹ ' + n + 'f';
+  if (btn && n % 30 === 0) btn.textContent = '⏹ ' + n + 'f';
 }
 
 function updateExportStats() {
@@ -3888,20 +3888,20 @@ function updateExportStats() {
 
 function exportMAVLink() {
   const log = BLACKBOX.getLog();
-  if (!log.length) { UI.toast('âš  No data â€” start recording first'); return; }
+  if (!log.length) { UI.toast('�a� No data � start recording first'); return; }
   const ok = MAVLINK.downloadTlog();
-  if (ok) UI.toast('ðŸ“¡ MAVLink .tlog exported (' + log.length + ' frames)');
-  else UI.toast('âš  Export failed');
+  if (ok) UI.toast('�x� MAVLink .tlog exported (' + log.length + ' frames)');
+  else UI.toast('�a� Export failed');
 }
 
 function exportJSON() {
   const log = BLACKBOX.getLog();
-  if (!log.length) { UI.toast('âš  No data â€” start recording first'); return; }
+  if (!log.length) { UI.toast('�a� No data � start recording first'); return; }
   const ok = MAVLINK.downloadJSON();
   if (ok) UI.toast('{ } JSON telemetry exported');
 }
 
-/* â”€â”€ Telemetry Graph Legend Toggle â”€â”€ */
+/* ���� Telemetry Graph Legend Toggle ���� */
 function toggleTGraph(ch) {
   TELEM_GRAPH.toggle(ch);
   const el = document.getElementById('tgl-' + ch);
@@ -3914,11 +3914,11 @@ function showSection(sec) {
   if (dbg) dbg.style.display = (sec==='debug') ? 'block' : 'none';
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    DRONE PROFILE CUSTOMIZATION
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 
-/* â”€â”€ Rebuild the profile select dropdown â”€â”€ */
+/* ���� Rebuild the profile select dropdown ���� */
 function rebuildProfileSelect(activeKey) {
   const sel = document.getElementById('drone-profile-select');
   if (!sel) return;
@@ -3932,17 +3932,17 @@ function rebuildProfileSelect(activeKey) {
   }
 }
 
-/* â”€â”€ Toggle inline customize panel â”€â”€ */
+/* ���� Toggle inline customize panel ���� */
 function toggleProfileCustomize() {
   const panel = document.getElementById('profile-customize-panel');
   const btn   = document.getElementById('customize-toggle-btn');
   if (!panel) return;
   const open = panel.classList.toggle('open');
-  if (btn) btn.textContent = open ? 'âœ• Close' : 'âœï¸ Customize';
+  if (btn) btn.textContent = open ? '�S" Close' : '�S�️ Customize';
   if (open) populateCustomizeFields(PHYS.droneProfile);
 }
 
-/* â”€â”€ Fill customize fields from named profile â”€â”€ */
+/* ���� Fill customize fields from named profile ���� */
 function populateCustomizeFields(profileName) {
   const p = DRONE_PROFILES[profileName] || PHYS;
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
@@ -3967,7 +3967,7 @@ function populateCustomizeFields(profileName) {
   }
 }
 
-/* â”€â”€ Live-apply customize fields to running sim â”€â”€ */
+/* ���� Live-apply customize fields to running sim ���� */
 function applyCustomize() {
   const get = id => parseFloat(document.getElementById(id)?.value) || 0;
   const mass    = get('cust-mass')    || PHYS.mass;
@@ -3995,14 +3995,14 @@ function applyCustomize() {
   if (htv) htv.textContent = Math.round(PHYS.hoverThrottle * 100);
 }
 
-/* â”€â”€ Apply color tweak â”€â”€ */
+/* ���� Apply color tweak ���� */
 function applyCustomizeColor(hexStr) {
   const c = parseInt(hexStr.replace('#', ''), 16);
   PHYS.droneVisual = { ...PHYS.droneVisual, color: c };
   if (typeof THREE_ENV !== 'undefined') THREE_ENV.rebuildDrone(c);
 }
 
-/* â”€â”€ Save the customized values as a brand new profile â”€â”€ */
+/* ���� Save the customized values as a brand new profile ���� */
 function saveCustomizeAsProfile() {
   const name = prompt('Enter a name for this custom profile:', 'My Custom Drone');
   if (!name) return;
@@ -4037,13 +4037,13 @@ function saveCustomizeAsProfile() {
   };
   rebuildProfileSelect(key);
   setDroneProfile(key);
-  UI.toast('ðŸ’¾ Profile "' + name + '" saved!');
+  UI.toast('�x� Profile "' + name + '" saved!');
   UI.log('Custom profile saved: ' + name, 'ok');
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    CUSTOM PROFILE MODAL
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 function openCustomProfileModal() {
   const modal = document.getElementById('custom-profile-modal');
   if (modal) modal.classList.add('open');
@@ -4149,29 +4149,29 @@ function createCustomProfile() {
   rebuildProfileSelect(key);
   setDroneProfile(key);
   closeCustomProfileModal();
-  UI.toast('ðŸš Custom profile "' + name + '" created!');
+  UI.toast('�xa� Custom profile "' + name + '" created!');
   UI.log('New custom profile: ' + name, 'ok');
 }
 
-/* â”€â”€ Close modal on backdrop click â”€â”€ */
+/* ���� Close modal on backdrop click ���� */
 document.addEventListener('click', e => {
   const modal = document.getElementById('custom-profile-modal');
   if (modal && e.target === modal) closeCustomProfileModal();
 });
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    STARTUP SEQUENCE
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 const STARTUP_STEPS = [
-  {msg:'Initializing physics engineâ€¦',    pct:8},
-  {msg:'Loading Three.js rendererâ€¦',      pct:20},
-  {msg:'Building terrain & environmentâ€¦', pct:35},
-  {msg:'Compiling flight controllerâ€¦',    pct:50},
-  {msg:'Calibrating PID controllersâ€¦',    pct:62},
-  {msg:'Initializing sensor systemsâ€¦',    pct:74},
-  {msg:'Loading mission plannerâ€¦',        pct:84},
-  {msg:'Warming up motorsâ€¦',              pct:92},
-  {msg:'Systems nominal â€” launchingâ€¦',    pct:100},
+  {msg:'Initializing physics engine⬦',    pct:8},
+  {msg:'Loading Three.js renderer⬦',      pct:20},
+  {msg:'Building terrain & environment⬦', pct:35},
+  {msg:'Compiling flight controller⬦',    pct:50},
+  {msg:'Calibrating PID controllers⬦',    pct:62},
+  {msg:'Initializing sensor systems⬦',    pct:74},
+  {msg:'Loading mission planner⬦',        pct:84},
+  {msg:'Warming up motors⬦',              pct:92},
+  {msg:'Systems nominal � launching⬦',    pct:100},
 ];
 
 function runStartup() {
@@ -4195,12 +4195,12 @@ function runStartup() {
   step();
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    DOM INIT
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    VIRTUAL JOYSTICK + STICK VISUALIZER
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 
 // Virtual joystick interaction
 (function(){
@@ -4329,8 +4329,8 @@ function _drawStickCanvas(canvasId, x, y, label, accentColor) {
 
 function _updateStickViz() {
   const inp = INPUT.get();
-  // Left stick: X=yaw, Y=throttle (0..1 â†’ center at 0.5)
-  const ly = inp.throttle * 2 - 1; // 0..1 â†’ -1..1
+  // Left stick: X=yaw, Y=throttle (0..1 �  center at 0.5)
+  const ly = inp.throttle * 2 - 1; // 0..1 �  -1..1
   _drawStickCanvas('stick-viz-l', inp.yaw, ly, 'LEFT (THR/YAW)', '#EE9346');
   // Right stick: X=roll, Y=pitch
   _drawStickCanvas('stick-viz-r', inp.roll, inp.pitch, 'RIGHT (PITCH/ROLL)', '#10256D');
@@ -4354,11 +4354,11 @@ function _updateStickViz() {
   setM('sm-roll',  inp.roll,  true);
 }
 
-// Position readouts (t-px, t-py, t-pz) â€” update in SIM loop via existing _updateUI
+// Position readouts (t-px, t-py, t-pz) � update in SIM loop via existing _updateUI
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
    DOM INIT
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 window.addEventListener('DOMContentLoaded', () => {
   // Toast element
   if (!document.getElementById('toast')) {
@@ -4449,14 +4449,14 @@ function handleGLTFUpload(input) {
   const file = input.files[0];
   if (!file) return;
   const statusEl = document.getElementById('gltf-upload-status');
-  if (statusEl) statusEl.textContent = `Loading: ${file.name}â€¦`;
+  if (statusEl) statusEl.textContent = `Loading: ${file.name}⬦`;
   // Integration point: pass file URL to THREE_ENV drone mesh loader
   const url = URL.createObjectURL(file);
   if (typeof THREE_ENV !== 'undefined' && typeof THREE_ENV.loadCustomModel === 'function') {
     THREE_ENV.loadCustomModel(url, file.name);
   } else {
-    if (statusEl) statusEl.textContent = `âœ… Model queued: ${file.name} (apply on next flight)`;
-    if (typeof UI !== 'undefined') UI.toast(`ðŸš Custom model accepted: ${file.name}`);
+    if (statusEl) statusEl.textContent = `�S& Model queued: ${file.name} (apply on next flight)`;
+    if (typeof UI !== 'undefined') UI.toast(`�xa� Custom model accepted: ${file.name}`);
   }
 }
 
@@ -4465,7 +4465,7 @@ function activateMotorFailure(motorIndex) {
   if (typeof State === 'undefined') { console.warn('State not ready'); return; }
   if (!State.motorDamage) State.motorDamage = [0,0,0,0];
   State.motorDamage[motorIndex] = 1.0;
-  if (typeof UI !== 'undefined') UI.toast(`âš  Motor M${motorIndex+1} FAILURE activated`);
+  if (typeof UI !== 'undefined') UI.toast(`�a� Motor M${motorIndex+1} FAILURE activated`);
 }
 function clearMotorFailures() {
   if (typeof State !== 'undefined') State.motorDamage = [0,0,0,0];
@@ -4476,7 +4476,7 @@ function clearMotorFailures() {
     PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
   }
 
-  // 2. Clear crash physics â€” resets crashed flag, zeroes vel/angVel,
+  // 2. Clear crash physics � resets crashed flag, zeroes vel/angVel,
   //    levels attitude, snaps to ground, flushes PID integrators.
   if (typeof PHYS !== 'undefined' && typeof PHYS.recoverFromCrash === 'function') {
     PHYS.recoverFromCrash();
@@ -4487,8 +4487,8 @@ function clearMotorFailures() {
   PHYS.saveHome();
   PHYS._gyroBias = {x:0, y:0, z:0};
 
-  // 3. Set throttle to EXACTLY 0.5 immediately â€” NOT via animateThrottle().
-  //    animateThrottle ramps from 0â†’0.5, during which the althold FC sees
+  // 3. Set throttle to EXACTLY 0.5 immediately � NOT via animateThrottle().
+  //    animateThrottle ramps from 0� 0.5, during which the althold FC sees
   //    throttle < 0.5 and hits the manual branch (thrCmd = 0), so motors
   //    never spool up.  Setting 0.5 instantly puts the stick in the deadband
   //    so altPID engages from the very first frame.
@@ -4506,12 +4506,12 @@ function clearMotorFailures() {
   setFlightModeUI('althold');
   updateArmUI();
 
-  // 5. Dismiss the crash overlay â€” it was blocking the viewport and intercepting clicks
+  // 5. Dismiss the crash overlay � it was blocking the viewport and intercepting clicks
   const co = document.getElementById('crash-overlay');
   if (co) co.classList.remove('show');
 
   if (typeof UI !== 'undefined') {
-    UI.toast('âœ… Motors restored â€” taking off');
+    UI.toast('�S& Motors restored � taking off');
     UI.log('Motors restored, auto-takeoff', 'ok');
   }
 }
@@ -4520,18 +4520,18 @@ function clearMotorFailures() {
 function activateGPSDenied(enable) {
   if (typeof State !== 'undefined') {
     State.gpsDenied = enable;
-    if (typeof UI !== 'undefined') UI.toast(enable ? 'ðŸš« GPS DENIED â€” VSLAM mode' : 'âœ… GPS signal restored');
+    if (typeof UI !== 'undefined') UI.toast(enable ? '�xa� GPS DENIED � VSLAM mode' : '�S& GPS signal restored');
   }
 }
 </script>
 
 
 <script>
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   PLAN ENFORCEMENT ENGINE  â€” runs after DOMContentLoaded
+/* �"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"�
+   PLAN ENFORCEMENT ENGINE  � runs after DOMContentLoaded
    Reads PLAN constant above; applies all tier restrictions.
    Flight mechanics in sim-engine.js are NEVER modified.
-â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+�"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"��"� */
 
 function _hideEl(el) { if (el) el.style.display = 'none'; }
 function _lockEl(el, tip) {
@@ -4543,7 +4543,7 @@ function _lockEl(el, tip) {
 
 window.addEventListener('DOMContentLoaded', () => {
 
-  /* â”€ 1. TIER BADGE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 1. TIER BADGE ���������������������������������������������������������������������������������������� */
   // [PLAN-BADGE] Inject tier badge beside SIM tag in topbar
   const simTag = document.querySelector('.brand-tag');
   if (simTag) {
@@ -4555,8 +4555,8 @@ window.addEventListener('DOMContentLoaded', () => {
     simTag.parentNode.insertBefore(badge, simTag.nextSibling);
   }
 
-  /* â”€ 2. SESSION TIMER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-  // [PLAN-SESSION] Enforce time-limited access (BASIS=1h, PRO=24h, MAX=âˆž)
+  /* �� 2. SESSION TIMER ���������������������������������������������������������������������������������� */
+  // [PLAN-SESSION] Enforce time-limited access (BASIS=1h, PRO=24h, MAX=��~)
   if (isFinite(PLAN.sessionMinutes)) {
     const SESSION_MS = PLAN.sessionMinutes * 60000;
     const t0 = Date.now();
@@ -4566,7 +4566,7 @@ window.addEventListener('DOMContentLoaded', () => {
     cdBadge.style.cssText = `display:flex;align-items:center;gap:5px;padding:4px 11px;
       border-radius:20px;background:var(--n);box-shadow:inset 4px 4px 8px #0d1018,inset -4px -4px 8px #232a3a;
       font-size:11px;font-weight:600;font-family:var(--fh);color:var(--txt2);`;
-    cdBadge.innerHTML = `<span style="color:var(--s)">â±</span><span id="ses-left">--:--</span>`;
+    cdBadge.innerHTML = `<span style="color:var(--s)">⏱</span><span id="ses-left">--:--</span>`;
     const tb = document.getElementById('topbar');
     if (tb) { const tsp = tb.querySelector('.tsp'); if (tsp) tb.insertBefore(cdBadge, tsp.nextSibling); }
 
@@ -4578,14 +4578,14 @@ window.addEventListener('DOMContentLoaded', () => {
       ? Math.round(PLAN.sessionMinutes/60) + 'h'
       : PLAN.sessionMinutes + 'min';
     overlay.innerHTML = `
-      <div style="font-family:var(--fh);font-size:32px;font-weight:700;color:var(--p)">â± Session Ended</div>
+      <div style="font-family:var(--fh);font-size:32px;font-weight:700;color:var(--p)">⏱ Session Ended</div>
       <div style="font-size:14px;color:var(--txt2);text-align:center;max-width:380px;line-height:1.7">
         Your <strong>${PLAN.tierLabel}</strong> session (${durationLabel}) has expired.<br>
         Upgrade to <strong style="color:var(--s)">MAX</strong> for unlimited access.
       </div>
       <button onclick="location.reload()" style="background:var(--p);color:#fff;border:none;
         padding:10px 28px;border-radius:20px;font-family:var(--fh);font-size:13px;font-weight:700;cursor:pointer;">
-        ðŸ”„ Start New Session
+        �x Start New Session
       </button>`;
     document.body.appendChild(overlay);
 
@@ -4609,7 +4609,7 @@ window.addEventListener('DOMContentLoaded', () => {
     tick();
   }
 
-  /* â”€ 3. ENVIRONMENT RESTRICTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 3. ENVIRONMENT RESTRICTIONS ������������������������������������������������������������ */
   // [PLAN-ENV] Disable environment buttons not in plan
   const ALL_ENVS = ['field','mountains','urban','indoor','desert','windy'];
   ALL_ENVS.forEach(env => {
@@ -4621,12 +4621,12 @@ window.addEventListener('DOMContentLoaded', () => {
         btn.title = `Upgrade to unlock ${env} environment`;
         // Add lock icon without changing flight mechanics
         const icon = btn.querySelector('.fm-icon');
-        if (icon) icon.textContent = 'ðŸ”’';
+        if (icon) icon.textContent = '�x';
       }
     }
   });
 
-  /* â”€ 4. DRONE PROFILE RESTRICTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 4. DRONE PROFILE RESTRICTIONS �������������������������������������������������������� */
   // [PLAN-DRONE] Restrict profile dropdown to allowed profiles
   setTimeout(() => {
     const sel = document.getElementById('drone-profile-select');
@@ -4651,7 +4651,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }, 600);
 
-  /* â”€ 5. PID TUNING PANEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 5. PID TUNING PANEL ������������������������������������������������������������������������������ */
   // [PLAN-PID] Manage PID panel access: false=hide, 'view'=read-only, 'full'=unrestricted
   let pidCard = null;
   document.querySelectorAll('.card-sm').forEach(c => {
@@ -4671,93 +4671,93 @@ window.addEventListener('DOMContentLoaded', () => {
       });
       const notice = document.createElement('div');
       notice.style.cssText = 'font-size:10px;color:var(--s);font-weight:700;text-align:center;padding:5px 0 2px;letter-spacing:.4px;';
-      notice.textContent = 'ðŸ‘ VIEW ONLY â€” Upgrade to MAX to live-tune';
+      notice.textContent = '�x� VIEW ONLY � Upgrade to MAX to live-tune';
       pidCard.appendChild(notice);
     }
   }
   // PLAN.pidTuning === 'full': no changes (MAX)
 
-  /* â”€ 6. EXPORT / BLACKBOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 6. EXPORT / BLACKBOX ���������������������������������������������������������������������������� */
   // [PLAN-EXPORT] Replace export card content for non-MAX tiers
   if (!PLAN.dataExport) {
     const exportCard = document.getElementById('export-card');
     if (exportCard) {
       exportCard.innerHTML = `
-        <div class="card-title"><span class="ct-dot"></span>FLIGHT LOG Â· BLACKBOX</div>
+        <div class="card-title"><span class="ct-dot"></span>FLIGHT LOG · BLACKBOX</div>
         <div style="text-align:center;padding:16px 8px;color:var(--txt4);">
-          <div style="font-size:18px;margin-bottom:6px">ðŸ”’</div>
+          <div style="font-size:18px;margin-bottom:6px">�x</div>
           <div style="font-size:11px;font-weight:700;color:var(--txt3)">Data Export (JSON / CSV / MAVLog)</div>
           <div style="font-size:10px;margin-top:4px;color:var(--txt4)">Available on MAX plan only</div>
         </div>`;
     }
   }
 
-  /* â”€ 7. MAVLINK BUTTONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 7. MAVLINK BUTTONS �������������������������������������������������������������������������������� */
   // [PLAN-MAVLINK] Handle MAVLink export access
   document.querySelectorAll('button').forEach(btn => {
     if (!btn.textContent.includes('MAVLink')) return;
     if (PLAN.mavlinkLogs === false) {
       _hideEl(btn);
     } else if (PLAN.mavlinkLogs === 'readonly') {
-      btn.textContent = 'ðŸ“¡ MAVLink (Read)';
-      btn.title = 'Read-only on PRO â€” upgrade to MAX to download';
+      btn.textContent = '�x� MAVLink (Read)';
+      btn.title = 'Read-only on PRO � upgrade to MAX to download';
       btn.onclick = (e) => {
         e.preventDefault();
-        if (typeof UI !== 'undefined') UI.toast('ðŸ“¡ MAVLink view-only on PRO â€” upgrade to MAX');
+        if (typeof UI !== 'undefined') UI.toast('�x� MAVLink view-only on PRO � upgrade to MAX');
       };
     }
     // 'download' = MAX, no change
   });
 
-  /* â”€ 8. WAYPOINT MISSION NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 8. WAYPOINT MISSION NAV ���������������������������������������������������������������������� */
   // [PLAN-MISSION] Lock mission planner nav for non-MAX
   if (!PLAN.waypointMissions) {
     const mNav = document.getElementById('nav-mission');
     if (mNav) {
-      mNav.textContent = 'ðŸ”’ Mission';
+      mNav.textContent = '�x Mission';
       mNav.style.pointerEvents = 'none';
       mNav.style.opacity = '0.32';
       mNav.title = 'Waypoint missions available on MAX plan';
     }
   }
 
-  /* â”€ 9. GAMEPAD / JOYSTICK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 9. GAMEPAD / JOYSTICK �������������������������������������������������������������������������� */
   // [PLAN-GAMEPAD] Block gamepad API for non-MAX tiers
   if (!PLAN.joystickGamepad) {
     window.addEventListener('gamepadconnected', e => {
       e.stopImmediatePropagation();
-      if (typeof UI !== 'undefined') UI.toast('ðŸŽ® Gamepad/Joystick requires MAX plan');
+      if (typeof UI !== 'undefined') UI.toast('�x}� Gamepad/Joystick requires MAX plan');
     }, true);
     // Update hint text in controls card
     document.querySelectorAll('.card-sm').forEach(card => {
       Array.from(card.childNodes).forEach(node => {
         if (node.nodeType === 3) return;
         if (node.textContent && node.textContent.includes('Gamepad supported')) {
-          node.textContent = 'ðŸŽ® Gamepad support: MAX plan only ðŸ”’';
+          node.textContent = '�x}� Gamepad support: MAX plan only �x';
           node.style.color = 'var(--txt4)';
         }
       });
     });
     // Target the specific div
     document.querySelectorAll('div').forEach(div => {
-      if (div.textContent && div.textContent.trim() === 'ðŸŽ® Gamepad supported â€” plug in for analog input') {
-        div.textContent = 'ðŸŽ® Gamepad: MAX plan only ðŸ”’';
+      if (div.textContent && div.textContent.trim() === '�x}� Gamepad supported � plug in for analog input') {
+        div.textContent = '�x}� Gamepad: MAX plan only �x';
       }
     });
   }
 
-  /* â”€ 10. NIGHT MODE RESTRICTION (BASIS) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 10. NIGHT MODE RESTRICTION (BASIS) ���������������������������������������������� */
   // [PLAN-NIGHT] Disable night toggle for BASIS tier
   if (!PLAN.nightMode) {
     const nightToggle = document.querySelector('[onclick*="toggleDayNight"]');
     if (nightToggle) {
       _lockEl(nightToggle, 'Night mode requires PRO or MAX plan');
       const lbl = nightToggle.querySelector('.ntoggle-text');
-      if (lbl) lbl.textContent = 'Night ðŸ”’';
+      if (lbl) lbl.textContent = 'Night �x';
     }
   }
 
-  /* â”€ 11. WIND CONTROLS RESTRICTION (BASIS) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 11. WIND CONTROLS RESTRICTION (BASIS) ������������������������������������������ */
   // [PLAN-WIND] Lock wind/weather controls for BASIS tier
   if (!PLAN.windScenario) {
     ['wind-speed','turbulence','wind-dir'].forEach(id => {
@@ -4775,7 +4775,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* â”€ 12. BASIC HUD â€” hide advanced panels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 12. BASIC HUD � hide advanced panels �������������������������������������������� */
   // [PLAN-HUD] For hudLevel='basic': hide advanced telemetry panels
   if (PLAN.hudLevel === 'basic') {
     const HIDE_TITLES = ['GPS_RAW_INT','VISION_POSITION','OBSTACLE_DISTANCE','PID TELEMETRY','LIVE TELEMETRY GRAPH'];
@@ -4792,7 +4792,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* â”€ 13. SUPPORT LABEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 13. SUPPORT LABEL ���������������������������������������������������������������������������������� */
   // [PLAN-SUPPORT] Inject support info into controls card
   document.querySelectorAll('.card-sm').forEach(card => {
     const title = card.querySelector('.card-title');
@@ -4800,14 +4800,14 @@ window.addEventListener('DOMContentLoaded', () => {
     const sEl = document.createElement('div');
     sEl.style.cssText = 'font-size:10px;color:var(--txt4);margin-top:8px;padding-top:8px;border-top:1px solid var(--n3);';
     if (PLAN.support === 'priority') {
-      sEl.innerHTML = 'âœ… <strong style="color:var(--s)">Priority email support</strong> included with your MAX plan';
+      sEl.innerHTML = '�S& <strong style="color:var(--s)">Priority email support</strong> included with your MAX plan';
     } else {
-      sEl.innerHTML = 'ðŸ’¬ Support: <a href="#" style="color:var(--p)">Community Forum</a>';
+      sEl.innerHTML = '�x� Support: <a href="#" style="color:var(--p)">Community Forum</a>';
     }
     card.appendChild(sEl);
   });
 
-  /* â”€ 14. SESSION LIMITS & CLOUD SAVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /* �� 14. SESSION LIMITS & CLOUD SAVE ������������������������������������������������������ */
   let simTimeRemaining = -1;
   let simPlanName = 'FREE';
   let flightDurationSeconds = 0;
@@ -4861,7 +4861,7 @@ window.addEventListener('DOMContentLoaded', () => {
     
     const btn = document.getElementById('exit-sim-btn');
     if (btn) {
-      btn.innerHTML = 'â³ Exiting...';
+      btn.innerHTML = '⏳ Exiting...';
       btn.disabled = true;
     }
     
@@ -4930,14 +4930,14 @@ window.addEventListener('DOMContentLoaded', () => {
   window.triggerCloudSave = function() {
     if (simPlanName === 'FREE' || simPlanName === 'BASIC') {
        if (typeof UI !== 'undefined' && UI.toast) {
-         UI.toast('â˜ï¸ Cloud Save requires PRO tier. Please upgrade.');
+         UI.toast('�܁️ Cloud Save requires PRO tier. Please upgrade.');
        } else {
-         alert('â˜ï¸ Cloud Save is a premium feature. Please upgrade to the PRO tier to save telemetry to Cloudflare.');
+         alert('�܁️ Cloud Save is a premium feature. Please upgrade to the PRO tier to save telemetry to Cloudflare.');
        }
        return;
     }
     const btn = document.getElementById('cloud-save-btn');
-    if (btn) btn.innerHTML = 'â³ Saving...';
+    if (btn) btn.innerHTML = '⏳ Saving...';
     
     fetch('../api/get_r2_upload_url.php', { method: 'POST' })
       .then(r => r.json())
@@ -4957,8 +4957,8 @@ window.addEventListener('DOMContentLoaded', () => {
                   cloudTelemetryUrl = data.publicUrl;
                   window.cloudTelemetryUrls = window.cloudTelemetryUrls || [];
                   window.cloudTelemetryUrls.push({ time: new Date().toLocaleTimeString(), url: data.publicUrl });
-                  if (typeof UI !== 'undefined' && UI.toast) UI.toast('âœ… Telemetry saved to Cloudflare!');
-                  else alert('âœ… Telemetry saved to Cloudflare!');
+                  if (typeof UI !== 'undefined' && UI.toast) UI.toast('�S& Telemetry saved to Cloudflare!');
+                  else alert('�S& Telemetry saved to Cloudflare!');
                   updateSavedTelemBtn();
                } else {
                  res.text().then(errText => {
@@ -4970,14 +4970,14 @@ window.addEventListener('DOMContentLoaded', () => {
               console.error('Upload network error:', err);
               alert('Network/CORS error uploading to R2. Please check CORS settings on your bucket.');
            }).finally(() => {
-              if (btn) btn.innerHTML = 'â˜ï¸ Cloud Save';
+              if (btn) btn.innerHTML = '�܁️ Cloud Save';
            });
         } else {
-           if (btn) btn.innerHTML = 'â˜ï¸ Cloud Save';
+           if (btn) btn.innerHTML = '�܁️ Cloud Save';
            alert('Failed to get Cloudflare URL: ' + (data.message || data.error));
         }
       }).catch(err => {
-         if (btn) btn.innerHTML = 'â˜ï¸ Cloud Save';
+         if (btn) btn.innerHTML = '�܁️ Cloud Save';
          alert('Error fetching pre-signed URL: ' + err.message);
       });
   };
@@ -4989,7 +4989,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <!-- Time Limit Modal -->
 <div id="sim-time-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(5px);align-items:center;justify-content:center;">
   <div class="card" style="width:360px;text-align:center;padding:32px;">
-    <div style="font-size:32px;margin-bottom:12px;">â³</div>
+    <div style="font-size:32px;margin-bottom:12px;">⏳</div>
     <h2 style="font-family:var(--fh);font-size:20px;color:var(--txt);margin-bottom:8px;">Time Limit Reached</h2>
     <p style="font-size:13px;color:var(--txt2);margin-bottom:24px;line-height:1.5;">Your available simulation time has ended. Please add balance to your wallet or upgrade your plan to continue flying.</p>
     <div class="nbtn-row" style="justify-content:center;gap:12px;">
@@ -5004,7 +5004,7 @@ window.addEventListener('DOMContentLoaded', () => {
   <div class="card" style="width:400px;max-height:80vh;display:flex;flex-direction:column;padding:24px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <h2 style="font-family:var(--fh);font-size:18px;color:var(--txt);">Saved Telemetry</h2>
-      <button class="nbtn sm" onclick="document.getElementById('saved-telem-modal').style.display='none'">âœ•</button>
+      <button class="nbtn sm" onclick="document.getElementById('saved-telem-modal').style.display='none'">�S"</button>
     </div>
     <div id="saved-telem-list" style="display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding-right:4px;">
     </div>
@@ -5030,7 +5030,7 @@ function updateSavedTelemBtn() {
    const btn = document.getElementById('saved-telem-btn');
    if (btn && window.cloudTelemetryUrls && window.cloudTelemetryUrls.length > 0) {
       btn.style.display = 'inline-block';
-      btn.innerHTML = `ðŸ“¥ Saved (${window.cloudTelemetryUrls.length})`;
+      btn.innerHTML = `�x� Saved (${window.cloudTelemetryUrls.length})`;
    }
 }
 </script>
