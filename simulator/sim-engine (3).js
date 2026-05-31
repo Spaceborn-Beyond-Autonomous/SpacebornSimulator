@@ -1,31 +1,31 @@
 /**
- * SPACEBORN Simulation Core v2.1 � Fully Audited & Fixed
+ * SPACEBORN Simulation Core v2.1 — Fully Audited & Fixed
  *
  * Body frame (Y-up, nose +Z): X=right, Y=up/thrust, Z=forward
- * Motors [0..3] = FR(CW), FL(CCW), BL(CW), BR(CCW) � Quad-X, 45° arms
+ * Motors [0..3] = FR(CW), FL(CCW), BL(CW), BR(CCW) — Quad-X, 45° arms
  *
- * v2.1 Fixes (per Section 1�7 audit):
+ * v2.1 Fixes (per Section 1–7 audit):
  * --- SECTION 1: RIGID BODY PHYSICS ---
  * [FIX-1.1]  Quaternion re-normalised every substep (was only on overflow)
  * [FIX-1.2]  Soft-clamp applied BEFORE Euler integration (was after)
  * [FIX-1.3]  NaN/Inf recovery on all state fields incl. motorRPM
- * [FIX-1.4]  Ground effect: Cheeseman�Bennett 1955 eq.4 (was simplified)
- * [FIX-1.5]  Drag uses v_rel = vel �� windVec �� dryden before squaring
+ * [FIX-1.4]  Ground effect: Cheeseman–Bennett 1955 eq.4 (was simplified)
+ * [FIX-1.5]  Drag uses v_rel = vel − windVec − dryden before squaring
  * [FIX-1.6]  ISA ρ applied to thrust kT AND drag simultaneously
  * [FIX-1.7]  Collision: restitution e=0.15, Coulomb friction μ=0.4
  * [FIX-1.8]  Crash threshold 8 m/s (was 4.5)
- * [FIX-1.9]  Motor RPM: internal in rad/s; thrust T=kT·�0², Q=kQ·�0²
+ * [FIX-1.9]  Motor RPM: internal in rad/s; thrust T=kT·ω², Q=kQ·ω²
  * [FIX-1.10] Battery OCV LiPo polynomial: 4.2V at 100% SoC, 3.3V at 0%
  * --- SECTION 2: FLIGHT CONTROLLER ---
  * [FIX-2.1]  Inner rate PID now runs at physics substep rate (moved into _substep)
- * [FIX-2.2]  D-term LP filter: α = 1 �� exp(��2Ϭ·fc·dt) (was correct, verified)
+ * [FIX-2.2]  D-term LP filter: α = 1 − exp(−2π·fc·dt) (was correct, verified)
  * [FIX-2.3]  Motor mix signs verified for Quad-X Y-up body frame
  * [FIX-2.4]  PID anti-windup: conditional integration (only accumulates when not saturated)
  * [FIX-2.5]  Position error rotated into body frame before posNPID/posEPID
  * --- SECTION 3: SENSORS ---
- * [FIX-3.1]  Gyro noise ϒ = 0.003 rad/s/��aHz · ��a(1/dt) (physically correct)
- * [FIX-3.2]  Gyro bias: random walk N(0, ϒ_bias·��adt) per step
- * [FIX-3.3]  Accel = R_BW·(a_world �� g_world) + noise (specific force)
+ * [FIX-3.1]  Gyro noise σ = 0.003 rad/s/√Hz · √(1/dt) (physically correct)
+ * [FIX-3.2]  Gyro bias: random walk N(0, σ_bias·√dt) per step
+ * [FIX-3.3]  Accel = R_BW·(a_world − g_world) + noise (specific force)
  * [FIX-3.4]  Baro Kalman: Q_baro=0.005, R_baro=0.08 (was inverted)
  * [FIX-3.5]  GPS lat/lon: HOME_LAT in radians for Math.cos (was degrees)
  * --- SECTION 5: DATA ---
@@ -34,17 +34,17 @@
  * [FIX-5.3]  HEARTBEAT baseMode bits correct per MAVLink spec
  * --- SECTION 6: BUG FIXES ---
  * [FIX-6.1]  FC.update() restructured: outer loop per-frame, inner per-substep
- * [FIX-6.2]  Input deadband: apply �  rescale �  expo (no discontinuity)
+ * [FIX-6.2]  Input deadband: apply → rescale → expo (no discontinuity)
  * [FIX-6.3]  DRYDEN vertical component uses h as scale length (not Lu)
  * [FIX-6.4]  Euler toEuler verified for Y-up, nose+Z convention
  */
 'use strict';
 
-/* ������ Shared module-level constants (computed once at load) ������ */
-const TWO_PI_OVER_60 = (2 * Math.PI) / 60;           // RPM �  rad/s
-const _ISA_EXP = 9.80665 / (0.0065 * 287.058);       // ISA density exponent �0� 5.2558
+/* ─── Shared module-level constants (computed once at load) ─── */
+const TWO_PI_OVER_60 = (2 * Math.PI) / 60;           // RPM → rad/s
+const _ISA_EXP = 9.80665 / (0.0065 * 287.058);       // ISA density exponent ≈ 5.2558
 
-/* ������ Vector3 Math ������ */
+/* ─── Vector3 Math ─── */
 const V3 = {
   add:   (a, b) => ({ x: a.x+b.x, y: a.y+b.y, z: a.z+b.z }),
   sub:   (a, b) => ({ x: a.x-b.x, y: a.y-b.y, z: a.z-b.z }),
@@ -59,33 +59,33 @@ const V3 = {
   lerp:  (a,b,t)=> ({ x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t, z:a.z+(b.z-a.z)*t }),
 };
 
-/* ������ Quaternion Math ������ */
+/* ─── Quaternion Math ─── */
 const Q = {
   id:   () => ({ w:1, x:0, y:0, z:0 }),
   // [FIX-1.1] norm called every substep not just on overflow
   norm: (q) => { const l=Math.hypot(q.w,q.x,q.y,q.z)||1; return {w:q.w/l,x:q.x/l,y:q.y/l,z:q.z/l}; },
   conj: (q) => ({ w:q.w, x:-q.x, y:-q.y, z:-q.z }),
-  // Hamilton product � verified sign convention
+  // Hamilton product — verified sign convention
   mul:  (a,b) => ({
     w: a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z,
     x: a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
     y: a.w*b.y - a.x*b.z + a.y*b.w + a.z*b.x,
     z: a.w*b.z + a.x*b.y - a.y*b.x + a.z*b.w,
   }),
-  /** Rotate vector v by quaternion q (body� world): v' = q�`[0,v]�`q* */
+  /** Rotate vector v by quaternion q (body→world): v' = q⊗[0,v]⊗q* */
   rotVec: (q, v) => {
-    // Rodrigues formula: v' = v + 2w(q�v) + 2(q�(q�v))
+    // Rodrigues formula: v' = v + 2w(q×v) + 2(q×(q×v))
     const u  = { x:q.x, y:q.y, z:q.z };
     const uv = V3.cross(u, v);
     const uuv= V3.cross(u, uv);
     return { x:v.x+2*(q.w*uv.x+uuv.x), y:v.y+2*(q.w*uv.y+uuv.y), z:v.z+2*(q.w*uv.z+uuv.z) };
   },
-  /** Rotate vector v by conjugate of q (world� body) */
+  /** Rotate vector v by conjugate of q (world→body) */
   invRotVec: (q, v) => Q.rotVec(Q.conj(q), v),
   /**
-   * Quaternion integration: q�! = ½·q�`�0_quat  (Hamilton 1843)
-   * �0_quat = [0, �0x, �0y, �0z] in body frame
-   * Normalises every call � [FIX-1.1]
+   * Quaternion integration: q̇ = ½·q⊗ω_quat  (Hamilton 1843)
+   * ω_quat = [0, ωx, ωy, ωz] in body frame
+   * Normalises every call — [FIX-1.1]
    */
   integrate: (q, omega, dt) => {
     const wx=omega.x*dt*0.5, wy=omega.y*dt*0.5, wz=omega.z*dt*0.5;
@@ -97,9 +97,9 @@ const Q = {
     return {w:nw/l, x:nx/l, y:ny/l, z:nz/l};
   },
   /**
-   * Extract Euler angles from quaternion � Y-up body frame, nose +Z
+   * Extract Euler angles from quaternion — Y-up body frame, nose +Z
    * [FIX-6.4] Verified convention: pitch=rot-about-X, yaw=rot-about-Y, roll=rot-about-Z
-   * Using ZYX intrinsic (yaw� pitch� roll) decomposition
+   * Using ZYX intrinsic (yaw→pitch→roll) decomposition
    */
   toEuler: (q, out) => {
     // Roll (rotation about Z-axis in body frame)
@@ -118,7 +118,7 @@ const Q = {
   },
 };
 
-/* ������ Perlin Noise ������ */
+/* ─── Perlin Noise ─── */
 const Noise = {
   _p: [],
   _init() {
@@ -163,7 +163,7 @@ const DRYDEN = {
     const h = Math.max(0.5, altAGL);
     // MIL-HDBK-1797 Table 3: horizontal scale length Lu
     const Lu = h / Math.pow(0.177 + 0.000823*h, 1.2); // Chalk & Squire eq.12
-    // [FIX-6.3] Vertical scale length = h (not Lu) � MIL-HDBK-1797 §3.7.2.1
+    // [FIX-6.3] Vertical scale length = h (not Lu) — MIL-HDBK-1797 §3.7.2.1
     const Lw = h;
     const sigma = this.intensity * 6.5;
     const Vu = 8 + this.intensity * 12;
@@ -177,10 +177,10 @@ const DRYDEN = {
     this._u += (-au*this._u + sigma*Math.sqrt(2*au)*wu) * dt;
     this._v += (-au*this._v + sigma*0.85*Math.sqrt(2*au)*wv) * dt;
     // [FIX-6.3] Second-order filter for w (Chalk & Squire eqs 13-14)
-    // d²w/dt² + 2·aw·dw/dt + aw²·w = ϒ·��a3·aw²·n(t)
+    // d²w/dt² + 2·aw·dw/dt + aw²·w = σ·√3·aw²·n(t)
     this._dw += (-2*aw*this._dw - aw*aw*this._w + sigma*Math.sqrt(3)*aw*aw*ww) * dt;
     this._w  += this._dw * dt;
-    // Clamp to 3.5ϒ
+    // Clamp to 3.5σ
     const mx = sigma * 3.5;
     this._u = Math.max(-mx, Math.min(mx, this._u));
     this._v = Math.max(-mx, Math.min(mx, this._v));
@@ -191,7 +191,7 @@ const DRYDEN = {
 };
 
 /**
- * PID Controller � derivative-on-measurement, LP-filtered D-term
+ * PID Controller — derivative-on-measurement, LP-filtered D-term
  * [FIX-2.4] Conditional integration anti-windup: iErr only accumulates when output is NOT saturated
  */
 class PID {
@@ -214,7 +214,7 @@ class PID {
     if(integrateOk){
       this.iErr = Math.max(-this.iLimit, Math.min(this.iLimit, this.iErr + err*dt));
     }
-    // Derivative on measurement (not error) � avoids derivative kick on setpoint changes
+    // Derivative on measurement (not error) — avoids derivative kick on setpoint changes
     const dMeas = (measured - this.prevMeas) / dt;
     // Cache alpha: recompute only when dt changes (saves exp() on every substep call)
     if(dt !== this._lastDt){ this._alpha = 1 - Math.exp(-2*Math.PI*this.dCutoffHz*dt); this._lastDt = dt; }
@@ -225,9 +225,9 @@ class PID {
   }
 }
 
-/* ������ Kalman Filter 1D ������ */
+/* ─── Kalman Filter 1D ─── */
 class Kalman1D {
-  // [FIX-3.4] Q and R were inverted in original � Q=process noise, R=measurement noise
+  // [FIX-3.4] Q and R were inverted in original — Q=process noise, R=measurement noise
   // Correct: Q_baro=0.005 (process), R_baro=0.08 (measurement)
   constructor(Q=0.005, R=0.08){this.Q=Q; this.R=R; this.x=0; this.P=1; this._init=false;}
   update(z){
@@ -240,7 +240,7 @@ class Kalman1D {
   }
 }
 
-/* ������ Drone Profiles ������ */
+/* ─── Drone Profiles ─── */
 const DRONE_PROFILES = {
   racing5: {
     label:'5\" Racing Quad', mass:1.24,
@@ -288,7 +288,7 @@ const DRONE_PROFILES = {
   },
 };
 
-/* ������ Physics Engine ������ */
+/* ─── Physics Engine ─── */
 const PHYS = {
   GRAVITY: 9.80665,
   mass:1.24, Ixx:0.006, Iyy:0.011, Izz:0.006,
@@ -339,7 +339,7 @@ const PHYS = {
 
   _lastAirDensAlt: NaN, _cachedAirDens: 1.225,
 
-  // Terrain height cache to avoid re-evaluating Perlin every substep � [FIX-Bug-26d]
+  // Terrain height cache to avoid re-evaluating Perlin every substep — [FIX-Bug-26d]
   _lastTerrainPos:{x:NaN,z:NaN}, _lastTerrainH:0,
 
   applyProfile(name){
@@ -365,9 +365,9 @@ const PHYS = {
   },
 
   _recomputeHover(){
-    // Hover RPM: 4·kT·�0² = m·g  �   �0 = ��a(mg/(4kT))  �   RPM = �0·60/(2Ϭ)
+    // Hover RPM: 4·kT·ω² = m·g  →  ω = √(mg/(4kT))  →  RPM = ω·60/(2π)
     const omegaH = Math.sqrt((this.mass*this.GRAVITY)/(4*this.kT));
-    this.hoverRPM = omegaH * 60 / (2*Math.PI);  // [FIX-1.9] consistent RPM� rad/s
+    this.hoverRPM = omegaH * 60 / (2*Math.PI);  // [FIX-1.9] consistent RPM↔rad/s
     this.hoverThrottle = Math.max(0.02, Math.min(0.92, this.hoverRPM/this.maxRPM));
   },
 
@@ -420,8 +420,8 @@ const PHYS = {
   },
 
   /**
-   * [FIX-1.9] Motor thrust � internally uses rad/s throughout
-   * T = kT·�0²  where �0 is in rad/s
+   * [FIX-1.9] Motor thrust — internally uses rad/s throughout
+   * T = kT·ω²  where ω is in rad/s
    * RPM is only used for UI display; physics uses rad/s
    */
   _motorThrust(rpmVal){
@@ -432,8 +432,8 @@ const PHYS = {
   },
 
   /**
-   * [FIX-1.9] Reaction torque � uses rad/s internally
-   * Q_react = kQ·�0²  where �0 in rad/s
+   * [FIX-1.9] Reaction torque — uses rad/s internally
+   * Q_react = kQ·ω²  where ω in rad/s
    */
   _motorTorque(rpmVal){
     const omega = rpmVal * TWO_PI_OVER_60;
@@ -460,8 +460,8 @@ const PHYS = {
     const internalR = 0.025 * this.cells;
     const rawVF = Math.max(0.5, Math.min(1, this.battVoltage/fullV));
 
-    // ���� Motor dynamics: first-order lag with asymmetric � ����������������������������������
-    // Cache exp() results � same dt every substep so no need to recompute
+    // ── Motor dynamics: first-order lag with asymmetric τ ─────────────────
+    // Cache exp() results — same dt every substep so no need to recompute
     if(dt !== this._lastEscDt){
       this._cachedEscA = 1 - Math.exp(-dt/(this.escDelay+0.001));
       this._cachedRpmA_up = 1 - Math.exp(-dt/this.motorTau);
@@ -482,10 +482,10 @@ const PHYS = {
       this.motorRPM[i] = Math.max(idleFloor, Math.min(this.maxRPM, this.motorRPM[i]));
     }
 
-    // ���� Thrust and torque computation ��������������������������������������������������������������������������
+    // ── Thrust and torque computation ─────────────────────────────────────
     // [FIX-1.6] Air density for ISA altitude correction
     const rho = this._airDensity(this.pos.y);
-    // Density ratio for kT correction: T �Ɲ ρ (Leishman 2006 §2.3)
+    // Density ratio for kT correction: T ∝ ρ (Leishman 2006 §2.3)
     const rhoRatio = rho / 1.225;
 
     const T = [
@@ -497,18 +497,18 @@ const PHYS = {
     const totalThrust = T[0]+T[1]+T[2]+T[3];
     const L = this.armLen;
 
-    // ���� Quad-X torques in body frame ����������������������������������������������������������������������������
+    // ── Quad-X torques in body frame ──────────────────────────────────────
     // Body frame: X=right, Y=up, Z=forward (nose)
     // Motor positions: FR(+X,+Z), FL(-X,+Z), BL(-X,-Z), BR(+X,-Z)
     // Pitch torque (about X-axis): positive = nose up
-    // tauPitch = L·( T_BL + T_BR �� T_FR �� T_FL )
+    // tauPitch = L·( T_BL + T_BR − T_FR − T_FL )
     const tauPitch = L * (T[2]+T[3] - T[0]-T[1]);
     // Roll torque (about Z-axis): positive = right bank
-    // tauRoll = L·( T_FR + T_BR �� T_FL �� T_BL )
+    // tauRoll = L·( T_FR + T_BR − T_FL − T_BL )
     const tauRoll  = L * (T[0]+T[3] - T[1]-T[2]);
-    // [FIX-1.9] Yaw torque � uses reaction torque (kQ·�0²) with direction sign
+    // [FIX-1.9] Yaw torque — uses reaction torque (kQ·ω²) with direction sign
     // motorDir: FR=+1(CW), FL=-1(CCW), BL=+1(CW), BR=-1(CCW)
-    // CW rotation (looking from above, Y-up) �  negative yaw in right-hand convention
+    // CW rotation (looking from above, Y-up) → negative yaw in right-hand convention
     const tauYaw = -(
       this._motorTorque(this.motorRPM[0]) * this.motorDir[0] +
       this._motorTorque(this.motorRPM[1]) * this.motorDir[1] +
@@ -519,15 +519,15 @@ const PHYS = {
     // Gyroscopic precession from net propeller angular momentum
     const omegaNet = this.motorDir.reduce((s,d,i)=>s+d*this.motorRPM[i]*TWO_PI_OVER_60,0);
     const Hgyro = this.propInertia * omegaNet; // angular momentum of spinning props
-    // Gyroscopic torques: � = Ω � H  (cross product of body rate with prop ang. momentum)
+    // Gyroscopic torques: τ = Ω × H  (cross product of body rate with prop ang. momentum)
     const tauGyroPitch = -this.angVel.z * Hgyro;  // pitch gyro coupling
     const tauGyroRoll  =  this.angVel.x * Hgyro;  // roll gyro coupling
 
-    // ���� Euler rigid body equation ����������������������������������������������������������������������������������
-    // d�0/dt = I⁻¹·(�_ext �� �0�(I·�0))  (Goldstein 1980, §5.5)
+    // ── Euler rigid body equation ─────────────────────────────────────────
+    // dω/dt = I⁻¹·(τ_ext − ω×(I·ω))  (Goldstein 1980, §5.5)
     const {Ixx,Iyy,Izz} = this;
     const wx=this.angVel.x, wy=this.angVel.y, wz=this.angVel.z;
-    // �0 � (I·�0) = Magnus/gyroscopic term (prevents gimbal lock behaviour)
+    // ω × (I·ω) = Magnus/gyroscopic term (prevents gimbal lock behaviour)
     const gyroX = wy*(Izz*wz) - wz*(Iyy*wy); // [FIX-1.2] Euler body term
     const gyroY = wz*(Ixx*wx) - wx*(Izz*wz);
     const gyroZ = wx*(Iyy*wy) - wy*(Ixx*wx);
@@ -546,41 +546,41 @@ const PHYS = {
     this.quat = Q.integrate(this.quat, this.angVel, dt);
     Q.toEuler(this.quat, this.euler);
 
-    // ���� [FIX-2.1] Inner rate PID runs at substep rate ������������������������������������������
+    // ── [FIX-2.1] Inner rate PID runs at substep rate ─────────────────────
     // FC._fcRateCmd is set by the outer (per-frame) angle loop
-    // The inner rate� motor loop runs here at full substep frequency
+    // The inner rate→motor loop runs here at full substep frequency
     if(typeof FC!=='undefined' && (!_stateExists||State.armed)){
       const motorCmds = FC._rateLoopSubstep(dt, this._fcRateCmd.thr,
         this._fcRateCmd.pitch, this._fcRateCmd.roll, this._fcRateCmd.yaw);
       this.motorCmd = motorCmds;
     }
 
-    // ���� Translational dynamics ����������������������������������������������������������������������������������������
+    // ── Translational dynamics ────────────────────────────────────────────
     // Thrust in world frame: thrust acts along body Y-axis
     let thrustW = Q.rotVec(this.quat, {x:0, y:totalThrust, z:0});
 
-    // [FIX-1.4] Ground Effect � Cheeseman�Bennett 1955, eq.4
-    // T_ge = T / (1 �� (R/(4h))²)  for h > R/2; no effect for h > 2R
+    // [FIX-1.4] Ground Effect — Cheeseman–Bennett 1955, eq.4
+    // T_ge = T / (1 − (R/(4h))²)  for h > R/2; no effect for h > 2R
     const hAGL = this.pos.y - this.groundY;
     const R_prop = (this.droneVisual.rotorRadius||0.09);
     if(hAGL > R_prop*0.5 && hAGL < R_prop*2){
-      // Cheeseman�Bennett 1955 eq.4
+      // Cheeseman–Bennett 1955 eq.4
       const ratio = R_prop / (4 * Math.max(hAGL, R_prop*0.5));
       const geGain = 1 / Math.max(0.01, 1 - ratio*ratio);
-      thrustW = V3.scale(thrustW, Math.min(geGain, 2.5)); // cap at 2.5� safety
+      thrustW = V3.scale(thrustW, Math.min(geGain, 2.5)); // cap at 2.5× safety
     }
 
-    // [FIX-1.5] Drag: v_rel = vel �� windVec �� dryden  BEFORE squaring
+    // [FIX-1.5] Drag: v_rel = vel − windVec − dryden  BEFORE squaring
     this.airDens = rho;
     DRYDEN.intensity = this.turbulenceIntensity;
     DRYDEN.update(dt, Math.max(0.5, hAGL));
     const gust = DRYDEN.get();
     const totalWind = V3.add(this.windVec, gust);
     // Relative velocity of drone w.r.t. air mass (for drag)
-    const vRel = V3.sub(this.vel, totalWind); // v_rel = v_drone �� v_air
+    const vRel = V3.sub(this.vel, totalWind); // v_rel = v_drone − v_air
     const vRelMag = V3.len(vRel);
 
-    // Aerodynamic drag: F_drag = ��½·ρ·Cd·A·|v_rel|²·v�_rel (in world frame)
+    // Aerodynamic drag: F_drag = −½·ρ·Cd·A·|v_rel|²·v̂_rel (in world frame)
     let drag = V3.zero();
     if(vRelMag > 0.01){
       const qDyn = 0.5 * rho * vRelMag * vRelMag; // dynamic pressure [FIX-1.6] uses ISA ρ
@@ -596,7 +596,7 @@ const PHYS = {
     const fNet = V3.add(V3.add(V3.add(thrustW, gravity), drag), transDamp);
 
     this.acc = V3.scale(fNet, 1/this.mass);
-    // [FIX-3.3] Store body-frame specific force for IMU simulation (accel output = a �� g)
+    // [FIX-3.3] Store body-frame specific force for IMU simulation (accel output = a − g)
     const gravWorld = {x:0, y:-this.GRAVITY, z:0};
     this.accelBody = Q.invRotVec(this.quat, V3.sub(this.acc, gravWorld));
 
@@ -606,7 +606,7 @@ const PHYS = {
     let newPos = V3.add(this.pos, V3.scale(V3.add(this.vel, v2), 0.5*dt));
     this.vel = v2;
 
-    // ���� [FIX-1.7] Ground collision with restitution e=0.15 and Coulomb friction μ=0.4 ����
+    // ── [FIX-1.7] Ground collision with restitution e=0.15 and Coulomb friction μ=0.4 ──
     // droneHalf = foot skid depth in world space: 0.074 * bodyScale * 5.0 (visual scale)
     // This matches the landing gear foot position in buildDrone() so the model sits flush on ground.
     const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
@@ -619,7 +619,7 @@ const PHYS = {
       } else {
         newPos.y = minY;
         if(this.vel.y < 0){
-          this.vel.y = -this.vel.y * 0.15; // restitution e=0.15 � [FIX-1.7]
+          this.vel.y = -this.vel.y * 0.15; // restitution e=0.15 — [FIX-1.7]
         }
         // Coulomb friction on horizontal velocity: F_fric = μ·N = μ·m·g  [FIX-1.7]
         const mu = 0.4;
@@ -653,7 +653,7 @@ const PHYS = {
         const n = hit.normal || {x:0,y:1,z:0};
         const vn = V3.dot(this.vel, n);
         if(vn < 0){
-          // Restitution impulse: �v = ��(1+e)·(v·n)·n
+          // Restitution impulse: Δv = −(1+e)·(v·n)·n
           this.vel = V3.add(this.vel, V3.scale(n, -(1+0.15)*vn)); // e=0.15
           // Coulomb friction tangential
           const vt = V3.sub(this.vel, V3.scale(n, V3.dot(this.vel,n)));
@@ -664,8 +664,8 @@ const PHYS = {
       }
     }
 
-    // ���� Battery model ����������������������������������������������������������������������������������������������������������
-    // Induced velocity from actuator disk theory: v_ind = ��a(T/(2ρA))
+    // ── Battery model ─────────────────────────────────────────────────────
+    // Induced velocity from actuator disk theory: v_ind = √(T/(2ρA))
     const rotorA = Math.PI*(R_prop*R_prop)*4 + 0.001;
     const v_ind = Math.sqrt(totalThrust / (2*rho*rotorA)); // uses ISA ρ
     const P_mech = totalThrust * v_ind * 1.18; // incl. motor/ESC losses ~18%
@@ -684,11 +684,11 @@ const PHYS = {
 
   /** [FIX-3.1] [FIX-3.2] [FIX-3.3] Physically correct sensor simulation */
   _updateSensors(dt){
-    // [FIX-3.1] Gyro white noise: ϒ = 0.003 rad/s/��aHz · ��a(1/dt)
-    // At dt=0.0167s (60Hz), ϒ_sample = 0.003/��a0.0167 �0� 0.023 rad/s per axis
+    // [FIX-3.1] Gyro white noise: σ = 0.003 rad/s/√Hz · √(1/dt)
+    // At dt=0.0167s (60Hz), σ_sample = 0.003/√0.0167 ≈ 0.023 rad/s per axis
     const gyrNoiseStd = 0.003 * Math.sqrt(1/Math.max(dt, 0.001));
     const gn = () => (Math.random()+Math.random()+Math.random()+Math.random()-2)*gyrNoiseStd*0.866;
-    // [FIX-3.2] Gyro bias random walk: bias += N(0, ϒ_bias·��adt)
+    // [FIX-3.2] Gyro bias random walk: bias += N(0, σ_bias·√dt)
     const biasSigma = 5e-5;
     const biasDelta = biasSigma * Math.sqrt(dt);
     this._gyroBias.x += (Math.random()-0.5)*2*biasDelta;
@@ -699,10 +699,10 @@ const PHYS = {
       y: this.angVel.y + gn() + this._gyroBias.y,
       z: this.angVel.z + gn() + this._gyroBias.z,
     };
-    // [FIX-3.3] Accelerometer: specific force = a_body �� g_body
-    // a_world = acc (from physics), g_world = (0,��g,0)
-    // a_body = R_BW · (a_world �� g_world)  �   accelBody already computed in _substep
-    // Add accelerometer noise (ϒ �0� 0.05 m/s²)
+    // [FIX-3.3] Accelerometer: specific force = a_body − g_body
+    // a_world = acc (from physics), g_world = (0,−g,0)
+    // a_body = R_BW · (a_world − g_world)  →  accelBody already computed in _substep
+    // Add accelerometer noise (σ ≈ 0.05 m/s²)
     const accNoiseStd = 0.05;
     const an = () => (Math.random()-0.5)*2*accNoiseStd;
     this.accelBody = {
@@ -711,7 +711,7 @@ const PHYS = {
       z: this.accelBody.z + an(),
     };
     // [FIX-3.4] Barometer with corrected Kalman Q/R
-    // Baro noise: ϒ=0.05m + turbulence; bias drift ��0�30s
+    // Baro noise: σ=0.05m + turbulence; bias drift τ≈30s
     const bNoise = 0.05 + this.turbulenceIntensity*0.25;
     const trueAGL = this.pos.y - this.groundY;
     this._baroRaw = trueAGL + (Math.random()-0.5)*bNoise*2;
@@ -774,7 +774,7 @@ const PHYS = {
   },
 
   /**
-   * [FIX] recoverFromCrash � call this when motors/damage are restored after
+   * [FIX] recoverFromCrash — call this when motors/damage are restored after
    * a mid-air failure so the drone can be re-armed and flown again.
    *
    * Clears the crashed flag, zeroes residual angular and linear velocity
@@ -785,7 +785,7 @@ const PHYS = {
   recoverFromCrash(){
     this.crashed  = false;
     this.grounded = true;
-    // Zero all motion � zeroing angVel is the key fix for the post-restore swinging
+    // Zero all motion — zeroing angVel is the key fix for the post-restore swinging
     this.angVel = V3.zero();
     this.vel    = V3.zero();
     // Level attitude so drone sits flat on ground
@@ -797,12 +797,12 @@ const PHYS = {
     this.pos.y = this.groundY + droneHalf;
     // Zero motor RPM/commands
     for(let i=0;i<4;i++){ this.motorRPM[i]=0; this.motorCmd[i]=0; this.motorCmdFiltered[i]=0; }
-    // Flush PID integrators � caller is responsible for arming/takeoff
+    // Flush PID integrators — caller is responsible for arming/takeoff
     if(typeof FC!=='undefined') FC.resetPIDs();
   },
 };
 
-/* ������ Flight Controller ������ */
+/* ─── Flight Controller ─── */
 const FC = {
   mode:'stabilized',
   motorMixGain:0.13,
@@ -828,7 +828,7 @@ const FC = {
   gains:{rp:0.042, ri:0.000, rd:0.0018, yp:0.065, ap:1.6, angleP:2.2},
 
   _adaptiveGainFactor(){
-    // [FIX-C] rateFactor floor raised from 0.55 �  0.90: PID should run near full gain
+    // [FIX-C] rateFactor floor raised from 0.55 → 0.90: PID should run near full gain
     // during steady hover/low-rate flight, not at 55% which causes sluggish response.
     // Small reduction at high tilt is still applied (airframe authority drops when tilted).
     const tilt = Math.sqrt(PHYS.euler.pitch**2 + PHYS.euler.roll**2);
@@ -844,17 +844,17 @@ const FC = {
     const kT=PHYS.kT, kQ=PHYS.kQ, maxRPM=PHYS.maxRPM;
     const omegaMax = maxRPM * TWO_PI_OVER_60;
     // [FIX-A] Correct pitch/roll max torque: 2 motors oppose 2 motors across arm length
-    // e.g. pitch: (T_BL+T_BR) - (T_FR+T_FL) �  max when back pair at maxRPM, front at 0
-    // Net max = 2·kT·�0max²·L  (two motors at full on one side)
+    // e.g. pitch: (T_BL+T_BR) - (T_FR+T_FL) → max when back pair at maxRPM, front at 0
+    // Net max = 2·kT·ωmax²·L  (two motors at full on one side)
     const maxPitchTorque = 2 * kT * omegaMax * omegaMax * L;
     // [FIX-A] Yaw authority uses reaction torque kQ (not kT*L)
-    // Max yaw torque = 4·kQ·�0max² (two CW vs two CCW at max)
+    // Max yaw torque = 4·kQ·ωmax² (two CW vs two CCW at max)
     const maxYawTorque = 4 * kQ * omegaMax * omegaMax;
 
-    // Rate P: Ixx/(�_des·maxTorque) where �_des �0� 0.08s desired settling
+    // Rate P: Ixx/(τ_des·maxTorque) where τ_des ≈ 0.08s desired settling
     // Target ~30% of critical gain for good margin on all profiles
     // [FIX-I] Coefficient corrected: old *3.0 produced rp at the 0.02 floor for all profiles
-    // (e.g. racing5: Ixx*3.0/maxTorque = 0.006*3/8.49 = 0.002 �  clamped to 0.02, wrong)
+    // (e.g. racing5: Ixx*3.0/maxTorque = 0.006*3/8.49 = 0.002 → clamped to 0.02, wrong)
     // Use *28 so racing5 gets rp~0.025 matching Betaflight ballpark (42/1000 * scaling)
     const rp = Math.min(0.12, Math.max(0.025, Ixx * 28.0 / (maxPitchTorque + 1e-6)));
     const rd = rp * 0.042;
@@ -862,14 +862,14 @@ const FC = {
     // [FIX-A] Yaw P correctly scaled to kQ-based yaw authority
     const yp = Math.min(0.18, Math.max(0.025, Izz * 2.5 / (maxYawTorque + 1e-6)));
     // [FIX-I] angleP scaled to rate PID bandwidth (cascade rule: outer BW = inner/5)
-    // Old formula (2.0+1.5*L �0� 2.3) was too slow to reject even tiny gyro bias drift
+    // Old formula (2.0+1.5*L ≈ 2.3) was too slow to reject even tiny gyro bias drift
     const rateBW = rp * maxPitchTorque / Ixx;
     const angleP = Math.min(8.0, Math.max(3.5, rateBW / 5.0));
     const ap = Math.max(1.0, Math.min(2.2, 0.9 + 0.45*m));
 
     // [FIX-B] motorMixGain: normalise PID outputs to motor command space
     // Target: at max rate PID output the motor delta is ~0.25 (quarter throttle authority)
-    // mixGain �0� 0.25 / (rp * maxRate_pitch)  � keeps effective gain consistent
+    // mixGain ≈ 0.25 / (rp * maxRate_pitch)  — keeps effective gain consistent
     const mr = PHYS.maxRate;
     const rawMixGain = 0.22 / Math.max(0.01, rp * (mr.pitch||10));
     this.motorMixGain = Math.max(0.07, Math.min(0.20, rawMixGain));
@@ -893,8 +893,8 @@ const FC = {
     this.ratePID.roll.p =g.rp; this.ratePID.roll.i =g.ri||0; this.ratePID.roll.d =g.rd;
     this.ratePID.yaw.p  =g.yp;
     // [FIX-F] Derive yaw I from yaw P (was hardcoded 0.012 regardless of profile).
-    // Yaw I �0� 0.18 * yp gives ~Ti = 1/0.18 �0� 5.5s integration time � reasonable for yaw hold.
-    // Also raise yaw I-limit from 0.25 �  0.45 so anti-windup doesn't thrash during manoeuvres.
+    // Yaw I ≈ 0.18 * yp gives ~Ti = 1/0.18 ≈ 5.5s integration time — reasonable for yaw hold.
+    // Also raise yaw I-limit from 0.25 → 0.45 so anti-windup doesn't thrash during manoeuvres.
     this.ratePID.yaw.i  = g.yi != null ? g.yi : g.yp * 0.18;
     this.ratePID.yaw.iLimit = 0.45;
     if(g.angleP!=null){ this.anglePID.pitch.p=g.angleP; this.anglePID.roll.p=g.angleP; }
@@ -924,7 +924,7 @@ const FC = {
   },
 
   /**
-   * Outer loop (angle �  rate setpoint) � runs once per rendered frame.
+   * Outer loop (angle → rate setpoint) — runs once per rendered frame.
    * Stores rate commands in PHYS._fcRateCmd for the inner loop.
    * [FIX-2.1] Inner rate loop now runs in PHYS._substep() at substep rate.
    */
@@ -973,13 +973,13 @@ const FC = {
     if(this.mode==='gpshold'){
       if(Math.abs(input.pitch)<0.08&&Math.abs(input.roll)<0.08){
         if(this.posTarget==null) this.posTarget={x:PHYS.pos.x,z:PHYS.pos.z};
-        // [FIX-2.5] Position error in world frame �  rotate to body frame via ��yaw
+        // [FIX-2.5] Position error in world frame → rotate to body frame via −yaw
         const dN=this.posTarget.z-PHYS.pos.z, dE=this.posTarget.x-PHYS.pos.x;
         const cy=Math.cos(e.yaw), sy=Math.sin(e.yaw);
-        // Body-frame error: forward = cy*dN+sy*dE, right = ��sy*dN+cy*dE
+        // Body-frame error: forward = cy*dN+sy*dE, right = −sy*dN+cy*dE
         const errFwd  =  cy*dN + sy*dE;
         const errRight= -sy*dN + cy*dE;
-        // posNPID/posEPID: setpoint=0, measured=body-frame error �  output is tilt angle (rad)
+        // posNPID/posEPID: setpoint=0, measured=body-frame error → output is tilt angle (rad)
         pitchSP=Math.max(-maxTilt*0.5,Math.min(maxTilt*0.5, this.posNPID.update(0,-errFwd, dt)));
         rollSP =Math.max(-maxTilt*0.5,Math.min(maxTilt*0.5, this.posEPID.update(0,-errRight,dt)));
       } else {
@@ -1029,8 +1029,8 @@ const FC = {
   },
 
   /**
-   * Angle loop �  compute rate commands and store in PHYS._fcRateCmd.
-   * The actual rate� motor PID runs in PHYS._substep() at substep rate.
+   * Angle loop → compute rate commands and store in PHYS._fcRateCmd.
+   * The actual rate→motor PID runs in PHYS._substep() at substep rate.
    */
   _angleThenStore(dt,thrCmd,pitchSP,rollSP,yawRateCmd){
     const e=PHYS.euler, cap=this.maxAngleRate, af=this._adaptiveGainFactor();
@@ -1042,12 +1042,12 @@ const FC = {
   },
 
   /**
-   * [FIX-2.1] Inner rate PID � runs at substep rate inside PHYS._substep()
+   * [FIX-2.1] Inner rate PID — runs at substep rate inside PHYS._substep()
    * [FIX-2.3] Verified Quad-X motor mixing for Y-up body frame:
-   *   M0(FR) = base �� pitch + roll  + yaw  (CW: +yaw)
-   *   M1(FL) = base �� pitch �� roll  �� yaw  (CCW: ��yaw)
-   *   M2(BL) = base + pitch �� roll  + yaw  (CW:  +yaw)
-   *   M3(BR) = base + pitch + roll  �� yaw  (CCW: ��yaw)
+   *   M0(FR) = base − pitch + roll  + yaw  (CW: +yaw)
+   *   M1(FL) = base − pitch − roll  − yaw  (CCW: −yaw)
+   *   M2(BL) = base + pitch − roll  + yaw  (CW:  +yaw)
+   *   M3(BR) = base + pitch + roll  − yaw  (CCW: −yaw)
    * Sign convention: +pitch = nose up (BL+BR thrust up), +roll = right bank (FR+BR up)
    */
   _rateLoopSubstep(dt, thrCmd, pitchRateCmd, rollRateCmd, yawRateCmd){
@@ -1065,7 +1065,7 @@ const FC = {
     const hover=PHYS.hoverThrottle;
     const modeAlt=this.mode==='althold'||this.mode==='gpshold'||this.mode==='rth';
     // [FIX-D] Throttle mapping: symmetric authority around hoverThrottle.
-    // Low half (0� 0.5): 0� hover. High half (0.5� 1): hover� 0.97.
+    // Low half (0→0.5): 0→hover. High half (0.5→1): hover→0.97.
     // This replaces the hardcoded *0.38 that was only valid for racing5.
     let base;
     if(modeAlt){
@@ -1077,10 +1077,10 @@ const FC = {
     }
     base=Math.max(0.02, Math.min(0.97, base));
     // [FIX-G] Yaw sign corrected: tauYaw in _substep has an outer negation
-    // (tauYaw = -(kQ·dir0·�00 + ...)), so increasing CW motors REDUCES tauYaw (goes negative).
+    // (tauYaw = -(kQ·dir0·ω0 + ...)), so increasing CW motors REDUCES tauYaw (goes negative).
     // With Y-up right-hand convention, negative tauYaw = CW angular accel = decreasing yaw angle.
-    // Therefore to INCREASE yaw (fight +gy spin): DECREASE CW, INCREASE CCW �  yawOut negated.
-    // Blackbox confirmed: old sign caused CW-CCW to grow negative as +gy grew �  positive feedback.
+    // Therefore to INCREASE yaw (fight +gy spin): DECREASE CW, INCREASE CCW → yawOut negated.
+    // Blackbox confirmed: old sign caused CW-CCW to grow negative as +gy grew → positive feedback.
     const m=[
       base - pitchOut + rollOut  - yawOut,  // M0 FR (CW)
       base - pitchOut - rollOut  + yawOut,  // M1 FL (CCW)
@@ -1091,7 +1091,7 @@ const FC = {
   },
 
   _mixMotors(m){
-    // [FIX-E] Betaflight-style desaturation � no intermediate array allocations
+    // [FIX-E] Betaflight-style desaturation — no intermediate array allocations
     let v0=m[0],v1=m[1],v2=m[2],v3=m[3];
     let maxV=v0; if(v1>maxV)maxV=v1; if(v2>maxV)maxV=v2; if(v3>maxV)maxV=v3;
     if(maxV>1){const d=maxV-1;v0-=d;v1-=d;v2-=d;v3-=d;}
@@ -1103,7 +1103,7 @@ const FC = {
   },
 };
 
-/* ������ Input Handler ������ */
+/* ─── Input Handler ─── */
 const INPUT = {
   _keys:{}, _thrRaw:0, sensitivity:0.26, expo:0.38, deadband:0.05,
   _gamepad:null, pitch:0, roll:0, yaw:0, throttle:0,
@@ -1153,16 +1153,16 @@ const INPUT = {
     window.addEventListener('blur',()=>{this._keys={}; this.pitch=0; this.roll=0; this.yaw=0;});
     window.addEventListener('gamepadconnected',(e)=>{
       this._gamepad=e.gamepad;
-      if(typeof UI!=='undefined') UI.toast('�x}� Controller: '+e.gamepad.id.substring(0,28));
+      if(typeof UI!=='undefined') UI.toast('🎮 Controller: '+e.gamepad.id.substring(0,28));
     });
     window.addEventListener('gamepaddisconnected',()=>{
       this._gamepad=null;
-      if(typeof UI!=='undefined') UI.toast('�x}� Controller disconnected');
+      if(typeof UI!=='undefined') UI.toast('🎮 Controller disconnected');
     });
   },
 
   /**
-   * [FIX-6.2] Deadband �  rescale �  expo (eliminates discontinuity at deadband edge)
+   * [FIX-6.2] Deadband → rescale → expo (eliminates discontinuity at deadband edge)
    * Previous: deadband applied before expo caused a jump from 0 to expo(deadband)
    * Correct: apply deadband, linearly rescale to [0,1], then apply expo
    */
@@ -1236,19 +1236,19 @@ const INPUT = {
   },
 };
 
-/* ������ Simulation speed default ������ */
+/* ─── Simulation speed default ─── */
 /**
  * Default simulation speed multiplier.
  * The render loop in index.html should read SIM_SPEED on init instead of hardcoding 1.
- * Set to 2 so the simulation starts at 2� real-time out of the box.
+ * Set to 2 so the simulation starts at 2× real-time out of the box.
  *
- * Performance note at 2�: PHYS.step() is called with dtFull up to 2� the wall-clock
+ * Performance note at 2×: PHYS.step() is called with dtFull up to 2× the wall-clock
  * frame time. The physics substep count is fixed at 4, so each substep dt doubles.
- * All integrators (Euler, RK-style battery, Kalman, PID) remain stable up to ~3� because
+ * All integrators (Euler, RK-style battery, Kalman, PID) remain stable up to ~3× because
  * dtFull is clamped to 40 ms (line: dtFull=Math.max(0.0005,Math.min(0.04,dtFull))), so
- * the effective per-substep dt never exceeds 10 ms � well within stability margins.
- * CPU cost is IDENTICAL to 1� (same number of substeps per rendered frame); the only
- * difference is the wall-clock time advances faster. No performance issues at 2�.
+ * the effective per-substep dt never exceeds 10 ms — well within stability margins.
+ * CPU cost is IDENTICAL to 1× (same number of substeps per rendered frame); the only
+ * difference is the wall-clock time advances faster. No performance issues at 2×.
  */
 const SIM_SPEED = 4;
 
@@ -1324,7 +1324,7 @@ const BLACKBOX = {
   },
 };
 
-/* ������ Debug / PID Visualizer ������ */
+/* ─── Debug / PID Visualizer ─── */
 const DEBUG = {
   enabled:false, _pidHist:{pitch:[],roll:[],yaw:[]}, _histLen:120,
   recordPID(pSP,pM,rSP,rM,ySP,yM){
@@ -1369,7 +1369,7 @@ const DEBUG = {
   },
 };
 
-/* ������ GPS_RAW_INT Simulation ������ */
+/* ─── GPS_RAW_INT Simulation ─── */
 const GPS_SIM = {
   HOME_LAT: 17.00050,  // degrees
   HOME_LON: 82.24580,
@@ -1414,7 +1414,7 @@ const GPS_SIM = {
   },
 };
 
-/* ������ VISION_POSITION Simulation ������ */
+/* ─── VISION_POSITION Simulation ─── */
 const VISION_POS = {
   _x:0, _y:0, _z:0, _driftX:0, _driftZ:0,
   UPDATE_RATE:30,
@@ -1443,7 +1443,7 @@ const VISION_POS = {
   },
 };
 
-/* ������ OBSTACLE_DISTANCE � 5-sector proximity ������ */
+/* ─── OBSTACLE_DISTANCE — 5-sector proximity ─── */
 const OBSTACLE_DIST = {
   SECTORS:['FWD','RIGHT','BACK','LEFT','UP'],
   SENSOR_RANGE:12.0,
@@ -1479,7 +1479,7 @@ const OBSTACLE_DIST = {
   get(){ return this._distances.slice(); },
 };
 
-/* ������ PID Telemetry ������ */
+/* ─── PID Telemetry ─── */
 const PID_TELEM = {
   axes:{
     roll:    {kp:0,ki:0,kd:0,setpoint:0,measured:0,error:0,output:0},
@@ -1499,20 +1499,20 @@ const PID_TELEM = {
   },
 };
 
-/* ������ Battery flight time estimate ������ */
+/* ─── Battery flight time estimate ─── */
 function getBattEstimatedFlightTime(){
   const remainingAh=PHYS.battTotalAh*(PHYS.battPct/100);
   const currentA=Math.max(0.1,PHYS.currentDraw);
   return Math.min(9999,(remainingAh/currentA)*3600);
 }
 
-/* ������ Global exports ������ */
+/* ─── Global exports ─── */
 if(typeof globalThis!=='undefined'){
   Object.assign(globalThis,{V3,Q,Noise,DRYDEN,PID,Kalman1D,DRONE_PROFILES,PHYS,FC,INPUT,BLACKBOX,DEBUG,
     GPS_SIM,VISION_POS,OBSTACLE_DIST,PID_TELEM,getBattEstimatedFlightTime,_simClock,SIM_SPEED});
 }
 
-/* ������ MAVLink v1 Export ������ */
+/* ─── MAVLink v1 Export ─── */
 const MAVLINK = {
   MSG_HEARTBEAT:0, MSG_SYS_STATUS:1, MSG_BATTERY_STATUS:147,
   MSG_ATTITUDE:30, MSG_LOCAL_POSITION_NED:32, MSG_GPS_RAW_INT:24,
@@ -1559,7 +1559,7 @@ const MAVLINK = {
   _i16(dv,off,val){dv.setInt16(off,val,true);},
 
   /**
-   * HEARTBEAT � MAVLink common.xml ID=0
+   * HEARTBEAT — MAVLink common.xml ID=0
    * [FIX-5.3] baseMode bits per MAVLink spec:
    *   bit7 (0x80): MAV_MODE_FLAG_SAFETY_ARMED
    *   bit4 (0x10): MAV_MODE_FLAG_GUIDED_ENABLED (GPS hold)
@@ -1621,7 +1621,7 @@ const MAVLINK = {
     return this._packet(this.MSG_GPS_RAW_INT,[...new Uint8Array(buf)]);
   },
 
-  /** [FIX-5.3] BATTERY_STATUS: currentBattery in centi-amps (A�100), voltages in mV */
+  /** [FIX-5.3] BATTERY_STATUS: currentBattery in centi-amps (A×100), voltages in mV */
   batteryStatus(id,battFunction,type,temperature,voltages,currentBattery,currentConsumed,energyConsumed,batteryRemaining){
     const buf=new ArrayBuffer(36); const dv=new DataView(buf);
     this._i32(dv,0,currentConsumed!==undefined?currentConsumed:-1);   // mAh
@@ -1629,7 +1629,7 @@ const MAVLINK = {
     this._i16(dv,8,temperature!==undefined?temperature:0x7FFF);
     const vArr=voltages||[];
     for(let i=0;i<10;i++) this._u16(dv,10+i*2,i<vArr.length?vArr[i]:0xFFFF); // mV per cell
-    this._i16(dv,30,currentBattery!==undefined?currentBattery:-1); // centi-amps (A�100)
+    this._i16(dv,30,currentBattery!==undefined?currentBattery:-1); // centi-amps (A×100)
     dv.setUint8(32,id||0);
     dv.setUint8(33,battFunction||0);
     dv.setUint8(34,type||0);
@@ -1657,7 +1657,7 @@ const MAVLINK = {
       }
       if(e.t-lastGPS>=0.2){
         const gLat=Math.round((GPS_SIM.HOME_LAT+e.pz/111320)*1e7);
-        // [FIX-3.5] Use cached cos(HOME_LAT) � avoids recomputing per log entry
+        // [FIX-3.5] Use cached cos(HOME_LAT) — avoids recomputing per log entry
         const gLon=Math.round((GPS_SIM.HOME_LON+e.px/(111320*(GPS_SIM._cosHomeLat||Math.cos(GPS_SIM.HOME_LAT*Math.PI/180))))*1e7);
         const gAlt=Math.round((GPS_SIM.HOME_ALT+e.py)*1000);
         const gVel=Math.round(Math.hypot(e.vx,e.vz)*100); // ground speed cm/s
@@ -1671,7 +1671,7 @@ const MAVLINK = {
         for(let c=0;c<(PHYS.cells||4);c++) voltages[c]=cellV;
         const consumed=Math.round(PHYS.battCapacity*1000); // mAh
         const remaining=Math.round(PHYS.battPct);
-        // [FIX-5.3] currentBattery in centi-amps (A�100)
+        // [FIX-5.3] currentBattery in centi-amps (A×100)
         writeEntry(e.t,this.batteryStatus(0,0,0,2500,voltages,Math.round(e.curr*100),consumed,-1,remaining));
         lastBatt=e.t;
       }
@@ -1714,7 +1714,7 @@ const MAVLINK = {
   },
 };
 
-/* ������ Telemetry Graph ������ */
+/* ─── Telemetry Graph ─── */
 const TELEM_GRAPH = {
   _canvas:null, _ctx:null,
   _history:{alt:[],vel:[],roll:[],pitch:[],batt:[]},
@@ -1735,13 +1735,16 @@ const TELEM_GRAPH = {
 
   _syncSize(){
     if(!this._canvas) return;
-    const rect={width:this._canvas.clientWidth, height:this._canvas.clientHeight};
-    const w=Math.round(rect.width)||this._canvas.parentElement?.clientWidth||220;
-    const h=Math.round(rect.height)||80;
-    if(w>10&&this._canvas.width!==w){this._canvas.width=w;}
-    if(h>10&&this._canvas.height!==h){this._canvas.height=h;}
-    this._W=this._canvas.width;
-    this._H=this._canvas.height;
+    const now = performance.now();
+    if(this._lastSync && now - this._lastSync < 1000) return;
+    this._lastSync = now;
+    const cw = this._canvas.clientWidth, ch = this._canvas.clientHeight;
+    if(this._W !== cw || this._H !== ch){
+      this._canvas.width = cw;
+      this._canvas.height = ch;
+      this._W = cw;
+      this._H = ch;
+    }
   },
 
   push(p){
