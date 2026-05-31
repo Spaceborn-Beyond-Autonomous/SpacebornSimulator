@@ -168,12 +168,12 @@ input,select{font-family:var(--fb)}
 .vp-tr{top:10px;right:10px;border-top:2px solid rgba(238,147,70,.6);border-right:2px solid rgba(238,147,70,.6);border-radius:0 3px 0 0}
 .vp-bl{bottom:10px;left:10px;border-bottom:2px solid rgba(238,147,70,.6);border-left:2px solid rgba(238,147,70,.6);border-radius:0 0 0 3px}
 .vp-br{bottom:10px;right:10px;border-bottom:2px solid rgba(238,147,70,.6);border-right:2px solid rgba(238,147,70,.6);border-radius:0 0 3px 0}
-.cam-badge{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(238,147,70,.9);color:white;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;backdrop-filter:blur(4px)}
+.cam-badge{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(238,147,70,.9);color:white;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
 .crosshair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32px;height:32px}
 .ch-h,.ch-v{position:absolute;background:rgba(238,147,70,.5)}
 .ch-h{height:1px;width:100%;top:50%;transform:translateY(-50%)}
 .ch-v{width:1px;height:100%;left:50%;transform:translateX(-50%)}
-.vp-warn{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(244,67,54,.85);color:white;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;backdrop-filter:blur(4px);opacity:0;transition:opacity .3s;pointer-events:none}
+.vp-warn{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(244,67,54,.85);color:white;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;;opacity:0;transition:opacity .3s;pointer-events:none}
 .vp-warn.show{opacity:1}
 #toast.show{opacity:1!important;}
 #crash-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .35s;z-index:20;background:radial-gradient(ellipse at center,rgba(200,20,10,.45) 0%,rgba(0,0,0,.72) 100%)}
@@ -181,7 +181,7 @@ input,select{font-family:var(--fb)}
 #crash-overlay .co-icon{font-size:52px;line-height:1;animation:co-pulse 1s ease-in-out infinite alternate}
 #crash-overlay .co-title{font-family:var(--fh,monospace);font-size:28px;font-weight:800;color:#ff3b30;letter-spacing:3px;text-shadow:0 0 24px rgba(255,59,48,.9),0 2px 8px rgba(0,0,0,.8);margin:8px 0 4px}
 #crash-overlay .co-sub{font-family:var(--fh,monospace);font-size:12px;color:rgba(255,255,255,.75);letter-spacing:2px;text-transform:uppercase}
-#crash-overlay .co-btn{margin-top:22px;padding:8px 24px;background:rgba(255,59,48,.22);border:1.5px solid rgba(255,59,48,.7);border-radius:20px;color:#ff6b60;font-family:var(--fh,monospace);font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;pointer-events:auto;backdrop-filter:blur(6px);transition:background .2s,color .2s}
+#crash-overlay .co-btn{margin-top:22px;padding:8px 24px;background:rgba(255,59,48,.22);border:1.5px solid rgba(255,59,48,.7);border-radius:20px;color:#ff6b60;font-family:var(--fh,monospace);font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;pointer-events:auto;transition:background .2s,color .2s}
 #crash-overlay .co-btn:hover{background:rgba(255,59,48,.45);color:#fff}
 @keyframes co-pulse{from{transform:scale(1) rotate(-5deg)}to{transform:scale(1.15) rotate(5deg)}}
 
@@ -240,7 +240,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .bgauge-label{display:flex;justify-content:space-between;font-size:10px;color:var(--txt3)}
 .bgauge-label span{font-family:var(--fh);font-weight:600}
 .bgauge-track{height:8px;border-radius:4px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden}
-.bgauge-fill{height:100%;border-radius:4px;transition:width .2s}
+.bgauge-fill{height:100%;border-radius:4px;width:100%;left:0;transform-origin:left center;transform:scaleX(0);will-change:transform;transition:background 0.2s}
 .bgauge-fill.blue{background:linear-gradient(90deg,var(--p),var(--p2))}
 .bgauge-fill.orange{background:linear-gradient(90deg,var(--s3),var(--s))}
 .bgauge-fill.green{background:linear-gradient(90deg,#2E7D32,#4CAF50)}
@@ -263,7 +263,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .motor-label{font-size:10px;color:var(--txt4);font-weight:600;letter-spacing:.6px}
 .motor-rpm{font-family:var(--fh);font-size:13px;font-weight:700;color:var(--p)}
 .motor-bar-wrap{height:5px;border-radius:3px;background:var(--n2);overflow:hidden}
-.motor-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--p),var(--s));transition:width .1s}
+.motor-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--p),var(--s));width:100%;left:0;transform-origin:left center;transform:scaleX(0);will-change:transform}
 
 /* ── Map / Minimap ── */
 .minimap{border-radius:var(--r2);overflow:hidden;box-shadow:var(--sh-in);height:120px;position:relative;background:#1a2744}
@@ -436,7 +436,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .obs-bar-row{display:grid;grid-template-columns:28px 1fr 28px;gap:4px;align-items:center}
 .obs-bar-lbl{font-size:9px;color:var(--txt4);font-weight:700;text-align:center}
 .obs-bar-track{height:5px;border-radius:3px;background:var(--n2);box-shadow:var(--sh-in-sm);overflow:hidden}
-.obs-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#F44336,#EE9346,#4CAF50);transition:width .1s}
+.obs-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#F44336,#EE9346,#4CAF50);width:100%;left:0;transform-origin:left center;transform:scaleX(0);will-change:transform}
 
 /* ── GPS Panel ── */
 .gps-fix-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
@@ -902,7 +902,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-roll-ki">0.000</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Kd</div><div class="pid-gain-val" id="pid-roll-kd">0.002</div></div>
           </div>
-          <div class="pid-err-track"><div class="pid-err-fill" id="pid-roll-err" style="width:0%;left:50%"></div></div>
+          <div class="pid-err-track"><div class="pid-err-fill" id="pid-roll-err" ></div></div>
         </div>
         <!-- Pitch axis -->
         <div class="pid-axis-card">
@@ -912,7 +912,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-pitch-ki">0.000</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Kd</div><div class="pid-gain-val" id="pid-pitch-kd">0.002</div></div>
           </div>
-          <div class="pid-err-track"><div class="pid-err-fill" id="pid-pitch-err" style="width:0%;left:50%"></div></div>
+          <div class="pid-err-track"><div class="pid-err-fill" id="pid-pitch-err" ></div></div>
         </div>
         <!-- Yaw axis -->
         <div class="pid-axis-card">
@@ -922,7 +922,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-yaw-ki">0.012</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Kd</div><div class="pid-gain-val" id="pid-yaw-kd">0.000</div></div>
           </div>
-          <div class="pid-err-track"><div class="pid-err-fill" id="pid-yaw-err" style="width:0%;left:50%"></div></div>
+          <div class="pid-err-track"><div class="pid-err-fill" id="pid-yaw-err" ></div></div>
         </div>
         <!-- Throttle/Alt axis -->
         <div class="pid-axis-card">
@@ -932,7 +932,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
             <div class="pid-gain"><div class="pid-gain-lbl">Ki</div><div class="pid-gain-val" id="pid-thr-ki">0.10</div></div>
             <div class="pid-gain"><div class="pid-gain-lbl">Kd</div><div class="pid-gain-val" id="pid-thr-kd">0.06</div></div>
           </div>
-          <div class="pid-err-track"><div class="pid-err-fill" id="pid-thr-err" style="width:0%;left:50%"></div></div>
+          <div class="pid-err-track"><div class="pid-err-fill" id="pid-thr-err" ></div></div>
         </div>
       </div>
       <div style="margin-top:6px;font-size:9px;color:var(--txt4);text-align:center">Error signal ← centre=0 →  |  copy Kp/Ki/Kd directly to Betaflight/ArduPilot/PX4</div>
@@ -1068,7 +1068,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
           </div>
           <div class="stick-meter-wrap">
             <div class="stick-meter-lbl">YAW</div>
-            <div class="stick-meter-track bidir"><div class="stick-meter-fill primary" id="sm-yaw" style="width:0%;left:50%"></div></div>
+            <div class="stick-meter-track bidir"><div class="stick-meter-fill primary" id="sm-yaw" ></div></div>
           </div>
         </div>
       </div>
@@ -1107,11 +1107,11 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
           <div style="font-size:9px;color:var(--txt4);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-top:4px">Live Input</div>
           <div class="stick-meter-wrap">
             <div class="stick-meter-lbl">PCH</div>
-            <div class="stick-meter-track bidir"><div class="stick-meter-fill accent" id="sm-pitch" style="width:0%;left:50%"></div></div>
+            <div class="stick-meter-track bidir"><div class="stick-meter-fill accent" id="sm-pitch" ></div></div>
           </div>
           <div class="stick-meter-wrap">
             <div class="stick-meter-lbl">RLL</div>
-            <div class="stick-meter-track bidir"><div class="stick-meter-fill primary" id="sm-roll" style="width:0%;left:50%"></div></div>
+            <div class="stick-meter-track bidir"><div class="stick-meter-fill primary" id="sm-roll" ></div></div>
           </div>
         </div>
         <div id="vj-right" class="vj-pad" data-stick="right" style="touch-action:none">
@@ -1211,6 +1211,8 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 
 <!-- ══ TIER: MAX ══ -->
 <script>
+const _setTxt = (el, txt) => { if (el && el.textContent !== String(txt)) el.textContent = txt; };
+
 /* PLAN FLAGS — MAX tier
    Duration: Unlimited | All profiles + Custom
    All 6 envs | Full HUD | Full PID | Full export
@@ -2677,7 +2679,7 @@ const THREE_ENV = (() => {
     _bloomCanvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;mix-blend-mode:screen;opacity:0.28;';
     const vp = document.getElementById('viewport');
     if (vp) vp.appendChild(_bloomCanvas);
-    _bloomCtx = _bloomCanvas.getContext('2d');
+    _bloomCtx = _bloomCanvas.getContext('2d', {willReadFrequently: true});
   }
 
   function _drawBloom(W, H) {
@@ -2886,7 +2888,7 @@ const MINIMAP = {
     }
     if (!canvas.width || !canvas.height) return;
     const W = canvas.width, H = canvas.height;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', {willReadFrequently: true});
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = '#1a2744';
     ctx.fillRect(0, 0, W, H);
@@ -2972,7 +2974,7 @@ const MINIMAP = {
 function drawAttitude() {
   const canvas = document.getElementById('attCanvas');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', {willReadFrequently: true});
   const W = canvas.width, H = canvas.height;
   const cx = W/2, cy = H/2, r = W/2 - 2;
   // [FIX-6.22] Use quaternion directly for roll to avoid gimbal lock at ±90° pitch
@@ -3042,7 +3044,7 @@ function drawAttitude() {
 function drawWindCompass() {
   const canvas = document.getElementById('windCanvas');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', {willReadFrequently: true});
   const W = canvas.width, H = canvas.height;
   const cx = W/2, cy = H/2, r = W/2-3;
   ctx.clearRect(0,0,W,H);
@@ -3276,12 +3278,29 @@ const SIM = {
     // [FIX-Bug-26c] Absolute sim time always advances (not only when armed)
     _simClock.t += dt;
 
-    // Sub-step for higher speeds to keep physics stable
-    const substeps = this._speed > 1 ? Math.ceil(this._speed) : 1;
-    const subDt = dt / substeps;
-    INPUT.update(dt);
-    const inp = INPUT.get();
-    MISSION.update();
+          // Fixed Accumulator for perfect physics stability
+      if (typeof this._acc === 'undefined') this._acc = 0;
+      const FIXED_DT = 1 / 60; // 60Hz physics base rate
+      this._acc += rawDt * this._speed;
+      
+      // Update inputs once per visual frame
+      INPUT.update(rawDt * this._speed);
+      const inp = INPUT.get();
+      
+      // Environment check
+      const _envName_sim = typeof ENV !== 'undefined' ? ENV._name : 'field';
+      const checkGround = _envName_sim !== 'indoor' && _envName_sim !== 'urban';
+      
+      while (this._acc >= FIXED_DT) {
+        if (checkGround) {
+          PHYS.groundY = THREE_ENV.getTerrainHeight(PHYS.pos.x, PHYS.pos.z);
+          if (PHYS.groundY < 0) PHYS.groundY = 0;
+        }
+        FC.update(FIXED_DT, inp);
+        PHYS.step(FIXED_DT);
+        this._acc -= FIXED_DT;
+      }
+      MISSION.update();
 
     if (State.armed) State.flightTime += rawDt;  // [FIX-Bug-26b] use real time for clock
 
@@ -3366,7 +3385,7 @@ const SIM = {
     set('t-curr', p.currentDraw.toFixed(1));
     const bbar = D['batt-bar'];
     if (bbar) {
-      bbar.style.width = battPct+'%';
+      bbar.style.transform = 'scaleX(' + (battPct/100) + ')';
       bbar.className = 'bgauge-fill ' + (battPct<20?'red':battPct<50?'orange':'green');
     }
     if (battPct < 15) WARN.trigger('lowbatt'); else WARN.clear('lowbatt');
@@ -3385,9 +3404,9 @@ const SIM = {
     for (let i = 0; i < 4; i++) {
       const rpmEl = D[`m${i}-rpm`]; const barEl = D[`m${i}-bar`];
       const rpm = Math.round(p.motorRPM[i]);
-      if (rpmEl) rpmEl.textContent = rpm;
+      if (rpmEl) _setTxt(rpmEl, rpm);
       if (barEl) {
-        barEl.style.width = (rpm/p.maxRPM*100).toFixed(1)+'%';
+        barEl.style.transform = 'scaleX(' + (rpm/p.maxRPM) + ')';
         const dmg = State.motorDamage[i]||0;
         barEl.className = 'motor-bar' + (dmg>0.5?' red':dmg>0.2?' orange':'');
       }
@@ -3441,7 +3460,7 @@ const SIM = {
       vslamBadge.className = 'vslam-badge '+(vp.active ? 'vslam-active' : 'vslam-idle');
     }
     const vslamQ = D['vslam-quality'];
-    if (vslamQ) vslamQ.style.width = vp.quality+'%';
+    if (vslamQ) vslamQ.style.transform = 'scaleX(' + (vp.quality/100) + ')';
 
     // ── OBSTACLE_DISTANCE ─────────────────────────────────────────
     const obs = OBSTACLE_DIST.get();
@@ -3451,8 +3470,8 @@ const SIM = {
       const pct = Math.min(100, (obs[i]/obsMax)*100);
       const barEl = D['obs-'+obsIds[i]];
       const valEl = D['obs-'+obsIds[i]+'-v'];
-      if (barEl) barEl.style.width = pct+'%';
-      if (valEl) valEl.textContent = obs[i].toFixed(1)+'m';
+      if (barEl) barEl.style.transform = 'scaleX(' + (pct/100) + ')';
+      if (valEl) _setTxt(valEl, obs[i].toFixed(1)+'m');
     }
     _updateObstacleRadar(obs, obsMax);
 
@@ -3466,7 +3485,7 @@ const SIM = {
       set(`pid-${id}-kp`, ax.kp.toFixed(3));
       set(`pid-${id}-ki`, ax.ki.toFixed(3));
       set(`pid-${id}-kd`, ax.kd.toFixed(3));
-      set(`pid-${id}-err-lbl`, (ax.error >= 0 ? '+' : '') + ax.error.toFixed(3));
+      const txt = (ax.error >= 0 ? '+' : '') + ax.error.toFixed(3); if(D[`pid-${id}-err-lbl`].textContent !== txt) D[`pid-${id}-err-lbl`].textContent = txt;
       const errEl = D[`pid-${id}-err`];
       if (errEl) {
         const norm = Math.max(-1, Math.min(1, ax.error / errScale[pi]));
@@ -4268,7 +4287,7 @@ function runStartup() {
 // Stick visualizer canvases
 function _drawStickCanvas(canvasId, x, y, label, accentColor) {
   const c = document.getElementById(canvasId); if (!c) return;
-  const ctx = c.getContext('2d');
+  const ctx = c.getContext('2d', {willReadFrequently: true});
   const W = c.width, H = c.height;
   ctx.clearRect(0, 0, W, H);
 
