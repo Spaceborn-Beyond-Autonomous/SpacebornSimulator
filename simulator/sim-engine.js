@@ -1264,6 +1264,11 @@ const BLACKBOX = {
   tick(t){
     if(!this.recording) return;
     const p=PHYS;
+    // Prevent NaN physics from corrupting the blackbox log and turning into 'null' in JSON exports
+    if (Number.isNaN(p.pos.x) || Number.isNaN(p.vel.x)) {
+      console.warn('Blackbox ignored frame due to NaN physics');
+      return;
+    }
     const gps=typeof GPS_SIM!=='undefined'?GPS_SIM.rawInt():{};
     const obs=typeof OBSTACLE_DIST!=='undefined'?OBSTACLE_DIST.get():[0,0,0,0,0];
     const gust=DRYDEN.get();

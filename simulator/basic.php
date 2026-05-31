@@ -237,10 +237,10 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 /* ── Telemetry Value ── */
 .tval{display:flex;flex-direction:column;gap:2px;padding:8px 10px;border-radius:var(--r2);background:var(--surf);box-shadow:var(--sh-in-sm)}
 .tval-label{font-size:10px;color:var(--txt4);font-weight:500;letter-spacing:.8px;text-transform:uppercase}
-.tval-num{font-family:var(--fh);font-size:17px;font-weight:600;color:var(--txt);line-height:1}
+.tval-num{font-variant-numeric:tabular-nums;font-family:var(--fh);font-size:17px;font-weight:600;color:var(--txt);line-height:1}
 .tval-unit{font-size:10px;color:var(--txt3);margin-top:1px}
-.tval.hi .tval-num{color:var(--s)}
-.tval.warn .tval-num{color:#E53935}
+.tval.hi .tval-num{font-variant-numeric:tabular-nums;color:var(--s)}
+.tval.warn .tval-num{font-variant-numeric:tabular-nums;color:#E53935}
 .tval-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .tval-row2{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
 
@@ -469,7 +469,7 @@ input[type=range].accent-range::-webkit-slider-thumb{border-color:rgba(238,147,7
 .pid-telem-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .pid-axis-card{border-radius:var(--r1);background:var(--surf);box-shadow:var(--sh-in-sm);padding:7px}
 .pid-axis-title{font-size:9px;font-weight:700;color:var(--txt4);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between}
-.pid-axis-live{font-size:8px;font-family:var(--fh);font-weight:600;color:var(--s)}
+.pid-axis-live{font-variant-numeric:tabular-nums;font-size:8px;font-family:var(--fh);font-weight:600;color:var(--s)}
 .pid-gains-row{display:flex;gap:3px;margin-bottom:5px}
 .pid-gain{flex:1;text-align:center;padding:3px 2px;border-radius:5px;background:var(--n);box-shadow:var(--sh-in-sm)}
 .pid-gain-lbl{font-size:8px;color:var(--txt4);font-weight:600}
@@ -3319,7 +3319,7 @@ const SIM = {
     // Throttle UI and 2D canvas draws to ~20 Hz (every 3rd frame) to reduce CPU load
     if (typeof this._simUIFrame === 'undefined') this._simUIFrame = 0;
     this._simUIFrame++;
-    if (this._simUIFrame % 3 === 0) {
+    if (this._simUIFrame % 6 === 0) {
       this._updateUI(rawDt); // Throttled DOM text updates
       TELEM_GRAPH.draw();
       DEBUG.draw();
