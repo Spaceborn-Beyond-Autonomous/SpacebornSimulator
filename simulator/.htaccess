@@ -1,0 +1,7 @@
+RewriteEngine On
+
+# Block direct access to JavaScript files in the simulator folder if referrer is empty or not from this site
+RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?localhost [NC]
+RewriteCond %{HTTP_REFERER} !^http(s)?://127\.0\.0\.1 [NC]
+RewriteCond %{REQUEST_URI} \.js$ [NC]
+RewriteRule .* - [F]

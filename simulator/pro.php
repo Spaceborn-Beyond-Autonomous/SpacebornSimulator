@@ -1,5 +1,12 @@
 <?php
 require_once __DIR__ . '/../auth/session_guard.php';
+
+// Prevent direct URL access
+if (empty($_SERVER['HTTP_REFERER']) || strpos($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST']) === false) {
+    header('Location: index.php');
+    exit;
+}
+
 require_once __DIR__ . '/../auth/db.php';
 require_once __DIR__ . '/../includes/simulator_launch.php';
 
