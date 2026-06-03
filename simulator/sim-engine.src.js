@@ -655,9 +655,7 @@ const PHYS = {
       }
     } else { this.grounded = false; }
 
-    // World boundary clamp
-    newPos.x = Math.max(-250, Math.min(250, newPos.x));
-    newPos.z = Math.max(-250, Math.min(250, newPos.z));
+    // World boundary clamp removed (maps are infinite)
     newPos.y = Math.min(180, newPos.y);
     this.pos = newPos;
 
@@ -739,7 +737,7 @@ const PHYS = {
 
   _checkColliders(pos){
     // Use a small margin to prevent tunnelling through thin walls
-    const margin = 0.12;
+    const margin = 0.35;
     for(const c of this.colliders){
       if(pos.x>c.min.x-margin&&pos.x<c.max.x+margin&&
          pos.y>c.min.y-margin&&pos.y<c.max.y+margin&&
