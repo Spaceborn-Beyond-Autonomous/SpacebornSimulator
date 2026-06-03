@@ -28,10 +28,12 @@ function checkTreeColliders(pos, hitR = 0.35) {
   for (const colliders of CHUNK_COLLIDERS.values()) {
     for (let i = 0, n = colliders.length; i < n; i++) {
       const c = colliders[i];
-      const dx = pos.x - c.cx, dy = pos.y - c.cy, dz = pos.z - c.cz;
-      const dist2 = dx*dx + dy*dy + dz*dz;
+      const dx = pos.x - c.cx, dz = pos.z - c.cz;
+      const distSq = dx*dx + dz*dz;
       const minD = c.r + hitR;
-      if (dist2 < minD*minD) return c;
+      if (distSq < minD*minD) {
+        if (pos.y >= c.minY && pos.y <= c.maxY) return c;
+      }
     }
   }
   return null;
@@ -162,7 +164,7 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
         m4.compose(scratchPos.set(t.lx, ty, t.lz), scratchQuat, scratchScale);
         imCones[t.leafCI].setMatrixAt(cCones[t.leafCI]++, m4);
       }
-      colliders.push({ cx: t.wx, cy: t.hy + t.tH * 0.6, cz: t.wz, r: 2.2 });
+      colliders.push({ cx: t.wx, cy: t.hy + t.tH * 0.6, cz: t.wz, minY: t.hy, maxY: t.hy + t.tH * 1.5, r: 0.65 });
     } else if (t.type === 1) {
       scratchScale.set(1, t.tH, 1);
       m4.compose(scratchPos.set(t.lx, t.hy + t.tH / 2, t.lz), scratchQuat.identity(), scratchScale);
@@ -179,7 +181,7 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
         m4.compose(scratchPos.set(t.lx + Math.cos(la) * t.cr * 0.55, t.hy + t.tH + t.cr * 0.3 + t.lobes[l].yo, t.lz + Math.sin(la) * t.cr * 0.55), scratchQuat, scratchScale);
         imLeaves[t.leafCI].setMatrixAt(cLeaves[t.leafCI]++, m4);
       }
-      colliders.push({ cx: t.wx, cy: t.hy + t.tH * 0.5, cz: t.wz, r: t.cr * 1.5 });
+      colliders.push({ cx: t.wx, cy: t.hy + t.tH * 0.5, cz: t.wz, minY: t.hy, maxY: t.hy + t.tH + t.cr * 1.2, r: Math.max(0.4, t.cr * 0.5) });
     } else {
       scratchScale.set(1, t.tH, 1);
       m4.compose(scratchPos.set(t.lx, t.hy + t.tH / 2, t.lz), scratchQuat.identity(), scratchScale);
@@ -188,7 +190,7 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
       scratchScale.set(t.cr, t.cr * 1.6, t.cr);
       m4.compose(scratchPos.set(t.lx, t.hy + t.tH + t.cr * 0.8, t.lz), scratchQuat, scratchScale);
       imLeaves[t.leafCI].setMatrixAt(cLeaves[t.leafCI]++, m4);
-      colliders.push({ cx: t.wx, cy: t.hy + t.tH * 0.6, cz: t.wz, r: t.cr * 1.2 });
+      colliders.push({ cx: t.wx, cy: t.hy + t.tH * 0.6, cz: t.wz, minY: t.hy, maxY: t.hy + t.tH + t.cr * 1.2, r: 0.5 });
     }
   }
 
