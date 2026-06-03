@@ -1822,9 +1822,62 @@ const TELEM_GRAPH = {
     }
   },
 
+  push(p){
+    const R2D=180/Math.PI;
+    const vals={
+      alt:Math.max(0,p.pos.y-p.groundY),
+      vel:Math.hypot(p.vel.x,p.vel.y,p.vel.z),
+      roll:p.euler.roll*R2D,
+      pitch:p.euler.pitch*R2D,
+      batt:p.battPct,
+    };
+    for(const k of this._channels){
+      this._history[k].push(vals[k]);
+      if(this._history[k].length>this._maxLen) this._history[k].shift();
+    }
+    // Auto-scale altitude: running max, full recompute only when oldest sample is dropped
+    if(vals.alt>this._maxAlt){
+      this._maxAlt=vals.alt;
+    } else if(this._history.alt.length>=this._maxLen){
+      let m=0; for(let i=0;i<this._history.alt.length;i++) if(this._history.alt[i]>m) m=this._history.alt[i];
+      this._maxAlt=m;
+    }
+    this._scales.alt=Math.max(10,this._maxAlt*1.1);
+  },
+
+  draw(){
+    const c=this._canvas,ctx=this._ctx;
+    if(!c||!ctx) return;
+    this._syncSize();
+    const W=this._W,H=this._H;
+    if(!W||!H) return;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(238,241,247,0.6)';
+    ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(96,125,139,0.2)';ctx.lineWidth=1;
+    for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(0,H*i/4);ctx.lineTo(W,H*i/4);ctx.stroke();}
+    for(const k of this._channels){
+      if(!this._visible[k]) continue;
+      const data=this._history[k];
+      if(data.length<2) continue;
+      const scale=this._scales[k];
+      ctx.strokeStyle=this._colors[k];ctx.lineWidth=1.5;
+      ctx.beginPath();
+      const maxIdx=this._maxLen-1;
+      for(let i=0;i<data.length;i++){
+        const x=(i/maxIdx)*W;
+        const y=H/2-(data[i]/scale)*(H*0.45);
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+  },
+
   toggle(ch){ if(this._visible[ch]!==undefined) this._visible[ch]=!this._visible[ch]; },
 };
 
 if(typeof globalThis!=='undefined'){
-  Object.assign(globalThis,{MAVLINK,TELEM_GRAPH});
+  Object.assign(globalThis,{
+    MAVLINK, TELEM_GRAPH, PHYS, FC, V3, Q, DRYDEN, Noise, PID, Kalman1D, DRONE_PROFILES
+  });
 }
