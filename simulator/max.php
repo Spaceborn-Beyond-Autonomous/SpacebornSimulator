@@ -2615,7 +2615,12 @@ const THREE_ENV = (() => {
         shelf.position.set(sx, 2.5, sz);
         shelf.castShadow = true; shelf.receiveShadow = true;
         scene.add(shelf);
-        // Don't add shelf colliders — too small to affect flight meaningfully
+        // Add shelf colliders
+        PHYS.colliders.push({
+          min:{x:sx-1.2, y:0, z:sz-0.7},
+          max:{x:sx+1.2, y:5, z:sz+0.7},
+          normal:{x:0, y:1, z:0}
+        });
       });
       // Overhead lighting rigs
       const rigMat = new THREE.MeshStandardMaterial({ color:0x444444, roughness:0.6, metalness:0.5 });

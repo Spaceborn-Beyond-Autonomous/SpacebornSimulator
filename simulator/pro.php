@@ -1499,7 +1499,7 @@ const THREE_ENV = (() => {
     if (env === 'urban' || env === 'indoor' || env === 'desert') return null;
     const worldOffX = cx * CHUNK_SIZE;
     const worldOffZ = cz * CHUNK_SIZE;
-    const count = env === 'mountains' ? 200 : 600;
+    const count = env === 'mountains' ? 200 : (env === 'windy' ? 250 : 600);
     const positions = [], colors2 = [], indices2 = [];
     let vi = 0;
     // Each blade: 3 quads (6 verts)
@@ -2294,6 +2294,7 @@ const THREE_ENV = (() => {
 
   // ── Called every render frame: determine which chunks are needed ──
   function _updateChunks() {
+    if (_envName === 'indoor' || _envName === 'urban') return;
     const p = PHYS.pos;
     const cx = Math.round(p.x / CHUNK_SIZE);
     const cz = Math.round(p.z / CHUNK_SIZE);
@@ -2348,7 +2349,7 @@ const THREE_ENV = (() => {
     const fogMat = new THREE.MeshBasicMaterial({
       color: 0xd8eeff, transparent: true, opacity: 0.18, depthWrite: false, side: THREE.DoubleSide
     });
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 2; i++) {
       const fp = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), fogMat.clone());
       fp.rotation.x = -Math.PI/2;
       fp.position.y = 0.3 + i * 0.4;
@@ -2542,7 +2543,12 @@ const THREE_ENV = (() => {
         shelf.position.set(sx, 2.5, sz);
         shelf.castShadow = true; shelf.receiveShadow = true;
         scene.add(shelf);
-        // Don't add shelf colliders — too small to affect flight meaningfully
+        // Add shelf colliders
+        PHYS.colliders.push({
+          min:{x:sx-1.2, y:0, z:sz-0.7},
+          max:{x:sx+1.2, y:5, z:sz+0.7},
+          normal:{x:0, y:1, z:0}
+        });
       });
       // Overhead lighting rigs
       const rigMat = new THREE.MeshStandardMaterial({ color:0x444444, roughness:0.6, metalness:0.5 });

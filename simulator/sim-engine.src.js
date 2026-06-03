@@ -165,6 +165,7 @@ const Noise = {
     return v/max;
   },
 };
+Noise.warpedFbm = function(x, z, oct, pers, lac, warpScale) { const qx = this.fbm(x, 0, z, oct, pers, lac); const qz = this.fbm(x + 5.2, 1.3, z + 1.3, oct, pers, lac); return this.fbm(x + qx * warpScale, 0, z + qz * warpScale, oct, pers, lac); };
 Noise._init();
 
 /**
