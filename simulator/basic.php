@@ -1571,7 +1571,7 @@ const THREE_ENV = (() => {
       const gv = 0.3 + rng()*0.3;
       const rc = 0.1+gv*0.3, gc = 0.4+gv*0.35, bc = 0.05+gv*0.1;
       // base L
-      positions.push(lx-bx, hy, wz-bz, wx+bx, hy, wz+bz, wx, hy+h, lz);
+      positions.push(lx-bx, hy, lz-bz, lx+bx, hy, lz+bz, lx, hy+h, lz);
       colors2.push(rc*0.7,gc*0.7,bc*0.7, rc*0.7,gc*0.7,bc*0.7, rc,gc,bc);
       indices2.push(vi,vi+1,vi+2);
       vi += 3;
@@ -1614,7 +1614,7 @@ const THREE_ENV = (() => {
       for (let p = 0; p < pCount; p++) {
         const pa = (p/pCount)*Math.PI*2;
         const pet = new THREE.Mesh(new THREE.PlaneGeometry(0.05,0.04), petMat);
-        pet.position.set(wx+Math.cos(pa)*0.04, hy+h+0.02, wz+Math.sin(pa)*0.04);
+        pet.position.set(lx+Math.cos(pa)*0.04, hy+h+0.02, lz+Math.sin(pa)*0.04);
         pet.rotation.y = pa; pet.rotation.x = -0.4;
         group.add(pet);
       }

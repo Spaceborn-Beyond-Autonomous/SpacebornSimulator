@@ -650,15 +650,15 @@ const SIM_PATCH = {
     // What we CAN do from outside: verify the pixel ratio is set correctly
     // and inject a per-frame tree-pool scene injection if needed.
 
-    const origGetFPS = THREE_ENV.getFPS.bind(THREE_ENV);
-    THREE_ENV.getFPS = () => {
-      // Opportunistically inject pool into scene on first FPS read (after init)
-      if (SIM_PATCH._sceneInjectPending && typeof scene !== 'undefined') {
+    // Opportunistically inject pool into scene on first render call
+    const origRender = THREE.WebGLRenderer.prototype.render;
+    THREE.WebGLRenderer.prototype.render = function(scene, camera) {
+      if (SIM_PATCH._sceneInjectPending && scene) {
         TREE_POOL.addToScene(scene);
         SIM_PATCH._sceneInjectPending = false;
-        console.log('[SIM_PATCH] TREE_POOL InstancedMeshes added to scene.');
+        console.log('[SIM_PATCH] TREE_POOL InstancedMeshes added to scene via render hook.');
       }
-      return origGetFPS();
+      return origRender.apply(this, arguments);
     };
 
     console.log('[SIM_PATCH][PERF-3] GC-free render loop: scratch objects pre-allocated, pool injected via getFPS hook.');
