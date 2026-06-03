@@ -731,8 +731,8 @@ const PHYS = {
     // [FIX-3.4] Barometer with corrected Kalman Q/R
     // Baro noise: σ=0.05m + turbulence; bias drift τ≈30s
     const bNoise = 0.05 + this.turbulenceIntensity*0.25;
-    const trueAGL = this.pos.y - this.groundY;
-    this._baroRaw = trueAGL + (Math.random()-0.5)*bNoise*2;
+    const trueAlt = this.pos.y;
+    this._baroRaw = trueAlt + (Math.random()-0.5)*bNoise*2;
     this._altEstimate = this._kAlt.update(this._baroRaw);
     Q.toEuler(this.quat, this.euler);
   },
@@ -933,7 +933,7 @@ const FC = {
 
   setMode(m){
     this.mode=m; this.resetPIDs();
-    if(m==='althold'||m==='gpshold'||m==='rth') this.altTarget=PHYS.pos.y-PHYS.groundY;
+    if(m==='althold'||m==='gpshold'||m==='rth') this.altTarget=PHYS._altEstimate;
     if(m==='gpshold'||m==='rth') this.posTarget={x:PHYS.pos.x,z:PHYS.pos.z};
     if(m==='rth'){
       this.rthPhase=0;
@@ -962,18 +962,18 @@ const FC = {
       return PHYS.motorCmd; // motor cmds will be updated in substep
     }
     if(this.mode==='stabilized'||this.mode==='angle'){
-      pitchSP=input.pitch*maxTilt*0.60;
-      rollSP =input.roll *maxTilt*0.60;
+      pitchSP=input.pitch*maxTilt*0.90;
+      rollSP =input.roll *maxTilt*0.90;
     }
     if(this.mode==='althold'||this.mode==='gpshold'||this.mode==='rth'){
       const stickDead=0.045;
       const hov=PHYS.hoverThrottle;
       if(this.mode==='althold'){
-        pitchSP=input.pitch*maxTilt*0.60;
-        rollSP =input.roll *maxTilt*0.60;
+        pitchSP=input.pitch*maxTilt*0.90;
+        rollSP =input.roll *maxTilt*0.90;
       }
       if(Math.abs(input.throttle-0.5)<stickDead){
-        if(this.altTarget==null) this.altTarget=PHYS.pos.y-PHYS.groundY;
+        if(this.altTarget==null) this.altTarget=PHYS._altEstimate;
         if(this._altManualLastFrame){
           this.altVelPID.reset(); this.altPID.reset();
           this._altManualLastFrame=false;
@@ -983,7 +983,7 @@ const FC = {
         thrCmd=Math.max(0,Math.min(0.97,hov+this.altVelPID.update(velSP,PHYS.vel.y,dt)));
       } else {
         this._altManualLastFrame=true;
-        this.altTarget=PHYS.pos.y-PHYS.groundY;
+        this.altTarget=PHYS._altEstimate;
         const t=input.throttle;
         thrCmd=t<=0.5 ? (t/0.5)*hov : hov+((t-0.5)/0.5)*(0.97-hov);
       }
@@ -998,11 +998,11 @@ const FC = {
         const errFwd  =  cy*dN + sy*dE;
         const errRight= -sy*dN + cy*dE;
         // posNPID/posEPID: setpoint=0, measured=body-frame error → output is tilt angle (rad)
-        pitchSP=Math.max(-maxTilt*0.5,Math.min(maxTilt*0.5, this.posNPID.update(0,-errFwd, dt)));
-        rollSP =Math.max(-maxTilt*0.5,Math.min(maxTilt*0.5, this.posEPID.update(0,-errRight,dt)));
+        pitchSP=Math.max(-maxTilt*0.8,Math.min(maxTilt*0.8, this.posNPID.update(0,-errFwd, dt)));
+        rollSP =Math.max(-maxTilt*0.8,Math.min(maxTilt*0.8, this.posEPID.update(0,-errRight,dt)));
       } else {
         this.posTarget={x:PHYS.pos.x,z:PHYS.pos.z};
-        pitchSP=input.pitch*maxTilt*0.65; rollSP=input.roll*maxTilt*0.65;
+        pitchSP=input.pitch*maxTilt*0.90; rollSP=input.roll*maxTilt*0.90;
       }
     }
     if(this.mode==='rth'){
@@ -1024,8 +1024,8 @@ const FC = {
         if(dist<1.0){this.rthPhase=2;this.posTarget={x:home.x,z:home.z};}
         else{
           const spd=Math.min(1,dist/15);
-          pitchSP=Math.max(-maxTilt*0.6,Math.min(maxTilt*0.6,-(cy*dN+sy*dE)*0.14*spd));
-          rollSP =Math.max(-maxTilt*0.6,Math.min(maxTilt*0.6,-(-sy*dN+cy*dE)*0.14*spd));
+          pitchSP=Math.max(-maxTilt*0.8,Math.min(maxTilt*0.8,-(cy*dN+sy*dE)*0.14*spd));
+          rollSP =Math.max(-maxTilt*0.8,Math.min(maxTilt*0.8,-(-sy*dN+cy*dE)*0.14*spd));
         }
       } else if(this.rthPhase===2){
         const dN=home.z-PHYS.pos.z, dE=home.x-PHYS.pos.x;

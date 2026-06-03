@@ -1413,6 +1413,54 @@ const THREE_ENV = (() => {
     return Math.max(0, height + detail);
   }
 
+  function rawTerrainHeight(x, z, envName) {
+    const env = envName || _envName;
+    if (env === 'urban' || env === 'indoor') return 0; // Flat environments
+
+    const step = 60 / 16; // 3.75
+    const x0 = Math.floor(x / step) * step;
+    const z0 = Math.floor(z / step) * step;
+    const x1 = x0 + step;
+    const z1 = z0 + step;
+
+    const h00 = rawTerrainHeight(x0, z0, env);
+    const h10 = rawTerrainHeight(x1, z0, env);
+    const h01 = rawTerrainHeight(x0, z1, env);
+    const h11 = rawTerrainHeight(x1, z1, env);
+
+    const tx = (x - x0) / step;
+    const tz = (z - z0) / step;
+
+    // Bilinear interpolation
+    const h0 = h00 * (1 - tx) + h10 * tx;
+    const h1 = h01 * (1 - tx) + h11 * tx;
+    return h0 * (1 - tz) + h1 * tz;
+  }
+
+  function rawTerrainHeight(x, z, envName) {
+    const env = envName || _envName;
+    if (env === 'urban' || env === 'indoor') return 0; // Flat environments
+
+    const step = 60 / 16; // 3.75
+    const x0 = Math.floor(x / step) * step;
+    const z0 = Math.floor(z / step) * step;
+    const x1 = x0 + step;
+    const z1 = z0 + step;
+
+    const h00 = rawTerrainHeight(x0, z0, env);
+    const h10 = rawTerrainHeight(x1, z0, env);
+    const h01 = rawTerrainHeight(x0, z1, env);
+    const h11 = rawTerrainHeight(x1, z1, env);
+
+    const tx = (x - x0) / step;
+    const tz = (z - z0) / step;
+
+    // Bilinear interpolation
+    const h0 = h00 * (1 - tx) + h10 * tx;
+    const h1 = h01 * (1 - tx) + h11 * tx;
+    return h0 * (1 - tz) + h1 * tz;
+  }
+
   function terrainHeight(x, z, envName) {
     const env = envName || _envName;
     if (env === 'urban' || env === 'indoor') return 0; // Flat environments
@@ -2599,8 +2647,8 @@ const THREE_ENV = (() => {
         scene.add(w);
         const [wx,wy,wz] = wd.pos; const [sw,sh,sd] = wd.size;
         PHYS.colliders.push({
-          min:{x:wx-sw/2, y:0, z:wz-sd/2},
-          max:{x:wx+sw/2, y:sh, z:wz+sd/2},
+          min:{x:wx-sw/2, y:wy-sh/2, z:wz-sd/2},
+          max:{x:wx+sw/2, y:wy+sh/2, z:wz+sd/2},
           normal: wd.norm,
         });
       });

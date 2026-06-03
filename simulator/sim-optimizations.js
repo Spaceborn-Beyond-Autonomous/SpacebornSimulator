@@ -82,7 +82,6 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
   const leafColsFld = [0x3a8a2e, 0x2e7a24, 0x4a9a3c, 0x338030, 0x28701e];
   const leafCols = env === 'mountains' ? leafColsMtn : leafColsFld;
 
-  // Pre-calculate tree data for the chunk to allocate InstancedMesh counts exactly
   const trees = [];
   let numPine = 0, numDec = 0, numBirch = 0;
   const leafCounts = new Array(TREE_MATS.leafMats.length).fill(0);
@@ -91,7 +90,6 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
   for (let i = 0; i < count; i++) {
     const lx = (rng() - 0.5) * CHUNK_SIZE * 0.85;
     const lz = (rng() - 0.5) * CHUNK_SIZE * 0.85;
-    // KEEP SPAWN CLEAR
     if (Math.abs(lx) < 4 && Math.abs(lz) < 4 && cx === 0 && cz === 0) { rng(); rng(); continue; }
 
     const wx = lx + worldOffX, wz = lz + worldOffZ;
@@ -103,19 +101,33 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
     let leafCI = TREE_MATS.leafCols.indexOf(rawCol);
     if (leafCI < 0) leafCI = 0;
 
-    trees.push({ type: treeType, lx, hy, lz, wx, wz, leafCI });
+    let treeData = { type: treeType, lx, hy, lz, wx, wz, leafCI };
 
     if (treeType === 0) {
       numPine++;
-      const tiers = 3 + Math.floor(rng() * 2);
-      coneCounts[leafCI] += tiers;
+      treeData.tH = 3 + rng() * 4;
+      treeData.tiers = 3 + Math.floor(rng() * 2);
+      treeData.rs = [];
+      for (let t = 0; t < treeData.tiers; t++) {
+        treeData.rs.push(1.6 - t * 0.3 + rng() * 0.3);
+      }
+      coneCounts[leafCI] += treeData.tiers;
     } else if (treeType === 1) {
       numDec++;
+      treeData.tH = 2.5 + rng() * 3;
+      treeData.cr = 1.8 + rng() * 1.4;
+      treeData.lobes = [];
+      for (let l = 0; l < 3; l++) {
+        treeData.lobes.push({ la: (l / 3) * Math.PI * 2 + rng() * 0.8, yo: rng() * 0.5 });
+      }
       leafCounts[leafCI] += 4; // 1 main canopy + 3 lobes
     } else {
       numBirch++;
+      treeData.tH = 3.5 + rng() * 3;
+      treeData.cr = 1.0 + rng() * 0.6;
       leafCounts[leafCI] += 1;
     }
+    trees.push(treeData);
   }
 
   if (trees.length === 0) return null;
@@ -127,99 +139,71 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
   const scratchScale = new THREE.Vector3();
   const scratchQuat = new THREE.Quaternion();
 
-  // Create InstancedMesh objects for this chunk
   const imPine = numPine > 0 ? new THREE.InstancedMesh(TREE_GEOS.pineTrunk, TREE_MATS.pineTrunk, numPine) : null;
   const imDec = numDec > 0 ? new THREE.InstancedMesh(TREE_GEOS.decTrunk, TREE_MATS.decTrunk, numDec) : null;
   const imBirch = numBirch > 0 ? new THREE.InstancedMesh(TREE_GEOS.birchTrunk, TREE_MATS.birchTrunk, numBirch) : null;
-  
   const imLeaves = leafCounts.map((cnt, i) => cnt > 0 ? new THREE.InstancedMesh(TREE_GEOS.canopy, TREE_MATS.leafMats[i], cnt) : null);
   const imCones = coneCounts.map((cnt, i) => cnt > 0 ? new THREE.InstancedMesh(TREE_GEOS.cone, TREE_MATS.leafMats[i], cnt) : null);
 
-  [imPine, imDec, imBirch, ...imLeaves, ...imCones].forEach(im => {
-    if (im) {
-      im.castShadow = true;
-      im.receiveShadow = true;
-      im.frustumCulled = false; // Prevents disappearing trees since origins might not match perfectly
-      group.add(im);
-    }
-  });
-
-  // Cursor arrays
   let cPine = 0, cDec = 0, cBirch = 0;
   const cLeaves = new Array(TREE_MATS.leafMats.length).fill(0);
   const cCones = new Array(TREE_MATS.leafMats.length).fill(0);
 
-  // Reproject rng sequentially to match EXACTLY the procedural generation
-  const treeRng = (typeof _chunkRng !== 'undefined') ? _chunkRng(cx + 3000, cz + 4000) : Math.random;
-
-  for (let i = 0; i < count; i++) {
-    const lx = (treeRng() - 0.5) * CHUNK_SIZE * 0.85;
-    const lz = (treeRng() - 0.5) * CHUNK_SIZE * 0.85;
-    if (Math.abs(lx) < 4 && Math.abs(lz) < 4 && cx === 0 && cz === 0) { treeRng(); treeRng(); continue; }
-    
-    const wx = lx + worldOffX, wz = lz + worldOffZ;
-    const hy = THREE_ENV.getTerrainHeight(wx, wz);
-    if (env === 'mountains' && hy > 30) { treeRng(); treeRng(); continue; }
-
-    const treeType = Math.floor(treeRng() * 3);
-    const rawCol = leafCols[Math.floor(treeRng() * leafCols.length)];
-    let leafCI = TREE_MATS.leafCols.indexOf(rawCol);
-    if (leafCI < 0) leafCI = 0;
-
-    if (treeType === 0) {
-      const tH = 3 + treeRng() * 4;
-      scratchScale.set(1, tH, 1);
-      m4.compose(scratchPos.set(lx, hy + tH/2, lz), scratchQuat.identity(), scratchScale);
+  for (const t of trees) {
+    if (t.type === 0) {
+      scratchScale.set(1, t.tH, 1);
+      m4.compose(scratchPos.set(t.lx, t.hy + t.tH / 2, t.lz), scratchQuat.identity(), scratchScale);
       imPine.setMatrixAt(cPine++, m4);
       
-      const tiers = 3 + Math.floor(treeRng() * 2);
-      for (let t = 0; t < tiers; t++) {
-        const ty = hy + tH*0.4 + t*(tH*0.22);
-        const r = 1.6 - t*0.3 + treeRng()*0.3;
-        scratchScale.set(r, tH*0.35, r);
-        m4.compose(scratchPos.set(lx, ty, lz), scratchQuat, scratchScale);
-        imCones[leafCI].setMatrixAt(cCones[leafCI]++, m4);
+      for (let i = 0; i < t.tiers; i++) {
+        const ty = t.hy + t.tH * 0.4 + i * (t.tH * 0.22);
+        const r = t.rs[i];
+        scratchScale.set(r, t.tH * 0.35, r);
+        m4.compose(scratchPos.set(t.lx, ty, t.lz), scratchQuat, scratchScale);
+        imCones[t.leafCI].setMatrixAt(cCones[t.leafCI]++, m4);
       }
-      colliders.push({ cx: wx, cy: hy + tH * 0.6, cz: wz, r: 2.2 });
-
-    } else if (treeType === 1) {
-      const tH = 2.5 + treeRng() * 3;
-      scratchScale.set(1, tH, 1);
-      m4.compose(scratchPos.set(lx, hy + tH/2, lz), scratchQuat.identity(), scratchScale);
+      colliders.push({ cx: t.wx, cy: t.hy + t.tH * 0.6, cz: t.wz, r: 2.2 });
+    } else if (t.type === 1) {
+      scratchScale.set(1, t.tH, 1);
+      m4.compose(scratchPos.set(t.lx, t.hy + t.tH / 2, t.lz), scratchQuat.identity(), scratchScale);
       imDec.setMatrixAt(cDec++, m4);
 
-      const cr = 1.8 + treeRng() * 1.4;
-      scratchScale.set(cr, cr * (0.72 + treeRng() * 0.2), cr);
-      m4.compose(scratchPos.set(lx, hy + tH + cr * 0.6, lz), scratchQuat, scratchScale);
-      imLeaves[leafCI].setMatrixAt(cLeaves[leafCI]++, m4);
+      scratchScale.set(t.cr, t.cr * 0.8, t.cr);
+      m4.compose(scratchPos.set(t.lx, t.hy + t.tH + t.cr * 0.6, t.lz), scratchQuat, scratchScale);
+      imLeaves[t.leafCI].setMatrixAt(cLeaves[t.leafCI]++, m4);
 
       for (let l = 0; l < 3; l++) {
-        const la = (l/3)*Math.PI*2 + treeRng()*0.8;
-        const lr = cr*0.55;
+        const la = t.lobes[l].la;
+        const lr = t.cr * 0.55;
         scratchScale.set(lr, lr, lr);
-        m4.compose(scratchPos.set(lx + Math.cos(la)*cr*0.55, hy+tH+cr*0.3+treeRng()*0.5, lz + Math.sin(la)*cr*0.55), scratchQuat, scratchScale);
-        imLeaves[leafCI].setMatrixAt(cLeaves[leafCI]++, m4);
+        m4.compose(scratchPos.set(t.lx + Math.cos(la) * t.cr * 0.55, t.hy + t.tH + t.cr * 0.3 + t.lobes[l].yo, t.lz + Math.sin(la) * t.cr * 0.55), scratchQuat, scratchScale);
+        imLeaves[t.leafCI].setMatrixAt(cLeaves[t.leafCI]++, m4);
       }
-      colliders.push({ cx: wx, cy: hy + tH + cr * 0.5, cz: wz, r: cr * 1.2 });
-
+      colliders.push({ cx: t.wx, cy: t.hy + t.tH * 0.5, cz: t.wz, r: t.cr * 1.5 });
     } else {
-      const tH = 4 + treeRng() * 5;
-      scratchScale.set(1, tH, 1);
-      m4.compose(scratchPos.set(lx, hy + tH/2, lz), scratchQuat.identity(), scratchScale);
+      scratchScale.set(1, t.tH, 1);
+      m4.compose(scratchPos.set(t.lx, t.hy + t.tH / 2, t.lz), scratchQuat.identity(), scratchScale);
       imBirch.setMatrixAt(cBirch++, m4);
 
-      const cr = 1.2 + treeRng() * 0.8;
-      scratchScale.set(cr, cr * 1.1, cr);
-      m4.compose(scratchPos.set(lx, hy + tH + cr * 0.5, lz), scratchQuat, scratchScale);
-      imLeaves[leafCI].setMatrixAt(cLeaves[leafCI]++, m4);
-
-      colliders.push({ cx: wx, cy: hy + tH + cr * 0.5, cz: wz, r: cr * 1.1 });
+      scratchScale.set(t.cr, t.cr * 1.6, t.cr);
+      m4.compose(scratchPos.set(t.lx, t.hy + t.tH + t.cr * 0.8, t.lz), scratchQuat, scratchScale);
+      imLeaves[t.leafCI].setMatrixAt(cLeaves[t.leafCI]++, m4);
+      colliders.push({ cx: t.wx, cy: t.hy + t.tH * 0.6, cz: t.wz, r: t.cr * 1.2 });
     }
   }
 
-  const key = cx + ',' + cz;
-  CHUNK_COLLIDERS.set(key, colliders);
+  [imPine, imDec, imBirch, ...imLeaves, ...imCones].forEach(im => {
+    if (im) {
+      im.instanceMatrix.needsUpdate = true;
+      im.castShadow = true;
+      im.receiveShadow = true;
+      im.frustumCulled = false;
+      group.add(im);
+    }
+  });
 
+  const key = `${cx},${cz}`;
+  CHUNK_COLLIDERS.set(key, colliders);
   return group;
 }
 
