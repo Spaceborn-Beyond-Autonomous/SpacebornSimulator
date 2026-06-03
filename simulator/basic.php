@@ -2304,8 +2304,7 @@ const THREE_ENV = (() => {
     await new Promise(r => setTimeout(r, 0)); // Yield to main thread
 
     if (lod === 0 && _envName !== 'indoor' && _envName !== 'urban') {
-      const veg = await buildVegetation(cx, cz, _envName);
-      if (veg) { veg.position.set(renderX, 0, renderZ); scene.add(veg); chunkData.veg = veg; }
+      buildInstancedVegetationForChunk(cx, cz, _envName);
       await new Promise(r => setTimeout(r, 0)); // Yield
 
       const flowers = await buildFlowers(cx, cz, _envName);
@@ -5059,5 +5058,6 @@ function updateSavedTelemBtn() {
    }
 }
 </script>
+<script src="sim-optimizations.js"></script>
 </body>
 </html>
