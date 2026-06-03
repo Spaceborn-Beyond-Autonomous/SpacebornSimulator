@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/../auth/session_guard.php';
 
-// Prevent direct URL access
-if (empty($_SERVER['HTTP_REFERER']) || strpos($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST']) === false) {
-    header('Location: index.php');
+// Prevent direct URL access (detect address bar typing)
+$secFetchSite = $_SERVER['HTTP_SEC_FETCH_SITE'] ?? '';
+$referer = $_SERVER['HTTP_REFERER'] ?? '';
+if ($secFetchSite === 'none' || ($secFetchSite === '' && $referer === '')) {
+    header('Location: ../simulations.php');
     exit;
 }
 
