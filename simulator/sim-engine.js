@@ -1,1 +1,1883 @@
-'use strict';const a0_0x250ed6=a0_0x20b6;(function(_0x6a7a44,_0x2aaede){const _0xbe44e0=a0_0x20b6,_0x542008=_0x6a7a44();while(!![]){try{const _0x243c05=parseInt(_0xbe44e0(0x22c))/0x1+-parseInt(_0xbe44e0(0x210))/0x2*(parseInt(_0xbe44e0(0x264))/0x3)+parseInt(_0xbe44e0(0x2d5))/0x4*(parseInt(_0xbe44e0(0x203))/0x5)+parseInt(_0xbe44e0(0x2d2))/0x6+-parseInt(_0xbe44e0(0x278))/0x7+-parseInt(_0xbe44e0(0x1e7))/0x8*(-parseInt(_0xbe44e0(0x2cd))/0x9)+-parseInt(_0xbe44e0(0x202))/0xa*(parseInt(_0xbe44e0(0x2f9))/0xb);if(_0x243c05===_0x2aaede)break;else _0x542008['push'](_0x542008['shift']());}catch(_0x336115){_0x542008['push'](_0x542008['shift']());}}}(a0_0x225e,0x2b220));const TWO_PI_OVER_60=0x2*Math['PI']/0x3c,_ISA_EXP=9.80665/(0.0065*287.058),V3={'add':(_0x1749fb,_0x5f0029)=>({'x':_0x1749fb['x']+_0x5f0029['x'],'y':_0x1749fb['y']+_0x5f0029['y'],'z':_0x1749fb['z']+_0x5f0029['z']}),'sub':(_0x22301a,_0x527906)=>({'x':_0x22301a['x']-_0x527906['x'],'y':_0x22301a['y']-_0x527906['y'],'z':_0x22301a['z']-_0x527906['z']}),'scale':(_0x2e6e06,_0x3a4d4a)=>({'x':_0x2e6e06['x']*_0x3a4d4a,'y':_0x2e6e06['y']*_0x3a4d4a,'z':_0x2e6e06['z']*_0x3a4d4a}),'dot':(_0x4c311c,_0x4e6db8)=>_0x4c311c['x']*_0x4e6db8['x']+_0x4c311c['y']*_0x4e6db8['y']+_0x4c311c['z']*_0x4e6db8['z'],'cross':(_0x4c09da,_0x3b6e8a)=>({'x':_0x4c09da['y']*_0x3b6e8a['z']-_0x4c09da['z']*_0x3b6e8a['y'],'y':_0x4c09da['z']*_0x3b6e8a['x']-_0x4c09da['x']*_0x3b6e8a['z'],'z':_0x4c09da['x']*_0x3b6e8a['y']-_0x4c09da['y']*_0x3b6e8a['x']}),'len':_0x2fd545=>Math[a0_0x250ed6(0x2d3)](_0x2fd545['x'],_0x2fd545['y'],_0x2fd545['z']),'len2':_0x46fad7=>_0x46fad7['x']*_0x46fad7['x']+_0x46fad7['y']*_0x46fad7['y']+_0x46fad7['z']*_0x46fad7['z'],'norm':_0x3f7269=>{const _0xdaf912=a0_0x250ed6,_0x3225f5=Math[_0xdaf912(0x2d3)](_0x3f7269['x'],_0x3f7269['y'],_0x3f7269['z'])||0x1;return{'x':_0x3f7269['x']/_0x3225f5,'y':_0x3f7269['y']/_0x3225f5,'z':_0x3f7269['z']/_0x3225f5};},'clone':_0x254788=>({'x':_0x254788['x'],'y':_0x254788['y'],'z':_0x254788['z']}),'zero':()=>({'x':0x0,'y':0x0,'z':0x0}),'lerp':(_0x13f229,_0x588dcf,_0x2fb6dd)=>({'x':_0x13f229['x']+(_0x588dcf['x']-_0x13f229['x'])*_0x2fb6dd,'y':_0x13f229['y']+(_0x588dcf['y']-_0x13f229['y'])*_0x2fb6dd,'z':_0x13f229['z']+(_0x588dcf['z']-_0x13f229['z'])*_0x2fb6dd}),'addOut':(_0x408240,_0x3884c7,_0x53187e)=>{return _0x408240['x']=_0x3884c7['x']+_0x53187e['x'],_0x408240['y']=_0x3884c7['y']+_0x53187e['y'],_0x408240['z']=_0x3884c7['z']+_0x53187e['z'],_0x408240;},'subOut':(_0x272840,_0x84ffa2,_0x443612)=>{return _0x272840['x']=_0x84ffa2['x']-_0x443612['x'],_0x272840['y']=_0x84ffa2['y']-_0x443612['y'],_0x272840['z']=_0x84ffa2['z']-_0x443612['z'],_0x272840;},'scaleOut':(_0x3507d2,_0x324514,_0x46ecf0)=>{return _0x3507d2['x']=_0x324514['x']*_0x46ecf0,_0x3507d2['y']=_0x324514['y']*_0x46ecf0,_0x3507d2['z']=_0x324514['z']*_0x46ecf0,_0x3507d2;},'crossOut':(_0x17535b,_0x114cf3,_0x26b0e5)=>{const _0x4d5933=_0x114cf3['y']*_0x26b0e5['z']-_0x114cf3['z']*_0x26b0e5['y'],_0x541e34=_0x114cf3['z']*_0x26b0e5['x']-_0x114cf3['x']*_0x26b0e5['z'],_0x500d2b=_0x114cf3['x']*_0x26b0e5['y']-_0x114cf3['y']*_0x26b0e5['x'];return _0x17535b['x']=_0x4d5933,_0x17535b['y']=_0x541e34,_0x17535b['z']=_0x500d2b,_0x17535b;},'normOut':(_0x156e75,_0x5ba5ba)=>{const _0xec1a4d=a0_0x250ed6,_0x33d7bd=Math[_0xec1a4d(0x2d3)](_0x5ba5ba['x'],_0x5ba5ba['y'],_0x5ba5ba['z'])||0x1;return _0x156e75['x']=_0x5ba5ba['x']/_0x33d7bd,_0x156e75['y']=_0x5ba5ba['y']/_0x33d7bd,_0x156e75['z']=_0x5ba5ba['z']/_0x33d7bd,_0x156e75;}},Q={'id':()=>({'w':0x1,'x':0x0,'y':0x0,'z':0x0}),'norm':_0x815e87=>{const _0x2571b3=Math['hypot'](_0x815e87['w'],_0x815e87['x'],_0x815e87['y'],_0x815e87['z'])||0x1;return{'w':_0x815e87['w']/_0x2571b3,'x':_0x815e87['x']/_0x2571b3,'y':_0x815e87['y']/_0x2571b3,'z':_0x815e87['z']/_0x2571b3};},'conj':_0x3fa9a9=>({'w':_0x3fa9a9['w'],'x':-_0x3fa9a9['x'],'y':-_0x3fa9a9['y'],'z':-_0x3fa9a9['z']}),'mul':(_0x30d521,_0xb0547e)=>({'w':_0x30d521['w']*_0xb0547e['w']-_0x30d521['x']*_0xb0547e['x']-_0x30d521['y']*_0xb0547e['y']-_0x30d521['z']*_0xb0547e['z'],'x':_0x30d521['w']*_0xb0547e['x']+_0x30d521['x']*_0xb0547e['w']+_0x30d521['y']*_0xb0547e['z']-_0x30d521['z']*_0xb0547e['y'],'y':_0x30d521['w']*_0xb0547e['y']-_0x30d521['x']*_0xb0547e['z']+_0x30d521['y']*_0xb0547e['w']+_0x30d521['z']*_0xb0547e['x'],'z':_0x30d521['w']*_0xb0547e['z']+_0x30d521['x']*_0xb0547e['y']-_0x30d521['y']*_0xb0547e['x']+_0x30d521['z']*_0xb0547e['w']}),'rotVec':(_0x722b52,_0xfbaa8f)=>{const _0x49945a=a0_0x250ed6,_0x1dcd4d={'x':_0x722b52['x'],'y':_0x722b52['y'],'z':_0x722b52['z']},_0x4c2252=V3[_0x49945a(0x2d8)](_0x1dcd4d,_0xfbaa8f),_0x24390b=V3['cross'](_0x1dcd4d,_0x4c2252);return{'x':_0xfbaa8f['x']+0x2*(_0x722b52['w']*_0x4c2252['x']+_0x24390b['x']),'y':_0xfbaa8f['y']+0x2*(_0x722b52['w']*_0x4c2252['y']+_0x24390b['y']),'z':_0xfbaa8f['z']+0x2*(_0x722b52['w']*_0x4c2252['z']+_0x24390b['z'])};},'rotVecOut':(_0x10c8cf,_0x4aa412,_0x3f8723,_0x299f2b)=>{const _0x163b2b=a0_0x250ed6;return _0x299f2b['u']['x']=_0x4aa412['x'],_0x299f2b['u']['y']=_0x4aa412['y'],_0x299f2b['u']['z']=_0x4aa412['z'],V3['crossOut'](_0x299f2b['uv'],_0x299f2b['u'],_0x3f8723),V3[_0x163b2b(0x1b3)](_0x299f2b[_0x163b2b(0x2dc)],_0x299f2b['u'],_0x299f2b['uv']),_0x10c8cf['x']=_0x3f8723['x']+0x2*(_0x4aa412['w']*_0x299f2b['uv']['x']+_0x299f2b[_0x163b2b(0x2dc)]['x']),_0x10c8cf['y']=_0x3f8723['y']+0x2*(_0x4aa412['w']*_0x299f2b['uv']['y']+_0x299f2b[_0x163b2b(0x2dc)]['y']),_0x10c8cf['z']=_0x3f8723['z']+0x2*(_0x4aa412['w']*_0x299f2b['uv']['z']+_0x299f2b[_0x163b2b(0x2dc)]['z']),_0x10c8cf;},'invRotVec':(_0x1dfaec,_0x20af24)=>Q['rotVec'](Q[a0_0x250ed6(0x23a)](_0x1dfaec),_0x20af24),'invRotVecOut':(_0x266728,_0x4a2878,_0x2db41e,_0x62b4f0)=>{const _0x1246ee=a0_0x250ed6,_0x24a0a2={'w':_0x4a2878['w'],'x':-_0x4a2878['x'],'y':-_0x4a2878['y'],'z':-_0x4a2878['z']};return Q[_0x1246ee(0x2c5)](_0x266728,_0x24a0a2,_0x2db41e,_0x62b4f0);},'integrate':(_0x11f0a7,_0x39a570,_0x27c693)=>{const _0x53e9a6=a0_0x250ed6,_0x3bf63b=_0x39a570['x']*_0x27c693*0.5,_0x5a9d56=_0x39a570['y']*_0x27c693*0.5,_0x23b4d6=_0x39a570['z']*_0x27c693*0.5,_0x456676=_0x11f0a7['w']-_0x11f0a7['x']*_0x3bf63b-_0x11f0a7['y']*_0x5a9d56-_0x11f0a7['z']*_0x23b4d6,_0x597940=_0x11f0a7['x']+_0x11f0a7['w']*_0x3bf63b+_0x11f0a7['y']*_0x23b4d6-_0x11f0a7['z']*_0x5a9d56,_0x2f4703=_0x11f0a7['y']+_0x11f0a7['w']*_0x5a9d56+_0x11f0a7['z']*_0x3bf63b-_0x11f0a7['x']*_0x23b4d6,_0x120067=_0x11f0a7['z']+_0x11f0a7['w']*_0x23b4d6+_0x11f0a7['x']*_0x5a9d56-_0x11f0a7['y']*_0x3bf63b,_0x28de6e=Math[_0x53e9a6(0x2d3)](_0x456676,_0x597940,_0x2f4703,_0x120067)||0x1;return{'w':_0x456676/_0x28de6e,'x':_0x597940/_0x28de6e,'y':_0x2f4703/_0x28de6e,'z':_0x120067/_0x28de6e};},'toEuler':(_0x1bdca0,_0x27097c)=>{const _0xf7f2a=a0_0x250ed6,_0x18e81c=0x2*(_0x1bdca0['w']*_0x1bdca0['z']+_0x1bdca0['x']*_0x1bdca0['y']),_0x1aa986=0x1-0x2*(_0x1bdca0['y']*_0x1bdca0['y']+_0x1bdca0['z']*_0x1bdca0['z']),_0x4e080d=Math['atan2'](_0x18e81c,_0x1aa986),_0x1b628c=0x2*(_0x1bdca0['w']*_0x1bdca0['x']-_0x1bdca0['y']*_0x1bdca0['z']),_0x3bdc80=Math['abs'](_0x1b628c)>=0x1?Math[_0xf7f2a(0x2e8)](_0x1b628c)*(Math['PI']/0x2):Math[_0xf7f2a(0x1c2)](_0x1b628c),_0x2ef0e8=0x2*(_0x1bdca0['w']*_0x1bdca0['y']+_0x1bdca0['z']*_0x1bdca0['x']),_0x47b69b=0x1-0x2*(_0x1bdca0['x']*_0x1bdca0['x']+_0x1bdca0['z']*_0x1bdca0['z']),_0x56e2b0=Math[_0xf7f2a(0x301)](_0x2ef0e8,_0x47b69b);if(_0x27097c)return _0x27097c[_0xf7f2a(0x2f5)]=_0x4e080d,_0x27097c['pitch']=_0x3bdc80,_0x27097c['yaw']=_0x56e2b0,_0x27097c;return{'roll':_0x4e080d,'pitch':_0x3bdc80,'yaw':_0x56e2b0};}},Noise={'_p':[],'_init'(){const _0x180a6e=a0_0x250ed6,_0x55a80d=[];for(let _0x16404b=0x0;_0x16404b<0x100;_0x16404b++)_0x55a80d[_0x180a6e(0x2ed)](_0x16404b);for(let _0x2edf87=0xff;_0x2edf87>0x0;_0x2edf87--){const _0x519a54=Math[_0x180a6e(0x258)]()*(_0x2edf87+0x1)|0x0;[_0x55a80d[_0x2edf87],_0x55a80d[_0x519a54]]=[_0x55a80d[_0x519a54],_0x55a80d[_0x2edf87]];}this['_p']=[..._0x55a80d,..._0x55a80d];},'_fade'(_0x12aa43){return _0x12aa43*_0x12aa43*_0x12aa43*(_0x12aa43*(_0x12aa43*0x6-0xf)+0xa);},'_lerp'(_0x1da71c,_0x57ed8c,_0xa618f2){return _0x1da71c+_0xa618f2*(_0x57ed8c-_0x1da71c);},'_grad'(_0xcfabb6,_0x3869f6,_0x13b46f,_0x49bf5b){_0xcfabb6&=0xf;const _0x38e25d=_0xcfabb6<0x8?_0x3869f6:_0x13b46f,_0xcec70d=_0xcfabb6<0x4?_0x13b46f:_0xcfabb6===0xc||_0xcfabb6===0xe?_0x3869f6:_0x49bf5b;return(_0xcfabb6&0x1?-_0x38e25d:_0x38e25d)+(_0xcfabb6&0x2?-_0xcec70d:_0xcec70d);},'n'(_0x13a14c,_0x1c3eca,_0x3ace3e){const _0x358be8=a0_0x250ed6;if(!this['_p'][_0x358be8(0x2db)])this[_0x358be8(0x259)]();const _0x7436ad=this['_p'],_0x1fd5cf=Math[_0x358be8(0x2f8)](_0x13a14c)&0xff,_0x3847de=Math[_0x358be8(0x2f8)](_0x1c3eca)&0xff,_0x5b77ab=Math[_0x358be8(0x2f8)](_0x3ace3e)&0xff,_0x19f8b4=_0x13a14c-Math['floor'](_0x13a14c),_0x1e763b=_0x1c3eca-Math[_0x358be8(0x2f8)](_0x1c3eca),_0x4447a6=_0x3ace3e-Math[_0x358be8(0x2f8)](_0x3ace3e),_0x4eaca1=this[_0x358be8(0x243)](_0x19f8b4),_0x265dca=this[_0x358be8(0x243)](_0x1e763b),_0x539574=this[_0x358be8(0x243)](_0x4447a6),_0x136b79=_0x7436ad[_0x1fd5cf]+_0x3847de,_0x4d9f66=_0x7436ad[_0x136b79]+_0x5b77ab,_0x103974=_0x7436ad[_0x136b79+0x1]+_0x5b77ab,_0x6d9fb8=_0x7436ad[_0x1fd5cf+0x1]+_0x3847de,_0x4e4f28=_0x7436ad[_0x6d9fb8]+_0x5b77ab,_0x1b34a6=_0x7436ad[_0x6d9fb8+0x1]+_0x5b77ab;return this['_lerp'](this['_lerp'](this[_0x358be8(0x2c4)](this[_0x358be8(0x2c3)](_0x7436ad[_0x4d9f66],_0x19f8b4,_0x1e763b,_0x4447a6),this['_grad'](_0x7436ad[_0x4e4f28],_0x19f8b4-0x1,_0x1e763b,_0x4447a6),_0x4eaca1),this[_0x358be8(0x2c4)](this['_grad'](_0x7436ad[_0x103974],_0x19f8b4,_0x1e763b-0x1,_0x4447a6),this['_grad'](_0x7436ad[_0x1b34a6],_0x19f8b4-0x1,_0x1e763b-0x1,_0x4447a6),_0x4eaca1),_0x265dca),this['_lerp'](this[_0x358be8(0x2c4)](this[_0x358be8(0x2c3)](_0x7436ad[_0x4d9f66+0x1],_0x19f8b4,_0x1e763b,_0x4447a6-0x1),this[_0x358be8(0x2c3)](_0x7436ad[_0x4e4f28+0x1],_0x19f8b4-0x1,_0x1e763b,_0x4447a6-0x1),_0x4eaca1),this[_0x358be8(0x2c4)](this[_0x358be8(0x2c3)](_0x7436ad[_0x103974+0x1],_0x19f8b4,_0x1e763b-0x1,_0x4447a6-0x1),this[_0x358be8(0x2c3)](_0x7436ad[_0x1b34a6+0x1],_0x19f8b4-0x1,_0x1e763b-0x1,_0x4447a6-0x1),_0x4eaca1),_0x265dca),_0x539574);},'fbm'(_0x3055e4,_0x38af15,_0x5a1766,_0x322054=0x2,_0x5e7a81=0.5,_0x2869e4=0x2){let _0x45c144=0x0,_0x2861a7=0x1,_0x4b5904=0x1,_0x5d6da9=0x0;for(let _0x43e9ab=0x0;_0x43e9ab<_0x322054;_0x43e9ab++){_0x45c144+=this['n'](_0x3055e4*_0x4b5904,_0x38af15*_0x4b5904,_0x5a1766*_0x4b5904)*_0x2861a7,_0x5d6da9+=_0x2861a7,_0x2861a7*=_0x5e7a81,_0x4b5904*=_0x2869e4;}return _0x45c144/_0x5d6da9;}};Noise[a0_0x250ed6(0x259)]();const DRYDEN={'_u':0x0,'_v':0x0,'_w':0x0,'_dw':0x0,'intensity':0x0,'update'(_0x7702fb,_0x305ec6){const _0x5ef6a3=a0_0x250ed6;if(this['intensity']<=0.001){this['_u']=this['_v']=this['_w']=this[_0x5ef6a3(0x1c9)]=0x0;return;}const _0x5af0f3=Math['max'](0.5,_0x305ec6),_0x39333b=_0x5af0f3/Math['pow'](0.177+0.000823*_0x5af0f3,1.2),_0x4ac731=_0x5af0f3,_0x514edf=this[_0x5ef6a3(0x1c5)]*6.5,_0x3d5a96=0x8+this['intensity']*0xc,_0x4e3555=_0x3d5a96/_0x39333b,_0x190d67=_0x3d5a96/_0x4ac731,_0x4e36f1=0x1/Math[_0x5ef6a3(0x2aa)](Math['max'](_0x7702fb,0.00001)),_0x26c4fc=(Math[_0x5ef6a3(0x258)]()-0.5)*0x2*_0x4e36f1,_0x1fb01a=(Math[_0x5ef6a3(0x258)]()-0.5)*0x2*_0x4e36f1,_0x3520c5=(Math['random']()-0.5)*0x2*_0x4e36f1;this['_u']+=(-_0x4e3555*this['_u']+_0x514edf*Math[_0x5ef6a3(0x2aa)](0x2*_0x4e3555)*_0x26c4fc)*_0x7702fb,this['_v']+=(-_0x4e3555*this['_v']+_0x514edf*0.85*Math[_0x5ef6a3(0x2aa)](0x2*_0x4e3555)*_0x1fb01a)*_0x7702fb,this['_dw']+=(-0x2*_0x190d67*this[_0x5ef6a3(0x1c9)]-_0x190d67*_0x190d67*this['_w']+_0x514edf*Math[_0x5ef6a3(0x2aa)](0x3)*_0x190d67*_0x190d67*_0x3520c5)*_0x7702fb,this['_w']+=this[_0x5ef6a3(0x1c9)]*_0x7702fb;const _0x2b4f58=_0x514edf*3.5;this['_u']=Math[_0x5ef6a3(0x28f)](-_0x2b4f58,Math['min'](_0x2b4f58,this['_u'])),this['_v']=Math[_0x5ef6a3(0x28f)](-_0x2b4f58,Math[_0x5ef6a3(0x29e)](_0x2b4f58,this['_v'])),this['_w']=Math[_0x5ef6a3(0x28f)](-_0x2b4f58,Math[_0x5ef6a3(0x29e)](_0x2b4f58,this['_w']));},'_result':{'x':0x0,'y':0x0,'z':0x0},'get'(){const _0x2a3f10=a0_0x250ed6;return this[_0x2a3f10(0x1ef)]['x']=this['_v'],this[_0x2a3f10(0x1ef)]['y']=this['_w'],this[_0x2a3f10(0x1ef)]['z']=this['_u'],this[_0x2a3f10(0x1ef)];}};class PID{constructor(_0x11f816,_0x12162b,_0x3e9bd5,_0x207f44=0x32,_0x2f8001=0x1e){const _0x4cc0b0=a0_0x250ed6;this['p']=_0x11f816,this['i']=_0x12162b,this['d']=_0x3e9bd5,this[_0x4cc0b0(0x2bb)]=_0x207f44,this['dCutoffHz']=_0x2f8001,this['iErr']=0x0,this[_0x4cc0b0(0x27b)]=0x0,this[_0x4cc0b0(0x1ff)]=0x0,this[_0x4cc0b0(0x2be)]=!![],this[_0x4cc0b0(0x2ef)]=0x0,this['_outLimit']=Infinity,this[_0x4cc0b0(0x2b8)]=0x0,this['_lastDt']=-0x1;}[a0_0x250ed6(0x216)](){const _0x4d0de5=a0_0x250ed6;this['iErr']=0x0,this[_0x4d0de5(0x27b)]=0x0,this[_0x4d0de5(0x1ff)]=0x0,this['_first']=!![],this[_0x4d0de5(0x2ef)]=0x0,this['_alpha']=0x0,this[_0x4d0de5(0x238)]=-0x1;}[a0_0x250ed6(0x24e)](_0x2d6712,_0x15af92,_0x107f38){const _0x37b951=a0_0x250ed6;if(_0x107f38<=0x0)return 0x0;this[_0x37b951(0x2be)]&&(this[_0x37b951(0x27b)]=_0x15af92,this['_first']=![]);const _0x562370=_0x2d6712-_0x15af92,_0xd9577a=Math[_0x37b951(0x272)](this[_0x37b951(0x2ef)])>=this[_0x37b951(0x223)]*0.98,_0x5945d5=!_0xd9577a||_0x562370*Math[_0x37b951(0x2e8)](this['_lastOutput'])<0x0;_0x5945d5&&(this[_0x37b951(0x260)]=Math[_0x37b951(0x28f)](-this[_0x37b951(0x2bb)],Math[_0x37b951(0x29e)](this[_0x37b951(0x2bb)],this['iErr']+_0x562370*_0x107f38)));const _0x11cc3b=(_0x15af92-this[_0x37b951(0x27b)])/_0x107f38;return _0x107f38!==this[_0x37b951(0x238)]&&(this[_0x37b951(0x2b8)]=0x1-Math[_0x37b951(0x228)](-0x2*Math['PI']*this[_0x37b951(0x1f5)]*_0x107f38),this[_0x37b951(0x238)]=_0x107f38),this[_0x37b951(0x1ff)]+=this['_alpha']*(_0x11cc3b-this[_0x37b951(0x1ff)]),this[_0x37b951(0x27b)]=_0x15af92,this['_lastOutput']=this['p']*_0x562370+this['i']*this[_0x37b951(0x260)]-this['d']*this['dFilt'],this[_0x37b951(0x2ef)];}}class Kalman1D{constructor(_0x2b697b=0.005,_0x33aad3=0.08){const _0x2e0717=a0_0x250ed6;this['Q']=_0x2b697b,this['R']=_0x33aad3,this['x']=0x0,this['P']=0x1,this[_0x2e0717(0x259)]=![];}['update'](_0x2c2bed){if(!this['_init'])return this['x']=_0x2c2bed,this['_init']=!![],_0x2c2bed;this['P']+=this['Q'];const _0x429ae6=this['P']/(this['P']+this['R']);return this['x']+=_0x429ae6*(_0x2c2bed-this['x']),this['P']*=0x1-_0x429ae6,this['x'];}}function a0_0x20b6(_0xcc3920,_0x570503){_0xcc3920=_0xcc3920-0x19a;const _0x225eb7=a0_0x225e();let _0x20b605=_0x225eb7[_0xcc3920];return _0x20b605;}function a0_0x225e(){const _0xd8b97d=['Digit1','tagName','_fixType','map','toFixed','gpshold','createObjectURL','_lastDt','_kVy','conj','clone','_cachedEscA','Micro\x202S\x20Quad','drone-profile-label','ArrowDown','maxAltVelRate','_angles','crashed','_fade','_ctx','batt','pid-rd','ArrowLeft','Digit4','HOME_ALT','gains','value','ShiftLeft','dragArea','update','len','acc','height','LEFT','vel','_mixMotors','HOME_LAT','sub','beginPath','random','_init','getContext','pid-rp','#43A047','rotorRadius','_driftX','ratePID','iErr','normal','battTotalAh','alt','12cLzOjH','hoverThrottle','_hdop','_maxAlt','_f32','armLen','enabled','_distances','#E53935','sensitivity','posTarget','battPct','clearRect','none','abs','HOME_LON','_gamepad','.tlog','style','lineTo','1795514VcKOEb','clientWidth','debug-badge','prevMeas','posNPID','_visible','round','KeyG','battVoltage','function','label','motorCmdFiltered','_histLen','GRAVITY','5\x22\x20Racing\x20Quad','yaw','ControlLeft','_lastSync','MSG_HEARTBEAT','No\x20blackbox\x20data','dragCd','_scales','_motorTorque','max','batteryStatus','Iyy','_cachedAirDens','🎮\x20Controller\x20disconnected','ControlRight','setInt32','resetPIDs','isNaN','#10256D','toast','setFloat32','battCapacity','_recomputeHover','maxRPM','min','width','fpv','_seq','keys','setUint16','_i16','_doCrash','_rateLoopSubstep','acro','rgba(238,241,247,0.6)','now','sqrt','rthPhase','ShiftRight','#607D8B','norm','_prevPos','_syncSize','quat','motorCmd','_pidHist','MSG_LOCAL_POSITION_NED','warn','_vjActive','setUint32','_alpha','undefined','zero','iLimit','_altManualLastFrame','_dragging','_first','posEPID','currentDraw','has','fix_type','_grad','_lerp','rotVecOut','click','armed','code','byteLength','_fcRateCmd','angVel','anglePID','2018331QzqfIa','recordPID','spaceborn-','idleRPM','target','846846sjcBfX','hypot','#9C27B0','284UaRNYN','maxTiltRad','axes','cross','expo','stringify','length','uuv','KeyW','shift','_prevQuat','getElementById','_packet','_lastAirDensAlt','_u32','_i32','pid-ap','2.1','spaceborn-telem-','sign','get','fillStyle','preventDefault','stroke','push','rawInt','_lastOutput','KeyX','INPUT','dot','vfrHud','_gyroBias','roll','colliders','_substep','floor','1155MyMuWB','gamepaddisconnected','angDrag','join','_history','moveTo','_name','droneVisual','atan2','altTarget','addEventListener','href','_maxLen','_altEstimate','_motorThrust','ArrowRight','_log','hoverRPM','substring','_flightKeys','Tab','invRotVec','strokeStyle','slice','bodyScale','_satTimer','groundY','createElement','KeyM','SELECT','altPID','recording','windVec','getAltMSL','SENSOR_RANGE','reduce','crossOut','_canvas','_vjRight','_vjLeft','Ixx','sort','display','_sanitize','index','airDens','_u16','KeyT','localPositionNed','pow','_updateSensors','asin','Digit2','_crc16','intensity','grounded','motorRPM','rotVec','_dw','pitch','font','_angleThenStore','_satJitter','isFinite','angle','application/json','rgba(16,37,109,0.7)','_thrRaw','getGamepads','setUint8','_lastTick','cells','BACK','rgba(96,125,139,0.2)','_kAlt','gyro','deadband','KeyR','stabilized','buildTlog','_channels','_keys','euler','motorTau','MSG_GPS_RAW_INT','lineWidth','angleP','keydown','8AzsSbA','_applyDeadExpo','maxAngleRate','ArrowUp','KeyF','_driftZ','Digit5','Izz','_result','motorDir','_isActive','_airDensity','throttle','mode','dCutoffHz','getLat','rth','textContent','KeyS','pid-yp','download','text/csv','integrate','applyGains','dFilt','curr','gpsRawInt','16250UDanql','5570AvyQVl','toEuler','fillRect','autoTuneFromPhysics','forEach','sin','althold','Escape','droneProfile','maxRate','racing5','homePos','KeyC','75028JzkNNk','_baroRaw','🎮\x20Controller:\x20','mass','propInertia','revokeObjectURL','reset','cos','setInt8','_lastEscDt','thr','#EE9346','altVelPID','pos','getSatCount','accelBody','block','_satBase','thr-val','_outLimit','scale','motorMixGain','KeyA','assign','exp','indoor','add','getLog','309361UBvUUl','spaceborn-blackbox-','_cosHomeLat','pid-ri','motorDamage'];a0_0x225e=function(){return _0xd8b97d;};return a0_0x225e();}const DRONE_PROFILES={'racing5':{'label':a0_0x250ed6(0x286),'mass':1.24,'Ixx':0.006,'Iyy':0.011,'Izz':0.006,'armLen':0.19,'kT':0.0000104,'kQ':1.55e-7,'maxRPM':0x36b0,'idleRPM':0x1f4,'motorTau':0.055,'escDelay':0.012,'dragArea':0.022,'dragCd':1.12,'angDrag':0.0028,'cells':0x4,'battTotalAh':1.65,'color':0x1e88e5,'bodyScale':0x1,'rotorRadius':0.09,'maxTiltDeg':0x37,'maxRate':{'pitch':0xa,'roll':0xa,'yaw':4.5},'propInertia':0.000025,'Cqlift':0.015},'cinequad':{'label':'CineQuad\x204S','mass':2.85,'Ixx':0.032,'Iyy':0.058,'Izz':0.032,'armLen':0.27,'kT':0.0000118,'kQ':2.2e-7,'maxRPM':0x251c,'idleRPM':0x1c2,'motorTau':0.09,'escDelay':0.018,'dragArea':0.038,'dragCd':1.05,'angDrag':0.0045,'cells':0x4,'battTotalAh':5.2,'color':0xffc107,'bodyScale':1.1,'rotorRadius':0.11,'maxTiltDeg':0x23,'maxRate':{'pitch':0x6,'roll':0x6,'yaw':2.5},'propInertia':0.000065,'Cqlift':0.018},'micro2':{'label':a0_0x250ed6(0x23d),'mass':0.34,'Ixx':0.0013,'Iyy':0.0021,'Izz':0.0013,'armLen':0.09,'kT':0.0000068,'kQ':8.5e-8,'maxRPM':0x55f0,'idleRPM':0x4b0,'motorTau':0.045,'escDelay':0.008,'dragArea':0.013,'dragCd':1.18,'angDrag':0.0012,'cells':0x2,'battTotalAh':0.45,'color':0x43a047,'bodyScale':0.75,'rotorRadius':0.055,'maxTiltDeg':0x41,'maxRate':{'pitch':0x12,'roll':0x12,'yaw':0x8},'propInertia':0.000008,'Cqlift':0.012},'explorer6':{'label':'Explorer\x206\x22\x20Hover','mass':1.68,'Ixx':0.011,'Iyy':0.019,'Izz':0.011,'armLen':0.22,'kT':0.0000108,'kQ':1.7e-7,'maxRPM':0x2ee0,'idleRPM':0x15e,'motorTau':0.07,'escDelay':0.015,'dragArea':0.03,'dragCd':1.08,'angDrag':0.0032,'cells':0x4,'battTotalAh':2.8,'color':0x8e24aa,'bodyScale':1.05,'rotorRadius':0.1,'maxTiltDeg':0x28,'maxRate':{'pitch':0x8,'roll':0x8,'yaw':0x3},'propInertia':0.00004,'Cqlift':0.016}},PHYS={'GRAVITY':9.80665,'mass':1.24,'Ixx':0.006,'Iyy':0.011,'Izz':0.006,'armLen':0.19,'kT':0.0000104,'kQ':1.55e-7,'maxRPM':0x36b0,'idleRPM':0x1f4,'motorTau':0.055,'escDelay':0.012,'dragArea':0.022,'dragCd':1.12,'angDrag':0.0028,'airDens':1.225,'cells':0x4,'battTotalAh':1.65,'propInertia':0.000025,'Cqlift':0.015,'droneProfile':a0_0x250ed6(0x20d),'droneVisual':{'bodyScale':0x1,'rotorRadius':0.09,'color':0x1e88e5},'maxTiltRad':0x37*Math['PI']/0xb4,'maxRate':{'pitch':0xa,'roll':0xa,'yaw':4.5},'motorDir':[0x1,-0x1,0x1,-0x1],'motorLabels':['FR','FL','BL','BR'],'_scr':{'wind':V3['zero'](),'vRel':V3[a0_0x250ed6(0x2ba)](),'dragF':V3['zero'](),'acc1':V3['zero'](),'acc2':V3[a0_0x250ed6(0x2ba)](),'accBody':V3[a0_0x250ed6(0x2ba)](),'thrustW':V3['zero'](),'dVel':V3[a0_0x250ed6(0x2ba)](),'dPos':V3['zero'](),'u':V3[a0_0x250ed6(0x2ba)](),'uv':V3['zero'](),'uuv':V3[a0_0x250ed6(0x2ba)](),'tau':V3['zero'](),'dAngVel':V3[a0_0x250ed6(0x2ba)](),'angDrag':V3[a0_0x250ed6(0x2ba)](),'gyroT':V3[a0_0x250ed6(0x2ba)](),'rotV':V3['zero']()},'pos':V3[a0_0x250ed6(0x2ba)](),'vel':V3[a0_0x250ed6(0x2ba)](),'acc':V3[a0_0x250ed6(0x2ba)](),'quat':Q['id'](),'angVel':V3[a0_0x250ed6(0x2ba)](),'gyro':V3[a0_0x250ed6(0x2ba)](),'accelBody':V3[a0_0x250ed6(0x2ba)](),'motorRPM':[0x0,0x0,0x0,0x0],'motorCmd':[0x0,0x0,0x0,0x0],'motorCmdFiltered':[0x0,0x0,0x0,0x0],'_fcRateCmd':{'pitch':0x0,'roll':0x0,'yaw':0x0,'thr':0x0},'grounded':!![],'crashed':![],'homePos':null,'groundY':0x0,'colliders':[],'battPct':0x64,'battVoltage':16.8,'battCapacity':0x0,'currentDraw':0x0,'euler':{'roll':0x0,'pitch':0x0,'yaw':0x0},'windVec':V3[a0_0x250ed6(0x2ba)](),'windGust':0x0,'hoverThrottle':0.5,'turbulenceIntensity':0x0,'_kAlt':new Kalman1D(0.005,0.08),'_kVy':new Kalman1D(0.01,0.15),'_altEstimate':0x0,'_baroRaw':0x0,'_gyroBias':{'x':0x0,'y':0x0,'z':0x0},'_prevPos':V3[a0_0x250ed6(0x2ba)](),'_prevQuat':Q['id'](),'_lastAirDensAlt':NaN,'_cachedAirDens':1.225,'_lastTerrainPos':{'x':NaN,'z':NaN},'_lastTerrainH':0x0,'applyProfile'(_0x107343){const _0x31f85c=a0_0x250ed6,_0x3bc103=DRONE_PROFILES[_0x107343];if(!_0x3bc103)return;this[_0x31f85c(0x20b)]=_0x107343,Object[_0x31f85c(0x227)](this,{'mass':_0x3bc103[_0x31f85c(0x213)],'Ixx':_0x3bc103[_0x31f85c(0x1b7)],'Iyy':_0x3bc103['Iyy'],'Izz':_0x3bc103[_0x31f85c(0x1ee)],'armLen':_0x3bc103[_0x31f85c(0x269)],'kT':_0x3bc103['kT'],'kQ':_0x3bc103['kQ'],'maxRPM':_0x3bc103[_0x31f85c(0x29d)],'idleRPM':_0x3bc103[_0x31f85c(0x2d0)],'motorTau':_0x3bc103[_0x31f85c(0x1e2)],'escDelay':_0x3bc103['escDelay'],'dragArea':_0x3bc103['dragArea'],'dragCd':_0x3bc103[_0x31f85c(0x28c)],'angDrag':_0x3bc103[_0x31f85c(0x2fb)],'cells':_0x3bc103[_0x31f85c(0x1d6)],'battTotalAh':_0x3bc103[_0x31f85c(0x262)],'maxTiltRad':(_0x3bc103['maxTiltDeg']||0x37)*Math['PI']/0xb4,'maxRate':{..._0x3bc103[_0x31f85c(0x20c)]},'propInertia':_0x3bc103[_0x31f85c(0x214)]||0.000025,'Cqlift':_0x3bc103['Cqlift']||0.015}),this['droneVisual']={'bodyScale':_0x3bc103[_0x31f85c(0x1a7)],'rotorRadius':_0x3bc103['rotorRadius'],'color':_0x3bc103['color']},this[_0x31f85c(0x29c)]();const _0x548e35=document[_0x31f85c(0x2e0)](_0x31f85c(0x23e));if(_0x548e35)_0x548e35[_0x31f85c(0x1f8)]=_0x3bc103[_0x31f85c(0x282)];if(typeof FC!==_0x31f85c(0x2b9))FC[_0x31f85c(0x206)]();},'_recomputeHover'(){const _0x3c00ad=a0_0x250ed6,_0x5f1d75=Math[_0x3c00ad(0x2aa)](this[_0x3c00ad(0x213)]*this[_0x3c00ad(0x285)]/(0x4*this['kT']));this['hoverRPM']=_0x5f1d75*0x3c/(0x2*Math['PI']),this[_0x3c00ad(0x265)]=Math[_0x3c00ad(0x28f)](0.02,Math['min'](0.92,this[_0x3c00ad(0x1a0)]/this[_0x3c00ad(0x29d)]));},'reset'(_0x180765){const _0x1b5f5a=a0_0x250ed6,_0x675ab8=0.074*(this[_0x1b5f5a(0x300)][_0x1b5f5a(0x1a7)]||0x1)*0x5;this['pos']=_0x180765||{'x':0x0,'y':this['groundY']+_0x675ab8,'z':0x0},this[_0x1b5f5a(0x2af)]=V3['clone'](this[_0x1b5f5a(0x21d)]),this[_0x1b5f5a(0x253)]=V3[_0x1b5f5a(0x2ba)](),this[_0x1b5f5a(0x250)]=V3[_0x1b5f5a(0x2ba)](),this[_0x1b5f5a(0x2b1)]=Q['id'](),this['_prevQuat']=Q['id'](),this['angVel']=V3[_0x1b5f5a(0x2ba)](),this['gyro']=V3['zero'](),this[_0x1b5f5a(0x21f)]=V3[_0x1b5f5a(0x2ba)](),this[_0x1b5f5a(0x1c7)]=[0x0,0x0,0x0,0x0],this[_0x1b5f5a(0x2b2)]=[0x0,0x0,0x0,0x0],this[_0x1b5f5a(0x283)]=[0x0,0x0,0x0,0x0],this[_0x1b5f5a(0x2ca)]={'pitch':0x0,'roll':0x0,'yaw':0x0,'thr':0x0},this[_0x1b5f5a(0x1c6)]=!![],this[_0x1b5f5a(0x242)]=![],this['euler']={'roll':0x0,'pitch':0x0,'yaw':0x0},this[_0x1b5f5a(0x26f)]=0x64,this[_0x1b5f5a(0x280)]=4.2*this[_0x1b5f5a(0x1d6)],this[_0x1b5f5a(0x29b)]=0x0,this[_0x1b5f5a(0x2c0)]=0x0,this[_0x1b5f5a(0x1d9)]=new Kalman1D(0.005,0.08),this[_0x1b5f5a(0x239)]=new Kalman1D(0.01,0.15),this[_0x1b5f5a(0x211)]=0x0,this[_0x1b5f5a(0x2f4)]={'x':0x0,'y':0x0,'z':0x0};if(typeof State!==_0x1b5f5a(0x2b9))State[_0x1b5f5a(0x230)]=[0x0,0x0,0x0,0x0];this['_recomputeHover']();},'saveHome'(){const _0x4aef69=a0_0x250ed6;this['homePos']=V3[_0x4aef69(0x23b)](this[_0x4aef69(0x21d)]);},'_sanitize'(){const _0x2a6cf7=a0_0x250ed6,_0x37bd14=_0x113c0a=>!Number[_0x2a6cf7(0x1ce)](_0x113c0a);if(_0x37bd14(this[_0x2a6cf7(0x21d)]['x'])||_0x37bd14(this['pos']['y'])||_0x37bd14(this[_0x2a6cf7(0x21d)]['z'])){const _0x522b40=0.074*(this[_0x2a6cf7(0x300)]['bodyScale']||0x1)*0x5;this[_0x2a6cf7(0x216)]({'x':0x0,'y':this['groundY']+_0x522b40+0.05,'z':0x0});if(typeof FC!==_0x2a6cf7(0x2b9))FC['resetPIDs']();return![];}if(_0x37bd14(this[_0x2a6cf7(0x253)]['x'])||_0x37bd14(this[_0x2a6cf7(0x253)]['y'])||_0x37bd14(this['vel']['z']))this['vel']=V3[_0x2a6cf7(0x2ba)]();(_0x37bd14(this['angVel']['x'])||_0x37bd14(this[_0x2a6cf7(0x2cb)]['y'])||_0x37bd14(this[_0x2a6cf7(0x2cb)]['z']))&&(this[_0x2a6cf7(0x2cb)]=V3['zero'](),this[_0x2a6cf7(0x2b1)]=Q['id']());if(_0x37bd14(this[_0x2a6cf7(0x2b1)]['w'])||_0x37bd14(this[_0x2a6cf7(0x2b1)]['x'])||_0x37bd14(this[_0x2a6cf7(0x2b1)]['y'])||_0x37bd14(this['quat']['z']))this['quat']=Q['id']();for(let _0x39ed57=0x0;_0x39ed57<0x4;_0x39ed57++)if(_0x37bd14(this[_0x2a6cf7(0x1c7)][_0x39ed57]))this[_0x2a6cf7(0x1c7)][_0x39ed57]=0x0;return!![];},'_airDensity'(_0x30c3e3){const _0x9d916e=a0_0x250ed6,_0x509b72=Math[_0x9d916e(0x28f)](0x0,_0x30c3e3);if(Math['abs'](_0x509b72-this[_0x9d916e(0x2e2)])<0.5)return this[_0x9d916e(0x292)];this['_lastAirDensAlt']=_0x509b72;const _0x42636b=288.15,_0x5f32c8=0.0065,_0xe3376b=0x18bcd,_0x22c62d=287.058,_0x183365=_0x42636b-_0x5f32c8*_0x509b72;return this[_0x9d916e(0x292)]=_0xe3376b*Math[_0x9d916e(0x1c0)](_0x183365/_0x42636b,_ISA_EXP)/(_0x22c62d*_0x183365),this[_0x9d916e(0x292)];},'_motorThrust'(_0x112b65){const _0x1a5dd6=a0_0x250ed6,_0x4950e7=_0x112b65*TWO_PI_OVER_60,_0x4361f6=this['kT']*_0x4950e7*_0x4950e7,_0x2ad7a3=0x1-Math[_0x1a5dd6(0x28f)](0x0,(_0x112b65/this[_0x1a5dd6(0x29d)]-0.85)*0.4);return _0x4361f6*_0x2ad7a3;},'_motorTorque'(_0x4f8df8){const _0x165b30=_0x4f8df8*TWO_PI_OVER_60;return this['kQ']*_0x165b30*_0x165b30;},'_lastEscDt':-0x1,'_cachedEscA':0x0,'_lastTauUp':-0x1,'_lastTauDown':-0x1,'_cachedRpmA_up':0x0,'_cachedRpmA_dn':0x0,'step'(_0x48c236){const _0x312904=a0_0x250ed6;_0x48c236=Math[_0x312904(0x28f)](0.0005,Math['min'](0.04,_0x48c236));if(!this[_0x312904(0x1ba)]())return;this['_prevPos']=V3['clone'](this[_0x312904(0x21d)]),this[_0x312904(0x2df)]={...this[_0x312904(0x2b1)]};if(this[_0x312904(0x242)]){this['_crashSettle'](_0x48c236);return;}const _0x1f5ffe=0x4,_0x573885=_0x48c236/_0x1f5ffe;for(let _0x25a748=0x0;_0x25a748<_0x1f5ffe;_0x25a748++)this[_0x312904(0x2f7)](_0x573885);this[_0x312904(0x1c1)](_0x48c236);},'_substep'(_0x5b00c6){const _0x5c3cb3=a0_0x250ed6,_0x3a3e6d=this['cells']*4.2,_0x1bfb75=0.025*this['cells'],_0x52e2d1=Math['max'](0.5,Math['min'](0x1,this[_0x5c3cb3(0x280)]/_0x3a3e6d));_0x5b00c6!==this[_0x5c3cb3(0x219)]&&(this[_0x5c3cb3(0x23c)]=0x1-Math[_0x5c3cb3(0x228)](-_0x5b00c6/(this['escDelay']+0.001)),this['_cachedRpmA_up']=0x1-Math[_0x5c3cb3(0x228)](-_0x5b00c6/this[_0x5c3cb3(0x1e2)]),this['_cachedRpmA_dn']=0x1-Math['exp'](-_0x5b00c6/(this[_0x5c3cb3(0x1e2)]*1.6)),this[_0x5c3cb3(0x219)]=_0x5b00c6);const _0x3bdacc=this[_0x5c3cb3(0x23c)],_0x251c44=this['_cachedRpmA_up'],_0x1ac75e=this['_cachedRpmA_dn'],_0x584a62=typeof State!==_0x5c3cb3(0x2b9),_0x2fea35=_0x584a62&&State['armed']?this[_0x5c3cb3(0x2d0)]:0x0;for(let _0x1a7dcc=0x0;_0x1a7dcc<0x4;_0x1a7dcc++){const _0x103f05=_0x584a62?State[_0x5c3cb3(0x230)][_0x1a7dcc]:0x0,_0x2cb669=this[_0x5c3cb3(0x2b2)][_0x1a7dcc]*(0x1-_0x103f05)*_0x52e2d1;this[_0x5c3cb3(0x283)][_0x1a7dcc]+=(_0x2cb669-this[_0x5c3cb3(0x283)][_0x1a7dcc])*_0x3bdacc;const _0x537c8b=this['motorCmdFiltered'][_0x1a7dcc]*this['maxRPM'],_0x12cc9f=_0x537c8b>this[_0x5c3cb3(0x1c7)][_0x1a7dcc]?_0x251c44:_0x1ac75e;this[_0x5c3cb3(0x1c7)][_0x1a7dcc]+=(_0x537c8b-this[_0x5c3cb3(0x1c7)][_0x1a7dcc])*_0x12cc9f,this[_0x5c3cb3(0x1c7)][_0x1a7dcc]=Math[_0x5c3cb3(0x28f)](_0x2fea35,Math[_0x5c3cb3(0x29e)](this[_0x5c3cb3(0x29d)],this[_0x5c3cb3(0x1c7)][_0x1a7dcc]));}const _0x35a6c1=this[_0x5c3cb3(0x1f2)](this[_0x5c3cb3(0x21d)]['y']),_0x320e5d=_0x35a6c1/1.225,_0x471dc7=[this[_0x5c3cb3(0x19d)](this[_0x5c3cb3(0x1c7)][0x0])*_0x320e5d,this[_0x5c3cb3(0x19d)](this['motorRPM'][0x1])*_0x320e5d,this[_0x5c3cb3(0x19d)](this[_0x5c3cb3(0x1c7)][0x2])*_0x320e5d,this['_motorThrust'](this[_0x5c3cb3(0x1c7)][0x3])*_0x320e5d],_0x2aeee1=_0x471dc7[0x0]+_0x471dc7[0x1]+_0x471dc7[0x2]+_0x471dc7[0x3],_0x5c59f2=this[_0x5c3cb3(0x269)],_0x55b7e6=_0x5c59f2*(_0x471dc7[0x2]+_0x471dc7[0x3]-_0x471dc7[0x0]-_0x471dc7[0x1]),_0x4a3c64=_0x5c59f2*(_0x471dc7[0x0]+_0x471dc7[0x3]-_0x471dc7[0x1]-_0x471dc7[0x2]),_0x2b34b5=-(this['_motorTorque'](this[_0x5c3cb3(0x1c7)][0x0])*this[_0x5c3cb3(0x1f0)][0x0]+this[_0x5c3cb3(0x28e)](this[_0x5c3cb3(0x1c7)][0x1])*this[_0x5c3cb3(0x1f0)][0x1]+this[_0x5c3cb3(0x28e)](this[_0x5c3cb3(0x1c7)][0x2])*this[_0x5c3cb3(0x1f0)][0x2]+this[_0x5c3cb3(0x28e)](this[_0x5c3cb3(0x1c7)][0x3])*this['motorDir'][0x3]),_0x3315d9=this[_0x5c3cb3(0x1f0)][_0x5c3cb3(0x1b2)]((_0x131510,_0xee5911,_0x486fbc)=>_0x131510+_0xee5911*this[_0x5c3cb3(0x1c7)][_0x486fbc]*TWO_PI_OVER_60,0x0),_0xb0c2ec=this[_0x5c3cb3(0x214)]*_0x3315d9,_0x1306c8=-this[_0x5c3cb3(0x2cb)]['z']*_0xb0c2ec,_0x2e87c7=this[_0x5c3cb3(0x2cb)]['x']*_0xb0c2ec,{Ixx:_0x39f35b,Iyy:_0x4e660f,Izz:_0x2c5c6b}=this,_0x37bf19=this[_0x5c3cb3(0x2cb)]['x'],_0x140d82=this[_0x5c3cb3(0x2cb)]['y'],_0x58cfe9=this[_0x5c3cb3(0x2cb)]['z'],_0x2fe4ac=_0x140d82*(_0x2c5c6b*_0x58cfe9)-_0x58cfe9*(_0x4e660f*_0x140d82),_0x1bdb52=_0x58cfe9*(_0x39f35b*_0x37bf19)-_0x37bf19*(_0x2c5c6b*_0x58cfe9),_0x14467e=_0x37bf19*(_0x4e660f*_0x140d82)-_0x140d82*(_0x39f35b*_0x37bf19),_0x3bb6ac=this['angDrag'],_0x4c34dc=(_0x55b7e6+_0x1306c8-_0x2fe4ac)/_0x39f35b-_0x3bb6ac*_0x37bf19*Math[_0x5c3cb3(0x272)](_0x37bf19),_0x18ebdc=(_0x4a3c64+_0x2e87c7-_0x14467e)/_0x2c5c6b-_0x3bb6ac*_0x58cfe9*Math[_0x5c3cb3(0x272)](_0x58cfe9),_0x4fa267=(_0x2b34b5-_0x1bdb52)/_0x4e660f-_0x3bb6ac*0.7*_0x140d82*Math[_0x5c3cb3(0x272)](_0x140d82),_0x1489b2=this[_0x5c3cb3(0x20c)],_0x5c4c1b=this[_0x5c3cb3(0x2cb)]['x']+_0x4c34dc*_0x5b00c6,_0x3fe9b4=this[_0x5c3cb3(0x2cb)]['z']+_0x18ebdc*_0x5b00c6,_0x212408=this[_0x5c3cb3(0x2cb)]['y']+_0x4fa267*_0x5b00c6;this[_0x5c3cb3(0x2cb)]['x']=Math[_0x5c3cb3(0x272)](_0x5c4c1b)>_0x1489b2[_0x5c3cb3(0x1ca)]?Math[_0x5c3cb3(0x2e8)](_0x5c4c1b)*(_0x1489b2[_0x5c3cb3(0x1ca)]+(Math[_0x5c3cb3(0x272)](_0x5c4c1b)-_0x1489b2[_0x5c3cb3(0x1ca)])*0.08):_0x5c4c1b,this[_0x5c3cb3(0x2cb)]['z']=Math['abs'](_0x3fe9b4)>_0x1489b2['roll']?Math[_0x5c3cb3(0x2e8)](_0x3fe9b4)*(_0x1489b2[_0x5c3cb3(0x2f5)]+(Math['abs'](_0x3fe9b4)-_0x1489b2[_0x5c3cb3(0x2f5)])*0.08):_0x3fe9b4,this[_0x5c3cb3(0x2cb)]['y']=Math['abs'](_0x212408)>_0x1489b2[_0x5c3cb3(0x287)]?Math[_0x5c3cb3(0x2e8)](_0x212408)*(_0x1489b2[_0x5c3cb3(0x287)]+(Math[_0x5c3cb3(0x272)](_0x212408)-_0x1489b2[_0x5c3cb3(0x287)])*0.08):_0x212408,this[_0x5c3cb3(0x2b1)]=Q[_0x5c3cb3(0x1fd)](this[_0x5c3cb3(0x2b1)],this['angVel'],_0x5b00c6),Q[_0x5c3cb3(0x204)](this[_0x5c3cb3(0x2b1)],this[_0x5c3cb3(0x1e1)]);if(typeof FC!==_0x5c3cb3(0x2b9)&&(!_0x584a62||State['armed'])){const _0x2e841b=FC[_0x5c3cb3(0x2a6)](_0x5b00c6,this[_0x5c3cb3(0x2ca)][_0x5c3cb3(0x21a)],this[_0x5c3cb3(0x2ca)][_0x5c3cb3(0x1ca)],this[_0x5c3cb3(0x2ca)][_0x5c3cb3(0x2f5)],this[_0x5c3cb3(0x2ca)][_0x5c3cb3(0x287)]);this['motorCmd']=_0x2e841b;}let _0x5e4c3e=Q[_0x5c3cb3(0x1c8)](this[_0x5c3cb3(0x2b1)],{'x':0x0,'y':_0x2aeee1,'z':0x0});const _0x32fa0c=this[_0x5c3cb3(0x21d)]['y']-this[_0x5c3cb3(0x1a9)],_0x2857ad=this[_0x5c3cb3(0x300)][_0x5c3cb3(0x25d)]||0.09;if(_0x32fa0c>_0x2857ad*0.5&&_0x32fa0c<_0x2857ad*0x2){const _0x35ffec=_0x2857ad/(0x4*Math['max'](_0x32fa0c,_0x2857ad*0.5)),_0x3785d9=0x1/Math[_0x5c3cb3(0x28f)](0.01,0x1-_0x35ffec*_0x35ffec);_0x5e4c3e=V3[_0x5c3cb3(0x224)](_0x5e4c3e,Math['min'](_0x3785d9,2.5));}this[_0x5c3cb3(0x1bc)]=_0x35a6c1,DRYDEN['intensity']=this['turbulenceIntensity'],DRYDEN[_0x5c3cb3(0x24e)](_0x5b00c6,Math[_0x5c3cb3(0x28f)](0.5,_0x32fa0c));const _0xb04b96=DRYDEN['get'](),_0x4009ac=V3[_0x5c3cb3(0x22a)](this[_0x5c3cb3(0x1af)],_0xb04b96),_0x2eaea8=V3[_0x5c3cb3(0x256)](this[_0x5c3cb3(0x253)],_0x4009ac),_0x3d4f87=V3['len'](_0x2eaea8);let _0x9bc54c=V3['zero']();if(_0x3d4f87>0.01){const _0x476210=0.5*_0x35a6c1*_0x3d4f87*_0x3d4f87,_0x434ba1=Math[_0x5c3cb3(0x2aa)](this[_0x5c3cb3(0x1e1)]['pitch']**0x2+this[_0x5c3cb3(0x1e1)][_0x5c3cb3(0x2f5)]**0x2),_0x2b0494=this[_0x5c3cb3(0x28c)]*(0x1+0.15*Math[_0x5c3cb3(0x208)](Math[_0x5c3cb3(0x272)](this[_0x5c3cb3(0x1e1)][_0x5c3cb3(0x1ca)]))+0.15*Math[_0x5c3cb3(0x208)](Math[_0x5c3cb3(0x272)](this[_0x5c3cb3(0x1e1)]['roll'])));_0x9bc54c=V3[_0x5c3cb3(0x224)](V3['norm'](_0x2eaea8),-_0x476210*this[_0x5c3cb3(0x24d)]*_0x2b0494);}const _0x2f6ebc=V3['scale'](this['vel'],-this[_0x5c3cb3(0x213)]*0.16),_0x2fed2b={'x':0x0,'y':-this[_0x5c3cb3(0x213)]*this[_0x5c3cb3(0x285)],'z':0x0},_0x26a770=V3[_0x5c3cb3(0x22a)](V3[_0x5c3cb3(0x22a)](V3['add'](_0x5e4c3e,_0x2fed2b),_0x9bc54c),_0x2f6ebc);this[_0x5c3cb3(0x250)]=V3[_0x5c3cb3(0x224)](_0x26a770,0x1/this[_0x5c3cb3(0x213)]);const _0x35c7b1={'x':0x0,'y':-this['GRAVITY'],'z':0x0};this['accelBody']=Q[_0x5c3cb3(0x1a4)](this[_0x5c3cb3(0x2b1)],V3['sub'](this[_0x5c3cb3(0x250)],_0x35c7b1));let _0x1ce3ab=V3['add'](this[_0x5c3cb3(0x253)],V3[_0x5c3cb3(0x224)](this[_0x5c3cb3(0x250)],_0x5b00c6));const _0x1e82eb=V3[_0x5c3cb3(0x24f)](_0x1ce3ab);if(_0x1e82eb>0x20)_0x1ce3ab=V3['scale'](V3[_0x5c3cb3(0x2ae)](_0x1ce3ab),0x20);let _0x229b2e=V3['add'](this[_0x5c3cb3(0x21d)],V3['scale'](V3[_0x5c3cb3(0x22a)](this[_0x5c3cb3(0x253)],_0x1ce3ab),0.5*_0x5b00c6));this[_0x5c3cb3(0x253)]=_0x1ce3ab;const _0x383dee=0.074*(this[_0x5c3cb3(0x300)]['bodyScale']||0x1)*0x5,_0x3512c9=this['groundY']+_0x383dee;if(_0x229b2e['y']<_0x3512c9){const _0x1f025f=Math[_0x5c3cb3(0x272)](this['vel']['y']);if(_0x1f025f>0x8&&typeof State!==_0x5c3cb3(0x2b9)&&State['armed'])this[_0x5c3cb3(0x2a5)](_0x1f025f),_0x229b2e['y']=_0x3512c9;else{_0x229b2e['y']=_0x3512c9;this[_0x5c3cb3(0x253)]['y']<0x0&&(this[_0x5c3cb3(0x253)]['y']=-this[_0x5c3cb3(0x253)]['y']*0.15);const _0x15c634=0.4,_0x1a5bf0=Math[_0x5c3cb3(0x2d3)](this[_0x5c3cb3(0x253)]['x'],this['vel']['z']);if(_0x1a5bf0>0.001){const _0x314dee=Math[_0x5c3cb3(0x29e)](_0x1a5bf0,_0x15c634*this[_0x5c3cb3(0x285)]*_0x5b00c6),_0x226908=(_0x1a5bf0-_0x314dee)/_0x1a5bf0;this[_0x5c3cb3(0x253)]['x']*=_0x226908,this['vel']['z']*=_0x226908;}const _0xdde2f9=Math[_0x5c3cb3(0x228)](-0x12*_0x5b00c6);this[_0x5c3cb3(0x2cb)]['x']*=_0xdde2f9,this['angVel']['z']*=_0xdde2f9,this[_0x5c3cb3(0x2cb)]['y']*=_0xdde2f9,this[_0x5c3cb3(0x2cb)]['x']-=this['euler'][_0x5c3cb3(0x1ca)]*0x8*_0x5b00c6,this[_0x5c3cb3(0x2cb)]['z']-=this['euler'][_0x5c3cb3(0x2f5)]*0x8*_0x5b00c6,this[_0x5c3cb3(0x1c6)]=!![];}}else this[_0x5c3cb3(0x1c6)]=![];_0x229b2e['x']=Math[_0x5c3cb3(0x28f)](-0xfa,Math[_0x5c3cb3(0x29e)](0xfa,_0x229b2e['x'])),_0x229b2e['z']=Math[_0x5c3cb3(0x28f)](-0xfa,Math[_0x5c3cb3(0x29e)](0xfa,_0x229b2e['z'])),_0x229b2e['y']=Math[_0x5c3cb3(0x29e)](0xb4,_0x229b2e['y']),this[_0x5c3cb3(0x21d)]=_0x229b2e;const _0x4933a8=this['_checkColliders'](_0x229b2e);if(_0x4933a8){const _0x12ad90=V3[_0x5c3cb3(0x24f)](this[_0x5c3cb3(0x253)]);if(_0x12ad90>0x8&&typeof State!==_0x5c3cb3(0x2b9)&&State['armed'])this[_0x5c3cb3(0x2a5)](_0x12ad90);else{const _0x2524fc=_0x4933a8[_0x5c3cb3(0x261)]||{'x':0x0,'y':0x1,'z':0x0},_0x3aa749=V3[_0x5c3cb3(0x2f2)](this[_0x5c3cb3(0x253)],_0x2524fc);if(_0x3aa749<0x0){this[_0x5c3cb3(0x253)]=V3[_0x5c3cb3(0x22a)](this[_0x5c3cb3(0x253)],V3[_0x5c3cb3(0x224)](_0x2524fc,-(0x1+0.15)*_0x3aa749));const _0x287445=V3['sub'](this['vel'],V3[_0x5c3cb3(0x224)](_0x2524fc,V3['dot'](this[_0x5c3cb3(0x253)],_0x2524fc))),_0x229031=V3['len'](_0x287445);if(_0x229031>0.001)this[_0x5c3cb3(0x253)]=V3[_0x5c3cb3(0x256)](this[_0x5c3cb3(0x253)],V3[_0x5c3cb3(0x224)](V3['norm'](_0x287445),Math[_0x5c3cb3(0x29e)](_0x229031,0.4*Math[_0x5c3cb3(0x272)](_0x3aa749))));}this['pos']=V3[_0x5c3cb3(0x22a)](_0x229b2e,V3[_0x5c3cb3(0x224)](_0x2524fc,0.05));}}const _0x4d550d=Math['PI']*(_0x2857ad*_0x2857ad)*0x4+0.001,_0x57ea59=Math[_0x5c3cb3(0x2aa)](_0x2aeee1/(0x2*_0x35a6c1*_0x4d550d)),_0x278848=_0x2aeee1*_0x57ea59*1.18;this[_0x5c3cb3(0x2c0)]=_0x278848/Math['max'](this[_0x5c3cb3(0x280)],0x1);const _0x2579cb=this[_0x5c3cb3(0x2c0)]*_0x1bfb75,_0x5f496a=this[_0x5c3cb3(0x2c0)]*_0x5b00c6/0xe10;this[_0x5c3cb3(0x29b)]=Math[_0x5c3cb3(0x29e)](this[_0x5c3cb3(0x262)],this[_0x5c3cb3(0x29b)]+_0x5f496a),this[_0x5c3cb3(0x26f)]=Math[_0x5c3cb3(0x28f)](0x0,0x64*(0x1-this['battCapacity']/this['battTotalAh']));const _0x41ef5=this['battPct']/0x64,_0x1e2161=3.3+0.7*_0x41ef5+0.1*_0x41ef5*_0x41ef5+0.1*_0x41ef5*_0x41ef5*_0x41ef5;this[_0x5c3cb3(0x280)]=Math[_0x5c3cb3(0x28f)](this[_0x5c3cb3(0x1d6)]*3.3,Math[_0x5c3cb3(0x29e)](this['cells']*4.2,this[_0x5c3cb3(0x1d6)]*_0x1e2161-_0x2579cb));},'_updateSensors'(_0x3e4f0e){const _0x4d0c72=a0_0x250ed6,_0x38cda9=0.003*Math[_0x4d0c72(0x2aa)](0x1/Math[_0x4d0c72(0x28f)](_0x3e4f0e,0.001)),_0x32e272=()=>(Math[_0x4d0c72(0x258)]()+Math[_0x4d0c72(0x258)]()+Math[_0x4d0c72(0x258)]()+Math[_0x4d0c72(0x258)]()-0x2)*_0x38cda9*0.866,_0x30bbbf=0.00005,_0x4388e2=_0x30bbbf*Math['sqrt'](_0x3e4f0e);this[_0x4d0c72(0x2f4)]['x']+=(Math[_0x4d0c72(0x258)]()-0.5)*0x2*_0x4388e2,this[_0x4d0c72(0x2f4)]['y']+=(Math['random']()-0.5)*0x2*_0x4388e2,this[_0x4d0c72(0x2f4)]['z']+=(Math[_0x4d0c72(0x258)]()-0.5)*0x2*_0x4388e2,this[_0x4d0c72(0x1da)]={'x':this['angVel']['x']+_0x32e272()+this[_0x4d0c72(0x2f4)]['x'],'y':this[_0x4d0c72(0x2cb)]['y']+_0x32e272()+this[_0x4d0c72(0x2f4)]['y'],'z':this['angVel']['z']+_0x32e272()+this[_0x4d0c72(0x2f4)]['z']};const _0x395c04=0.05,_0xf159e1=()=>(Math[_0x4d0c72(0x258)]()-0.5)*0x2*_0x395c04;this[_0x4d0c72(0x21f)]={'x':this[_0x4d0c72(0x21f)]['x']+_0xf159e1(),'y':this[_0x4d0c72(0x21f)]['y']+_0xf159e1(),'z':this[_0x4d0c72(0x21f)]['z']+_0xf159e1()};const _0x505aec=0.05+this['turbulenceIntensity']*0.25,_0x1c5353=this[_0x4d0c72(0x21d)]['y']-this[_0x4d0c72(0x1a9)];this[_0x4d0c72(0x211)]=_0x1c5353+(Math[_0x4d0c72(0x258)]()-0.5)*_0x505aec*0x2,this[_0x4d0c72(0x19c)]=this[_0x4d0c72(0x1d9)]['update'](this[_0x4d0c72(0x211)]),Q[_0x4d0c72(0x204)](this[_0x4d0c72(0x2b1)],this['euler']);},'_checkColliders'(_0x4974a0){const _0x54ee70=a0_0x250ed6,_0x4d69a5=0.12;for(const _0xa6f506 of this['colliders']){if(_0x4974a0['x']>_0xa6f506[_0x54ee70(0x29e)]['x']-_0x4d69a5&&_0x4974a0['x']<_0xa6f506['max']['x']+_0x4d69a5&&_0x4974a0['y']>_0xa6f506['min']['y']-_0x4d69a5&&_0x4974a0['y']<_0xa6f506[_0x54ee70(0x28f)]['y']+_0x4d69a5&&_0x4974a0['z']>_0xa6f506[_0x54ee70(0x29e)]['z']-_0x4d69a5&&_0x4974a0['z']<_0xa6f506[_0x54ee70(0x28f)]['z']+_0x4d69a5){const _0x22923a=(_0xa6f506[_0x54ee70(0x29e)]['x']+_0xa6f506[_0x54ee70(0x28f)]['x'])*0.5,_0x116f22=(_0xa6f506[_0x54ee70(0x29e)]['y']+_0xa6f506[_0x54ee70(0x28f)]['y'])*0.5,_0x216ed7=(_0xa6f506[_0x54ee70(0x29e)]['z']+_0xa6f506[_0x54ee70(0x28f)]['z'])*0.5,_0x248ccd=(_0xa6f506['max']['x']-_0xa6f506[_0x54ee70(0x29e)]['x'])*0.5,_0x3c2100=(_0xa6f506[_0x54ee70(0x28f)]['y']-_0xa6f506[_0x54ee70(0x29e)]['y'])*0.5,_0x244fa5=(_0xa6f506[_0x54ee70(0x28f)]['z']-_0xa6f506[_0x54ee70(0x29e)]['z'])*0.5,_0x36300b=_0x4974a0['x']-_0x22923a,_0x2446b4=_0x4974a0['y']-_0x116f22,_0x5ce0f4=_0x4974a0['z']-_0x216ed7,_0x49e1a6=_0x248ccd-Math[_0x54ee70(0x272)](_0x36300b),_0x3db86f=_0x3c2100-Math['abs'](_0x2446b4),_0xabce8d=_0x244fa5-Math[_0x54ee70(0x272)](_0x5ce0f4);let _0x1f13ad;if(_0x3db86f<=_0x49e1a6&&_0x3db86f<=_0xabce8d)_0x1f13ad={'x':0x0,'y':Math[_0x54ee70(0x2e8)](_0x2446b4)||0x1,'z':0x0};else{if(_0x49e1a6<=_0xabce8d)_0x1f13ad={'x':Math[_0x54ee70(0x2e8)](_0x36300b)||0x1,'y':0x0,'z':0x0};else _0x1f13ad={'x':0x0,'y':0x0,'z':Math[_0x54ee70(0x2e8)](_0x5ce0f4)||0x1};}return{'min':_0xa6f506[_0x54ee70(0x29e)],'max':_0xa6f506['max'],'normal':_0x1f13ad};}}return null;},'_doCrash'(_0x5c75f2){const _0x4f19f9=a0_0x250ed6;this['crashed']=!![];if(typeof State!==_0x4f19f9(0x2b9))State[_0x4f19f9(0x2c7)]=![];const _0x476b49=Math[_0x4f19f9(0x29e)](0x4,Math[_0x4f19f9(0x2f8)](_0x5c75f2/2.5)),_0x167a86=[0x0,0x1,0x2,0x3][_0x4f19f9(0x1b8)](()=>Math['random']()-0.5);if(typeof State!==_0x4f19f9(0x2b9)){for(let _0x4d877b=0x0;_0x4d877b<_0x476b49;_0x4d877b++)State['motorDamage'][_0x167a86[_0x4d877b]]=Math[_0x4f19f9(0x29e)](0x1,State[_0x4f19f9(0x230)][_0x167a86[_0x4d877b]]+0.4+Math[_0x4f19f9(0x258)]()*0.4);}if(typeof WARN!==_0x4f19f9(0x2b9))WARN['trigger']('crash');if(typeof updateArmUI===_0x4f19f9(0x281))updateArmUI();},'_crashSettle'(_0x504a83){const _0xdc87e4=a0_0x250ed6,_0x255bd5=0.074*(this['droneVisual']['bodyScale']||0x1)*0x5;this['angVel']['x']*=0.9,this[_0xdc87e4(0x2cb)]['z']*=0.9,this[_0xdc87e4(0x2cb)]['y']*=0.93,this[_0xdc87e4(0x2b1)]=Q['integrate'](this[_0xdc87e4(0x2b1)],this[_0xdc87e4(0x2cb)],_0x504a83),Q['toEuler'](this[_0xdc87e4(0x2b1)],this['euler']),this[_0xdc87e4(0x21d)]['x']=Math['max'](-0xf0,Math['min'](0xf0,this[_0xdc87e4(0x21d)]['x'])),this[_0xdc87e4(0x21d)]['z']=Math['max'](-0xf0,Math['min'](0xf0,this['pos']['z']));const _0x490733=this[_0xdc87e4(0x1a9)]+_0x255bd5;this[_0xdc87e4(0x21d)]['y']>_0x490733?(this[_0xdc87e4(0x253)]['y']-=this[_0xdc87e4(0x285)]*_0x504a83,this[_0xdc87e4(0x21d)]['y']+=this[_0xdc87e4(0x253)]['y']*_0x504a83):(this[_0xdc87e4(0x21d)]['y']=_0x490733,this[_0xdc87e4(0x253)]=V3['zero']());if(this[_0xdc87e4(0x21d)]['y']<_0x490733)this[_0xdc87e4(0x21d)]['y']=_0x490733;for(let _0x354ac3=0x0;_0x354ac3<0x4;_0x354ac3++)this['motorRPM'][_0x354ac3]*=0.9;},'recoverFromCrash'(){const _0x5497b1=a0_0x250ed6;this['crashed']=![],this[_0x5497b1(0x1c6)]=!![],this['angVel']=V3[_0x5497b1(0x2ba)](),this['vel']=V3[_0x5497b1(0x2ba)](),this[_0x5497b1(0x2b1)]=Q['id'](),this[_0x5497b1(0x1e1)]={'roll':0x0,'pitch':0x0,'yaw':this[_0x5497b1(0x1e1)]['yaw']||0x0};const _0x5c68d4=0.074*(this[_0x5497b1(0x300)][_0x5497b1(0x1a7)]||0x1)*0x5;this[_0x5497b1(0x21d)]['y']=this[_0x5497b1(0x1a9)]+_0x5c68d4;for(let _0x219099=0x0;_0x219099<0x4;_0x219099++){this[_0x5497b1(0x1c7)][_0x219099]=0x0,this[_0x5497b1(0x2b2)][_0x219099]=0x0,this[_0x5497b1(0x283)][_0x219099]=0x0;}if(typeof FC!==_0x5497b1(0x2b9))FC[_0x5497b1(0x296)]();}},FC={'mode':'stabilized','motorMixGain':0.13,'maxAngleRate':3.2,'maxAltVelRate':1.4,'ratePID':{'pitch':new PID(0.042,0x0,0.0018,0.3,0x14),'roll':new PID(0.042,0x0,0.0018,0.3,0x14),'yaw':new PID(0.065,0.012,0.0008,0.25,0xf)},'anglePID':{'pitch':new PID(2.2,0x0,0x0,0.4,0x14),'roll':new PID(2.2,0x0,0x0,0.4,0x14)},'altPID':new PID(1.6,0.1,0.06,0x8,0x6),'altVelPID':new PID(0.38,0.08,0.012,0x2,0xc),'posNPID':new PID(0.65,0.015,0.18,0.35,0x8),'posEPID':new PID(0.65,0.015,0.18,0.35,0x8),'altTarget':null,'posTarget':null,'rthPhase':0x0,'rthClimbAlt':0xa,'gains':{'rp':0.042,'ri':0x0,'rd':0.0018,'yp':0.065,'ap':1.6,'angleP':2.2},'_adaptiveGainFactor'(){const _0x142732=a0_0x250ed6,_0x3baa10=Math['sqrt'](PHYS[_0x142732(0x1e1)][_0x142732(0x1ca)]**0x2+PHYS[_0x142732(0x1e1)][_0x142732(0x2f5)]**0x2),_0x4167cc=Math[_0x142732(0x28f)](0.65,0x1-_0x3baa10*0.2),_0x373bdd=Math[_0x142732(0x2d3)](PHYS[_0x142732(0x2cb)]['x'],PHYS[_0x142732(0x2cb)]['z']),_0x580724=Math[_0x142732(0x29e)](0x1,0.9+_0x373bdd*0.5);return _0x4167cc*_0x580724;},'autoTuneFromPhysics'(){const _0x2b45ff=a0_0x250ed6,_0x1819ad=PHYS[_0x2b45ff(0x213)],_0x270776=PHYS[_0x2b45ff(0x269)],_0x4de9cd=PHYS[_0x2b45ff(0x1b7)],_0x22c117=PHYS[_0x2b45ff(0x291)],_0x305c4d=PHYS[_0x2b45ff(0x1ee)],_0x40a17a=PHYS['kT'],_0x301488=PHYS['kQ'],_0x3c99d2=PHYS['maxRPM'],_0x30d402=_0x3c99d2*TWO_PI_OVER_60,_0xd2235b=0x2*_0x40a17a*_0x30d402*_0x30d402*_0x270776,_0x142fea=0x4*_0x301488*_0x30d402*_0x30d402,_0x392d25=Math[_0x2b45ff(0x29e)](0.12,Math[_0x2b45ff(0x28f)](0.025,_0x4de9cd*0x1c/(_0xd2235b+0.000001))),_0x52be8b=_0x392d25*0.042,_0x434421=0x0,_0x582076=Math[_0x2b45ff(0x29e)](0.18,Math[_0x2b45ff(0x28f)](0.025,_0x305c4d*2.5/(_0x142fea+0.000001))),_0x1d3051=_0x392d25*_0xd2235b/_0x4de9cd,_0x1e4566=Math[_0x2b45ff(0x29e)](0x8,Math[_0x2b45ff(0x28f)](3.5,_0x1d3051/0x5)),_0x51e5ba=Math['max'](0x1,Math[_0x2b45ff(0x29e)](2.2,0.9+0.45*_0x1819ad)),_0xd826d5=PHYS[_0x2b45ff(0x20c)],_0x48da66=0.22/Math[_0x2b45ff(0x28f)](0.01,_0x392d25*(_0xd826d5[_0x2b45ff(0x1ca)]||0xa));this[_0x2b45ff(0x225)]=Math[_0x2b45ff(0x28f)](0.07,Math['min'](0.2,_0x48da66)),this['maxAngleRate']=Math[_0x2b45ff(0x28f)](0x2,Math[_0x2b45ff(0x29e)](4.5,0x2+(0.34-_0x1819ad*0.04)*0x5)),this['gains']={'rp':_0x392d25,'ri':_0x434421,'rd':_0x52be8b,'yp':_0x582076,'ap':_0x51e5ba,'angleP':_0x1e4566},this[_0x2b45ff(0x1fe)](),this['_syncSliders']();},'_syncSliders'(){const _0x488010=a0_0x250ed6,_0x3db4fb=this['gains'],_0x5a94e8={'rp':_0x488010(0x25b),'ri':_0x488010(0x22f),'rd':_0x488010(0x246),'yp':_0x488010(0x1fa),'ap':_0x488010(0x2e5)};for(const _0x1bf2ee in _0x5a94e8){const _0x513892=document[_0x488010(0x2e0)](_0x5a94e8[_0x1bf2ee]);if(_0x513892)_0x513892[_0x488010(0x24b)]=_0x3db4fb[_0x1bf2ee];}typeof setPID===_0x488010(0x281)&&(setPID('rp',_0x3db4fb['rp']),setPID('ri',_0x3db4fb['ri']),setPID('rd',_0x3db4fb['rd']),setPID('yp',_0x3db4fb['yp']),setPID('ap',_0x3db4fb['ap']));},'applyGains'(){const _0x23220b=a0_0x250ed6,_0xb03068=this[_0x23220b(0x24a)];this['ratePID']['pitch']['p']=_0xb03068['rp'],this['ratePID']['pitch']['i']=_0xb03068['ri']||0x0,this[_0x23220b(0x25f)]['pitch']['d']=_0xb03068['rd'],this['ratePID'][_0x23220b(0x2f5)]['p']=_0xb03068['rp'],this['ratePID'][_0x23220b(0x2f5)]['i']=_0xb03068['ri']||0x0,this[_0x23220b(0x25f)][_0x23220b(0x2f5)]['d']=_0xb03068['rd'],this[_0x23220b(0x25f)][_0x23220b(0x287)]['p']=_0xb03068['yp'],this[_0x23220b(0x25f)][_0x23220b(0x287)]['i']=_0xb03068['yi']!=null?_0xb03068['yi']:_0xb03068['yp']*0.18,this['ratePID'][_0x23220b(0x287)]['iLimit']=0.45,_0xb03068[_0x23220b(0x1e5)]!=null&&(this['anglePID'][_0x23220b(0x1ca)]['p']=_0xb03068[_0x23220b(0x1e5)],this[_0x23220b(0x2cc)][_0x23220b(0x2f5)]['p']=_0xb03068[_0x23220b(0x1e5)]),this[_0x23220b(0x2cc)][_0x23220b(0x1ca)]['d']=0x0,this['anglePID'][_0x23220b(0x2f5)]['d']=0x0,this['altPID']['p']=_0xb03068['ap'],this['ratePID'][_0x23220b(0x1ca)]['_outLimit']=0.18,this[_0x23220b(0x25f)][_0x23220b(0x2f5)][_0x23220b(0x223)]=0.18,this[_0x23220b(0x25f)]['yaw'][_0x23220b(0x223)]=0.12,this[_0x23220b(0x1ad)]['_outLimit']=this[_0x23220b(0x240)],this[_0x23220b(0x21c)][_0x23220b(0x223)]=0.38;},'resetPIDs'(){const _0x1b4ee0=a0_0x250ed6;for(const _0x28e1a8 in this[_0x1b4ee0(0x25f)])this[_0x1b4ee0(0x25f)][_0x28e1a8][_0x1b4ee0(0x216)]();for(const _0x4b70e1 in this[_0x1b4ee0(0x2cc)])this['anglePID'][_0x4b70e1][_0x1b4ee0(0x216)]();this['altPID'][_0x1b4ee0(0x216)](),this[_0x1b4ee0(0x21c)][_0x1b4ee0(0x216)](),this['posNPID'][_0x1b4ee0(0x216)](),this[_0x1b4ee0(0x2bf)]['reset'](),this[_0x1b4ee0(0x2bc)]=![];},'setMode'(_0x54ad06){const _0x1a5431=a0_0x250ed6;this[_0x1a5431(0x1f4)]=_0x54ad06,this[_0x1a5431(0x296)]();if(_0x54ad06===_0x1a5431(0x209)||_0x54ad06===_0x1a5431(0x236)||_0x54ad06===_0x1a5431(0x1f7))this[_0x1a5431(0x302)]=PHYS['pos']['y']-PHYS[_0x1a5431(0x1a9)];if(_0x54ad06===_0x1a5431(0x236)||_0x54ad06===_0x1a5431(0x1f7))this[_0x1a5431(0x26e)]={'x':PHYS['pos']['x'],'z':PHYS[_0x1a5431(0x21d)]['z']};_0x54ad06===_0x1a5431(0x1f7)&&(this[_0x1a5431(0x2ab)]=0x0,this[_0x1a5431(0x26e)]=PHYS[_0x1a5431(0x20e)]?{'x':PHYS['homePos']['x'],'z':PHYS[_0x1a5431(0x20e)]['z']}:{'x':0x0,'z':0x0});},'update'(_0x45d8eb,_0x352f80){const _0xa01286=a0_0x250ed6;if(PHYS[_0xa01286(0x242)]||typeof State!==_0xa01286(0x2b9)&&!State[_0xa01286(0x2c7)])return PHYS[_0xa01286(0x2ca)]={'pitch':0x0,'roll':0x0,'yaw':0x0,'thr':0x0},[0x0,0x0,0x0,0x0];let _0x5d3531=_0x352f80[_0xa01286(0x1f3)],_0x540c3b=0x0,_0x22e1c6=0x0;const _0x10b58c=PHYS[_0xa01286(0x2d6)];let _0x377b49=_0x352f80[_0xa01286(0x287)]*PHYS[_0xa01286(0x20c)][_0xa01286(0x287)];const _0x51bb7c=PHYS[_0xa01286(0x1e1)];if(this[_0xa01286(0x1f4)]===_0xa01286(0x2a7)){const _0x54477c=PHYS[_0xa01286(0x20c)];return PHYS[_0xa01286(0x2ca)]={'pitch':_0x352f80[_0xa01286(0x1ca)]*_0x54477c['pitch'],'roll':_0x352f80[_0xa01286(0x2f5)]*_0x54477c[_0xa01286(0x2f5)],'yaw':_0x377b49,'thr':_0x5d3531},PHYS['motorCmd'];}(this['mode']==='stabilized'||this['mode']===_0xa01286(0x1cf))&&(_0x540c3b=_0x352f80[_0xa01286(0x1ca)]*_0x10b58c*0.6,_0x22e1c6=_0x352f80[_0xa01286(0x2f5)]*_0x10b58c*0.6);if(this[_0xa01286(0x1f4)]==='althold'||this[_0xa01286(0x1f4)]===_0xa01286(0x236)||this['mode']===_0xa01286(0x1f7)){const _0x7b13ea=0.045,_0x5c5d7c=PHYS[_0xa01286(0x265)];this[_0xa01286(0x1f4)]===_0xa01286(0x209)&&(_0x540c3b=_0x352f80['pitch']*_0x10b58c*0.6,_0x22e1c6=_0x352f80[_0xa01286(0x2f5)]*_0x10b58c*0.6);if(Math[_0xa01286(0x272)](_0x352f80[_0xa01286(0x1f3)]-0.5)<_0x7b13ea){if(this['altTarget']==null)this[_0xa01286(0x302)]=PHYS[_0xa01286(0x21d)]['y']-PHYS[_0xa01286(0x1a9)];this['_altManualLastFrame']&&(this['altVelPID'][_0xa01286(0x216)](),this[_0xa01286(0x1ad)]['reset'](),this['_altManualLastFrame']=![]);const _0x4bc729=Math['max'](-this['maxAltVelRate'],Math[_0xa01286(0x29e)](this[_0xa01286(0x240)],this['altPID']['update'](this[_0xa01286(0x302)],PHYS[_0xa01286(0x19c)],_0x45d8eb)));_0x5d3531=Math[_0xa01286(0x28f)](0x0,Math['min'](0.97,_0x5c5d7c+this[_0xa01286(0x21c)][_0xa01286(0x24e)](_0x4bc729,PHYS['vel']['y'],_0x45d8eb)));}else{this[_0xa01286(0x2bc)]=!![],this['altTarget']=PHYS[_0xa01286(0x21d)]['y']-PHYS[_0xa01286(0x1a9)];const _0x37aa79=_0x352f80['throttle'];_0x5d3531=_0x37aa79<=0.5?_0x37aa79/0.5*_0x5c5d7c:_0x5c5d7c+(_0x37aa79-0.5)/0.5*(0.97-_0x5c5d7c);}}if(this[_0xa01286(0x1f4)]===_0xa01286(0x236)){if(Math[_0xa01286(0x272)](_0x352f80[_0xa01286(0x1ca)])<0.08&&Math[_0xa01286(0x272)](_0x352f80['roll'])<0.08){if(this[_0xa01286(0x26e)]==null)this[_0xa01286(0x26e)]={'x':PHYS['pos']['x'],'z':PHYS[_0xa01286(0x21d)]['z']};const _0x2c7331=this[_0xa01286(0x26e)]['z']-PHYS[_0xa01286(0x21d)]['z'],_0xc6799c=this['posTarget']['x']-PHYS['pos']['x'],_0x28e3a6=Math[_0xa01286(0x217)](_0x51bb7c[_0xa01286(0x287)]),_0x5cece7=Math[_0xa01286(0x208)](_0x51bb7c['yaw']),_0x56b9fa=_0x28e3a6*_0x2c7331+_0x5cece7*_0xc6799c,_0x3627c5=-_0x5cece7*_0x2c7331+_0x28e3a6*_0xc6799c;_0x540c3b=Math[_0xa01286(0x28f)](-_0x10b58c*0.5,Math[_0xa01286(0x29e)](_0x10b58c*0.5,this[_0xa01286(0x27c)][_0xa01286(0x24e)](0x0,-_0x56b9fa,_0x45d8eb))),_0x22e1c6=Math[_0xa01286(0x28f)](-_0x10b58c*0.5,Math[_0xa01286(0x29e)](_0x10b58c*0.5,this[_0xa01286(0x2bf)][_0xa01286(0x24e)](0x0,-_0x3627c5,_0x45d8eb)));}else this[_0xa01286(0x26e)]={'x':PHYS[_0xa01286(0x21d)]['x'],'z':PHYS['pos']['z']},_0x540c3b=_0x352f80[_0xa01286(0x1ca)]*_0x10b58c*0.65,_0x22e1c6=_0x352f80['roll']*_0x10b58c*0.65;}if(this[_0xa01286(0x1f4)]===_0xa01286(0x1f7)){const _0x30d32b=PHYS[_0xa01286(0x20e)]||{'x':0x0,'y':0x0,'z':0x0},_0x5a3474=Math[_0xa01286(0x217)](_0x51bb7c[_0xa01286(0x287)]),_0x54d7cd=Math[_0xa01286(0x208)](_0x51bb7c[_0xa01286(0x287)]),_0x26dd4e=PHYS[_0xa01286(0x21d)]['y']-PHYS[_0xa01286(0x1a9)],_0x22ea5b=_0x30d32b['y']-PHYS[_0xa01286(0x1a9)],_0x1fd32a=PHYS[_0xa01286(0x265)];if(this['rthPhase']===0x0){const _0xd8e867=Math[_0xa01286(0x28f)](_0x22ea5b+this['rthClimbAlt'],_0x26dd4e+0x3),_0x3c7507=this[_0xa01286(0x1ad)][_0xa01286(0x24e)](_0xd8e867,PHYS[_0xa01286(0x19c)],_0x45d8eb);_0x5d3531=Math[_0xa01286(0x28f)](_0x1fd32a,Math['min'](0.94,_0x1fd32a+this[_0xa01286(0x21c)][_0xa01286(0x24e)](Math[_0xa01286(0x29e)](2.5,_0x3c7507),PHYS['vel']['y'],_0x45d8eb)));if(_0x26dd4e>=_0xd8e867-0.5)this[_0xa01286(0x2ab)]=0x1;_0x540c3b=0x0,_0x22e1c6=0x0;}else{if(this[_0xa01286(0x2ab)]===0x1){const _0x29a138=_0x30d32b['z']-PHYS['pos']['z'],_0x591da0=_0x30d32b['x']-PHYS[_0xa01286(0x21d)]['x'],_0x5ba73c=Math[_0xa01286(0x2d3)](_0x29a138,_0x591da0),_0x2d4e37=this[_0xa01286(0x1ad)]['update'](this[_0xa01286(0x302)]!=null?this[_0xa01286(0x302)]:_0x26dd4e,PHYS[_0xa01286(0x19c)],_0x45d8eb);_0x5d3531=Math['max'](Math['max'](0x0,_0x1fd32a-0.5),Math[_0xa01286(0x29e)](0.9,_0x1fd32a+this[_0xa01286(0x21c)]['update'](_0x2d4e37,PHYS[_0xa01286(0x253)]['y'],_0x45d8eb)));if(_0x5ba73c<0x1)this[_0xa01286(0x2ab)]=0x2,this['posTarget']={'x':_0x30d32b['x'],'z':_0x30d32b['z']};else{const _0x410427=Math[_0xa01286(0x29e)](0x1,_0x5ba73c/0xf);_0x540c3b=Math[_0xa01286(0x28f)](-_0x10b58c*0.6,Math[_0xa01286(0x29e)](_0x10b58c*0.6,-(_0x5a3474*_0x29a138+_0x54d7cd*_0x591da0)*0.14*_0x410427)),_0x22e1c6=Math[_0xa01286(0x28f)](-_0x10b58c*0.6,Math['min'](_0x10b58c*0.6,-(-_0x54d7cd*_0x29a138+_0x5a3474*_0x591da0)*0.14*_0x410427));}}else{if(this[_0xa01286(0x2ab)]===0x2){const _0x2a3ae7=_0x30d32b['z']-PHYS['pos']['z'],_0x60b054=_0x30d32b['x']-PHYS[_0xa01286(0x21d)]['x'];_0x540c3b=Math[_0xa01286(0x28f)](-0.15,Math[_0xa01286(0x29e)](0.15,-(_0x5a3474*_0x2a3ae7+_0x54d7cd*_0x60b054)*0.09)),_0x22e1c6=Math[_0xa01286(0x28f)](-0.15,Math['min'](0.15,-(-_0x54d7cd*_0x2a3ae7+_0x5a3474*_0x60b054)*0.09));const _0x2ef698=this[_0xa01286(0x1ad)][_0xa01286(0x24e)](0.15,PHYS[_0xa01286(0x19c)],_0x45d8eb);_0x5d3531=Math[_0xa01286(0x28f)](0x0,Math[_0xa01286(0x29e)](_0x1fd32a+0.2,_0x1fd32a+this[_0xa01286(0x21c)]['update'](Math[_0xa01286(0x28f)](-1.5,_0x2ef698),PHYS[_0xa01286(0x253)]['y'],_0x45d8eb)));if(PHYS[_0xa01286(0x1c6)]){this[_0xa01286(0x2ab)]=0x3;if(typeof State!==_0xa01286(0x2b9))State[_0xa01286(0x2c7)]=![];if(typeof updateArmUI===_0xa01286(0x281))updateArmUI();}}else return PHYS[_0xa01286(0x2ca)]={'pitch':0x0,'roll':0x0,'yaw':0x0,'thr':0x0},[0x0,0x0,0x0,0x0];}}}return this[_0xa01286(0x1cc)](_0x45d8eb,_0x5d3531,_0x540c3b,_0x22e1c6,_0x377b49);},'_angleThenStore'(_0x395f86,_0x422cdd,_0x489baa,_0x5f3e2b,_0x1784a7){const _0x2b6594=a0_0x250ed6,_0x570b79=PHYS[_0x2b6594(0x1e1)],_0x48cb1d=this[_0x2b6594(0x1e9)],_0x5d283e=this['_adaptiveGainFactor'](),_0xcfdbb7=Math[_0x2b6594(0x28f)](-_0x48cb1d,Math[_0x2b6594(0x29e)](_0x48cb1d,this['anglePID'][_0x2b6594(0x1ca)][_0x2b6594(0x24e)](_0x489baa,_0x570b79[_0x2b6594(0x1ca)],_0x395f86)*_0x5d283e)),_0x1045b4=Math[_0x2b6594(0x28f)](-_0x48cb1d,Math[_0x2b6594(0x29e)](_0x48cb1d,this[_0x2b6594(0x2cc)][_0x2b6594(0x2f5)][_0x2b6594(0x24e)](_0x5f3e2b,_0x570b79['roll'],_0x395f86)*_0x5d283e));return PHYS['_fcRateCmd']={'pitch':_0xcfdbb7,'roll':_0x1045b4,'yaw':_0x1784a7,'thr':_0x422cdd},PHYS[_0x2b6594(0x2b2)];},'_rateLoopSubstep'(_0x2f3a1d,_0x3da3b2,_0x517233,_0x222f1d,_0x89f562){const _0xdc04d4=a0_0x250ed6,_0x33eee1=PHYS[_0xdc04d4(0x1da)],_0xda8b19=this['_adaptiveGainFactor']();let _0x342a7b=this['ratePID'][_0xdc04d4(0x1ca)]['update'](_0x517233,_0x33eee1['x'],_0x2f3a1d)*_0xda8b19,_0x2bacdd=this[_0xdc04d4(0x25f)][_0xdc04d4(0x2f5)]['update'](_0x222f1d,_0x33eee1['z'],_0x2f3a1d)*_0xda8b19,_0x299e33=this['ratePID']['yaw'][_0xdc04d4(0x24e)](_0x89f562,_0x33eee1['y'],_0x2f3a1d);if(typeof DEBUG!=='undefined')DEBUG[_0xdc04d4(0x2ce)](_0x517233,_0x33eee1['x'],_0x222f1d,_0x33eee1['z'],_0x89f562,_0x33eee1['y']);const _0x5c9aef=this[_0xdc04d4(0x225)],_0x42a7cb=0.18,_0x3c6691=0.12;_0x342a7b=Math[_0xdc04d4(0x28f)](-_0x42a7cb,Math[_0xdc04d4(0x29e)](_0x42a7cb,_0x342a7b*_0x5c9aef)),_0x2bacdd=Math[_0xdc04d4(0x28f)](-_0x42a7cb,Math[_0xdc04d4(0x29e)](_0x42a7cb,_0x2bacdd*_0x5c9aef)),_0x299e33=Math[_0xdc04d4(0x28f)](-_0x3c6691,Math['min'](_0x3c6691,_0x299e33*_0x5c9aef));const _0x4892eb=PHYS[_0xdc04d4(0x265)],_0x3b3e18=this[_0xdc04d4(0x1f4)]===_0xdc04d4(0x209)||this[_0xdc04d4(0x1f4)]===_0xdc04d4(0x236)||this[_0xdc04d4(0x1f4)]==='rth';let _0x21572c;if(_0x3b3e18)_0x21572c=_0x3da3b2;else{const _0x20f344=Math[_0xdc04d4(0x28f)](0x0,Math[_0xdc04d4(0x29e)](0x1,_0x3da3b2));_0x21572c=_0x20f344<=0.5?_0x20f344/0.5*_0x4892eb:_0x4892eb+(_0x20f344-0.5)/0.5*(0.97-_0x4892eb);}_0x21572c=Math[_0xdc04d4(0x28f)](0.02,Math[_0xdc04d4(0x29e)](0.97,_0x21572c));const _0x4b442e=[_0x21572c-_0x342a7b+_0x2bacdd-_0x299e33,_0x21572c-_0x342a7b-_0x2bacdd+_0x299e33,_0x21572c+_0x342a7b-_0x2bacdd-_0x299e33,_0x21572c+_0x342a7b+_0x2bacdd+_0x299e33];return this[_0xdc04d4(0x254)](_0x4b442e);},'_mixMotors'(_0x52d23e){const _0x3f40ec=a0_0x250ed6;let _0x5b6351=_0x52d23e[0x0],_0x15e82b=_0x52d23e[0x1],_0x13dae1=_0x52d23e[0x2],_0x31b9a6=_0x52d23e[0x3],_0x1de035=_0x5b6351;if(_0x15e82b>_0x1de035)_0x1de035=_0x15e82b;if(_0x13dae1>_0x1de035)_0x1de035=_0x13dae1;if(_0x31b9a6>_0x1de035)_0x1de035=_0x31b9a6;if(_0x1de035>0x1){const _0x46bf46=_0x1de035-0x1;_0x5b6351-=_0x46bf46,_0x15e82b-=_0x46bf46,_0x13dae1-=_0x46bf46,_0x31b9a6-=_0x46bf46;}let _0x5af026=_0x5b6351;if(_0x15e82b<_0x5af026)_0x5af026=_0x15e82b;if(_0x13dae1<_0x5af026)_0x5af026=_0x13dae1;if(_0x31b9a6<_0x5af026)_0x5af026=_0x31b9a6;_0x5af026<0x0&&(_0x5b6351-=_0x5af026,_0x15e82b-=_0x5af026,_0x13dae1-=_0x5af026,_0x31b9a6-=_0x5af026);let _0x589ff1=_0x5b6351;if(_0x15e82b>_0x589ff1)_0x589ff1=_0x15e82b;if(_0x13dae1>_0x589ff1)_0x589ff1=_0x13dae1;if(_0x31b9a6>_0x589ff1)_0x589ff1=_0x31b9a6;return _0x589ff1>0x1&&(_0x5b6351/=_0x589ff1,_0x15e82b/=_0x589ff1,_0x13dae1/=_0x589ff1,_0x31b9a6/=_0x589ff1),[Math[_0x3f40ec(0x28f)](0x0,Math[_0x3f40ec(0x29e)](0x1,_0x5b6351)),Math[_0x3f40ec(0x28f)](0x0,Math[_0x3f40ec(0x29e)](0x1,_0x15e82b)),Math['max'](0x0,Math[_0x3f40ec(0x29e)](0x1,_0x13dae1)),Math[_0x3f40ec(0x28f)](0x0,Math['min'](0x1,_0x31b9a6))];}},INPUT={'_keys':{},'_thrRaw':0x0,'sensitivity':0.26,'expo':0.38,'deadband':0.05,'_gamepad':null,'pitch':0x0,'roll':0x0,'yaw':0x0,'throttle':0x0,'_vjLeft':{'x':0x0,'y':0x0},'_vjRight':{'x':0x0,'y':0x0},'_vjActive':![],'_flightKeys':new Set([a0_0x250ed6(0x1ea),a0_0x250ed6(0x23f),a0_0x250ed6(0x247),a0_0x250ed6(0x19e),a0_0x250ed6(0x2dd),a0_0x250ed6(0x1f9),a0_0x250ed6(0x226),'KeyD',a0_0x250ed6(0x24c),a0_0x250ed6(0x2ac),a0_0x250ed6(0x288),a0_0x250ed6(0x294)]),'init'(){const _0x41ff9e=a0_0x250ed6;window[_0x41ff9e(0x303)](_0x41ff9e(0x1e6),_0x3376ec=>{const _0x426b68=_0x41ff9e;if(_0x3376ec[_0x426b68(0x2d1)][_0x426b68(0x232)]===_0x426b68(0x2f1)||_0x3376ec[_0x426b68(0x2d1)]['tagName']===_0x426b68(0x1ac))return;this[_0x426b68(0x1e0)][_0x3376ec['code']]=!![];const _0x52631b=typeof State!==_0x426b68(0x2b9)?State['armed']:![],_0x58b192=PHYS[_0x426b68(0x21d)]['y']>PHYS[_0x426b68(0x1a9)]+0.3;this[_0x426b68(0x1a2)][_0x426b68(0x2c1)](_0x3376ec[_0x426b68(0x2c8)])&&(_0x52631b||_0x58b192)&&_0x3376ec[_0x426b68(0x2eb)]();if(_0x3376ec['repeat'])return;switch(_0x3376ec[_0x426b68(0x2c8)]){case'Space':_0x3376ec[_0x426b68(0x2eb)]();if(typeof toggleArm===_0x426b68(0x281))toggleArm();break;case _0x426b68(0x1be):if(typeof takeoff===_0x426b68(0x281))takeoff();break;case _0x426b68(0x1dc):if(typeof returnHome===_0x426b68(0x281))returnHome();break;case'KeyH':if(typeof doHover===_0x426b68(0x281))doHover();break;case _0x426b68(0x27f):if(typeof setFlightMode===_0x426b68(0x281))setFlightMode(_0x426b68(0x236));break;case _0x426b68(0x2f0):case _0x426b68(0x20a):if(typeof emergStop===_0x426b68(0x281))emergStop();break;case _0x426b68(0x1eb):if(typeof setCamera==='function'){if(typeof _camMode_global!==_0x426b68(0x2b9)&&_camMode_global==='fpv')setCamera('third');else setCamera(_0x426b68(0x2a0));}break;case _0x426b68(0x20f):case _0x426b68(0x1a3):_0x3376ec[_0x426b68(0x2eb)]();if(typeof cycleCamera===_0x426b68(0x281))cycleCamera();break;case _0x426b68(0x1ab):if(typeof addWaypoint===_0x426b68(0x281))addWaypoint();break;case _0x426b68(0x231):if(typeof setFlightMode===_0x426b68(0x281))setFlightMode(_0x426b68(0x1dd));break;case _0x426b68(0x1c3):if(typeof setFlightMode==='function')setFlightMode('angle');break;case'Digit3':if(typeof setFlightMode==='function')setFlightMode('acro');break;case _0x426b68(0x248):if(typeof setFlightMode==='function')setFlightMode('althold');break;case _0x426b68(0x1ed):if(typeof setFlightMode===_0x426b68(0x281))setFlightMode(_0x426b68(0x236));break;}}),window['addEventListener']('keyup',_0x7e3e9c=>{const _0x3713e7=_0x41ff9e;this[_0x3713e7(0x1e0)][_0x7e3e9c[_0x3713e7(0x2c8)]]=![];}),window['addEventListener']('blur',()=>{const _0xd9b7e9=_0x41ff9e;this[_0xd9b7e9(0x1e0)]={},this[_0xd9b7e9(0x1ca)]=0x0,this[_0xd9b7e9(0x2f5)]=0x0,this[_0xd9b7e9(0x287)]=0x0;}),window[_0x41ff9e(0x303)]('gamepadconnected',_0x18c416=>{const _0x4eb968=_0x41ff9e;this[_0x4eb968(0x274)]=_0x18c416['gamepad'];if(typeof UI!==_0x4eb968(0x2b9))UI[_0x4eb968(0x299)](_0x4eb968(0x212)+_0x18c416['gamepad']['id'][_0x4eb968(0x1a1)](0x0,0x1c));}),window[_0x41ff9e(0x303)](_0x41ff9e(0x2fa),()=>{const _0x5b73e5=_0x41ff9e;this[_0x5b73e5(0x274)]=null;if(typeof UI!==_0x5b73e5(0x2b9))UI[_0x5b73e5(0x299)](_0x5b73e5(0x293));});},'_applyDeadExpo'(_0x4e6891){const _0x193d47=a0_0x250ed6,_0x58690b=this[_0x193d47(0x1db)];if(Math[_0x193d47(0x272)](_0x4e6891)<_0x58690b)return 0x0;const _0x1ea360=(Math[_0x193d47(0x272)](_0x4e6891)-_0x58690b)/(0x1-_0x58690b),_0x58675a=this[_0x193d47(0x2d9)],_0x56a057=_0x1ea360*(0x1-_0x58675a)+_0x1ea360*_0x1ea360*_0x1ea360*_0x58675a;return Math[_0x193d47(0x2e8)](_0x4e6891)*_0x56a057;},'update'(_0x4fe8de){const _0x370889=a0_0x250ed6,_0x1abe32=this['_keys'],_0x593fd9=this[_0x370889(0x26d)];let _0x9d1a40=![];if(this[_0x370889(0x274)]){const _0x50afc8=navigator[_0x370889(0x1d3)]()[this['_gamepad'][_0x370889(0x1bb)]];if(_0x50afc8&&_0x50afc8['axes'][_0x370889(0x2db)]>=0x4){_0x9d1a40=!![];const _0x3f7e4d=this[_0x370889(0x1e8)](-_0x50afc8[_0x370889(0x2d7)][0x1]);this[_0x370889(0x1d2)]=Math[_0x370889(0x28f)](0x0,Math[_0x370889(0x29e)](0x1,(_0x3f7e4d+0x1)*0.5)),this[_0x370889(0x287)]=this[_0x370889(0x1e8)](_0x50afc8[_0x370889(0x2d7)][0x0])*_0x593fd9,this[_0x370889(0x1ca)]=this['_applyDeadExpo'](-_0x50afc8[_0x370889(0x2d7)][0x3])*_0x593fd9,this[_0x370889(0x2f5)]=this[_0x370889(0x1e8)](_0x50afc8[_0x370889(0x2d7)][0x2])*_0x593fd9;}}if(!_0x9d1a40&&this[_0x370889(0x2b6)]){const _0x5412ce=-this[_0x370889(0x1b6)]['y']*0.9*_0x593fd9;this[_0x370889(0x1d2)]=Math[_0x370889(0x28f)](0x0,Math['min'](0x1,this['_thrRaw']+_0x5412ce*_0x4fe8de)),this[_0x370889(0x287)]=this[_0x370889(0x1e8)](this[_0x370889(0x1b6)]['x'])*_0x593fd9;const _0x12f150=0x1-Math['exp'](-_0x4fe8de*0x8);this[_0x370889(0x1ca)]+=(this[_0x370889(0x1e8)](this[_0x370889(0x1b5)]['y'])*_0x593fd9-this[_0x370889(0x1ca)])*_0x12f150,this[_0x370889(0x2f5)]+=(this[_0x370889(0x1e8)](this[_0x370889(0x1b5)]['x'])*_0x593fd9-this[_0x370889(0x2f5)])*_0x12f150,_0x9d1a40=!![];}if(!_0x9d1a40){if(_0x1abe32['KeyW']||_0x1abe32[_0x370889(0x24c)]||_0x1abe32[_0x370889(0x2ac)])this[_0x370889(0x1d2)]=Math[_0x370889(0x29e)](0x1,this[_0x370889(0x1d2)]+_0x4fe8de*0.45*_0x593fd9);else{if(_0x1abe32['KeyS']||_0x1abe32['ControlLeft']||_0x1abe32[_0x370889(0x294)])this['_thrRaw']=Math['max'](0x0,this[_0x370889(0x1d2)]-_0x4fe8de*0.45*_0x593fd9);}const _0x789544=((_0x1abe32[_0x370889(0x226)]?-0x1:0x0)+(_0x1abe32['KeyD']?0x1:0x0))*_0x593fd9,_0x59edef=((_0x1abe32['ArrowUp']?0x1:0x0)+(_0x1abe32['ArrowDown']?-0x1:0x0))*_0x593fd9,_0x43984d=((_0x1abe32[_0x370889(0x19e)]?0x1:0x0)+(_0x1abe32[_0x370889(0x247)]?-0x1:0x0))*_0x593fd9,_0x212af2=0x1-Math['exp'](-_0x4fe8de*0x6);this['pitch']+=(this[_0x370889(0x1e8)](_0x59edef)-this[_0x370889(0x1ca)])*_0x212af2,this[_0x370889(0x2f5)]+=(this[_0x370889(0x1e8)](_0x43984d)-this[_0x370889(0x2f5)])*_0x212af2,this[_0x370889(0x287)]+=(this[_0x370889(0x1e8)](_0x789544)-this['yaw'])*_0x212af2;}this[_0x370889(0x1f3)]=this[_0x370889(0x1d2)];const _0x42f805=document[_0x370889(0x2e0)]('throttle-slider');if(_0x42f805&&!_0x42f805[_0x370889(0x2bd)]){_0x42f805[_0x370889(0x24b)]=Math[_0x370889(0x27e)](this[_0x370889(0x1d2)]*0x64);const _0x358c2f=document[_0x370889(0x2e0)](_0x370889(0x222));if(_0x358c2f)_0x358c2f['textContent']=Math[_0x370889(0x27e)](this['_thrRaw']*0x64)+'%';}if(typeof _updateStickViz===_0x370889(0x281))_updateStickViz();},'get'(){const _0x4a26b0=a0_0x250ed6;return{'throttle':Math[_0x4a26b0(0x28f)](0x0,Math[_0x4a26b0(0x29e)](0x1,this[_0x4a26b0(0x1f3)])),'pitch':Math[_0x4a26b0(0x28f)](-0x1,Math[_0x4a26b0(0x29e)](0x1,this['pitch'])),'roll':Math[_0x4a26b0(0x28f)](-0x1,Math[_0x4a26b0(0x29e)](0x1,this[_0x4a26b0(0x2f5)])),'yaw':Math[_0x4a26b0(0x28f)](-0x1,Math[_0x4a26b0(0x29e)](0x1,this['yaw']))};}},SIM_SPEED=0x4,_simClock={'t':0x0},BLACKBOX={'_log':[],'_max':0xbb8,'recording':![],'_lastTick':0x0,'start'(){const _0x559504=a0_0x250ed6;this[_0x559504(0x19f)]=[],this[_0x559504(0x1ae)]=!![],this[_0x559504(0x1d5)]=0x0;},'stop'(){const _0x485a20=a0_0x250ed6;this[_0x485a20(0x1ae)]=![];},'tick'(_0x32118a){const _0x22e4a4=a0_0x250ed6;if(!this['recording'])return;const _0x4d8a53=PHYS;if(Number[_0x22e4a4(0x297)](_0x4d8a53['pos']['x'])||Number[_0x22e4a4(0x297)](_0x4d8a53[_0x22e4a4(0x253)]['x'])){console[_0x22e4a4(0x2b5)]('Blackbox\x20ignored\x20frame\x20due\x20to\x20NaN\x20physics');return;}const _0x3a55c3=typeof GPS_SIM!==_0x22e4a4(0x2b9)?GPS_SIM[_0x22e4a4(0x2ee)]():{},_0x41cf02=typeof OBSTACLE_DIST!==_0x22e4a4(0x2b9)?OBSTACLE_DIST[_0x22e4a4(0x2e9)]():[0x0,0x0,0x0,0x0,0x0],_0xf6ea0c=DRYDEN['get']();this['_log'][_0x22e4a4(0x2ed)]({'t':_simClock['t'],'px':_0x4d8a53[_0x22e4a4(0x21d)]['x'],'py':_0x4d8a53['pos']['y'],'pz':_0x4d8a53[_0x22e4a4(0x21d)]['z'],'roll':_0x4d8a53[_0x22e4a4(0x1e1)][_0x22e4a4(0x2f5)],'pitch':_0x4d8a53[_0x22e4a4(0x1e1)][_0x22e4a4(0x1ca)],'yaw':_0x4d8a53[_0x22e4a4(0x1e1)][_0x22e4a4(0x287)],'gx':_0x4d8a53[_0x22e4a4(0x1da)]['x'],'gy':_0x4d8a53[_0x22e4a4(0x1da)]['y'],'gz':_0x4d8a53[_0x22e4a4(0x1da)]['z'],'accX':_0x4d8a53[_0x22e4a4(0x21f)]['x'],'accY':_0x4d8a53[_0x22e4a4(0x21f)]['y'],'accZ':_0x4d8a53[_0x22e4a4(0x21f)]['z'],'vx':_0x4d8a53[_0x22e4a4(0x253)]['x'],'vy':_0x4d8a53['vel']['y'],'vz':_0x4d8a53[_0x22e4a4(0x253)]['z'],'m0':_0x4d8a53[_0x22e4a4(0x2b2)][0x0],'m1':_0x4d8a53[_0x22e4a4(0x2b2)][0x1],'m2':_0x4d8a53['motorCmd'][0x2],'m3':_0x4d8a53[_0x22e4a4(0x2b2)][0x3],'rpm0':_0x4d8a53['motorRPM'][0x0],'rpm1':_0x4d8a53['motorRPM'][0x1],'rpm2':_0x4d8a53['motorRPM'][0x2],'rpm3':_0x4d8a53[_0x22e4a4(0x1c7)][0x3],'batt':_0x4d8a53['battVoltage'],'curr':_0x4d8a53[_0x22e4a4(0x2c0)],'batt_pct':_0x4d8a53[_0x22e4a4(0x26f)],'baro_raw':_0x4d8a53['_baroRaw'],'baro_filtered':_0x4d8a53[_0x22e4a4(0x19c)],'wind_x':_0x4d8a53['windVec']['x'],'wind_z':_0x4d8a53[_0x22e4a4(0x1af)]['z'],'dryden_x':_0xf6ea0c['x'],'dryden_y':_0xf6ea0c['y'],'dryden_z':_0xf6ea0c['z'],'gps_lat':_0x3a55c3['lat']||0x0,'gps_lon':_0x3a55c3['lon']||0x0,'gps_fix':_0x3a55c3[_0x22e4a4(0x2c2)]||0x0,'gps_sat':_0x3a55c3['satellites_visible']||0x0,'obs_fwd':_0x41cf02[0x0],'obs_right':_0x41cf02[0x1],'obs_back':_0x41cf02[0x2],'obs_left':_0x41cf02[0x3],'obs_up':_0x41cf02[0x4],'mode':typeof FC!==_0x22e4a4(0x2b9)?FC[_0x22e4a4(0x1f4)]:'unknown','armed':typeof State!==_0x22e4a4(0x2b9)?State['armed']:![]});if(this['_log'][_0x22e4a4(0x2db)]>this['_max'])this[_0x22e4a4(0x19f)][_0x22e4a4(0x2de)]();},'exportCSV'(){const _0x42c3bf=a0_0x250ed6;if(!this['_log']['length'])return'';const _0x4b3cd7=Object[_0x42c3bf(0x2a2)](this['_log'][0x0]);return[_0x4b3cd7[_0x42c3bf(0x2fc)](','),...this[_0x42c3bf(0x19f)]['map'](_0x243a1d=>_0x4b3cd7[_0x42c3bf(0x234)](_0x1f0e66=>_0x243a1d[_0x1f0e66])[_0x42c3bf(0x2fc)](','))]['join']('\x0a');},'download'(){const _0xf94fb5=a0_0x250ed6,_0x55beaf=this['exportCSV']();if(!_0x55beaf)return;const _0x5b3fbb=new Blob([_0x55beaf],{'type':_0xf94fb5(0x1fc)}),_0x35dc05=document[_0xf94fb5(0x1aa)]('a');_0x35dc05['href']=URL['createObjectURL'](_0x5b3fbb),_0x35dc05[_0xf94fb5(0x1fb)]=_0xf94fb5(0x22d)+Date[_0xf94fb5(0x2a9)]()+'.csv',_0x35dc05[_0xf94fb5(0x2c6)]();},'getLog'(){const _0x5f3ce7=a0_0x250ed6;return this[_0x5f3ce7(0x19f)][_0x5f3ce7(0x1a6)]();},'getStats'(){const _0x2e17fa=a0_0x250ed6;if(!this[_0x2e17fa(0x19f)][_0x2e17fa(0x2db)])return null;let _0x48af06=0x0,_0x5f269e=0x0,_0x33670f=0x0;for(const _0x4595c3 of this[_0x2e17fa(0x19f)]){if(_0x4595c3['py']>_0x48af06)_0x48af06=_0x4595c3['py'];const _0xd102e1=Math[_0x2e17fa(0x2d3)](_0x4595c3['vx'],_0x4595c3['vy'],_0x4595c3['vz']);_0x5f269e+=_0xd102e1;if(_0xd102e1>_0x33670f)_0x33670f=_0xd102e1;}return{'duration':(this[_0x2e17fa(0x19f)][this[_0x2e17fa(0x19f)][_0x2e17fa(0x2db)]-0x1]['t']-this[_0x2e17fa(0x19f)][0x0]['t'])[_0x2e17fa(0x235)](0x1),'samples':this[_0x2e17fa(0x19f)][_0x2e17fa(0x2db)],'maxAlt':_0x48af06[_0x2e17fa(0x235)](0x1),'avgVel':(_0x5f269e/this['_log'][_0x2e17fa(0x2db)])[_0x2e17fa(0x235)](0x1),'maxVel':_0x33670f['toFixed'](0x1)};}},DEBUG={'enabled':![],'_pidHist':{'pitch':[],'roll':[],'yaw':[]},'_histLen':0x78,'recordPID'(_0x4fe30a,_0x31e3a0,_0x434553,_0x2b1ce1,_0x6811f9,_0x18ba4c){const _0x208faf=a0_0x250ed6;if(!this[_0x208faf(0x26a)])return;const _0x48b00b=this[_0x208faf(0x2b3)];_0x48b00b[_0x208faf(0x1ca)][_0x208faf(0x2ed)]({'sp':_0x4fe30a,'m':_0x31e3a0}),_0x48b00b['roll']['push']({'sp':_0x434553,'m':_0x2b1ce1}),_0x48b00b[_0x208faf(0x287)][_0x208faf(0x2ed)]({'sp':_0x6811f9,'m':_0x18ba4c}),_0x48b00b['pitch']['length']>this[_0x208faf(0x284)]&&(_0x48b00b['pitch']['shift'](),_0x48b00b['roll']['shift'](),_0x48b00b[_0x208faf(0x287)]['shift']());},'toggle'(){const _0x5ceefb=a0_0x250ed6;this[_0x5ceefb(0x26a)]=!this[_0x5ceefb(0x26a)];const _0x188a31=document[_0x5ceefb(0x2e0)](_0x5ceefb(0x27a));if(_0x188a31)_0x188a31[_0x5ceefb(0x276)][_0x5ceefb(0x1b9)]=this[_0x5ceefb(0x26a)]?_0x5ceefb(0x220):_0x5ceefb(0x271);return this[_0x5ceefb(0x26a)];},'draw'(){const _0x1398a7=a0_0x250ed6;if(!this['enabled'])return;this['_drawPID']('pidGraph',this[_0x1398a7(0x2b3)][_0x1398a7(0x1ca)],_0x1398a7(0x21b)),this['_drawGyro']();},'_drawPID'(_0x25bd00,_0x15967e,_0x4a1d52){const _0x331d4e=a0_0x250ed6,_0x1ec90b=document['getElementById'](_0x25bd00);if(!_0x1ec90b||!_0x15967e['length'])return;const _0x1eb48d=_0x1ec90b[_0x331d4e(0x25a)]('2d'),_0x1e8861=_0x1ec90b[_0x331d4e(0x29f)],_0x3cb840=_0x1ec90b[_0x331d4e(0x251)];_0x1eb48d[_0x331d4e(0x270)](0x0,0x0,_0x1e8861,_0x3cb840),_0x1eb48d['strokeStyle']='rgba(96,125,139,0.3)',_0x1eb48d[_0x331d4e(0x257)](),_0x1eb48d[_0x331d4e(0x2fe)](0x0,_0x3cb840/0x2),_0x1eb48d[_0x331d4e(0x277)](_0x1e8861,_0x3cb840/0x2),_0x1eb48d['stroke']();const _0x4be797=(_0x2a9385,_0x4f5305)=>{const _0x5bd36c=_0x331d4e;_0x1eb48d['strokeStyle']=_0x4f5305,_0x1eb48d[_0x5bd36c(0x1e4)]=1.5,_0x1eb48d[_0x5bd36c(0x257)](),_0x15967e[_0x5bd36c(0x207)]((_0x404427,_0x3c9ef0)=>{const _0x234744=_0x5bd36c,_0x2ca8b1=_0x3c9ef0/(_0x15967e[_0x234744(0x2db)]-0x1||0x1)*_0x1e8861,_0x1811da=_0x3cb840/0x2-_0x2a9385(_0x404427)/0x8*(_0x3cb840*0.45);_0x3c9ef0===0x0?_0x1eb48d[_0x234744(0x2fe)](_0x2ca8b1,_0x1811da):_0x1eb48d[_0x234744(0x277)](_0x2ca8b1,_0x1811da);}),_0x1eb48d[_0x5bd36c(0x2ec)]();};_0x4be797(_0x15d932=>_0x15d932['m'],_0x4a1d52),_0x4be797(_0x2eb5d9=>_0x2eb5d9['sp'],_0x331d4e(0x1d1));},'_drawGyro'(){const _0x23fa33=a0_0x250ed6,_0x3cb480=document['getElementById']('gyroGraph');if(!_0x3cb480)return;const _0x80544b=_0x3cb480[_0x23fa33(0x25a)]('2d'),_0x28d30b=_0x3cb480[_0x23fa33(0x29f)],_0x466bdd=_0x3cb480[_0x23fa33(0x251)];_0x80544b[_0x23fa33(0x270)](0x0,0x0,_0x28d30b,_0x466bdd);const _0x442d25=PHYS[_0x23fa33(0x1da)],_0x55674a=PHYS[_0x23fa33(0x20c)][_0x23fa33(0x1ca)];[{'v':_0x442d25['x'],'c':_0x23fa33(0x21b),'l':'P'},{'v':_0x442d25['z'],'c':'#10256D','l':'R'},{'v':_0x442d25['y'],'c':'#43A047','l':'Y'}]['forEach']((_0x3f99c3,_0x565529)=>{const _0x17c78a=_0x23fa33,_0x3b2fa6=0xc+_0x565529*0x24,_0x54952f=Math[_0x17c78a(0x272)](_0x3f99c3['v'])/_0x55674a*(_0x466bdd-0x14);_0x80544b[_0x17c78a(0x2ea)]=_0x3f99c3['c'],_0x80544b['fillRect'](_0x3b2fa6,_0x466bdd-0xa-_0x54952f,0x18,_0x54952f),_0x80544b[_0x17c78a(0x2ea)]=_0x17c78a(0x2ad),_0x80544b[_0x17c78a(0x1cb)]='9px\x20Inter',_0x80544b['fillText'](_0x3f99c3['l'],_0x3b2fa6+0x8,_0x466bdd-0x2);});}},GPS_SIM={'HOME_LAT':17.0005,'HOME_LON':82.2458,'HOME_ALT':0xc,'_satBase':0xe,'_satJitter':0x0,'_satTimer':0x0,'_fixType':0x3,'_hdop':0.9,'UPDATE_RATE':0x5,'_cosHomeLat':null,'getLat'(){const _0x1d9e90=a0_0x250ed6;return this[_0x1d9e90(0x255)]+PHYS[_0x1d9e90(0x21d)]['z']/0x1b2d8;},'getLon'(){const _0x47cfa4=a0_0x250ed6;if(this[_0x47cfa4(0x22e)]===null)this['_cosHomeLat']=Math[_0x47cfa4(0x217)](this[_0x47cfa4(0x255)]*Math['PI']/0xb4);return this[_0x47cfa4(0x273)]+PHYS[_0x47cfa4(0x21d)]['x']/(0x1b2d8*this[_0x47cfa4(0x22e)]);},'getAltMSL'(){const _0x38b6a9=a0_0x250ed6;return this[_0x38b6a9(0x249)]+PHYS[_0x38b6a9(0x21d)]['y'];},'update'(_0x4112e8){const _0x2cc0c0=a0_0x250ed6;this[_0x2cc0c0(0x1a8)]+=_0x4112e8;this[_0x2cc0c0(0x1a8)]>0x2&&(this[_0x2cc0c0(0x1a8)]=0x0,this[_0x2cc0c0(0x1cd)]=Math[_0x2cc0c0(0x27e)]((Math[_0x2cc0c0(0x258)]()-0.5)*0x2));const _0x47aa6d=typeof ENV!==_0x2cc0c0(0x2b9)&&ENV[_0x2cc0c0(0x2ff)]===_0x2cc0c0(0x229);this[_0x2cc0c0(0x233)]=_0x47aa6d?0x0:typeof State!=='undefined'&&State['armed']?0x3:0x2,this[_0x2cc0c0(0x266)]=_0x47aa6d?99.9:0.7+Math['random']()*0.4;},'getSatCount'(){const _0x366fad=a0_0x250ed6;return Math[_0x366fad(0x28f)](0x0,this[_0x366fad(0x221)]+this[_0x366fad(0x1cd)]+(this[_0x366fad(0x233)]===0x0?-0xe:0x0));},'getFixType'(){return this['_fixType'];},'getHdop'(){return this['_hdop'];},'rawInt'(){const _0x7ab92b=a0_0x250ed6;return{'lat':Math[_0x7ab92b(0x27e)](this[_0x7ab92b(0x1f6)]()*0x989680),'lon':Math[_0x7ab92b(0x27e)](this['getLon']()*0x989680),'alt':Math[_0x7ab92b(0x27e)](this[_0x7ab92b(0x1b0)]()*0x3e8),'fix_type':this[_0x7ab92b(0x233)],'satellites_visible':this[_0x7ab92b(0x21e)](),'eph':Math['round'](this[_0x7ab92b(0x266)]*0x64),'epv':Math['round']((this[_0x7ab92b(0x266)]+0.3)*0x64)};}},VISION_POS={'_x':0x0,'_y':0x0,'_z':0x0,'_driftX':0x0,'_driftZ':0x0,'UPDATE_RATE':0x1e,'_isActive'(){const _0xd0752f=a0_0x250ed6,_0x110024=typeof ENV!==_0xd0752f(0x2b9)&&ENV[_0xd0752f(0x2ff)]==='indoor';return _0x110024||GPS_SIM['getFixType']()<0x2;},'update'(_0x2e1e72){const _0x2f35fd=a0_0x250ed6;!this[_0x2f35fd(0x1f1)]()&&(this[_0x2f35fd(0x25e)]*=0.95,this[_0x2f35fd(0x1ec)]*=0.95);const _0x181c45=this['_isActive']()?0.002:0.0001;this['_driftX']+=(Math[_0x2f35fd(0x258)]()-0.5)*_0x181c45,this[_0x2f35fd(0x1ec)]+=(Math[_0x2f35fd(0x258)]()-0.5)*_0x181c45;const _0x4f5963=this[_0x2f35fd(0x1f1)]()?0.04:0.008;this['_x']=PHYS[_0x2f35fd(0x21d)]['x']+this[_0x2f35fd(0x25e)]+(Math[_0x2f35fd(0x258)]()-0.5)*_0x4f5963,this['_y']=Math['max'](0x0,PHYS['pos']['y']-PHYS[_0x2f35fd(0x1a9)]+(Math[_0x2f35fd(0x258)]()-0.5)*_0x4f5963*0.5),this['_z']=PHYS[_0x2f35fd(0x21d)]['z']+this['_driftZ']+(Math[_0x2f35fd(0x258)]()-0.5)*_0x4f5963;},'get'(){const _0x1d6385=a0_0x250ed6;return{'x':this['_x'][_0x1d6385(0x235)](0x2),'y':this['_y'][_0x1d6385(0x235)](0x2),'z':this['_z'][_0x1d6385(0x235)](0x2),'active':this['_isActive'](),'quality':this[_0x1d6385(0x1f1)]()?Math[_0x1d6385(0x28f)](0x0,0x64-Math['round'](Math['hypot'](this[_0x1d6385(0x25e)],this[_0x1d6385(0x1ec)])*0x1f4)):0x64};}},OBSTACLE_DIST={'SECTORS':['FWD','RIGHT',a0_0x250ed6(0x1d7),a0_0x250ed6(0x252),'UP'],'SENSOR_RANGE':0xc,'UPDATE_RATE':0xa,'_distances':[0xc,0xc,0xc,0xc,0xc],'_angles':[0x0,Math['PI']/0x2,Math['PI'],-Math['PI']/0x2,null],'update'(){const _0x255d43=a0_0x250ed6,_0x2de801=PHYS,_0x1a2d04=_0x2de801['euler']['yaw'],_0x18e6cf=_0x2de801[_0x255d43(0x21d)],_0x2c9a1a=_0x2de801[_0x255d43(0x1a9)];for(let _0x1e6ef5=0x0;_0x1e6ef5<0x5;_0x1e6ef5++){if(_0x1e6ef5===0x4){this[_0x255d43(0x26b)][_0x1e6ef5]=Math[_0x255d43(0x28f)](0x0,0x78-(_0x18e6cf['y']-_0x2c9a1a));continue;}const _0xb042bd=_0x1a2d04+this[_0x255d43(0x241)][_0x1e6ef5],_0x2c4359=Math[_0x255d43(0x208)](_0xb042bd),_0x5c403e=Math['cos'](_0xb042bd);let _0x49d97a=this['SENSOR_RANGE'];for(const _0x4cee15 of _0x2de801[_0x255d43(0x2f6)]){const _0x298117=(_0x4cee15[_0x255d43(0x29e)]['x']+_0x4cee15[_0x255d43(0x28f)]['x'])*0.5,_0x27be3c=(_0x4cee15['min']['z']+_0x4cee15[_0x255d43(0x28f)]['z'])*0.5,_0x173b7c=_0x298117-_0x18e6cf['x'],_0x22a670=_0x27be3c-_0x18e6cf['z'],_0x16dbbf=_0x173b7c*_0x2c4359+_0x22a670*_0x5c403e;if(_0x16dbbf<0x0||_0x16dbbf>this[_0x255d43(0x1b1)])continue;const _0x55d3d3=Math[_0x255d43(0x272)](_0x173b7c*_0x5c403e-_0x22a670*_0x2c4359),_0x490694=Math[_0x255d43(0x28f)](_0x4cee15[_0x255d43(0x28f)]['x']-_0x4cee15['min']['x'],_0x4cee15[_0x255d43(0x28f)]['z']-_0x4cee15[_0x255d43(0x29e)]['z'])*0.5;if(_0x55d3d3<_0x490694+0.5)_0x49d97a=Math['min'](_0x49d97a,_0x16dbbf);}this[_0x255d43(0x26b)][_0x1e6ef5]=Math[_0x255d43(0x28f)](0x0,_0x49d97a+(Math['random']()-0.5)*0.15);}},'get'(){const _0x139cb4=a0_0x250ed6;return this[_0x139cb4(0x26b)][_0x139cb4(0x1a6)]();}},PID_TELEM={'axes':{'roll':{'kp':0x0,'ki':0x0,'kd':0x0,'setpoint':0x0,'measured':0x0,'error':0x0,'output':0x0},'pitch':{'kp':0x0,'ki':0x0,'kd':0x0,'setpoint':0x0,'measured':0x0,'error':0x0,'output':0x0},'yaw':{'kp':0x0,'ki':0x0,'kd':0x0,'setpoint':0x0,'measured':0x0,'error':0x0,'output':0x0},'throttle':{'kp':0x0,'ki':0x0,'kd':0x0,'setpoint':0x0,'measured':0x0,'error':0x0,'output':0x0}},'capture'(){const _0x1c7c89=a0_0x250ed6,_0x2a52e7=FC[_0x1c7c89(0x24a)],_0x3cc794=FC['ratePID'],_0x1028f5=PHYS[_0x1c7c89(0x2ca)];this['axes']['roll']={'kp':_0x2a52e7['rp'],'ki':_0x2a52e7['ri']||0x0,'kd':_0x2a52e7['rd'],'setpoint':_0x1028f5['roll'],'measured':PHYS[_0x1c7c89(0x1da)]['z'],'error':_0x1028f5[_0x1c7c89(0x2f5)]-PHYS['gyro']['z'],'output':PHYS[_0x1c7c89(0x2b2)][0x0]-PHYS[_0x1c7c89(0x2b2)][0x1]},this[_0x1c7c89(0x2d7)]['pitch']={'kp':_0x2a52e7['rp'],'ki':_0x2a52e7['ri']||0x0,'kd':_0x2a52e7['rd'],'setpoint':_0x1028f5[_0x1c7c89(0x1ca)],'measured':PHYS[_0x1c7c89(0x1da)]['x'],'error':_0x1028f5[_0x1c7c89(0x1ca)]-PHYS['gyro']['x'],'output':PHYS['motorCmd'][0x2]-PHYS[_0x1c7c89(0x2b2)][0x0]},this[_0x1c7c89(0x2d7)][_0x1c7c89(0x287)]={'kp':_0x2a52e7['yp'],'ki':0.012,'kd':0x0,'setpoint':_0x1028f5[_0x1c7c89(0x287)],'measured':PHYS[_0x1c7c89(0x1da)]['y'],'error':_0x1028f5[_0x1c7c89(0x287)]-PHYS[_0x1c7c89(0x1da)]['y'],'output':PHYS['motorCmd'][0x0]-PHYS['motorCmd'][0x3]},this[_0x1c7c89(0x2d7)]['throttle']={'kp':_0x2a52e7['ap'],'ki':FC[_0x1c7c89(0x1ad)]['i'],'kd':FC['altPID']['d'],'setpoint':FC['altTarget']||0x0,'measured':PHYS[_0x1c7c89(0x19c)],'error':(FC['altTarget']||0x0)-PHYS['_altEstimate'],'output':PHYS[_0x1c7c89(0x265)]};}};function getBattEstimatedFlightTime(){const _0x318d09=a0_0x250ed6,_0x31100c=PHYS[_0x318d09(0x262)]*(PHYS[_0x318d09(0x26f)]/0x64),_0x5d2923=Math[_0x318d09(0x28f)](0.1,PHYS[_0x318d09(0x2c0)]);return Math['min'](0x270f,_0x31100c/_0x5d2923*0xe10);}typeof globalThis!==a0_0x250ed6(0x2b9)&&Object[a0_0x250ed6(0x227)](globalThis,{'V3':V3,'Q':Q,'Noise':Noise,'DRYDEN':DRYDEN,'PID':PID,'Kalman1D':Kalman1D,'DRONE_PROFILES':DRONE_PROFILES,'PHYS':PHYS,'FC':FC,'INPUT':INPUT,'BLACKBOX':BLACKBOX,'DEBUG':DEBUG,'GPS_SIM':GPS_SIM,'VISION_POS':VISION_POS,'OBSTACLE_DIST':OBSTACLE_DIST,'PID_TELEM':PID_TELEM,'getBattEstimatedFlightTime':getBattEstimatedFlightTime,'_simClock':_simClock,'SIM_SPEED':SIM_SPEED});const MAVLINK={'MSG_HEARTBEAT':0x0,'MSG_SYS_STATUS':0x1,'MSG_BATTERY_STATUS':0x93,'MSG_ATTITUDE':0x1e,'MSG_LOCAL_POSITION_NED':0x20,'MSG_GPS_RAW_INT':0x18,'MSG_RC_CHANNELS_RAW':0x23,'MSG_VFR_HUD':0x4a,'MSG_STATUSTEXT':0xfd,'_seq':0x0,'_crc16'(_0x438fe9){const _0x1ae5a5=a0_0x250ed6;let _0x108da5=0xffff;for(let _0x3488a2=0x0;_0x3488a2<_0x438fe9[_0x1ae5a5(0x2db)];_0x3488a2++){let _0x35a08e=_0x438fe9[_0x3488a2]^_0x108da5&0xff;_0x35a08e=(_0x35a08e^_0x35a08e<<0x4)&0xff,_0x108da5=(_0x108da5>>0x8^_0x35a08e<<0x8^_0x35a08e<<0x3^_0x35a08e>>0x4)&0xffff;}return _0x108da5;},'_crcExtra':{0x0:0x32,0x1:0x7c,0x18:0x18,0x1e:0x27,0x20:0xb9,0x23:0xf4,0x4a:0x14,0x93:0x9a,0xfd:0x53},'_packet'(_0x27f36e,_0xa26205){const _0x415e4a=a0_0x250ed6,_0x1e5374=0x1,_0x261bc8=0x1,_0x51e609=_0xa26205[_0x415e4a(0x2db)],_0x429998=[0xfe,_0x51e609,this[_0x415e4a(0x2a1)]&0xff,_0x1e5374,_0x261bc8,_0x27f36e];this[_0x415e4a(0x2a1)]=this[_0x415e4a(0x2a1)]+0x1&0xff;const _0x2c6564=[..._0x429998[_0x415e4a(0x1a6)](0x1),..._0xa26205,this['_crcExtra'][_0x27f36e]||0x0],_0xba0514=this[_0x415e4a(0x1c4)](_0x2c6564);return new Uint8Array([..._0x429998,..._0xa26205,_0xba0514&0xff,_0xba0514>>0x8&0xff]);},'_f32'(_0x1a5f7d,_0x158d2f,_0x24fea7){const _0x2a9ecf=a0_0x250ed6;_0x1a5f7d[_0x2a9ecf(0x29a)](_0x158d2f,_0x24fea7,!![]);},'_u32'(_0x347841,_0x235dab,_0x42dd9d){const _0x1db964=a0_0x250ed6;_0x347841[_0x1db964(0x2b7)](_0x235dab,_0x42dd9d,!![]);},'_i32'(_0x178679,_0x5cc1ae,_0x95f37a){const _0x3aed97=a0_0x250ed6;_0x178679[_0x3aed97(0x295)](_0x5cc1ae,_0x95f37a,!![]);},'_u16'(_0x23444f,_0x3fb6c5,_0x34e474){const _0x27678b=a0_0x250ed6;_0x23444f[_0x27678b(0x2a3)](_0x3fb6c5,_0x34e474,!![]);},'_i16'(_0x5ca4d2,_0x56797d,_0xdd2bf){_0x5ca4d2['setInt16'](_0x56797d,_0xdd2bf,!![]);},'heartbeat'(_0x3d29d8,_0x46699c,_0x47e74a,_0xdb1222,_0x4301d1,_0x575e94){const _0x5baf2f=a0_0x250ed6,_0x2c54fc=new ArrayBuffer(0x9),_0x4bcfaf=new DataView(_0x2c54fc);this[_0x5baf2f(0x2e3)](_0x4bcfaf,0x0,_0x3d29d8||0x0),_0x4bcfaf[_0x5baf2f(0x1d4)](0x4,_0x46699c||0x2),_0x4bcfaf[_0x5baf2f(0x1d4)](0x5,_0x47e74a||0x3);let _0x3d2181=0x0;const _0x4a6e4e=typeof State!==_0x5baf2f(0x2b9)&&State[_0x5baf2f(0x2c7)],_0x14230f=typeof FC!=='undefined'?FC['mode']:_0x5baf2f(0x1dd);if(_0x4a6e4e)_0x3d2181|=0x80;if(_0x14230f===_0x5baf2f(0x236)||_0x14230f===_0x5baf2f(0x1f7))_0x3d2181|=0x10;if(_0x14230f===_0x5baf2f(0x1dd)||_0x14230f===_0x5baf2f(0x1cf)||_0x14230f===_0x5baf2f(0x209))_0x3d2181|=0x8;return _0x4bcfaf[_0x5baf2f(0x1d4)](0x6,_0xdb1222!==undefined?_0xdb1222:_0x3d2181),_0x4bcfaf[_0x5baf2f(0x1d4)](0x7,_0x4301d1||0x0),_0x4bcfaf['setUint8'](0x8,_0x575e94||0x3),this[_0x5baf2f(0x2e1)](this[_0x5baf2f(0x28a)],[...new Uint8Array(_0x2c54fc)]);},'attitude'(_0x7d5752,_0x18c4ad,_0x2d070d,_0x1db0d1,_0x132607,_0x2ccb03,_0x2b77b4){const _0x5828a7=a0_0x250ed6,_0xe468b5=new ArrayBuffer(0x1c),_0x11cdf6=new DataView(_0xe468b5);return this['_u32'](_0x11cdf6,0x0,_0x7d5752>>>0x0),this[_0x5828a7(0x268)](_0x11cdf6,0x4,_0x18c4ad),this[_0x5828a7(0x268)](_0x11cdf6,0x8,_0x2d070d),this[_0x5828a7(0x268)](_0x11cdf6,0xc,_0x1db0d1),this[_0x5828a7(0x268)](_0x11cdf6,0x10,_0x132607),this[_0x5828a7(0x268)](_0x11cdf6,0x14,_0x2ccb03),this[_0x5828a7(0x268)](_0x11cdf6,0x18,_0x2b77b4),this[_0x5828a7(0x2e1)](this['MSG_ATTITUDE'],[...new Uint8Array(_0xe468b5)]);},'localPositionNed'(_0x5bdef9,_0x388501,_0x4cdf12,_0x254ad6,_0x13bdf0,_0x48332d,_0xabc478){const _0x3da0ac=a0_0x250ed6,_0x4cc687=new ArrayBuffer(0x1c),_0x40f065=new DataView(_0x4cc687);return this[_0x3da0ac(0x2e3)](_0x40f065,0x0,_0x5bdef9>>>0x0),this['_f32'](_0x40f065,0x4,_0x388501),this[_0x3da0ac(0x268)](_0x40f065,0x8,_0x4cdf12),this[_0x3da0ac(0x268)](_0x40f065,0xc,_0x254ad6),this[_0x3da0ac(0x268)](_0x40f065,0x10,_0x13bdf0),this[_0x3da0ac(0x268)](_0x40f065,0x14,_0x48332d),this[_0x3da0ac(0x268)](_0x40f065,0x18,_0xabc478),this[_0x3da0ac(0x2e1)](this[_0x3da0ac(0x2b4)],[...new Uint8Array(_0x4cc687)]);},'vfrHud'(_0xba9a07,_0x40e917,_0x969981,_0x1a326d,_0x2335f1,_0xbedee6){const _0x4754fe=a0_0x250ed6,_0x5ac3e4=new ArrayBuffer(0x14),_0x497098=new DataView(_0x5ac3e4);return this['_f32'](_0x497098,0x0,_0xba9a07),this[_0x4754fe(0x268)](_0x497098,0x4,_0x40e917),this['_f32'](_0x497098,0x8,_0x2335f1),this[_0x4754fe(0x268)](_0x497098,0xc,_0xbedee6),this[_0x4754fe(0x2a4)](_0x497098,0x10,_0x969981),this[_0x4754fe(0x1bd)](_0x497098,0x12,_0x1a326d),this[_0x4754fe(0x2e1)](this['MSG_VFR_HUD'],[...new Uint8Array(_0x5ac3e4)]);},'gpsRawInt'(_0x1779b4,_0x4d1c15,_0x28eb8f,_0x4e68ac,_0x2e6dc0,_0x12e62f,_0x2d4cff,_0x4d461b,_0x354e45,_0x7567cb){const _0x15b198=a0_0x250ed6,_0x19ba4b=new ArrayBuffer(0x1e),_0x53c55d=new DataView(_0x19ba4b);return _0x53c55d['setUint32'](0x0,_0x1779b4*0x3e8>>>0x0,!![]),_0x53c55d[_0x15b198(0x2b7)](0x4,0x0,!![]),this[_0x15b198(0x2e4)](_0x53c55d,0x8,_0x4d1c15),this[_0x15b198(0x2e4)](_0x53c55d,0xc,_0x28eb8f),this['_i32'](_0x53c55d,0x10,_0x4e68ac),this[_0x15b198(0x1bd)](_0x53c55d,0x14,_0x2e6dc0!==undefined?_0x2e6dc0:0xffff),this['_u16'](_0x53c55d,0x16,_0x12e62f!==undefined?_0x12e62f:0xffff),this[_0x15b198(0x1bd)](_0x53c55d,0x18,_0x2d4cff!==undefined?_0x2d4cff:0xffff),this[_0x15b198(0x1bd)](_0x53c55d,0x1a,_0x4d461b!==undefined?_0x4d461b:0xffff),_0x53c55d[_0x15b198(0x1d4)](0x1c,_0x354e45||0x0),_0x53c55d[_0x15b198(0x1d4)](0x1d,_0x7567cb!==undefined?_0x7567cb:0xff),this[_0x15b198(0x2e1)](this[_0x15b198(0x1e3)],[...new Uint8Array(_0x19ba4b)]);},'batteryStatus'(_0x1a0f50,_0x21e0a0,_0x28d9c0,_0x241020,_0x3b4d4d,_0x51b54c,_0x3e84c4,_0x4c88d5,_0x546f49){const _0x42d1e1=a0_0x250ed6,_0x564a6f=new ArrayBuffer(0x24),_0x4d6f6e=new DataView(_0x564a6f);this['_i32'](_0x4d6f6e,0x0,_0x3e84c4!==undefined?_0x3e84c4:-0x1),this[_0x42d1e1(0x2e4)](_0x4d6f6e,0x4,_0x4c88d5!==undefined?_0x4c88d5:-0x1),this['_i16'](_0x4d6f6e,0x8,_0x241020!==undefined?_0x241020:0x7fff);const _0x1e2fbb=_0x3b4d4d||[];for(let _0x401813=0x0;_0x401813<0xa;_0x401813++)this[_0x42d1e1(0x1bd)](_0x4d6f6e,0xa+_0x401813*0x2,_0x401813<_0x1e2fbb['length']?_0x1e2fbb[_0x401813]:0xffff);return this['_i16'](_0x4d6f6e,0x1e,_0x51b54c!==undefined?_0x51b54c:-0x1),_0x4d6f6e[_0x42d1e1(0x1d4)](0x20,_0x1a0f50||0x0),_0x4d6f6e['setUint8'](0x21,_0x21e0a0||0x0),_0x4d6f6e[_0x42d1e1(0x1d4)](0x22,_0x28d9c0||0x0),_0x4d6f6e[_0x42d1e1(0x218)](0x23,_0x546f49!==undefined?_0x546f49:-0x1),this['_packet'](this['MSG_BATTERY_STATUS'],[...new Uint8Array(_0x564a6f)]);},'buildTlog'(_0x39547b){const _0x7075dc=a0_0x250ed6;if(!_0x39547b||!_0x39547b['length'])return null;this['_seq']=0x0;const _0x1a6da6=[],_0x2f409a=(_0x28fef5,_0x2db698)=>{const _0x4c010d=a0_0x20b6,_0x4a35ed=Math[_0x4c010d(0x27e)](_0x28fef5*0xf4240),_0x345bda=new ArrayBuffer(0x8),_0x2fc489=new DataView(_0x345bda);_0x2fc489['setUint32'](0x0,Math[_0x4c010d(0x2f8)](_0x4a35ed/0x100000000)>>>0x0,![]),_0x2fc489[_0x4c010d(0x2b7)](0x4,_0x4a35ed>>>0x0,![]),_0x1a6da6[_0x4c010d(0x2ed)](new Uint8Array(_0x345bda)),_0x1a6da6[_0x4c010d(0x2ed)](_0x2db698);};let _0x10cdd9=-0x3e7,_0x2400d6=-0x3e7,_0x24082f=-0x3e7;for(const _0x1c297d of _0x39547b){_0x1c297d['t']-_0x10cdd9>=0x1&&(_0x2f409a(_0x1c297d['t'],this['heartbeat'](0x0,0x2,0x3)),_0x10cdd9=_0x1c297d['t']);if(_0x1c297d['t']-_0x2400d6>=0.2){const _0x318812=Math[_0x7075dc(0x27e)]((GPS_SIM[_0x7075dc(0x255)]+_0x1c297d['pz']/0x1b2d8)*0x989680),_0x45aa3a=Math['round']((GPS_SIM['HOME_LON']+_0x1c297d['px']/(0x1b2d8*(GPS_SIM['_cosHomeLat']||Math[_0x7075dc(0x217)](GPS_SIM[_0x7075dc(0x255)]*Math['PI']/0xb4))))*0x989680),_0x44c72f=Math[_0x7075dc(0x27e)]((GPS_SIM[_0x7075dc(0x249)]+_0x1c297d['py'])*0x3e8),_0x47f3d1=Math['round'](Math[_0x7075dc(0x2d3)](_0x1c297d['vx'],_0x1c297d['vz'])*0x64),_0x29e9f6=Math['round']((Math[_0x7075dc(0x301)](_0x1c297d['vx'],_0x1c297d['vz'])*0xb4/Math['PI']+0x168)%0x168*0x64);_0x2f409a(_0x1c297d['t'],this[_0x7075dc(0x201)](Math[_0x7075dc(0x27e)](_0x1c297d['t']*0x3e8),_0x318812,_0x45aa3a,_0x44c72f,0x5a,0x82,_0x47f3d1,_0x29e9f6,0x3,0xe)),_0x2400d6=_0x1c297d['t'];}if(_0x1c297d['t']-_0x24082f>=0.5){const _0x39203a=Math[_0x7075dc(0x27e)](_0x1c297d['batt']/(PHYS[_0x7075dc(0x1d6)]||0x4)*0x3e8),_0x4d34fc=Array(0xa)['fill'](0xffff);for(let _0xf03d76=0x0;_0xf03d76<(PHYS[_0x7075dc(0x1d6)]||0x4);_0xf03d76++)_0x4d34fc[_0xf03d76]=_0x39203a;const _0x438ab6=Math[_0x7075dc(0x27e)](PHYS['battCapacity']*0x3e8),_0x2464a1=Math[_0x7075dc(0x27e)](PHYS[_0x7075dc(0x26f)]);_0x2f409a(_0x1c297d['t'],this[_0x7075dc(0x290)](0x0,0x0,0x0,0x9c4,_0x4d34fc,Math[_0x7075dc(0x27e)](_0x1c297d[_0x7075dc(0x200)]*0x64),_0x438ab6,-0x1,_0x2464a1)),_0x24082f=_0x1c297d['t'];}const _0x22dc4a=Math[_0x7075dc(0x27e)](_0x1c297d['t']*0x3e8);_0x2f409a(_0x1c297d['t'],this['attitude'](_0x22dc4a,_0x1c297d[_0x7075dc(0x2f5)],_0x1c297d[_0x7075dc(0x1ca)],_0x1c297d[_0x7075dc(0x287)],_0x1c297d['gx'],_0x1c297d['gy'],_0x1c297d['gz'])),_0x2f409a(_0x1c297d['t'],this[_0x7075dc(0x1bf)](_0x22dc4a,_0x1c297d['px'],-_0x1c297d['pz'],-_0x1c297d['py'],_0x1c297d['vx'],-_0x1c297d['vz'],-_0x1c297d['vy']));const _0x1690da=Math['hypot'](_0x1c297d['vx'],_0x1c297d['vy'],_0x1c297d['vz']),_0x2c5576=Math[_0x7075dc(0x2d3)](_0x1c297d['vx'],_0x1c297d['vz']);_0x2f409a(_0x1c297d['t'],this[_0x7075dc(0x2f3)](_0x1690da,_0x2c5576,Math[_0x7075dc(0x27e)]((_0x1c297d[_0x7075dc(0x287)]*0xb4/Math['PI']+0x168)%0x168),Math[_0x7075dc(0x27e)]((_0x1c297d['m0']+_0x1c297d['m1']+_0x1c297d['m2']+_0x1c297d['m3'])/0x4*0x64),_0x1c297d['py'],_0x1c297d['vy']));}const _0x1b2384=_0x1a6da6[_0x7075dc(0x1b2)]((_0x1f8f87,_0x1ce7d0)=>_0x1f8f87+_0x1ce7d0['byteLength'],0x0),_0x42f223=new Uint8Array(_0x1b2384);let _0x3df03f=0x0;for(const _0x54b50a of _0x1a6da6){_0x42f223['set'](_0x54b50a,_0x3df03f),_0x3df03f+=_0x54b50a[_0x7075dc(0x2c9)];}return _0x42f223;},'downloadTlog'(){const _0x32746a=a0_0x250ed6,_0x46552b=BLACKBOX[_0x32746a(0x22b)]();if(!_0x46552b['length'])return console['warn'](_0x32746a(0x28b)),![];const _0x49564e=this[_0x32746a(0x1de)](_0x46552b);if(!_0x49564e)return![];const _0x33fb56=new Blob([_0x49564e],{'type':'application/octet-stream'}),_0x24aa86=document[_0x32746a(0x1aa)]('a');return _0x24aa86[_0x32746a(0x19a)]=URL[_0x32746a(0x237)](_0x33fb56),_0x24aa86[_0x32746a(0x1fb)]=_0x32746a(0x2cf)+Date['now']()+_0x32746a(0x275),_0x24aa86[_0x32746a(0x2c6)](),URL[_0x32746a(0x215)](_0x24aa86[_0x32746a(0x19a)]),!![];},'downloadJSON'(){const _0x1241fd=a0_0x250ed6,_0x5c3bbe=BLACKBOX[_0x1241fd(0x22b)]();if(!_0x5c3bbe[_0x1241fd(0x2db)])return![];const _0x30de63=JSON[_0x1241fd(0x2da)]({'meta':{'version':_0x1241fd(0x2e6),'drone':PHYS[_0x1241fd(0x20b)],'exported':new Date()['toISOString']()},'frames':_0x5c3bbe},null,0x2),_0x1d0382=new Blob([_0x30de63],{'type':_0x1241fd(0x1d0)}),_0x1f0353=document[_0x1241fd(0x1aa)]('a');return _0x1f0353[_0x1241fd(0x19a)]=URL['createObjectURL'](_0x1d0382),_0x1f0353[_0x1241fd(0x1fb)]=_0x1241fd(0x2e7)+Date[_0x1241fd(0x2a9)]()+'.json',_0x1f0353['click'](),URL[_0x1241fd(0x215)](_0x1f0353['href']),!![];}},TELEM_GRAPH={'_canvas':null,'_ctx':null,'_history':{'alt':[],'vel':[],'roll':[],'pitch':[],'batt':[]},'_maxLen':0xc8,'_channels':[a0_0x250ed6(0x263),a0_0x250ed6(0x253),a0_0x250ed6(0x2f5),a0_0x250ed6(0x1ca),a0_0x250ed6(0x245)],'_colors':{'alt':a0_0x250ed6(0x298),'vel':'#EE9346','roll':a0_0x250ed6(0x25c),'pitch':a0_0x250ed6(0x26c),'batt':a0_0x250ed6(0x2d4)},'_visible':{'alt':!![],'vel':!![],'roll':![],'pitch':![],'batt':![]},'_scales':{'alt':0x32,'vel':0xf,'roll':0x5a,'pitch':0x5a,'batt':0x64},'_maxAlt':0x0,'_W':0x0,'_H':0x0,'init'(_0x29c766){const _0xe99ed=a0_0x250ed6;this[_0xe99ed(0x1b4)]=document[_0xe99ed(0x2e0)](_0x29c766),this[_0xe99ed(0x1b4)]&&(this[_0xe99ed(0x244)]=this[_0xe99ed(0x1b4)][_0xe99ed(0x25a)]('2d'),this[_0xe99ed(0x2b0)]());},'_syncSize'(){const _0xd2cdb6=a0_0x250ed6;if(!this[_0xd2cdb6(0x1b4)])return;const _0x3f52ce=performance[_0xd2cdb6(0x2a9)]();if(this[_0xd2cdb6(0x289)]&&_0x3f52ce-this['_lastSync']<0x3e8)return;this[_0xd2cdb6(0x289)]=_0x3f52ce;const _0x5e6c6b=this[_0xd2cdb6(0x1b4)][_0xd2cdb6(0x279)],_0x56a167=this['_canvas']['clientHeight'];(this['_W']!==_0x5e6c6b||this['_H']!==_0x56a167)&&(this[_0xd2cdb6(0x1b4)][_0xd2cdb6(0x29f)]=_0x5e6c6b,this[_0xd2cdb6(0x1b4)][_0xd2cdb6(0x251)]=_0x56a167,this['_W']=_0x5e6c6b,this['_H']=_0x56a167);},'push'(_0xbb72d6){const _0x178e7b=a0_0x250ed6,_0x41fe09=0xb4/Math['PI'],_0x1d15aa={'alt':Math['max'](0x0,_0xbb72d6['pos']['y']-_0xbb72d6[_0x178e7b(0x1a9)]),'vel':Math['hypot'](_0xbb72d6[_0x178e7b(0x253)]['x'],_0xbb72d6[_0x178e7b(0x253)]['y'],_0xbb72d6[_0x178e7b(0x253)]['z']),'roll':_0xbb72d6[_0x178e7b(0x1e1)][_0x178e7b(0x2f5)]*_0x41fe09,'pitch':_0xbb72d6['euler'][_0x178e7b(0x1ca)]*_0x41fe09,'batt':_0xbb72d6[_0x178e7b(0x26f)]};for(const _0x18b384 of this['_channels']){this[_0x178e7b(0x2fd)][_0x18b384][_0x178e7b(0x2ed)](_0x1d15aa[_0x18b384]);if(this[_0x178e7b(0x2fd)][_0x18b384][_0x178e7b(0x2db)]>this['_maxLen'])this[_0x178e7b(0x2fd)][_0x18b384][_0x178e7b(0x2de)]();}if(_0x1d15aa[_0x178e7b(0x263)]>this[_0x178e7b(0x267)])this['_maxAlt']=_0x1d15aa['alt'];else{if(this[_0x178e7b(0x2fd)][_0x178e7b(0x263)][_0x178e7b(0x2db)]>=this['_maxLen']){let _0x1abea2=0x0;for(let _0x34d781=0x0;_0x34d781<this[_0x178e7b(0x2fd)][_0x178e7b(0x263)][_0x178e7b(0x2db)];_0x34d781++)if(this['_history']['alt'][_0x34d781]>_0x1abea2)_0x1abea2=this[_0x178e7b(0x2fd)][_0x178e7b(0x263)][_0x34d781];this[_0x178e7b(0x267)]=_0x1abea2;}}this['_scales'][_0x178e7b(0x263)]=Math[_0x178e7b(0x28f)](0xa,this['_maxAlt']*1.1);},'draw'(){const _0x45da95=a0_0x250ed6,_0x5eb033=this[_0x45da95(0x1b4)],_0x3263be=this[_0x45da95(0x244)];if(!_0x5eb033||!_0x3263be)return;this['_syncSize']();const _0x1348a7=this['_W'],_0x1e414e=this['_H'];if(!_0x1348a7||!_0x1e414e)return;_0x3263be[_0x45da95(0x270)](0x0,0x0,_0x1348a7,_0x1e414e),_0x3263be['fillStyle']=_0x45da95(0x2a8),_0x3263be[_0x45da95(0x205)](0x0,0x0,_0x1348a7,_0x1e414e),_0x3263be[_0x45da95(0x1a5)]=_0x45da95(0x1d8),_0x3263be['lineWidth']=0x1;for(let _0x2b6544=0x1;_0x2b6544<0x4;_0x2b6544++){_0x3263be[_0x45da95(0x257)](),_0x3263be[_0x45da95(0x2fe)](0x0,_0x1e414e*_0x2b6544/0x4),_0x3263be[_0x45da95(0x277)](_0x1348a7,_0x1e414e*_0x2b6544/0x4),_0x3263be[_0x45da95(0x2ec)]();}for(const _0x10b2b6 of this['_channels']){if(!this[_0x45da95(0x27d)][_0x10b2b6])continue;const _0x2ca4e8=this[_0x45da95(0x2fd)][_0x10b2b6];if(_0x2ca4e8['length']<0x2)continue;const _0x10340b=this[_0x45da95(0x28d)][_0x10b2b6];_0x3263be[_0x45da95(0x1a5)]=this['_colors'][_0x10b2b6],_0x3263be['lineWidth']=1.5,_0x3263be[_0x45da95(0x257)]();const _0x14e071=this['_maxLen']-0x1;for(let _0x5039d2=0x0;_0x5039d2<_0x2ca4e8[_0x45da95(0x2db)];_0x5039d2++){const _0x45f53b=_0x5039d2/_0x14e071*_0x1348a7,_0xc56662=_0x1e414e/0x2-_0x2ca4e8[_0x5039d2]/_0x10340b*(_0x1e414e*0.45);_0x5039d2===0x0?_0x3263be[_0x45da95(0x2fe)](_0x45f53b,_0xc56662):_0x3263be[_0x45da95(0x277)](_0x45f53b,_0xc56662);}_0x3263be[_0x45da95(0x2ec)]();}},'push'(_0x22f438){const _0x2b7680=a0_0x250ed6,_0x3af72b=0xb4/Math['PI'],_0x3bfbb2={'alt':Math[_0x2b7680(0x28f)](0x0,_0x22f438[_0x2b7680(0x21d)]['y']-_0x22f438['groundY']),'vel':Math[_0x2b7680(0x2d3)](_0x22f438[_0x2b7680(0x253)]['x'],_0x22f438[_0x2b7680(0x253)]['y'],_0x22f438[_0x2b7680(0x253)]['z']),'roll':_0x22f438['euler'][_0x2b7680(0x2f5)]*_0x3af72b,'pitch':_0x22f438['euler'][_0x2b7680(0x1ca)]*_0x3af72b,'batt':_0x22f438[_0x2b7680(0x26f)]};for(const _0x53b5a8 of this[_0x2b7680(0x1df)]){this[_0x2b7680(0x2fd)][_0x53b5a8][_0x2b7680(0x2ed)](_0x3bfbb2[_0x53b5a8]);if(this['_history'][_0x53b5a8][_0x2b7680(0x2db)]>this[_0x2b7680(0x19b)])this[_0x2b7680(0x2fd)][_0x53b5a8][_0x2b7680(0x2de)]();}if(_0x3bfbb2['alt']>this[_0x2b7680(0x267)])this[_0x2b7680(0x267)]=_0x3bfbb2[_0x2b7680(0x263)];else{if(this[_0x2b7680(0x2fd)][_0x2b7680(0x263)]['length']>=this['_maxLen']){let _0x24b7fc=0x0;for(let _0x2904d3=0x0;_0x2904d3<this['_history'][_0x2b7680(0x263)][_0x2b7680(0x2db)];_0x2904d3++)if(this['_history']['alt'][_0x2904d3]>_0x24b7fc)_0x24b7fc=this['_history']['alt'][_0x2904d3];this[_0x2b7680(0x267)]=_0x24b7fc;}}this[_0x2b7680(0x28d)][_0x2b7680(0x263)]=Math['max'](0xa,this['_maxAlt']*1.1);},'draw'(){const _0x13f685=a0_0x250ed6,_0x28ed25=this[_0x13f685(0x1b4)],_0x2183f9=this['_ctx'];if(!_0x28ed25||!_0x2183f9)return;this[_0x13f685(0x2b0)]();const _0xc435c1=this['_W'],_0x45a7af=this['_H'];if(!_0xc435c1||!_0x45a7af)return;_0x2183f9['clearRect'](0x0,0x0,_0xc435c1,_0x45a7af),_0x2183f9['fillStyle']=_0x13f685(0x2a8),_0x2183f9['fillRect'](0x0,0x0,_0xc435c1,_0x45a7af),_0x2183f9[_0x13f685(0x1a5)]=_0x13f685(0x1d8),_0x2183f9['lineWidth']=0x1;for(let _0x125658=0x1;_0x125658<0x4;_0x125658++){_0x2183f9['beginPath'](),_0x2183f9['moveTo'](0x0,_0x45a7af*_0x125658/0x4),_0x2183f9['lineTo'](_0xc435c1,_0x45a7af*_0x125658/0x4),_0x2183f9['stroke']();}for(const _0x1b8e9e of this[_0x13f685(0x1df)]){if(!this[_0x13f685(0x27d)][_0x1b8e9e])continue;const _0x174dec=this[_0x13f685(0x2fd)][_0x1b8e9e];if(_0x174dec[_0x13f685(0x2db)]<0x2)continue;const _0x1599a1=this[_0x13f685(0x28d)][_0x1b8e9e];_0x2183f9[_0x13f685(0x1a5)]=this['_colors'][_0x1b8e9e],_0x2183f9['lineWidth']=1.5,_0x2183f9['beginPath']();const _0x492572=this[_0x13f685(0x19b)]-0x1;for(let _0xd41b2a=0x0;_0xd41b2a<_0x174dec['length'];_0xd41b2a++){const _0x532780=_0xd41b2a/_0x492572*_0xc435c1,_0xae608c=_0x45a7af/0x2-_0x174dec[_0xd41b2a]/_0x1599a1*(_0x45a7af*0.45);_0xd41b2a===0x0?_0x2183f9[_0x13f685(0x2fe)](_0x532780,_0xae608c):_0x2183f9[_0x13f685(0x277)](_0x532780,_0xae608c);}_0x2183f9[_0x13f685(0x2ec)]();}},'toggle'(_0x23e55d){const _0x23bcca=a0_0x250ed6;if(this['_visible'][_0x23e55d]!==undefined)this[_0x23bcca(0x27d)][_0x23e55d]=!this['_visible'][_0x23e55d];}};typeof globalThis!==a0_0x250ed6(0x2b9)&&Object[a0_0x250ed6(0x227)](globalThis,{'MAVLINK':MAVLINK,'TELEM_GRAPH':TELEM_GRAPH,'PHYS':PHYS,'FC':FC,'V3':V3,'Q':Q,'DRYDEN':DRYDEN,'Noise':Noise,'PID':PID,'Kalman1D':Kalman1D,'DRONE_PROFILES':DRONE_PROFILES});
+/**
+ * SPACEBORN Simulation Core v2.1 — Fully Audited & Fixed
+ *
+ * Body frame (Y-up, nose +Z): X=right, Y=up/thrust, Z=forward
+ * Motors [0..3] = FR(CW), FL(CCW), BL(CW), BR(CCW) — Quad-X, 45° arms
+ *
+ * v2.1 Fixes (per Section 1–7 audit):
+ * --- SECTION 1: RIGID BODY PHYSICS ---
+ * [FIX-1.1]  Quaternion re-normalised every substep (was only on overflow)
+ * [FIX-1.2]  Soft-clamp applied BEFORE Euler integration (was after)
+ * [FIX-1.3]  NaN/Inf recovery on all state fields incl. motorRPM
+ * [FIX-1.4]  Ground effect: Cheeseman–Bennett 1955 eq.4 (was simplified)
+ * [FIX-1.5]  Drag uses v_rel = vel − windVec − dryden before squaring
+ * [FIX-1.6]  ISA ρ applied to thrust kT AND drag simultaneously
+ * [FIX-1.7]  Collision: restitution e=0.15, Coulomb friction μ=0.4
+ * [FIX-1.8]  Crash threshold 8 m/s (was 4.5)
+ * [FIX-1.9]  Motor RPM: internal in rad/s; thrust T=kT·ω², Q=kQ·ω²
+ * [FIX-1.10] Battery OCV LiPo polynomial: 4.2V at 100% SoC, 3.3V at 0%
+ * --- SECTION 2: FLIGHT CONTROLLER ---
+ * [FIX-2.1]  Inner rate PID now runs at physics substep rate (moved into _substep)
+ * [FIX-2.2]  D-term LP filter: α = 1 − exp(−2π·fc·dt) (was correct, verified)
+ * [FIX-2.3]  Motor mix signs verified for Quad-X Y-up body frame
+ * [FIX-2.4]  PID anti-windup: conditional integration (only accumulates when not saturated)
+ * [FIX-2.5]  Position error rotated into body frame before posNPID/posEPID
+ * --- SECTION 3: SENSORS ---
+ * [FIX-3.1]  Gyro noise σ = 0.003 rad/s/√Hz · √(1/dt) (physically correct)
+ * [FIX-3.2]  Gyro bias: random walk N(0, σ_bias·√dt) per step
+ * [FIX-3.3]  Accel = R_BW·(a_world − g_world) + noise (specific force)
+ * [FIX-3.4]  Baro Kalman: Q_baro=0.005, R_baro=0.08 (was inverted)
+ * [FIX-3.5]  GPS lat/lon: HOME_LAT in radians for Math.cos (was degrees)
+ * --- SECTION 5: DATA ---
+ * [FIX-5.1]  Blackbox: added accX/Y/Z, baro_raw, baro_filtered, wind, dryden, mode, armed
+ * [FIX-5.2]  All timestamps use _absoluteSimTime, not State.flightTime
+ * [FIX-5.3]  HEARTBEAT baseMode bits correct per MAVLink spec
+ * --- SECTION 6: BUG FIXES ---
+ * [FIX-6.1]  FC.update() restructured: outer loop per-frame, inner per-substep
+ * [FIX-6.2]  Input deadband: apply → rescale → expo (no discontinuity)
+ * [FIX-6.3]  DRYDEN vertical component uses h as scale length (not Lu)
+ * [FIX-6.4]  Euler toEuler verified for Y-up, nose+Z convention
+ */
+'use strict';
+
+/* ─── Shared module-level constants (computed once at load) ─── */
+const TWO_PI_OVER_60 = (2 * Math.PI) / 60;           // RPM → rad/s
+const _ISA_EXP = 9.80665 / (0.0065 * 287.058);       // ISA density exponent ≈ 5.2558
+
+/* ─── Vector3 Math ─── */
+const V3 = {
+  add:   (a, b) => ({ x: a.x+b.x, y: a.y+b.y, z: a.z+b.z }),
+  sub:   (a, b) => ({ x: a.x-b.x, y: a.y-b.y, z: a.z-b.z }),
+  scale: (a, s) => ({ x: a.x*s,   y: a.y*s,   z: a.z*s   }),
+  dot:   (a, b) => a.x*b.x + a.y*b.y + a.z*b.z,
+  cross: (a, b) => ({ x: a.y*b.z-a.z*b.y, y: a.z*b.x-a.x*b.z, z: a.x*b.y-a.y*b.x }),
+  len:   (a)    => Math.hypot(a.x, a.y, a.z),
+  len2:  (a)    => a.x*a.x + a.y*a.y + a.z*a.z,
+  norm:  (a)    => { const l=Math.hypot(a.x,a.y,a.z)||1; return {x:a.x/l,y:a.y/l,z:a.z/l}; },
+  clone: (a)    => ({ x: a.x, y: a.y, z: a.z }),
+  zero:  ()     => ({ x: 0, y: 0, z: 0 }),
+  lerp:  (a,b,t)=> ({ x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t, z:a.z+(b.z-a.z)*t }),
+  addOut:   (out, a, b) => { out.x=a.x+b.x; out.y=a.y+b.y; out.z=a.z+b.z; return out; },
+  subOut:   (out, a, b) => { out.x=a.x-b.x; out.y=a.y-b.y; out.z=a.z-b.z; return out; },
+  scaleOut: (out, a, s) => { out.x=a.x*s; out.y=a.y*s; out.z=a.z*s; return out; },
+  crossOut: (out, a, b) => { const x=a.y*b.z-a.z*b.y, y=a.z*b.x-a.x*b.z, z=a.x*b.y-a.y*b.x; out.x=x; out.y=y; out.z=z; return out; },
+  normOut:  (out, a)    => { const l=Math.hypot(a.x,a.y,a.z)||1; out.x=a.x/l; out.y=a.y/l; out.z=a.z/l; return out; },
+};
+
+/* ─── Quaternion Math ─── */
+const Q = {
+  id:   () => ({ w:1, x:0, y:0, z:0 }),
+  // [FIX-1.1] norm called every substep not just on overflow
+  norm: (q) => { const l=Math.hypot(q.w,q.x,q.y,q.z)||1; return {w:q.w/l,x:q.x/l,y:q.y/l,z:q.z/l}; },
+  conj: (q) => ({ w:q.w, x:-q.x, y:-q.y, z:-q.z }),
+  // Hamilton product — verified sign convention
+  mul:  (a,b) => ({
+    w: a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z,
+    x: a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
+    y: a.w*b.y - a.x*b.z + a.y*b.w + a.z*b.x,
+    z: a.w*b.z + a.x*b.y - a.y*b.x + a.z*b.w,
+  }),
+  /** Rotate vector v by quaternion q (body→world): v' = q⊗[0,v]⊗q* */
+  rotVec: (q, v) => {
+      // Rodrigues formula: v' = v + 2w(qA-v) + 2(qA-(qA-v))
+      const u  = { x:q.x, y:q.y, z:q.z };
+      const uv = V3.cross(u, v);
+      const uuv= V3.cross(u, uv);
+      return { x:v.x+2*(q.w*uv.x+uuv.x), y:v.y+2*(q.w*uv.y+uuv.y), z:v.z+2*(q.w*uv.z+uuv.z) };
+    },
+    rotVecOut: (out, q, v, scr) => {
+      scr.u.x=q.x; scr.u.y=q.y; scr.u.z=q.z;
+      V3.crossOut(scr.uv, scr.u, v);
+      V3.crossOut(scr.uuv, scr.u, scr.uv);
+      out.x = v.x+2*(q.w*scr.uv.x+scr.uuv.x);
+      out.y = v.y+2*(q.w*scr.uv.y+scr.uuv.y);
+      out.z = v.z+2*(q.w*scr.uv.z+scr.uuv.z);
+      return out;
+    },
+    invRotVec: (q, v) => Q.rotVec(Q.conj(q), v),
+    invRotVecOut: (out, q, v, scr) => {
+      const inv={w:q.w,x:-q.x,y:-q.y,z:-q.z};
+      return Q.rotVecOut(out, inv, v, scr);
+    },
+  /**
+   * Quaternion integration: q̇ = ½·q⊗ω_quat  (Hamilton 1843)
+   * ω_quat = [0, ωx, ωy, ωz] in body frame
+   * Normalises every call — [FIX-1.1]
+   */
+  integrate: (q, omega, dt) => {
+    const wx=omega.x*dt*0.5, wy=omega.y*dt*0.5, wz=omega.z*dt*0.5;
+    const nw=q.w - q.x*wx - q.y*wy - q.z*wz;
+    const nx=q.x + q.w*wx + q.y*wz - q.z*wy;
+    const ny=q.y + q.w*wy + q.z*wx - q.x*wz;
+    const nz=q.z + q.w*wz + q.x*wy - q.y*wx;
+    const l=Math.hypot(nw,nx,ny,nz)||1;
+    return {w:nw/l, x:nx/l, y:ny/l, z:nz/l};
+  },
+  /**
+   * Extract Euler angles from quaternion — Y-up body frame, nose +Z
+   * [FIX-6.4] Verified convention: pitch=rot-about-X, yaw=rot-about-Y, roll=rot-about-Z
+   * Using ZYX intrinsic (yaw→pitch→roll) decomposition
+   */
+  toEuler: (q, out) => {
+    // Roll (rotation about Z-axis in body frame)
+    const sinr_cosp = 2*(q.w*q.z + q.x*q.y);
+    const cosr_cosp = 1 - 2*(q.y*q.y + q.z*q.z);
+    const roll = Math.atan2(sinr_cosp, cosr_cosp);
+    // Pitch (rotation about X-axis)
+    const sinp = 2*(q.w*q.x - q.y*q.z);
+    const pitch = Math.abs(sinp)>=1 ? Math.sign(sinp)*(Math.PI/2) : Math.asin(sinp);
+    // Yaw (rotation about Y-axis)
+    const siny_cosp = 2*(q.w*q.y + q.z*q.x);
+    const cosy_cosp = 1 - 2*(q.x*q.x + q.z*q.z);
+    const yaw = Math.atan2(siny_cosp, cosy_cosp);
+    if(out){ out.roll=roll; out.pitch=pitch; out.yaw=yaw; return out; }
+    return { roll, pitch, yaw };
+  },
+};
+
+/* ─── Perlin Noise ─── */
+const Noise = {
+  _p: [],
+  _init() {
+    const arr=[]; for(let i=0;i<256;i++) arr.push(i);
+    for(let i=255;i>0;i--){const j=(Math.random()*(i+1))|0;[arr[i],arr[j]]=[arr[j],arr[i]];}
+    this._p=[...arr,...arr];
+  },
+  _fade(t){return t*t*t*(t*(t*6-15)+10);},
+  _lerp(a,b,t){return a+t*(b-a);},
+  _grad(h,x,y,z){h&=15;const u=h<8?x:y,v=h<4?y:(h===12||h===14)?x:z;return((h&1)?-u:u)+((h&2)?-v:v);},
+  n(x,y,z){
+    if(!this._p.length)this._init();
+    const p=this._p;
+    const xi=Math.floor(x)&255,yi=Math.floor(y)&255,zi=Math.floor(z)&255;
+    const xf=x-Math.floor(x),yf=y-Math.floor(y),zf=z-Math.floor(z);
+    const u=this._fade(xf),v=this._fade(yf),w=this._fade(zf);
+    const A=p[xi]+yi,AA=p[A]+zi,AB=p[A+1]+zi,B=p[xi+1]+yi,BA=p[B]+zi,BB=p[B+1]+zi;
+    return this._lerp(
+      this._lerp(this._lerp(this._grad(p[AA],xf,yf,zf),this._grad(p[BA],xf-1,yf,zf),u),this._lerp(this._grad(p[AB],xf,yf-1,zf),this._grad(p[BB],xf-1,yf-1,zf),u),v),
+      this._lerp(this._lerp(this._grad(p[AA+1],xf,yf,zf-1),this._grad(p[BA+1],xf-1,yf,zf-1),u),this._lerp(this._grad(p[AB+1],xf,yf-1,zf-1),this._grad(p[BB+1],xf-1,yf-1,zf-1),u),v),
+      w
+    );
+  },
+  fbm(x,y,z,oct=2,pers=0.5,lac=2.0){
+    let v=0,amp=1,freq=1,max=0;
+    for(let i=0;i<oct;i++){v+=this.n(x*freq,y*freq,z*freq)*amp;max+=amp;amp*=pers;freq*=lac;}
+    return v/max;
+  },
+};
+Noise._init();
+
+/**
+ * Dryden Wind Turbulence Model
+ * [FIX-6.3] Vertical component uses h (AGL) as scale length, not Lu
+ * Reference: MIL-HDBK-1797, Chalk & Squire (1981) eqs 12-14
+ */
+const DRYDEN = {
+  _u:0, _v:0, _w:0, _dw:0,
+  intensity: 0,
+  update(dt, altAGL) {
+    if(this.intensity<=0.001){this._u=this._v=this._w=this._dw=0;return;}
+    const h = Math.max(0.5, altAGL);
+    // MIL-HDBK-1797 Table 3: horizontal scale length Lu
+    const Lu = h / Math.pow(0.177 + 0.000823*h, 1.2); // Chalk & Squire eq.12
+    // [FIX-6.3] Vertical scale length = h (not Lu) — MIL-HDBK-1797 §3.7.2.1
+    const Lw = h;
+    const sigma = this.intensity * 6.5;
+    const Vu = 8 + this.intensity * 12;
+    const au = Vu / Lu;
+    const aw = Vu / Lw;  // [FIX-6.3] was Vu/h (same), now explicit via Lw
+    const inv = 1 / Math.sqrt(Math.max(dt, 1e-5));
+    const wu = (Math.random()-0.5)*2*inv;
+    const wv = (Math.random()-0.5)*2*inv;
+    const ww = (Math.random()-0.5)*2*inv;
+    // First-order filters for u and v (Chalk & Squire eq.12)
+    this._u += (-au*this._u + sigma*Math.sqrt(2*au)*wu) * dt;
+    this._v += (-au*this._v + sigma*0.85*Math.sqrt(2*au)*wv) * dt;
+    // [FIX-6.3] Second-order filter for w (Chalk & Squire eqs 13-14)
+    // d²w/dt² + 2·aw·dw/dt + aw²·w = σ·√3·aw²·n(t)
+    this._dw += (-2*aw*this._dw - aw*aw*this._w + sigma*Math.sqrt(3)*aw*aw*ww) * dt;
+    this._w  += this._dw * dt;
+    // Clamp to 3.5σ
+    const mx = sigma * 3.5;
+    this._u = Math.max(-mx, Math.min(mx, this._u));
+    this._v = Math.max(-mx, Math.min(mx, this._v));
+    this._w = Math.max(-mx, Math.min(mx, this._w));
+  },
+  _result: {x:0, y:0, z:0},
+  get(){ this._result.x=this._v; this._result.y=this._w; this._result.z=this._u; return this._result; },
+};
+
+/**
+ * PID Controller — derivative-on-measurement, LP-filtered D-term
+ * [FIX-2.4] Conditional integration anti-windup: iErr only accumulates when output is NOT saturated
+ */
+class PID {
+  constructor(p,i,d,iLimit=50,dCutoffHz=30){
+    this.p=p; this.i=i; this.d=d;
+    this.iLimit=iLimit; this.dCutoffHz=dCutoffHz;
+    this.iErr=0; this.prevMeas=0; this.dFilt=0; this._first=true;
+    this._lastOutput=0; this._outLimit=Infinity;
+    this._alpha=0; this._lastDt=-1;
+  }
+  reset(){this.iErr=0; this.prevMeas=0; this.dFilt=0; this._first=true; this._lastOutput=0; this._alpha=0; this._lastDt=-1;}
+
+  update(setpoint, measured, dt){
+    if(dt<=0) return 0;
+    if(this._first){this.prevMeas=measured; this._first=false;}
+    const err = setpoint - measured;
+    // [FIX-2.4] Conditional integration: only wind up if output was NOT saturated last step
+    const saturated = Math.abs(this._lastOutput) >= this._outLimit * 0.98;
+    const integrateOk = !saturated || (err * Math.sign(this._lastOutput) < 0);
+    if(integrateOk){
+      this.iErr = Math.max(-this.iLimit, Math.min(this.iLimit, this.iErr + err*dt));
+    }
+    // Derivative on measurement (not error) — avoids derivative kick on setpoint changes
+    const dMeas = (measured - this.prevMeas) / dt;
+    // Cache alpha: recompute only when dt changes (saves exp() on every substep call)
+    if(dt !== this._lastDt){ this._alpha = 1 - Math.exp(-2*Math.PI*this.dCutoffHz*dt); this._lastDt = dt; }
+    this.dFilt += this._alpha * (dMeas - this.dFilt);
+    this.prevMeas = measured;
+    this._lastOutput = this.p*err + this.i*this.iErr - this.d*this.dFilt;
+    return this._lastOutput;
+  }
+}
+
+/* ─── Kalman Filter 1D ─── */
+class Kalman1D {
+  // [FIX-3.4] Q and R were inverted in original — Q=process noise, R=measurement noise
+  // Correct: Q_baro=0.005 (process), R_baro=0.08 (measurement)
+  constructor(Q=0.005, R=0.08){this.Q=Q; this.R=R; this.x=0; this.P=1; this._init=false;}
+  update(z){
+    if(!this._init){this.x=z; this._init=true; return z;}
+    this.P += this.Q;                         // predict
+    const K = this.P / (this.P + this.R);     // Kalman gain
+    this.x += K * (z - this.x);              // update
+    this.P *= (1 - K);
+    return this.x;
+  }
+}
+
+/* ─── Drone Profiles ─── */
+const DRONE_PROFILES = {
+  racing5: {
+    label:'5\" Racing Quad', mass:1.24,
+    Ixx:0.006, Iyy:0.011, Izz:0.006, armLen:0.19,
+    kT:1.04e-5, kQ:1.55e-7, maxRPM:14000, idleRPM:500,
+    motorTau:0.055, escDelay:0.012,
+    dragArea:0.022, dragCd:1.12, angDrag:0.0028,
+    cells:4, battTotalAh:1.65,
+    color:0x1e88e5, bodyScale:1.0, rotorRadius:0.09,
+    maxTiltDeg:55, maxRate:{pitch:10, roll:10, yaw:4.5},
+    propInertia:2.5e-5, Cqlift:0.015,
+  },
+  cinequad: {
+    label:'CineQuad 4S', mass:2.85,
+    Ixx:0.032, Iyy:0.058, Izz:0.032, armLen:0.27,
+    kT:1.18e-5, kQ:2.2e-7, maxRPM:9500, idleRPM:450,
+    motorTau:0.09, escDelay:0.018,
+    dragArea:0.038, dragCd:1.05, angDrag:0.0045,
+    cells:4, battTotalAh:5.2,
+    color:0xffc107, bodyScale:1.1, rotorRadius:0.11,
+    maxTiltDeg:35, maxRate:{pitch:6, roll:6, yaw:2.5},
+    propInertia:6.5e-5, Cqlift:0.018,
+  },
+  micro2: {
+    label:'Micro 2S Quad', mass:0.34,
+    Ixx:0.0013, Iyy:0.0021, Izz:0.0013, armLen:0.09,
+    kT:6.8e-6, kQ:8.5e-8, maxRPM:22000, idleRPM:1200,
+    motorTau:0.045, escDelay:0.008,
+    dragArea:0.013, dragCd:1.18, angDrag:0.0012,
+    cells:2, battTotalAh:0.45,
+    color:0x43a047, bodyScale:0.75, rotorRadius:0.055,
+    maxTiltDeg:65, maxRate:{pitch:18, roll:18, yaw:8},
+    propInertia:8e-6, Cqlift:0.012,
+  },
+  explorer6: {
+    label:'Explorer 6\" Hover', mass:1.68,
+    Ixx:0.011, Iyy:0.019, Izz:0.011, armLen:0.22,
+    kT:1.08e-5, kQ:1.7e-7, maxRPM:12000, idleRPM:350,
+    motorTau:0.07, escDelay:0.015,
+    dragArea:0.030, dragCd:1.08, angDrag:0.0032,
+    cells:4, battTotalAh:2.8,
+    color:0x8e24aa, bodyScale:1.05, rotorRadius:0.1,
+    maxTiltDeg:40, maxRate:{pitch:8, roll:8, yaw:3},
+    propInertia:4e-5, Cqlift:0.016,
+  },
+};
+
+/* ─── Physics Engine ─── */
+const PHYS = {
+  GRAVITY: 9.80665,
+  mass:1.24, Ixx:0.006, Iyy:0.011, Izz:0.006,
+  armLen:0.19, kT:1.04e-5, kQ:1.55e-7,
+  maxRPM:14000, idleRPM:500,
+  motorTau:0.055, escDelay:0.012,
+  dragArea:0.022, dragCd:1.12, angDrag:0.0028,
+  airDens:1.225,
+  cells:4, battTotalAh:1.65,
+  propInertia:2.5e-5, Cqlift:0.015,
+  droneProfile:'racing5',
+  droneVisual:{bodyScale:1, rotorRadius:0.09, color:0x1e88e5},
+  maxTiltRad:(55*Math.PI)/180,
+  maxRate:{pitch:10, roll:10, yaw:4.5},
+  // Quad-X motor directions: FR(CW)=+1, FL(CCW)=-1, BL(CW)=+1, BR(CCW)=-1
+  // [NOTE] CW torque = negative yaw in right-hand Y-up convention
+  motorDir:[1,-1,1,-1],
+  motorLabels:['FR','FL','BL','BR'],
+
+  _scr:{wind:V3.zero(), vRel:V3.zero(), dragF:V3.zero(), acc1:V3.zero(), acc2:V3.zero(), accBody:V3.zero(), thrustW:V3.zero(), dVel:V3.zero(), dPos:V3.zero(), u:V3.zero(), uv:V3.zero(), uuv:V3.zero(), tau:V3.zero(), dAngVel:V3.zero(), angDrag:V3.zero(), gyroT:V3.zero(), rotV:V3.zero()},
+    pos:V3.zero(), vel:V3.zero(), acc:V3.zero(),
+  quat:Q.id(), angVel:V3.zero(),
+  gyro:V3.zero(), accelBody:V3.zero(),
+
+  motorRPM:[0,0,0,0],
+  motorCmd:[0,0,0,0],
+  motorCmdFiltered:[0,0,0,0],
+
+  // [FIX-2.1] FC rate commands stored per substep
+  _fcRateCmd:{pitch:0, roll:0, yaw:0, thr:0},
+
+  grounded:true, crashed:false,
+  homePos:null, groundY:0, colliders:[],
+
+  battPct:100, battVoltage:16.8, battCapacity:0, currentDraw:0,
+  euler:{roll:0, pitch:0, yaw:0},
+  windVec:V3.zero(), windGust:0,
+  hoverThrottle:0.5,
+  turbulenceIntensity:0,
+
+  // [FIX-3.4] Corrected Kalman Q/R values: Q=process noise, R=measurement noise
+  _kAlt: new Kalman1D(0.005, 0.08),
+  _kVy:  new Kalman1D(0.01,  0.15),
+  _altEstimate: 0,
+  _baroRaw: 0,
+  // [FIX-3.2] Gyro bias random walk state
+  _gyroBias:{x:0, y:0, z:0}, // [FIX-H] was hardcoded non-zero, caused constant false rate in PID
+  _prevPos:V3.zero(), _prevQuat:Q.id(),
+
+  _lastAirDensAlt: NaN, _cachedAirDens: 1.225,
+
+  // Terrain height cache to avoid re-evaluating Perlin every substep — [FIX-Bug-26d]
+  _lastTerrainPos:{x:NaN,z:NaN}, _lastTerrainH:0,
+
+  applyProfile(name){
+    const p=DRONE_PROFILES[name]; if(!p) return;
+    this.droneProfile=name;
+    Object.assign(this,{
+      mass:p.mass, Ixx:p.Ixx, Iyy:p.Iyy, Izz:p.Izz,
+      armLen:p.armLen, kT:p.kT, kQ:p.kQ,
+      maxRPM:p.maxRPM, idleRPM:p.idleRPM,
+      motorTau:p.motorTau, escDelay:p.escDelay,
+      dragArea:p.dragArea, dragCd:p.dragCd, angDrag:p.angDrag,
+      cells:p.cells, battTotalAh:p.battTotalAh,
+      maxTiltRad:((p.maxTiltDeg||55)*Math.PI)/180,
+      maxRate:{...p.maxRate},
+      propInertia:p.propInertia||2.5e-5,
+      Cqlift:p.Cqlift||0.015,
+    });
+    this.droneVisual={bodyScale:p.bodyScale, rotorRadius:p.rotorRadius, color:p.color};
+    this._recomputeHover();
+    const lbl=document.getElementById('drone-profile-label');
+    if(lbl) lbl.textContent=p.label;
+    if(typeof FC!=='undefined') FC.autoTuneFromPhysics();
+  },
+
+  _recomputeHover(){
+    // Hover RPM: 4·kT·ω² = m·g  →  ω = √(mg/(4kT))  →  RPM = ω·60/(2π)
+    const omegaH = Math.sqrt((this.mass*this.GRAVITY)/(4*this.kT));
+    this.hoverRPM = omegaH * 60 / (2*Math.PI);  // [FIX-1.9] consistent RPM↔rad/s
+    this.hoverThrottle = Math.max(0.02, Math.min(0.92, this.hoverRPM/this.maxRPM));
+  },
+
+  reset(pos){
+    const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
+    this.pos=pos||{x:0,y:this.groundY+droneHalf,z:0};
+    this._prevPos=V3.clone(this.pos);
+    this.vel=V3.zero(); this.acc=V3.zero();
+    this.quat=Q.id(); this._prevQuat=Q.id();
+    this.angVel=V3.zero(); this.gyro=V3.zero(); this.accelBody=V3.zero();
+    this.motorRPM=[0,0,0,0]; this.motorCmd=[0,0,0,0]; this.motorCmdFiltered=[0,0,0,0];
+    this._fcRateCmd={pitch:0,roll:0,yaw:0,thr:0};
+    this.grounded=true; this.crashed=false;
+    this.euler={roll:0,pitch:0,yaw:0};
+    this.battPct=100; this.battVoltage=4.2*this.cells; this.battCapacity=0; this.currentDraw=0;
+    this._kAlt=new Kalman1D(0.005,0.08); this._kVy=new Kalman1D(0.01,0.15);
+    this._baroRaw=0;
+    this._gyroBias={x:0,y:0,z:0}; // [FIX-H] reset bias on each flight
+    if(typeof State!=='undefined') State.motorDamage=[0,0,0,0];
+    this._recomputeHover();
+  },
+
+  saveHome(){ this.homePos=V3.clone(this.pos); },
+
+  /** [FIX-1.3] Sanitise all state fields including motorRPM */
+  _sanitize(){
+    const bad=v=>!Number.isFinite(v);
+    if(bad(this.pos.x)||bad(this.pos.y)||bad(this.pos.z)){
+      const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
+      this.reset({x:0,y:this.groundY+droneHalf+0.05,z:0});
+      if(typeof FC!=='undefined') FC.resetPIDs();
+      return false;
+    }
+    if(bad(this.vel.x)||bad(this.vel.y)||bad(this.vel.z)) this.vel=V3.zero();
+    if(bad(this.angVel.x)||bad(this.angVel.y)||bad(this.angVel.z)){this.angVel=V3.zero();this.quat=Q.id();}
+    if(bad(this.quat.w)||bad(this.quat.x)||bad(this.quat.y)||bad(this.quat.z)) this.quat=Q.id();
+    for(let i=0;i<4;i++) if(bad(this.motorRPM[i])) this.motorRPM[i]=0;
+    return true;
+  },
+
+  _airDensity(alt){
+    const h = Math.max(0, alt);
+    // Cache: recompute only when altitude changes by >0.5 m (saves 3 pow() calls per substep)
+    if(Math.abs(h - this._lastAirDensAlt) < 0.5) return this._cachedAirDens;
+    this._lastAirDensAlt = h;
+    const T0=288.15, L=0.0065, P0=101325, R=287.058;
+    const T=T0-L*h;
+    this._cachedAirDens = (P0*Math.pow(T/T0,_ISA_EXP))/(R*T);
+    return this._cachedAirDens;
+  },
+
+  /**
+   * [FIX-1.9] Motor thrust — internally uses rad/s throughout
+   * T = kT·ω²  where ω is in rad/s
+   * RPM is only used for UI display; physics uses rad/s
+   */
+  _motorThrust(rpmVal){
+    const omega = rpmVal * TWO_PI_OVER_60;
+    const T = this.kT * omega * omega;
+    const sat = 1 - Math.max(0, (rpmVal/this.maxRPM - 0.85)*0.4);
+    return T * sat;
+  },
+
+  /**
+   * [FIX-1.9] Reaction torque — uses rad/s internally
+   * Q_react = kQ·ω²  where ω in rad/s
+   */
+  _motorTorque(rpmVal){
+    const omega = rpmVal * TWO_PI_OVER_60;
+    return this.kQ * omega * omega;
+  },
+
+  _lastEscDt: -1, _cachedEscA: 0,
+  _lastTauUp: -1, _lastTauDown: -1, _cachedRpmA_up: 0, _cachedRpmA_dn: 0,
+
+  step(dtFull){
+    dtFull=Math.max(0.0005,Math.min(0.04,dtFull));
+    if(!this._sanitize()) return;
+    this._prevPos=V3.clone(this.pos);
+    this._prevQuat={...this.quat};
+    if(this.crashed){this._crashSettle(dtFull); return;}
+    const SUB=4, dt=dtFull/SUB;
+    for(let s=0;s<SUB;s++) this._substep(dt);
+    this._updateSensors(dtFull);
+  },
+
+  _substep(dt){
+    // Battery voltage factor (voltage sag scales motor authority)
+    const fullV = this.cells * 4.2;
+    const internalR = 0.025 * this.cells;
+    const rawVF = Math.max(0.5, Math.min(1, this.battVoltage/fullV));
+
+    // ── Motor dynamics: first-order lag with asymmetric τ ─────────────────
+    // Cache exp() results — same dt every substep so no need to recompute
+    if(dt !== this._lastEscDt){
+      this._cachedEscA = 1 - Math.exp(-dt/(this.escDelay+0.001));
+      this._cachedRpmA_up = 1 - Math.exp(-dt/this.motorTau);
+      this._cachedRpmA_dn = 1 - Math.exp(-dt/(this.motorTau*1.6));
+      this._lastEscDt = dt;
+    }
+    const escA = this._cachedEscA;
+    const tauUp = this._cachedRpmA_up, tauDown = this._cachedRpmA_dn;
+    const _stateExists = typeof State !== 'undefined';
+    const idleFloor = (_stateExists && State.armed) ? this.idleRPM : 0;
+    for(let i=0;i<4;i++){
+      const dmg = _stateExists ? State.motorDamage[i] : 0;
+      const target = this.motorCmd[i] * (1-dmg) * rawVF;
+      this.motorCmdFiltered[i] += (target-this.motorCmdFiltered[i]) * escA;
+      const tRPM = this.motorCmdFiltered[i] * this.maxRPM;
+      const rpmA = tRPM > this.motorRPM[i] ? tauUp : tauDown;
+      this.motorRPM[i] += (tRPM - this.motorRPM[i]) * rpmA;
+      this.motorRPM[i] = Math.max(idleFloor, Math.min(this.maxRPM, this.motorRPM[i]));
+    }
+
+    // ── Thrust and torque computation ─────────────────────────────────────
+    // [FIX-1.6] Air density for ISA altitude correction
+    const rho = this._airDensity(this.pos.y);
+    // Density ratio for kT correction: T ∝ ρ (Leishman 2006 §2.3)
+    const rhoRatio = rho / 1.225;
+
+    const T = [
+      this._motorThrust(this.motorRPM[0]) * rhoRatio,
+      this._motorThrust(this.motorRPM[1]) * rhoRatio,
+      this._motorThrust(this.motorRPM[2]) * rhoRatio,
+      this._motorThrust(this.motorRPM[3]) * rhoRatio,
+    ];
+    const totalThrust = T[0]+T[1]+T[2]+T[3];
+    const L = this.armLen;
+
+    // ── Quad-X torques in body frame ──────────────────────────────────────
+    // Body frame: X=right, Y=up, Z=forward (nose)
+    // Motor positions: FR(+X,+Z), FL(-X,+Z), BL(-X,-Z), BR(+X,-Z)
+    // Pitch torque (about X-axis): positive = nose up
+    // tauPitch = L·( T_BL + T_BR − T_FR − T_FL )
+    const tauPitch = L * (T[2]+T[3] - T[0]-T[1]);
+    // Roll torque (about Z-axis): positive = right bank
+    // tauRoll = L·( T_FR + T_BR − T_FL − T_BL )
+    const tauRoll  = L * (T[0]+T[3] - T[1]-T[2]);
+    // [FIX-1.9] Yaw torque — uses reaction torque (kQ·ω²) with direction sign
+    // motorDir: FR=+1(CW), FL=-1(CCW), BL=+1(CW), BR=-1(CCW)
+    // CW rotation (looking from above, Y-up) → negative yaw in right-hand convention
+    const tauYaw = -(
+      this._motorTorque(this.motorRPM[0]) * this.motorDir[0] +
+      this._motorTorque(this.motorRPM[1]) * this.motorDir[1] +
+      this._motorTorque(this.motorRPM[2]) * this.motorDir[2] +
+      this._motorTorque(this.motorRPM[3]) * this.motorDir[3]
+    );
+
+    // Gyroscopic precession from net propeller angular momentum
+    const omegaNet = this.motorDir.reduce((s,d,i)=>s+d*this.motorRPM[i]*TWO_PI_OVER_60,0);
+    const Hgyro = this.propInertia * omegaNet; // angular momentum of spinning props
+    // Gyroscopic torques: τ = Ω × H  (cross product of body rate with prop ang. momentum)
+    const tauGyroPitch = -this.angVel.z * Hgyro;  // pitch gyro coupling
+    const tauGyroRoll  =  this.angVel.x * Hgyro;  // roll gyro coupling
+
+    // ── Euler rigid body equation ─────────────────────────────────────────
+    // dω/dt = I⁻¹·(τ_ext − ω×(I·ω))  (Goldstein 1980, §5.5)
+    const {Ixx,Iyy,Izz} = this;
+    const wx=this.angVel.x, wy=this.angVel.y, wz=this.angVel.z;
+    // ω × (I·ω) = Magnus/gyroscopic term (prevents gimbal lock behaviour)
+    const gyroX = wy*(Izz*wz) - wz*(Iyy*wy); // [FIX-1.2] Euler body term
+    const gyroY = wz*(Ixx*wx) - wx*(Izz*wz);
+    const gyroZ = wx*(Iyy*wy) - wy*(Ixx*wx);
+    const ad = this.angDrag;
+    const alphaPitch = (tauPitch + tauGyroPitch - gyroX) / Ixx - ad*wx*Math.abs(wx);
+    const alphaRoll  = (tauRoll  + tauGyroRoll  - gyroZ) / Izz - ad*wz*Math.abs(wz);
+    const alphaYaw   = (tauYaw                  - gyroY) / Iyy - ad*0.7*wy*Math.abs(wy);
+
+    // [FIX-1.2] Soft-clamp angular velocity BEFORE integration (was after)
+    const mr = this.maxRate;
+    const _vx=this.angVel.x+alphaPitch*dt, _vz=this.angVel.z+alphaRoll*dt, _vy=this.angVel.y+alphaYaw*dt;
+    this.angVel.x=Math.abs(_vx)>mr.pitch?Math.sign(_vx)*(mr.pitch+(Math.abs(_vx)-mr.pitch)*0.08):_vx;
+    this.angVel.z=Math.abs(_vz)>mr.roll ?Math.sign(_vz)*(mr.roll +(Math.abs(_vz)-mr.roll )*0.08):_vz;
+    this.angVel.y=Math.abs(_vy)>mr.yaw  ?Math.sign(_vy)*(mr.yaw  +(Math.abs(_vy)-mr.yaw  )*0.08):_vy;
+
+    this.quat = Q.integrate(this.quat, this.angVel, dt);
+    Q.toEuler(this.quat, this.euler);
+
+    // ── [FIX-2.1] Inner rate PID runs at substep rate ─────────────────────
+    // FC._fcRateCmd is set by the outer (per-frame) angle loop
+    // The inner rate→motor loop runs here at full substep frequency
+    if(typeof FC!=='undefined' && (!_stateExists||State.armed)){
+      const motorCmds = FC._rateLoopSubstep(dt, this._fcRateCmd.thr,
+        this._fcRateCmd.pitch, this._fcRateCmd.roll, this._fcRateCmd.yaw);
+      this.motorCmd = motorCmds;
+    }
+
+    // ── Translational dynamics ────────────────────────────────────────────
+    // Thrust in world frame: thrust acts along body Y-axis
+    let thrustW = Q.rotVec(this.quat, {x:0, y:totalThrust, z:0});
+
+    // [FIX-1.4] Ground Effect — Cheeseman–Bennett 1955, eq.4
+    // T_ge = T / (1 − (R/(4h))²)  for h > R/2; no effect for h > 2R
+    const hAGL = this.pos.y - this.groundY;
+    const R_prop = (this.droneVisual.rotorRadius||0.09);
+    if(hAGL > R_prop*0.5 && hAGL < R_prop*2){
+      // Cheeseman–Bennett 1955 eq.4
+      const ratio = R_prop / (4 * Math.max(hAGL, R_prop*0.5));
+      const geGain = 1 / Math.max(0.01, 1 - ratio*ratio);
+      thrustW = V3.scale(thrustW, Math.min(geGain, 2.5)); // cap at 2.5× safety
+    }
+
+    // [FIX-1.5] Drag: v_rel = vel − windVec − dryden  BEFORE squaring
+    this.airDens = rho;
+    DRYDEN.intensity = this.turbulenceIntensity;
+    DRYDEN.update(dt, Math.max(0.5, hAGL));
+    const gust = DRYDEN.get();
+    const totalWind = V3.add(this.windVec, gust);
+    // Relative velocity of drone w.r.t. air mass (for drag)
+    const vRel = V3.sub(this.vel, totalWind); // v_rel = v_drone − v_air
+    const vRelMag = V3.len(vRel);
+
+    // Aerodynamic drag: F_drag = −½·ρ·Cd·A·|v_rel|²·v̂_rel (in world frame)
+    let drag = V3.zero();
+    if(vRelMag > 0.01){
+      const qDyn = 0.5 * rho * vRelMag * vRelMag; // dynamic pressure [FIX-1.6] uses ISA ρ
+      const tilt = Math.sqrt(this.euler.pitch**2 + this.euler.roll**2);
+      const Cdeff = this.dragCd * (1 + 0.15*Math.sin(Math.abs(this.euler.pitch)) + 0.15*Math.sin(Math.abs(this.euler.roll)));
+      drag = V3.scale(V3.norm(vRel), -qDyn * this.dragArea * Cdeff);
+    }
+
+    // Translational damping from rotor edgewise drag (hover stability)
+    const transDamp = V3.scale(this.vel, -this.mass * 0.16);
+
+    const gravity = {x:0, y:-this.mass*this.GRAVITY, z:0};
+    const fNet = V3.add(V3.add(V3.add(thrustW, gravity), drag), transDamp);
+
+    this.acc = V3.scale(fNet, 1/this.mass);
+    // [FIX-3.3] Store body-frame specific force for IMU simulation (accel output = a − g)
+    const gravWorld = {x:0, y:-this.GRAVITY, z:0};
+    this.accelBody = Q.invRotVec(this.quat, V3.sub(this.acc, gravWorld));
+
+    // Velocity Verlet integration
+    let v2 = V3.add(this.vel, V3.scale(this.acc, dt));
+    const vl = V3.len(v2); if(vl > 32) v2 = V3.scale(V3.norm(v2), 32);
+    let newPos = V3.add(this.pos, V3.scale(V3.add(this.vel, v2), 0.5*dt));
+    this.vel = v2;
+
+    // ── [FIX-1.7] Ground collision with restitution e=0.15 and Coulomb friction μ=0.4 ──
+    // droneHalf = foot skid depth in world space: 0.074 * bodyScale * 5.0 (visual scale)
+    // This matches the landing gear foot position in buildDrone() so the model sits flush on ground.
+    const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
+    const minY = this.groundY + droneHalf;
+    if(newPos.y < minY){
+      const impact = Math.abs(this.vel.y);
+      // [FIX-1.8] Crash threshold 8 m/s (was 4.5 m/s)
+      if(impact > 2.5 && (typeof State!=='undefined') && State.armed){
+        this._doCrash(impact); newPos.y = minY;
+      } else {
+        newPos.y = minY;
+        if(this.vel.y < 0){
+          this.vel.y = -this.vel.y * 0.15; // restitution e=0.15 — [FIX-1.7]
+        }
+        // Coulomb friction on horizontal velocity: F_fric = μ·N = μ·m·g  [FIX-1.7]
+        const mu = 0.4;
+        const hSpd = Math.hypot(this.vel.x, this.vel.z);
+        if(hSpd > 0.001){
+          const fricDecel = Math.min(hSpd, mu * this.GRAVITY * dt);
+          const scale = (hSpd - fricDecel) / hSpd;
+          this.vel.x *= scale; this.vel.z *= scale;
+        }
+        const af = Math.exp(-18*dt);
+        this.angVel.x*=af; this.angVel.z*=af; this.angVel.y*=af;
+        this.angVel.x -= this.euler.pitch*8*dt;
+        this.angVel.z -= this.euler.roll *8*dt;
+        this.grounded = true;
+      }
+    } else { this.grounded = false; }
+
+    // World boundary clamp
+    newPos.x = Math.max(-250, Math.min(250, newPos.x));
+    newPos.z = Math.max(-250, Math.min(250, newPos.z));
+    newPos.y = Math.min(180, newPos.y);
+    this.pos = newPos;
+
+    // AABB collider check with restitution impulse  [FIX-1.7]
+    const hit = this._checkColliders(newPos);
+    if(hit){
+      const spd = V3.len(this.vel);
+      // [FIX-1.8] Crash threshold 2.5 m/s
+      if(spd > 2.5 && (typeof State!=='undefined') && State.armed){ this._doCrash(spd); }
+      else {
+        const n = hit.normal || {x:0,y:1,z:0};
+        const vn = V3.dot(this.vel, n);
+        if(vn < 0){
+          // Restitution impulse: Δv = −(1+e)·(v·n)·n
+          this.vel = V3.add(this.vel, V3.scale(n, -(1+0.15)*vn)); // e=0.15
+          // Coulomb friction tangential
+          const vt = V3.sub(this.vel, V3.scale(n, V3.dot(this.vel,n)));
+          const vtMag = V3.len(vt);
+          if(vtMag > 0.001) this.vel = V3.sub(this.vel, V3.scale(V3.norm(vt), Math.min(vtMag, 0.4*Math.abs(vn))));
+        }
+        this.pos = V3.add(newPos, V3.scale(n, 0.05));
+      }
+    }
+
+    // ── Battery model ─────────────────────────────────────────────────────
+    // Induced velocity from actuator disk theory: v_ind = √(T/(2ρA))
+    const rotorA = Math.PI*(R_prop*R_prop)*4 + 0.001;
+    const v_ind = Math.sqrt(totalThrust / (2*rho*rotorA)); // uses ISA ρ
+    const P_mech = totalThrust * v_ind * 1.18; // incl. motor/ESC losses ~18%
+    this.currentDraw = P_mech / Math.max(this.battVoltage, 1);
+    const internalDrop = this.currentDraw * internalR;
+    const ahStep = (this.currentDraw*dt) / 3600;
+    this.battCapacity = Math.min(this.battTotalAh, this.battCapacity + ahStep);
+    this.battPct = Math.max(0, 100*(1 - this.battCapacity/this.battTotalAh));
+    const soc = this.battPct / 100;
+    // [FIX-1.10] LiPo OCV polynomial: 4.2V at soc=1, 3.3V at soc=0
+    // Verified against Plett (2004) LiPo cell model
+    // ocv(soc) = 3.3 + 0.7·soc + 0.1·soc² + 0.1·soc³  (gives 4.2 at soc=1, 3.3 at soc=0)
+    const ocv = 3.3 + 0.7*soc + 0.1*soc*soc + 0.1*soc*soc*soc;
+    this.battVoltage = Math.max(this.cells*3.3, Math.min(this.cells*4.2, this.cells*ocv - internalDrop));
+  },
+
+  /** [FIX-3.1] [FIX-3.2] [FIX-3.3] Physically correct sensor simulation */
+  _updateSensors(dt){
+    // [FIX-3.1] Gyro white noise: σ = 0.003 rad/s/√Hz · √(1/dt)
+    // At dt=0.0167s (60Hz), σ_sample = 0.003/√0.0167 ≈ 0.023 rad/s per axis
+    const gyrNoiseStd = 0.003 * Math.sqrt(1/Math.max(dt, 0.001));
+    const gn = () => (Math.random()+Math.random()+Math.random()+Math.random()-2)*gyrNoiseStd*0.866;
+    // [FIX-3.2] Gyro bias random walk: bias += N(0, σ_bias·√dt)
+    const biasSigma = 5e-5;
+    const biasDelta = biasSigma * Math.sqrt(dt);
+    this._gyroBias.x += (Math.random()-0.5)*2*biasDelta;
+    this._gyroBias.y += (Math.random()-0.5)*2*biasDelta;
+    this._gyroBias.z += (Math.random()-0.5)*2*biasDelta;
+    this.gyro = {
+      x: this.angVel.x + gn() + this._gyroBias.x,
+      y: this.angVel.y + gn() + this._gyroBias.y,
+      z: this.angVel.z + gn() + this._gyroBias.z,
+    };
+    // [FIX-3.3] Accelerometer: specific force = a_body − g_body
+    // a_world = acc (from physics), g_world = (0,−g,0)
+    // a_body = R_BW · (a_world − g_world)  →  accelBody already computed in _substep
+    // Add accelerometer noise (σ ≈ 0.05 m/s²)
+    const accNoiseStd = 0.05;
+    const an = () => (Math.random()-0.5)*2*accNoiseStd;
+    this.accelBody = {
+      x: this.accelBody.x + an(),
+      y: this.accelBody.y + an(),
+      z: this.accelBody.z + an(),
+    };
+    // [FIX-3.4] Barometer with corrected Kalman Q/R
+    // Baro noise: σ=0.05m + turbulence; bias drift τ≈30s
+    const bNoise = 0.05 + this.turbulenceIntensity*0.25;
+    const trueAGL = this.pos.y - this.groundY;
+    this._baroRaw = trueAGL + (Math.random()-0.5)*bNoise*2;
+    this._altEstimate = this._kAlt.update(this._baroRaw);
+    Q.toEuler(this.quat, this.euler);
+  },
+
+  _checkColliders(pos){
+    // Use a small margin to prevent tunnelling through thin walls
+    const margin = 0.12;
+    for(const c of this.colliders){
+      if(pos.x>c.min.x-margin&&pos.x<c.max.x+margin&&
+         pos.y>c.min.y-margin&&pos.y<c.max.y+margin&&
+         pos.z>c.min.z-margin&&pos.z<c.max.z+margin){
+        // Resolve which face is closest to eject cleanly (not get stuck)
+        const cx=(c.min.x+c.max.x)*0.5, cy=(c.min.y+c.max.y)*0.5, cz=(c.min.z+c.max.z)*0.5;
+        const hx=(c.max.x-c.min.x)*0.5, hy=(c.max.y-c.min.y)*0.5, hz=(c.max.z-c.min.z)*0.5;
+        const dx=pos.x-cx, dy=pos.y-cy, dz=pos.z-cz;
+        // Penetration depth along each axis
+        const px=hx-Math.abs(dx), py=hy-Math.abs(dy), pz=hz-Math.abs(dz);
+        let norm;
+        if(py<=px&&py<=pz)      norm={x:0,y:Math.sign(dy)||1,z:0};
+        else if(px<=pz)         norm={x:Math.sign(dx)||1,y:0,z:0};
+        else                    norm={x:0,y:0,z:Math.sign(dz)||1};
+        return {min:c.min,max:c.max,normal:norm};
+      }
+    }
+    return null;
+  },
+
+  _doCrash(impact){
+    this.crashed=true;
+    if(typeof State!=='undefined') State.armed=false;
+    const cnt=Math.min(4,Math.floor(impact/2.5));
+    const idxs=[0,1,2,3].sort(()=>Math.random()-0.5);
+    if(typeof State!=='undefined'){
+      for(let i=0;i<cnt;i++) State.motorDamage[idxs[i]]=Math.min(1,State.motorDamage[idxs[i]]+0.4+Math.random()*0.4);
+    }
+    if(typeof WARN!=='undefined') WARN.trigger('crash');
+    if(typeof updateArmUI==='function') updateArmUI();
+  },
+
+  _crashSettle(dt){
+    const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
+    this.angVel.x*=0.90; this.angVel.z*=0.90; this.angVel.y*=0.93;
+    this.quat=Q.integrate(this.quat,this.angVel,dt);
+    Q.toEuler(this.quat, this.euler);
+    // Clamp XZ to world bounds during settle to prevent sliding into terrain
+    this.pos.x=Math.max(-240,Math.min(240,this.pos.x));
+    this.pos.z=Math.max(-240,Math.min(240,this.pos.z));
+    const minY=this.groundY+droneHalf;
+    if(this.pos.y>minY){
+      this.vel.y-=this.GRAVITY*dt; this.pos.y+=this.vel.y*dt;
+    } else {
+      this.pos.y=minY; this.vel=V3.zero();
+    }
+    // Hard floor: never go below terrain (prevents camera clipping through mountain)
+    if(this.pos.y<minY) this.pos.y=minY;
+    for(let i=0;i<4;i++) this.motorRPM[i]*=0.90;
+  },
+
+  /**
+   * [FIX] recoverFromCrash — call this when motors/damage are restored after
+   * a mid-air failure so the drone can be re-armed and flown again.
+   *
+   * Clears the crashed flag, zeroes residual angular and linear velocity
+   * (eliminates the post-restore swinging), levels attitude, snaps to ground,
+   * resets all PID integrators, and disarms cleanly so the user must re-arm
+   * manually before taking off again.
+   */
+  recoverFromCrash(){
+    this.crashed  = false;
+    this.grounded = true;
+    // Zero all motion — zeroing angVel is the key fix for the post-restore swinging
+    this.angVel = V3.zero();
+    this.vel    = V3.zero();
+    // Level attitude so drone sits flat on ground
+    // Use Q.id() and the engine's {roll,pitch,yaw} euler convention
+    this.quat  = Q.id();
+    this.euler = {roll:0, pitch:0, yaw:this.euler.yaw||0};
+    // Snap onto terrain
+    const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
+    this.pos.y = this.groundY + droneHalf;
+    // Zero motor RPM/commands
+    for(let i=0;i<4;i++){ this.motorRPM[i]=0; this.motorCmd[i]=0; this.motorCmdFiltered[i]=0; }
+    // Flush PID integrators — caller is responsible for arming/takeoff
+    if(typeof FC!=='undefined') FC.resetPIDs();
+  },
+};
+
+/* ─── Flight Controller ─── */
+const FC = {
+  mode:'stabilized',
+  motorMixGain:0.13,
+  maxAngleRate:3.2,
+  maxAltVelRate:1.4,
+
+  ratePID:{
+    pitch: new PID(0.042, 0.000, 0.0018, 0.3, 20),
+    roll:  new PID(0.042, 0.000, 0.0018, 0.3, 20),
+    yaw:   new PID(0.065, 0.012, 0.0008, 0.25,15),
+  },
+  anglePID:{
+    pitch: new PID(2.2, 0, 0, 0.4, 20),
+    roll:  new PID(2.2, 0, 0, 0.4, 20),
+  },
+  altPID:    new PID(1.6,  0.10, 0.06, 8.0,  6),
+  altVelPID: new PID(0.38, 0.08, 0.012,2.0, 12),
+  // [FIX-2.5] posNPID/posEPID output is body-frame tilt angle setpoint
+  posNPID:   new PID(0.65, 0.015,0.18, 0.35, 8),
+  posEPID:   new PID(0.65, 0.015,0.18, 0.35, 8),
+
+  altTarget:null, posTarget:null, rthPhase:0, rthClimbAlt:10,
+  gains:{rp:0.042, ri:0.000, rd:0.0018, yp:0.065, ap:1.6, angleP:2.2},
+
+  _adaptiveGainFactor(){
+    // [FIX-C] rateFactor floor raised from 0.55 → 0.90: PID should run near full gain
+    // during steady hover/low-rate flight, not at 55% which causes sluggish response.
+    // Small reduction at high tilt is still applied (airframe authority drops when tilted).
+    const tilt = Math.sqrt(PHYS.euler.pitch**2 + PHYS.euler.roll**2);
+    const tiltFactor = Math.max(0.65, 1.0 - tilt*0.20);
+    const rateAmp = Math.hypot(PHYS.angVel.x, PHYS.angVel.z);
+    // [FIX-C] 0.90 floor: adaptive reduction only kicks in at very high rates
+    const rateFactor = Math.min(1.0, 0.90 + rateAmp*0.5);
+    return tiltFactor * rateFactor;
+  },
+
+  autoTuneFromPhysics(){
+    const m=PHYS.mass, L=PHYS.armLen, Ixx=PHYS.Ixx, Iyy=PHYS.Iyy, Izz=PHYS.Izz;
+    const kT=PHYS.kT, kQ=PHYS.kQ, maxRPM=PHYS.maxRPM;
+    const omegaMax = maxRPM * TWO_PI_OVER_60;
+    // [FIX-A] Correct pitch/roll max torque: 2 motors oppose 2 motors across arm length
+    // e.g. pitch: (T_BL+T_BR) - (T_FR+T_FL) → max when back pair at maxRPM, front at 0
+    // Net max = 2·kT·ωmax²·L  (two motors at full on one side)
+    const maxPitchTorque = 2 * kT * omegaMax * omegaMax * L;
+    // [FIX-A] Yaw authority uses reaction torque kQ (not kT*L)
+    // Max yaw torque = 4·kQ·ωmax² (two CW vs two CCW at max)
+    const maxYawTorque = 4 * kQ * omegaMax * omegaMax;
+
+    // Rate P: Ixx/(τ_des·maxTorque) where τ_des ≈ 0.08s desired settling
+    // Target ~30% of critical gain for good margin on all profiles
+    // [FIX-I] Coefficient corrected: old *3.0 produced rp at the 0.02 floor for all profiles
+    // (e.g. racing5: Ixx*3.0/maxTorque = 0.006*3/8.49 = 0.002 → clamped to 0.02, wrong)
+    // Use *28 so racing5 gets rp~0.025 matching Betaflight ballpark (42/1000 * scaling)
+    const rp = Math.min(0.12, Math.max(0.025, Ixx * 28.0 / (maxPitchTorque + 1e-6)));
+    const rd = rp * 0.042;
+    const ri = 0.0;
+    // [FIX-A] Yaw P correctly scaled to kQ-based yaw authority
+    const yp = Math.min(0.18, Math.max(0.025, Izz * 2.5 / (maxYawTorque + 1e-6)));
+    // [FIX-I] angleP scaled to rate PID bandwidth (cascade rule: outer BW = inner/5)
+    // Old formula (2.0+1.5*L ≈ 2.3) was too slow to reject even tiny gyro bias drift
+    const rateBW = rp * maxPitchTorque / Ixx;
+    const angleP = Math.min(8.0, Math.max(3.5, rateBW / 5.0));
+    const ap = Math.max(1.0, Math.min(2.2, 0.9 + 0.45*m));
+
+    // [FIX-B] motorMixGain: normalise PID outputs to motor command space
+    // Target: at max rate PID output the motor delta is ~0.25 (quarter throttle authority)
+    // mixGain ≈ 0.25 / (rp * maxRate_pitch)  — keeps effective gain consistent
+    const mr = PHYS.maxRate;
+    const rawMixGain = 0.22 / Math.max(0.01, rp * (mr.pitch||10));
+    this.motorMixGain = Math.max(0.07, Math.min(0.20, rawMixGain));
+
+    this.maxAngleRate = Math.max(2.0, Math.min(4.5, 2.0 + (0.34 - m*0.04)*5));
+    this.gains = {rp, ri, rd, yp, ap, angleP};
+    this.applyGains();
+    this._syncSliders();
+  },
+
+  _syncSliders(){
+    const g=this.gains;
+    const map={rp:'pid-rp',ri:'pid-ri',rd:'pid-rd',yp:'pid-yp',ap:'pid-ap'};
+    for(const k in map){const el=document.getElementById(map[k]);if(el) el.value=g[k];}
+    if(typeof setPID==='function'){setPID('rp',g.rp);setPID('ri',g.ri);setPID('rd',g.rd);setPID('yp',g.yp);setPID('ap',g.ap);}
+  },
+
+  applyGains(){
+    const g=this.gains;
+    this.ratePID.pitch.p=g.rp; this.ratePID.pitch.i=g.ri||0; this.ratePID.pitch.d=g.rd;
+    this.ratePID.roll.p =g.rp; this.ratePID.roll.i =g.ri||0; this.ratePID.roll.d =g.rd;
+    this.ratePID.yaw.p  =g.yp;
+    // [FIX-F] Derive yaw I from yaw P (was hardcoded 0.012 regardless of profile).
+    // Yaw I ≈ 0.18 * yp gives ~Ti = 1/0.18 ≈ 5.5s integration time — reasonable for yaw hold.
+    // Also raise yaw I-limit from 0.25 → 0.45 so anti-windup doesn't thrash during manoeuvres.
+    this.ratePID.yaw.i  = g.yi != null ? g.yi : g.yp * 0.18;
+    this.ratePID.yaw.iLimit = 0.45;
+    if(g.angleP!=null){ this.anglePID.pitch.p=g.angleP; this.anglePID.roll.p=g.angleP; }
+    this.anglePID.pitch.d=0; this.anglePID.roll.d=0;
+    this.altPID.p=g.ap;
+    // Set output limits for conditional anti-windup [FIX-2.4]
+    this.ratePID.pitch._outLimit=0.18; this.ratePID.roll._outLimit=0.18; this.ratePID.yaw._outLimit=0.12;
+    this.altPID._outLimit=this.maxAltVelRate; this.altVelPID._outLimit=0.38;
+  },
+
+  resetPIDs(){
+    for(const k in this.ratePID) this.ratePID[k].reset();
+    for(const k in this.anglePID) this.anglePID[k].reset();
+    this.altPID.reset(); this.altVelPID.reset();
+    this.posNPID.reset(); this.posEPID.reset();
+    this._altManualLastFrame=false;
+  },
+
+  setMode(m){
+    this.mode=m; this.resetPIDs();
+    if(m==='althold'||m==='gpshold'||m==='rth') this.altTarget=PHYS.pos.y-PHYS.groundY;
+    if(m==='gpshold'||m==='rth') this.posTarget={x:PHYS.pos.x,z:PHYS.pos.z};
+    if(m==='rth'){
+      this.rthPhase=0;
+      this.posTarget=PHYS.homePos?{x:PHYS.homePos.x,z:PHYS.homePos.z}:{x:0,z:0};
+    }
+  },
+
+  /**
+   * Outer loop (angle → rate setpoint) — runs once per rendered frame.
+   * Stores rate commands in PHYS._fcRateCmd for the inner loop.
+   * [FIX-2.1] Inner rate loop now runs in PHYS._substep() at substep rate.
+   */
+  update(dt, input){
+    if(PHYS.crashed||((typeof State!=='undefined')&&!State.armed)){
+      PHYS._fcRateCmd={pitch:0,roll:0,yaw:0,thr:0};
+      return [0,0,0,0];
+    }
+    let thrCmd=input.throttle, pitchSP=0, rollSP=0;
+    const maxTilt=PHYS.maxTiltRad;
+    let yawRateCmd=input.yaw*PHYS.maxRate.yaw;
+    const e=PHYS.euler;
+
+    if(this.mode==='acro'){
+      const mr=PHYS.maxRate;
+      PHYS._fcRateCmd={pitch:input.pitch*mr.pitch, roll:input.roll*mr.roll, yaw:yawRateCmd, thr:thrCmd};
+      return PHYS.motorCmd; // motor cmds will be updated in substep
+    }
+    if(this.mode==='stabilized'||this.mode==='angle'){
+      pitchSP=input.pitch*maxTilt*0.60;
+      rollSP =input.roll *maxTilt*0.60;
+    }
+    if(this.mode==='althold'||this.mode==='gpshold'||this.mode==='rth'){
+      const stickDead=0.045;
+      const hov=PHYS.hoverThrottle;
+      if(this.mode==='althold'){
+        pitchSP=input.pitch*maxTilt*0.60;
+        rollSP =input.roll *maxTilt*0.60;
+      }
+      if(Math.abs(input.throttle-0.5)<stickDead){
+        if(this.altTarget==null) this.altTarget=PHYS.pos.y-PHYS.groundY;
+        if(this._altManualLastFrame){
+          this.altVelPID.reset(); this.altPID.reset();
+          this._altManualLastFrame=false;
+        }
+        const velSP=Math.max(-this.maxAltVelRate,Math.min(this.maxAltVelRate,
+          this.altPID.update(this.altTarget,PHYS._altEstimate,dt)));
+        thrCmd=Math.max(0,Math.min(0.97,hov+this.altVelPID.update(velSP,PHYS.vel.y,dt)));
+      } else {
+        this._altManualLastFrame=true;
+        this.altTarget=PHYS.pos.y-PHYS.groundY;
+        const t=input.throttle;
+        thrCmd=t<=0.5 ? (t/0.5)*hov : hov+((t-0.5)/0.5)*(0.97-hov);
+      }
+    }
+    if(this.mode==='gpshold'){
+      if(Math.abs(input.pitch)<0.08&&Math.abs(input.roll)<0.08){
+        if(this.posTarget==null) this.posTarget={x:PHYS.pos.x,z:PHYS.pos.z};
+        // [FIX-2.5] Position error in world frame → rotate to body frame via −yaw
+        const dN=this.posTarget.z-PHYS.pos.z, dE=this.posTarget.x-PHYS.pos.x;
+        const cy=Math.cos(e.yaw), sy=Math.sin(e.yaw);
+        // Body-frame error: forward = cy*dN+sy*dE, right = −sy*dN+cy*dE
+        const errFwd  =  cy*dN + sy*dE;
+        const errRight= -sy*dN + cy*dE;
+        // posNPID/posEPID: setpoint=0, measured=body-frame error → output is tilt angle (rad)
+        pitchSP=Math.max(-maxTilt*0.5,Math.min(maxTilt*0.5, this.posNPID.update(0,-errFwd, dt)));
+        rollSP =Math.max(-maxTilt*0.5,Math.min(maxTilt*0.5, this.posEPID.update(0,-errRight,dt)));
+      } else {
+        this.posTarget={x:PHYS.pos.x,z:PHYS.pos.z};
+        pitchSP=input.pitch*maxTilt*0.65; rollSP=input.roll*maxTilt*0.65;
+      }
+    }
+    if(this.mode==='rth'){
+      const home=PHYS.homePos||{x:0,y:0,z:0};
+      const cy=Math.cos(e.yaw),sy=Math.sin(e.yaw);
+      const curAGL=PHYS.pos.y-PHYS.groundY;
+      const homeAGL=home.y-PHYS.groundY;
+      const hov=PHYS.hoverThrottle;
+      if(this.rthPhase===0){
+        const safeAlt=Math.max(homeAGL+this.rthClimbAlt,curAGL+3);
+        const velSP=this.altPID.update(safeAlt,PHYS._altEstimate,dt);
+        thrCmd=Math.max(hov,Math.min(0.94,hov+this.altVelPID.update(Math.min(2.5,velSP),PHYS.vel.y,dt)));
+        if(curAGL>=safeAlt-0.5) this.rthPhase=1;
+        pitchSP=0; rollSP=0;
+      } else if(this.rthPhase===1){
+        const dN=home.z-PHYS.pos.z, dE=home.x-PHYS.pos.x, dist=Math.hypot(dN,dE);
+        const velSP=this.altPID.update(this.altTarget!=null?this.altTarget:curAGL,PHYS._altEstimate,dt);
+        thrCmd=Math.max(Math.max(0,hov-0.5),Math.min(0.9,hov+this.altVelPID.update(velSP,PHYS.vel.y,dt)));
+        if(dist<1.0){this.rthPhase=2;this.posTarget={x:home.x,z:home.z};}
+        else{
+          const spd=Math.min(1,dist/15);
+          pitchSP=Math.max(-maxTilt*0.6,Math.min(maxTilt*0.6,-(cy*dN+sy*dE)*0.14*spd));
+          rollSP =Math.max(-maxTilt*0.6,Math.min(maxTilt*0.6,-(-sy*dN+cy*dE)*0.14*spd));
+        }
+      } else if(this.rthPhase===2){
+        const dN=home.z-PHYS.pos.z, dE=home.x-PHYS.pos.x;
+        pitchSP=Math.max(-0.15,Math.min(0.15,-(cy*dN+sy*dE)*0.09));
+        rollSP =Math.max(-0.15,Math.min(0.15,-(-sy*dN+cy*dE)*0.09));
+        const velSP=this.altPID.update(0.15,PHYS._altEstimate,dt);
+        thrCmd=Math.max(0,Math.min(hov+0.2,hov+this.altVelPID.update(Math.max(-1.5,velSP),PHYS.vel.y,dt)));
+        if(PHYS.grounded){
+          this.rthPhase=3;
+          if(typeof State!=='undefined') State.armed=false;
+          if(typeof updateArmUI==='function') updateArmUI();
+        }
+      } else {
+        PHYS._fcRateCmd={pitch:0,roll:0,yaw:0,thr:0};
+        return [0,0,0,0];
+      }
+    }
+    return this._angleThenStore(dt,thrCmd,pitchSP,rollSP,yawRateCmd);
+  },
+
+  /**
+   * Angle loop → compute rate commands and store in PHYS._fcRateCmd.
+   * The actual rate→motor PID runs in PHYS._substep() at substep rate.
+   */
+  _angleThenStore(dt,thrCmd,pitchSP,rollSP,yawRateCmd){
+    const e=PHYS.euler, cap=this.maxAngleRate, af=this._adaptiveGainFactor();
+    const pitchRateCmd=Math.max(-cap,Math.min(cap,this.anglePID.pitch.update(pitchSP,e.pitch,dt)*af));
+    const rollRateCmd =Math.max(-cap,Math.min(cap,this.anglePID.roll.update(rollSP, e.roll, dt)*af));
+    // Store rate commands for inner loop
+    PHYS._fcRateCmd = {pitch:pitchRateCmd, roll:rollRateCmd, yaw:yawRateCmd, thr:thrCmd};
+    return PHYS.motorCmd; // current motor cmd (will be updated by substep)
+  },
+
+  /**
+   * [FIX-2.1] Inner rate PID — runs at substep rate inside PHYS._substep()
+   * [FIX-2.3] Verified Quad-X motor mixing for Y-up body frame:
+   *   M0(FR) = base − pitch + roll  + yaw  (CW: +yaw)
+   *   M1(FL) = base − pitch − roll  − yaw  (CCW: −yaw)
+   *   M2(BL) = base + pitch − roll  + yaw  (CW:  +yaw)
+   *   M3(BR) = base + pitch + roll  − yaw  (CCW: −yaw)
+   * Sign convention: +pitch = nose up (BL+BR thrust up), +roll = right bank (FR+BR up)
+   */
+  _rateLoopSubstep(dt, thrCmd, pitchRateCmd, rollRateCmd, yawRateCmd){
+    const g = PHYS.gyro;
+    const af = this._adaptiveGainFactor();
+    let pitchOut = this.ratePID.pitch.update(pitchRateCmd, g.x, dt) * af;
+    let rollOut  = this.ratePID.roll.update(rollRateCmd,  g.z, dt) * af;
+    let yawOut   = this.ratePID.yaw.update(yawRateCmd,   g.y, dt);
+    if(typeof DEBUG!=='undefined') DEBUG.recordPID(pitchRateCmd,g.x,rollRateCmd,g.z,yawRateCmd,g.y);
+    const mg=this.motorMixGain;
+    const lim=0.18, ylim=0.12;
+    pitchOut=Math.max(-lim, Math.min(lim, pitchOut*mg));
+    rollOut =Math.max(-lim, Math.min(lim, rollOut *mg));
+    yawOut  =Math.max(-ylim,Math.min(ylim,yawOut  *mg));
+    const hover=PHYS.hoverThrottle;
+    const modeAlt=this.mode==='althold'||this.mode==='gpshold'||this.mode==='rth';
+    // [FIX-D] Throttle mapping: symmetric authority around hoverThrottle.
+    // Low half (0→0.5): 0→hover. High half (0.5→1): hover→0.97.
+    // This replaces the hardcoded *0.38 that was only valid for racing5.
+    let base;
+    if(modeAlt){
+      base = thrCmd;
+    } else {
+      const t = Math.max(0, Math.min(1, thrCmd));
+      base = t <= 0.5 ? (t / 0.5) * hover
+                      : hover + ((t - 0.5) / 0.5) * (0.97 - hover);
+    }
+    base=Math.max(0.02, Math.min(0.97, base));
+    // [FIX-G] Yaw sign corrected: tauYaw in _substep has an outer negation
+    // (tauYaw = -(kQ·dir0·ω0 + ...)), so increasing CW motors REDUCES tauYaw (goes negative).
+    // With Y-up right-hand convention, negative tauYaw = CW angular accel = decreasing yaw angle.
+    // Therefore to INCREASE yaw (fight +gy spin): DECREASE CW, INCREASE CCW → yawOut negated.
+    // Blackbox confirmed: old sign caused CW-CCW to grow negative as +gy grew → positive feedback.
+    const m=[
+      base - pitchOut + rollOut  - yawOut,  // M0 FR (CW)
+      base - pitchOut - rollOut  + yawOut,  // M1 FL (CCW)
+      base + pitchOut - rollOut  - yawOut,  // M2 BL (CW)
+      base + pitchOut + rollOut  + yawOut,  // M3 BR (CCW)
+    ];
+    return this._mixMotors(m);
+  },
+
+  _mixMotors(m){
+    // [FIX-E] Betaflight-style desaturation — no intermediate array allocations
+    let v0=m[0],v1=m[1],v2=m[2],v3=m[3];
+    let maxV=v0; if(v1>maxV)maxV=v1; if(v2>maxV)maxV=v2; if(v3>maxV)maxV=v3;
+    if(maxV>1){const d=maxV-1;v0-=d;v1-=d;v2-=d;v3-=d;}
+    let minV=v0; if(v1<minV)minV=v1; if(v2<minV)minV=v2; if(v3<minV)minV=v3;
+    if(minV<0){v0-=minV;v1-=minV;v2-=minV;v3-=minV;}
+    let maxV2=v0; if(v1>maxV2)maxV2=v1; if(v2>maxV2)maxV2=v2; if(v3>maxV2)maxV2=v3;
+    if(maxV2>1){v0/=maxV2;v1/=maxV2;v2/=maxV2;v3/=maxV2;}
+    return [Math.max(0,Math.min(1,v0)),Math.max(0,Math.min(1,v1)),Math.max(0,Math.min(1,v2)),Math.max(0,Math.min(1,v3))];
+  },
+};
+
+/* ─── Input Handler ─── */
+const INPUT = {
+  _keys:{}, _thrRaw:0, sensitivity:0.26, expo:0.38, deadband:0.05,
+  _gamepad:null, pitch:0, roll:0, yaw:0, throttle:0,
+  _vjLeft:{x:0,y:0}, _vjRight:{x:0,y:0}, _vjActive:false,
+
+  // Flight-control keys that must never scroll panels/page while flying
+  _flightKeys: new Set([
+    'ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
+    'KeyW','KeyS','KeyA','KeyD',
+    'ShiftLeft','ShiftRight','ControlLeft','ControlRight',
+  ]),
+
+  init(){
+    window.addEventListener('keydown',(e)=>{
+      if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
+      this._keys[e.code]=true;
+      // Prevent browser scroll on flight-control keys when armed or airborne
+      const armed = (typeof State!=='undefined') ? State.armed : false;
+      const airborne = PHYS.pos.y > PHYS.groundY + 0.3;
+      if(this._flightKeys.has(e.code) && (armed || airborne)){
+        e.preventDefault();
+      }
+      if(e.repeat) return;
+      switch(e.code){
+        case 'Space': e.preventDefault(); if(typeof toggleArm==='function') toggleArm(); break;
+        case 'KeyT': if(typeof takeoff==='function') takeoff(); break;
+        case 'KeyR': if(typeof returnHome==='function') returnHome(); break;
+        case 'KeyH': if(typeof doHover==='function') doHover(); break;
+        case 'KeyG': if(typeof setFlightMode==='function') setFlightMode('gpshold'); break;
+        case 'KeyX': case 'Escape': if(typeof emergStop==='function') emergStop(); break;
+        case 'KeyF':
+          if(typeof setCamera==='function'){
+            if(typeof _camMode_global!=='undefined'&&_camMode_global==='fpv') setCamera('third');
+            else setCamera('fpv');
+          }
+          break;
+        case 'KeyC': case 'Tab': e.preventDefault(); if(typeof cycleCamera==='function') cycleCamera(); break;
+        case 'KeyM': if(typeof addWaypoint==='function') addWaypoint(); break;
+        case 'Digit1': if(typeof setFlightMode==='function') setFlightMode('stabilized'); break;
+        case 'Digit2': if(typeof setFlightMode==='function') setFlightMode('angle');      break;
+        case 'Digit3': if(typeof setFlightMode==='function') setFlightMode('acro');       break;
+        case 'Digit4': if(typeof setFlightMode==='function') setFlightMode('althold');    break;
+        case 'Digit5': if(typeof setFlightMode==='function') setFlightMode('gpshold');    break;
+      }
+    });
+    window.addEventListener('keyup',(e)=>{this._keys[e.code]=false;});
+    window.addEventListener('blur',()=>{this._keys={}; this.pitch=0; this.roll=0; this.yaw=0;});
+    window.addEventListener('gamepadconnected',(e)=>{
+      this._gamepad=e.gamepad;
+      if(typeof UI!=='undefined') UI.toast('🎮 Controller: '+e.gamepad.id.substring(0,28));
+    });
+    window.addEventListener('gamepaddisconnected',()=>{
+      this._gamepad=null;
+      if(typeof UI!=='undefined') UI.toast('🎮 Controller disconnected');
+    });
+  },
+
+  /**
+   * [FIX-6.2] Deadband → rescale → expo (eliminates discontinuity at deadband edge)
+   * Previous: deadband applied before expo caused a jump from 0 to expo(deadband)
+   * Correct: apply deadband, linearly rescale to [0,1], then apply expo
+   */
+  _applyDeadExpo(v){
+    const d=this.deadband;
+    if(Math.abs(v)<d) return 0;
+    // Rescale from [d,1] to [0,1] preserving sign
+    const rescaled=(Math.abs(v)-d)/(1-d);
+    const e=this.expo;
+    const expo_out=rescaled*(1-e)+rescaled*rescaled*rescaled*e;
+    return Math.sign(v)*expo_out;
+  },
+
+  update(dt){
+    const K=this._keys, s=this.sensitivity;
+    let gpActive=false;
+
+    if(this._gamepad){
+      const gp=navigator.getGamepads()[this._gamepad.index];
+      if(gp&&gp.axes.length>=4){
+        gpActive=true;
+        const rawThrY=this._applyDeadExpo(-gp.axes[1]);
+        this._thrRaw=Math.max(0,Math.min(1,(rawThrY+1)*0.5));
+        this.yaw  =this._applyDeadExpo(gp.axes[0]) *s;
+        this.pitch=this._applyDeadExpo(-gp.axes[3])*s;
+        this.roll =this._applyDeadExpo( gp.axes[2])*s;
+      }
+    }
+
+    if(!gpActive&&this._vjActive){
+      const thrRate=-this._vjLeft.y*0.9*s;
+      this._thrRaw=Math.max(0,Math.min(1,this._thrRaw+thrRate*dt));
+      this.yaw=this._applyDeadExpo(this._vjLeft.x)*s;
+      const tau=1-Math.exp(-dt*8);
+      this.pitch+=(this._applyDeadExpo(this._vjRight.y)*s-this.pitch)*tau;
+      this.roll +=(this._applyDeadExpo(this._vjRight.x)*s-this.roll) *tau;
+      gpActive=true;
+    }
+
+    if(!gpActive){
+      if(K['KeyW']||K['ShiftLeft']||K['ShiftRight'])
+        this._thrRaw=Math.min(1,this._thrRaw+dt*0.45*s);
+      else if(K['KeyS']||K['ControlLeft']||K['ControlRight'])
+        this._thrRaw=Math.max(0,this._thrRaw-dt*0.45*s);
+      const yt=((K['KeyA']?-1:0)+(K['KeyD']?1:0))*s;
+      const pt=((K['ArrowUp']?1:0)+(K['ArrowDown']?-1:0))*s;
+      const rt=((K['ArrowRight']?1:0)+(K['ArrowLeft']?-1:0))*s;
+      const tau=1-Math.exp(-dt*6);
+      this.pitch+=(this._applyDeadExpo(pt)-this.pitch)*tau;
+      this.roll +=(this._applyDeadExpo(rt)-this.roll) *tau;
+      this.yaw  +=(this._applyDeadExpo(yt)-this.yaw)  *tau;
+    }
+
+    this.throttle=this._thrRaw;
+    const slEl=document.getElementById('throttle-slider');
+    if(slEl&&!slEl._dragging){
+      slEl.value=Math.round(this._thrRaw*100);
+      const tv=document.getElementById('thr-val');
+      if(tv) tv.textContent=Math.round(this._thrRaw*100)+'%';
+    }
+    if(typeof _updateStickViz==='function') _updateStickViz();
+  },
+
+  get(){
+    return {
+      throttle:Math.max(0,Math.min(1,this.throttle)),
+      pitch:   Math.max(-1,Math.min(1,this.pitch)),
+      roll:    Math.max(-1,Math.min(1,this.roll)),
+      yaw:     Math.max(-1,Math.min(1,this.yaw)),
+    };
+  },
+};
+
+/* ─── Simulation speed default ─── */
+/**
+ * Default simulation speed multiplier.
+ * The render loop in index.html should read SIM_SPEED on init instead of hardcoding 1.
+ * Set to 2 so the simulation starts at 2× real-time out of the box.
+ *
+ * Performance note at 2×: PHYS.step() is called with dtFull up to 2× the wall-clock
+ * frame time. The physics substep count is fixed at 4, so each substep dt doubles.
+ * All integrators (Euler, RK-style battery, Kalman, PID) remain stable up to ~3× because
+ * dtFull is clamped to 40 ms (line: dtFull=Math.max(0.0005,Math.min(0.04,dtFull))), so
+ * the effective per-substep dt never exceeds 10 ms — well within stability margins.
+ * CPU cost is IDENTICAL to 1× (same number of substeps per rendered frame); the only
+ * difference is the wall-clock time advances faster. No performance issues at 2×.
+ */
+const SIM_SPEED = 4;
+
+
+// [FIX-5.2] Shared clock object so both sim-engine and index.html mutate/read the same reference
+const _simClock = { t: 0 };
+
+const BLACKBOX = {
+  _log:[], _max:3000, recording:false,
+  _lastTick:0,
+    start(){this._log=[];this.recording=true;this._lastTick=0;},
+  stop(){this.recording=false;},
+  /** [FIX-5.1] Extended fields: accX/Y/Z, baro_raw/filtered, wind, dryden, mode, armed */
+  tick(t){
+    if(!this.recording) return;
+    const p=PHYS;
+    // Prevent NaN physics from corrupting the blackbox log and turning into 'null' in JSON exports
+    if (Number.isNaN(p.pos.x) || Number.isNaN(p.vel.x)) {
+      console.warn('Blackbox ignored frame due to NaN physics');
+      return;
+    }
+    const gps=typeof GPS_SIM!=='undefined'?GPS_SIM.rawInt():{};
+    const obs=typeof OBSTACLE_DIST!=='undefined'?OBSTACLE_DIST.get():[0,0,0,0,0];
+    const gust=DRYDEN.get();
+    this._log.push({
+      // [FIX-5.2] Use shared sim clock
+      t: _simClock.t,
+      px:p.pos.x, py:p.pos.y, pz:p.pos.z,
+      roll:p.euler.roll, pitch:p.euler.pitch, yaw:p.euler.yaw,
+      gx:p.gyro.x, gy:p.gyro.y, gz:p.gyro.z,
+      // [FIX-5.1] Accelerometer body-frame
+      accX:p.accelBody.x, accY:p.accelBody.y, accZ:p.accelBody.z,
+      vx:p.vel.x, vy:p.vel.y, vz:p.vel.z,
+      m0:p.motorCmd[0], m1:p.motorCmd[1], m2:p.motorCmd[2], m3:p.motorCmd[3],
+      rpm0:p.motorRPM[0], rpm1:p.motorRPM[1], rpm2:p.motorRPM[2], rpm3:p.motorRPM[3],
+      batt:p.battVoltage, curr:p.currentDraw, batt_pct:p.battPct,
+      // [FIX-5.1] Baro raw and filtered
+      baro_raw:p._baroRaw, baro_filtered:p._altEstimate,
+      // [FIX-5.1] Wind and Dryden turbulence
+      wind_x:p.windVec.x, wind_z:p.windVec.z,
+      dryden_x:gust.x, dryden_y:gust.y, dryden_z:gust.z,
+      gps_lat:gps.lat||0, gps_lon:gps.lon||0, gps_fix:gps.fix_type||0, gps_sat:gps.satellites_visible||0,
+      obs_fwd:obs[0], obs_right:obs[1], obs_back:obs[2], obs_left:obs[3], obs_up:obs[4],
+      // [FIX-5.1] Flight mode and arm state
+      mode:typeof FC!=='undefined'?FC.mode:'unknown',
+      armed:(typeof State!=='undefined')?State.armed:false,
+    });
+    if(this._log.length>this._max) this._log.shift();
+  },
+  exportCSV(){
+    if(!this._log.length) return '';
+    const keys=Object.keys(this._log[0]);
+    return [keys.join(','),...this._log.map(row=>keys.map(k=>row[k]).join(','))].join('\n');
+  },
+  download(){
+    const csv=this.exportCSV(); if(!csv) return;
+    const blob=new Blob([csv],{type:'text/csv'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='spaceborn-blackbox-'+Date.now()+'.csv';
+    a.click();
+  },
+  getLog(){ return this._log.slice(); },
+  getStats(){
+    if(!this._log.length) return null;
+    let maxAlt=0,totalVel=0,maxVel=0;
+    for(const e of this._log){
+      if(e.py>maxAlt) maxAlt=e.py;
+      const v=Math.hypot(e.vx,e.vy,e.vz);
+      totalVel+=v; if(v>maxVel) maxVel=v;
+    }
+    return {
+      duration:(this._log[this._log.length-1].t-this._log[0].t).toFixed(1),
+      samples:this._log.length,
+      maxAlt:maxAlt.toFixed(1),
+      avgVel:(totalVel/this._log.length).toFixed(1),
+      maxVel:maxVel.toFixed(1),
+    };
+  },
+};
+
+/* ─── Debug / PID Visualizer ─── */
+const DEBUG = {
+  enabled:false, _pidHist:{pitch:[],roll:[],yaw:[]}, _histLen:120,
+  recordPID(pSP,pM,rSP,rM,ySP,yM){
+    if(!this.enabled) return;
+    const h=this._pidHist;
+    h.pitch.push({sp:pSP,m:pM}); h.roll.push({sp:rSP,m:rM}); h.yaw.push({sp:ySP,m:yM});
+    if(h.pitch.length>this._histLen){h.pitch.shift();h.roll.shift();h.yaw.shift();}
+  },
+  toggle(){
+    this.enabled=!this.enabled;
+    const el=document.getElementById('debug-badge');
+    if(el) el.style.display=this.enabled?'block':'none';
+    return this.enabled;
+  },
+  draw(){
+    if(!this.enabled) return;
+    this._drawPID('pidGraph',this._pidHist.pitch,'#EE9346');
+    this._drawGyro();
+  },
+  _drawPID(canvasId,data,color){
+    const canvas=document.getElementById(canvasId); if(!canvas||!data.length) return;
+    const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(96,125,139,0.3)';ctx.beginPath();ctx.moveTo(0,H/2);ctx.lineTo(W,H/2);ctx.stroke();
+    const draw=(fn,col)=>{
+      ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.beginPath();
+      data.forEach((d,i)=>{const x=(i/(data.length-1||1))*W,y=H/2-(fn(d)/8)*(H*0.45);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+      ctx.stroke();
+    };
+    draw(d=>d.m,color); draw(d=>d.sp,'rgba(16,37,109,0.7)');
+  },
+  _drawGyro(){
+    const canvas=document.getElementById('gyroGraph'); if(!canvas) return;
+    const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+    ctx.clearRect(0,0,W,H);
+    const g=PHYS.gyro,max=PHYS.maxRate.pitch;
+    [{v:g.x,c:'#EE9346',l:'P'},{v:g.z,c:'#10256D',l:'R'},{v:g.y,c:'#43A047',l:'Y'}].forEach((b,i)=>{
+      const x=12+i*36,h=(Math.abs(b.v)/max)*(H-20);
+      ctx.fillStyle=b.c; ctx.fillRect(x,H-10-h,24,h);
+      ctx.fillStyle='#607D8B'; ctx.font='9px Inter'; ctx.fillText(b.l,x+8,H-2);
+    });
+  },
+};
+
+/* ─── GPS_RAW_INT Simulation ─── */
+const GPS_SIM = {
+  HOME_LAT: 17.00050,  // degrees
+  HOME_LON: 82.24580,
+  HOME_ALT: 12.0,
+  _satBase: 14, _satJitter: 0, _satTimer: 0, _fixType: 3, _hdop: 0.9,
+  UPDATE_RATE: 5,
+
+  /** [FIX-3.5] HOME_LAT converted to radians for Math.cos */
+  _cosHomeLat: null,
+  getLat() { return this.HOME_LAT + PHYS.pos.z / 111320; },
+  getLon() {
+    if(this._cosHomeLat===null) this._cosHomeLat=Math.cos(this.HOME_LAT*Math.PI/180);
+    return this.HOME_LON + PHYS.pos.x / (111320 * this._cosHomeLat);
+  },
+  getAltMSL() { return this.HOME_ALT + PHYS.pos.y; },
+
+  update(dt) {
+    this._satTimer += dt;
+    if(this._satTimer > 2.0){
+      this._satTimer=0;
+      this._satJitter=Math.round((Math.random()-0.5)*2);
+    }
+    const indoor=typeof ENV!=='undefined'&&ENV._name==='indoor';
+    this._fixType=indoor?0:(typeof State!=='undefined'&&State.armed?3:2);
+    this._hdop=indoor?99.9:(0.7+Math.random()*0.4);
+  },
+
+  getSatCount(){ return Math.max(0,this._satBase+this._satJitter+(this._fixType===0?-14:0)); },
+  getFixType() { return this._fixType; },
+  getHdop()    { return this._hdop; },
+
+  rawInt(){
+    return {
+      lat:  Math.round(this.getLat()*1e7),
+      lon:  Math.round(this.getLon()*1e7),
+      alt:  Math.round(this.getAltMSL()*1000),
+      fix_type: this._fixType,
+      satellites_visible: this.getSatCount(),
+      eph:  Math.round(this._hdop*100),
+      epv:  Math.round((this._hdop+0.3)*100),
+    };
+  },
+};
+
+/* ─── VISION_POSITION Simulation ─── */
+const VISION_POS = {
+  _x:0, _y:0, _z:0, _driftX:0, _driftZ:0,
+  UPDATE_RATE:30,
+  _isActive(){
+    const indoor=typeof ENV!=='undefined'&&ENV._name==='indoor';
+    return indoor||GPS_SIM.getFixType()<2;
+  },
+  update(dt){
+    if(!this._isActive()){
+      this._driftX*=0.95; this._driftZ*=0.95;
+    }
+    const driftRate=this._isActive()?0.002:0.0001;
+    this._driftX+=(Math.random()-0.5)*driftRate;
+    this._driftZ+=(Math.random()-0.5)*driftRate;
+    const noiseAmp=this._isActive()?0.04:0.008;
+    this._x=PHYS.pos.x+this._driftX+(Math.random()-0.5)*noiseAmp;
+    this._y=Math.max(0,PHYS.pos.y-PHYS.groundY+(Math.random()-0.5)*noiseAmp*0.5);
+    this._z=PHYS.pos.z+this._driftZ+(Math.random()-0.5)*noiseAmp;
+  },
+  get(){
+    return {
+      x:this._x.toFixed(2), y:this._y.toFixed(2), z:this._z.toFixed(2),
+      active:this._isActive(),
+      quality:this._isActive()?Math.max(0,100-Math.round(Math.hypot(this._driftX,this._driftZ)*500)):100,
+    };
+  },
+};
+
+/* ─── OBSTACLE_DISTANCE — 5-sector proximity ─── */
+const OBSTACLE_DIST = {
+  SECTORS:['FWD','RIGHT','BACK','LEFT','UP'],
+  SENSOR_RANGE:12.0,
+  UPDATE_RATE:10,
+  _distances:[12,12,12,12,12],
+  _angles:[0,Math.PI/2,Math.PI,-Math.PI/2,null],
+
+  update(){
+    const p=PHYS;
+    const yaw=p.euler.yaw;
+    const pos=p.pos;
+    const groundY=p.groundY;
+    for(let s=0;s<5;s++){
+      if(s===4){
+        this._distances[s]=Math.max(0,120-(pos.y-groundY));
+        continue;
+      }
+      const sectorAngle=yaw+this._angles[s];
+      const dx=Math.sin(sectorAngle), dz=Math.cos(sectorAngle);
+      let minDist=this.SENSOR_RANGE;
+      for(const c of p.colliders){
+        const cx=(c.min.x+c.max.x)*0.5, cz=(c.min.z+c.max.z)*0.5;
+        const toX=cx-pos.x, toZ=cz-pos.z;
+        const proj=toX*dx+toZ*dz;
+        if(proj<0||proj>this.SENSOR_RANGE) continue;
+        const perpDist=Math.abs(toX*dz-toZ*dx);
+        const hw=Math.max((c.max.x-c.min.x),(c.max.z-c.min.z))*0.5;
+        if(perpDist<hw+0.5) minDist=Math.min(minDist,proj);
+      }
+      this._distances[s]=Math.max(0,minDist+(Math.random()-0.5)*0.15);
+    }
+  },
+  get(){ return this._distances.slice(); },
+};
+
+/* ─── PID Telemetry ─── */
+const PID_TELEM = {
+  axes:{
+    roll:    {kp:0,ki:0,kd:0,setpoint:0,measured:0,error:0,output:0},
+    pitch:   {kp:0,ki:0,kd:0,setpoint:0,measured:0,error:0,output:0},
+    yaw:     {kp:0,ki:0,kd:0,setpoint:0,measured:0,error:0,output:0},
+    throttle:{kp:0,ki:0,kd:0,setpoint:0,measured:0,error:0,output:0},
+  },
+  capture(){
+    const g=FC.gains;
+    const rp=FC.ratePID;
+    const fcrc=PHYS._fcRateCmd;
+    // Capture rate setpoints from PHYS._fcRateCmd (inner loop values)
+    this.axes.roll    ={kp:g.rp,ki:g.ri||0,kd:g.rd, setpoint:fcrc.roll,  measured:PHYS.gyro.z, error:fcrc.roll -PHYS.gyro.z, output:PHYS.motorCmd[0]-PHYS.motorCmd[1]};
+    this.axes.pitch   ={kp:g.rp,ki:g.ri||0,kd:g.rd, setpoint:fcrc.pitch, measured:PHYS.gyro.x, error:fcrc.pitch-PHYS.gyro.x, output:PHYS.motorCmd[2]-PHYS.motorCmd[0]};
+    this.axes.yaw     ={kp:g.yp,ki:0.012,  kd:0,     setpoint:fcrc.yaw,   measured:PHYS.gyro.y, error:fcrc.yaw  -PHYS.gyro.y, output:PHYS.motorCmd[0]-PHYS.motorCmd[3]};
+    this.axes.throttle={kp:g.ap,ki:FC.altPID.i,kd:FC.altPID.d, setpoint:FC.altTarget||0, measured:PHYS._altEstimate, error:(FC.altTarget||0)-PHYS._altEstimate, output:PHYS.hoverThrottle};
+  },
+};
+
+/* ─── Battery flight time estimate ─── */
+function getBattEstimatedFlightTime(){
+  const remainingAh=PHYS.battTotalAh*(PHYS.battPct/100);
+  const currentA=Math.max(0.1,PHYS.currentDraw);
+  return Math.min(9999,(remainingAh/currentA)*3600);
+}
+
+/* ─── Global exports ─── */
+if(typeof globalThis!=='undefined'){
+  Object.assign(globalThis,{V3,Q,Noise,DRYDEN,PID,Kalman1D,DRONE_PROFILES,PHYS,FC,INPUT,BLACKBOX,DEBUG,
+    GPS_SIM,VISION_POS,OBSTACLE_DIST,PID_TELEM,getBattEstimatedFlightTime,_simClock,SIM_SPEED});
+}
+
+/* ─── MAVLink v1 Export ─── */
+const MAVLINK = {
+  MSG_HEARTBEAT:0, MSG_SYS_STATUS:1, MSG_BATTERY_STATUS:147,
+  MSG_ATTITUDE:30, MSG_LOCAL_POSITION_NED:32, MSG_GPS_RAW_INT:24,
+  MSG_RC_CHANNELS_RAW:35, MSG_VFR_HUD:74, MSG_STATUSTEXT:253,
+  _seq:0,
+
+  _crc16(buf){
+    let crc=0xFFFF;
+    for(let i=0;i<buf.length;i++){
+      let tmp=buf[i]^(crc&0xFF);
+      tmp=(tmp^(tmp<<4))&0xFF;
+      crc=((crc>>8)^(tmp<<8)^(tmp<<3)^(tmp>>4))&0xFFFF;
+    }
+    return crc;
+  },
+
+  // CRC extra bytes verified against MAVLink common.xml
+  _crcExtra:{
+    0:50,   // HEARTBEAT
+    1:124,  // SYS_STATUS
+    24:24,  // GPS_RAW_INT
+    30:39,  // ATTITUDE
+    32:185, // LOCAL_POSITION_NED
+    35:244, // RC_CHANNELS_RAW
+    74:20,  // VFR_HUD
+    147:154,// BATTERY_STATUS
+    253:83, // STATUSTEXT
+  },
+
+  _packet(msgId, payload){
+    const sysId=1,compId=1;
+    const len=payload.length;
+    const header=[0xFE,len,this._seq&0xFF,sysId,compId,msgId];
+    this._seq=(this._seq+1)&0xFF;
+    const crcBuf=[...header.slice(1),...payload,this._crcExtra[msgId]||0];
+    const crc=this._crc16(crcBuf);
+    return new Uint8Array([...header,...payload,crc&0xFF,(crc>>8)&0xFF]);
+  },
+
+  _f32(dv,off,val){dv.setFloat32(off,val,true);},
+  _u32(dv,off,val){dv.setUint32(off,val,true);},
+  _i32(dv,off,val){dv.setInt32(off,val,true);},
+  _u16(dv,off,val){dv.setUint16(off,val,true);},
+  _i16(dv,off,val){dv.setInt16(off,val,true);},
+
+  /**
+   * HEARTBEAT — MAVLink common.xml ID=0
+   * [FIX-5.3] baseMode bits per MAVLink spec:
+   *   bit7 (0x80): MAV_MODE_FLAG_SAFETY_ARMED
+   *   bit4 (0x10): MAV_MODE_FLAG_GUIDED_ENABLED (GPS hold)
+   *   bit3 (0x08): MAV_MODE_FLAG_STABILIZE_ENABLED (stabilized/angle)
+   */
+  heartbeat(customMode, type, autopilot, baseMode, sysStatus, mavlinkVersion){
+    const buf=new ArrayBuffer(9); const dv=new DataView(buf);
+    this._u32(dv,0,customMode||0);
+    dv.setUint8(4,type||2);        // MAV_TYPE_QUADROTOR=2
+    dv.setUint8(5,autopilot||3);   // MAV_AUTOPILOT_ARDUPILOTMEGA=3
+    // [FIX-5.3] Correct baseMode flags
+    let bm=0;
+    const armed = typeof State!=='undefined'&&State.armed;
+    const mode  = typeof FC!=='undefined'?FC.mode:'stabilized';
+    if(armed)  bm|=0x80; // MAV_MODE_FLAG_SAFETY_ARMED
+    if(mode==='gpshold'||mode==='rth') bm|=0x10; // MAV_MODE_FLAG_GUIDED_ENABLED
+    if(mode==='stabilized'||mode==='angle'||mode==='althold') bm|=0x08; // MAV_MODE_FLAG_STABILIZE_ENABLED
+    dv.setUint8(6,baseMode!==undefined?baseMode:bm);
+    dv.setUint8(7,sysStatus||0);
+    dv.setUint8(8,mavlinkVersion||3);
+    return this._packet(this.MSG_HEARTBEAT,[...new Uint8Array(buf)]);
+  },
+
+  attitude(timeBootMs,roll,pitch,yaw,rollspeed,pitchspeed,yawspeed){
+    const buf=new ArrayBuffer(28); const dv=new DataView(buf);
+    this._u32(dv,0,timeBootMs>>>0);
+    this._f32(dv,4,roll); this._f32(dv,8,pitch); this._f32(dv,12,yaw);
+    this._f32(dv,16,rollspeed); this._f32(dv,20,pitchspeed); this._f32(dv,24,yawspeed);
+    return this._packet(this.MSG_ATTITUDE,[...new Uint8Array(buf)]);
+  },
+
+  localPositionNed(timeBootMs,x,y,z,vx,vy,vz){
+    const buf=new ArrayBuffer(28); const dv=new DataView(buf);
+    this._u32(dv,0,timeBootMs>>>0);
+    this._f32(dv,4,x); this._f32(dv,8,y); this._f32(dv,12,z);
+    this._f32(dv,16,vx); this._f32(dv,20,vy); this._f32(dv,24,vz);
+    return this._packet(this.MSG_LOCAL_POSITION_NED,[...new Uint8Array(buf)]);
+  },
+
+  vfrHud(airspeed,groundspeed,heading,throttle,alt,climb){
+    const buf=new ArrayBuffer(20); const dv=new DataView(buf);
+    this._f32(dv,0,airspeed); this._f32(dv,4,groundspeed);
+    this._f32(dv,8,alt); this._f32(dv,12,climb);
+    this._i16(dv,16,heading); this._u16(dv,18,throttle);
+    return this._packet(this.MSG_VFR_HUD,[...new Uint8Array(buf)]);
+  },
+
+  /** [FIX-5.3] GPS_RAW_INT: vel = ground speed cm/s, cog = atan2(vx,vz) cdeg */
+  gpsRawInt(timeBootMs,lat,lon,alt,eph,epv,vel,cog,fixType,satellitesVisible){
+    const buf=new ArrayBuffer(30); const dv=new DataView(buf);
+    dv.setUint32(0,(timeBootMs*1000)>>>0,true); dv.setUint32(4,0,true);
+    this._i32(dv,8,lat); this._i32(dv,12,lon); this._i32(dv,16,alt);
+    this._u16(dv,20,eph!==undefined?eph:0xFFFF);
+    this._u16(dv,22,epv!==undefined?epv:0xFFFF);
+    this._u16(dv,24,vel!==undefined?vel:0xFFFF); // ground speed cm/s
+    this._u16(dv,26,cog!==undefined?cog:0xFFFF); // course over ground cdeg
+    dv.setUint8(28,fixType||0);
+    dv.setUint8(29,satellitesVisible!==undefined?satellitesVisible:255);
+    return this._packet(this.MSG_GPS_RAW_INT,[...new Uint8Array(buf)]);
+  },
+
+  /** [FIX-5.3] BATTERY_STATUS: currentBattery in centi-amps (A×100), voltages in mV */
+  batteryStatus(id,battFunction,type,temperature,voltages,currentBattery,currentConsumed,energyConsumed,batteryRemaining){
+    const buf=new ArrayBuffer(36); const dv=new DataView(buf);
+    this._i32(dv,0,currentConsumed!==undefined?currentConsumed:-1);   // mAh
+    this._i32(dv,4,energyConsumed!==undefined?energyConsumed:-1);
+    this._i16(dv,8,temperature!==undefined?temperature:0x7FFF);
+    const vArr=voltages||[];
+    for(let i=0;i<10;i++) this._u16(dv,10+i*2,i<vArr.length?vArr[i]:0xFFFF); // mV per cell
+    this._i16(dv,30,currentBattery!==undefined?currentBattery:-1); // centi-amps (A×100)
+    dv.setUint8(32,id||0);
+    dv.setUint8(33,battFunction||0);
+    dv.setUint8(34,type||0);
+    dv.setInt8( 35,batteryRemaining!==undefined?batteryRemaining:-1);
+    return this._packet(this.MSG_BATTERY_STATUS,[...new Uint8Array(buf)]);
+  },
+
+  buildTlog(logEntries){
+    if(!logEntries||!logEntries.length) return null;
+    this._seq=0;
+    const chunks=[];
+    const writeEntry=(tSec,pkt)=>{
+      const ts=Math.round(tSec*1e6);
+      const tsBuf=new ArrayBuffer(8); const tsView=new DataView(tsBuf);
+      tsView.setUint32(0,Math.floor(ts/4294967296)>>>0,false);
+      tsView.setUint32(4,ts>>>0,false);
+      chunks.push(new Uint8Array(tsBuf));
+      chunks.push(pkt);
+    };
+    let lastHB=-999,lastGPS=-999,lastBatt=-999;
+    for(const e of logEntries){
+      if(e.t-lastHB>=1.0){
+        writeEntry(e.t,this.heartbeat(0,2,3));
+        lastHB=e.t;
+      }
+      if(e.t-lastGPS>=0.2){
+        const gLat=Math.round((GPS_SIM.HOME_LAT+e.pz/111320)*1e7);
+        // [FIX-3.5] Use cached cos(HOME_LAT) — avoids recomputing per log entry
+        const gLon=Math.round((GPS_SIM.HOME_LON+e.px/(111320*(GPS_SIM._cosHomeLat||Math.cos(GPS_SIM.HOME_LAT*Math.PI/180))))*1e7);
+        const gAlt=Math.round((GPS_SIM.HOME_ALT+e.py)*1000);
+        const gVel=Math.round(Math.hypot(e.vx,e.vz)*100); // ground speed cm/s
+        const gCog=Math.round(((Math.atan2(e.vx,e.vz)*180/Math.PI)+360)%360*100); // course cdeg
+        writeEntry(e.t,this.gpsRawInt(Math.round(e.t*1000),gLat,gLon,gAlt,90,130,gVel,gCog,3,14));
+        lastGPS=e.t;
+      }
+      if(e.t-lastBatt>=0.5){
+        const cellV=Math.round((e.batt/(PHYS.cells||4))*1000); // mV per cell
+        const voltages=Array(10).fill(0xFFFF);
+        for(let c=0;c<(PHYS.cells||4);c++) voltages[c]=cellV;
+        const consumed=Math.round(PHYS.battCapacity*1000); // mAh
+        const remaining=Math.round(PHYS.battPct);
+        // [FIX-5.3] currentBattery in centi-amps (A×100)
+        writeEntry(e.t,this.batteryStatus(0,0,0,2500,voltages,Math.round(e.curr*100),consumed,-1,remaining));
+        lastBatt=e.t;
+      }
+      const tms=Math.round(e.t*1000);
+      writeEntry(e.t,this.attitude(tms,e.roll,e.pitch,e.yaw,e.gx,e.gy,e.gz));
+      writeEntry(e.t,this.localPositionNed(tms,e.px,-e.pz,-e.py,e.vx,-e.vz,-e.vy));
+      const speed=Math.hypot(e.vx,e.vy,e.vz);
+      const hspeed=Math.hypot(e.vx,e.vz);
+      writeEntry(e.t,this.vfrHud(speed,hspeed,Math.round(((e.yaw*180/Math.PI)+360)%360),Math.round((e.m0+e.m1+e.m2+e.m3)/4*100),e.py,e.vy));
+    }
+    const total=chunks.reduce((s,c)=>s+c.byteLength,0);
+    const out=new Uint8Array(total); let off=0;
+    for(const c of chunks){out.set(c,off);off+=c.byteLength;}
+    return out;
+  },
+
+  downloadTlog(){
+    const log=BLACKBOX.getLog();
+    if(!log.length){console.warn('No blackbox data');return false;}
+    const data=this.buildTlog(log);
+    if(!data) return false;
+    const blob=new Blob([data],{type:'application/octet-stream'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='spaceborn-'+Date.now()+'.tlog';
+    a.click(); URL.revokeObjectURL(a.href);
+    return true;
+  },
+
+  downloadJSON(){
+    const log=BLACKBOX.getLog();
+    if(!log.length) return false;
+    const json=JSON.stringify({meta:{version:'2.1',drone:PHYS.droneProfile,exported:new Date().toISOString()},frames:log},null,2);
+    const blob=new Blob([json],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='spaceborn-telem-'+Date.now()+'.json';
+    a.click(); URL.revokeObjectURL(a.href);
+    return true;
+  },
+};
+
+/* ─── Telemetry Graph ─── */
+const TELEM_GRAPH = {
+  _canvas:null, _ctx:null,
+  _history:{alt:[],vel:[],roll:[],pitch:[],batt:[]},
+  _maxLen:200,
+  _channels:['alt','vel','roll','pitch','batt'],
+  _colors:{alt:'#10256D',vel:'#EE9346',roll:'#43A047',pitch:'#E53935',batt:'#9C27B0'},
+  _visible:{alt:true,vel:true,roll:false,pitch:false,batt:false},
+  _scales:{alt:50,vel:15,roll:90,pitch:90,batt:100},
+  _maxAlt:0, _W:0, _H:0,
+
+  init(canvasId){
+    this._canvas=document.getElementById(canvasId);
+    if(this._canvas){
+      this._ctx=this._canvas.getContext('2d');
+      this._syncSize();
+    }
+  },
+
+  _syncSize(){
+    if(!this._canvas) return;
+    const now = performance.now();
+    if(this._lastSync && now - this._lastSync < 1000) return;
+    this._lastSync = now;
+    const cw = this._canvas.clientWidth, ch = this._canvas.clientHeight;
+    if(this._W !== cw || this._H !== ch){
+      this._canvas.width = cw;
+      this._canvas.height = ch;
+      this._W = cw;
+      this._H = ch;
+    }
+  },
+
+  push(p){
+    const R2D=180/Math.PI;
+    const vals={
+      alt:Math.max(0,p.pos.y-p.groundY),
+      vel:Math.hypot(p.vel.x,p.vel.y,p.vel.z),
+      roll:p.euler.roll*R2D,
+      pitch:p.euler.pitch*R2D,
+      batt:p.battPct,
+    };
+    for(const k of this._channels){
+      this._history[k].push(vals[k]);
+      if(this._history[k].length>this._maxLen) this._history[k].shift();
+    }
+    // Auto-scale altitude: running max, full recompute only when oldest sample is dropped
+    if(vals.alt>this._maxAlt){
+      this._maxAlt=vals.alt;
+    } else if(this._history.alt.length>=this._maxLen){
+      let m=0; for(let i=0;i<this._history.alt.length;i++) if(this._history.alt[i]>m) m=this._history.alt[i];
+      this._maxAlt=m;
+    }
+    this._scales.alt=Math.max(10,this._maxAlt*1.1);
+  },
+
+  draw(){
+    const c=this._canvas,ctx=this._ctx;
+    if(!c||!ctx) return;
+    this._syncSize();
+    const W=this._W,H=this._H;
+    if(!W||!H) return;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(238,241,247,0.6)';
+    ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(96,125,139,0.2)';ctx.lineWidth=1;
+    for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(0,H*i/4);ctx.lineTo(W,H*i/4);ctx.stroke();}
+    for(const k of this._channels){
+      if(!this._visible[k]) continue;
+      const data=this._history[k];
+      if(data.length<2) continue;
+      const scale=this._scales[k];
+      ctx.strokeStyle=this._colors[k];ctx.lineWidth=1.5;
+      ctx.beginPath();
+      const maxIdx=this._maxLen-1;
+      for(let i=0;i<data.length;i++){
+        const x=(i/maxIdx)*W;
+        const y=H/2-(data[i]/scale)*(H*0.45);
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+  },
+
+  push(p){
+    const R2D=180/Math.PI;
+    const vals={
+      alt:Math.max(0,p.pos.y-p.groundY),
+      vel:Math.hypot(p.vel.x,p.vel.y,p.vel.z),
+      roll:p.euler.roll*R2D,
+      pitch:p.euler.pitch*R2D,
+      batt:p.battPct,
+    };
+    for(const k of this._channels){
+      this._history[k].push(vals[k]);
+      if(this._history[k].length>this._maxLen) this._history[k].shift();
+    }
+    // Auto-scale altitude: running max, full recompute only when oldest sample is dropped
+    if(vals.alt>this._maxAlt){
+      this._maxAlt=vals.alt;
+    } else if(this._history.alt.length>=this._maxLen){
+      let m=0; for(let i=0;i<this._history.alt.length;i++) if(this._history.alt[i]>m) m=this._history.alt[i];
+      this._maxAlt=m;
+    }
+    this._scales.alt=Math.max(10,this._maxAlt*1.1);
+  },
+
+  draw(){
+    const c=this._canvas,ctx=this._ctx;
+    if(!c||!ctx) return;
+    this._syncSize();
+    const W=this._W,H=this._H;
+    if(!W||!H) return;
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='rgba(238,241,247,0.6)';
+    ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(96,125,139,0.2)';ctx.lineWidth=1;
+    for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(0,H*i/4);ctx.lineTo(W,H*i/4);ctx.stroke();}
+    for(const k of this._channels){
+      if(!this._visible[k]) continue;
+      const data=this._history[k];
+      if(data.length<2) continue;
+      const scale=this._scales[k];
+      ctx.strokeStyle=this._colors[k];ctx.lineWidth=1.5;
+      ctx.beginPath();
+      const maxIdx=this._maxLen-1;
+      for(let i=0;i<data.length;i++){
+        const x=(i/maxIdx)*W;
+        const y=H/2-(data[i]/scale)*(H*0.45);
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+  },
+
+  toggle(ch){ if(this._visible[ch]!==undefined) this._visible[ch]=!this._visible[ch]; },
+};
+
+if(typeof globalThis!=='undefined'){
+  Object.assign(globalThis,{
+    MAVLINK, TELEM_GRAPH, PHYS, FC, V3, Q, DRYDEN, Noise, PID, Kalman1D, DRONE_PROFILES
+  });
+}

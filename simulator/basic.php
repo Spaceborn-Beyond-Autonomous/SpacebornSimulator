@@ -1374,7 +1374,7 @@ const THREE_ENV = (() => {
 
   // Cache last result per env to avoid recalculating same point twice
   let _thCache = null;
-  function terrainHeight(x, z, envName) {
+  function rawTerrainHeight(x, z, envName) {
     const env = envName || _envName;
 
     // Flat environments
@@ -1420,6 +1420,30 @@ const THREE_ENV = (() => {
     const height = Math.pow(Math.max(0, continent * 0.7 + raw * 0.4 + 0.15), 1.4) * 50;
     const detail = Noise.fbm(x*0.08, 1.5, z*0.08, 3, 0.4, 2.0) * 5;
     return Math.max(0, height + detail);
+  }
+
+  function terrainHeight(x, z, envName) {
+    const env = envName || _envName;
+    if (env === 'urban' || env === 'indoor') return 0; // Flat environments
+
+    const step = 60 / 16; // 3.75
+    const x0 = Math.floor(x / step) * step;
+    const z0 = Math.floor(z / step) * step;
+    const x1 = x0 + step;
+    const z1 = z0 + step;
+
+    const h00 = rawTerrainHeight(x0, z0, env);
+    const h10 = rawTerrainHeight(x1, z0, env);
+    const h01 = rawTerrainHeight(x0, z1, env);
+    const h11 = rawTerrainHeight(x1, z1, env);
+
+    const tx = (x - x0) / step;
+    const tz = (z - z0) / step;
+
+    // Bilinear interpolation
+    const h0 = h00 * (1 - tx) + h10 * tx;
+    const h1 = h01 * (1 - tx) + h11 * tx;
+    return h0 * (1 - tz) + h1 * tz;
   }
 
   // ── Safe spawn finder ─────────────────────────────────────────────
@@ -1530,7 +1554,7 @@ const THREE_ENV = (() => {
       // Evaluate terrain in true world coords (double precision JS numbers)
       const wx = localX + worldOffX;
       const wz = localZ + worldOffZ;
-      const h = terrainHeight(wx, wz, envName);
+      const h = rawTerrainHeight(wx, wz, envName);
       pos.setY(i, h);
       const [r,g,b] = terrainColor(wx, wz, h, envName);
       colors.push(r, g, b);
@@ -1563,7 +1587,7 @@ const THREE_ENV = (() => {
         const lx = (rng()-0.5)*CHUNK_SIZE;
       const lz = (rng()-0.5)*CHUNK_SIZE;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, lz, env);
+      const hy = terrainHeight(wx, wz, env);
       const h = 0.18 + rng()*0.22;
       const ang = rng()*Math.PI*2;
       const bx = Math.cos(ang)*0.04, bz = Math.sin(ang)*0.04;
@@ -1601,7 +1625,7 @@ const THREE_ENV = (() => {
       const lx = (rng()-0.5)*CHUNK_SIZE;
       const lz = (rng()-0.5)*CHUNK_SIZE;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, lz, env);
+      const hy = terrainHeight(wx, wz, env);
       const h = 0.14 + rng()*0.12;
       // stem
       const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.008,h,4), stemMat);
@@ -1641,7 +1665,7 @@ const THREE_ENV = (() => {
       const lx = (rng()-0.5)*CHUNK_SIZE;
       const lz = (rng()-0.5)*CHUNK_SIZE;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, lz, env);
+      const hy = terrainHeight(wx, wz, env);
       const scale = 0.2 + rng()*0.8;
       const col = rockColors[Math.floor(rng()*rockColors.length)];
       const mat = new THREE.MeshStandardMaterial({ color: col, roughness: 0.9, metalness: 0.05 });
@@ -1682,7 +1706,7 @@ const THREE_ENV = (() => {
         const lx = (rng()-0.5)*CHUNK_SIZE*0.85;
       const lz = (rng()-0.5)*CHUNK_SIZE*0.85;
       const wx = lx + worldOffX, wz = lz + worldOffZ;
-      const hy = terrainHeight(wx, lz, env);
+      const hy = terrainHeight(wx, wz, env);
       if (env === 'mountains' && hy > 30) continue;
       const treeType = Math.floor(rng()*3);
       const leafCol = leafColors[Math.floor(rng()*leafColors.length)];
@@ -2304,7 +2328,12 @@ const THREE_ENV = (() => {
     await new Promise(r => setTimeout(r, 0)); // Yield to main thread
 
     if (lod === 0 && _envName !== 'indoor' && _envName !== 'urban') {
-      buildInstancedVegetationForChunk(cx, cz, _envName);
+      const veg = buildInstancedVegetationForChunk(cx, cz, _envName);
+      if (veg) {
+        veg.position.set(renderX, 0, renderZ);
+        scene.add(veg);
+        chunkData.veg = veg;
+      }
       await new Promise(r => setTimeout(r, 0)); // Yield
 
       const flowers = await buildFlowers(cx, cz, _envName);
@@ -2324,6 +2353,7 @@ const THREE_ENV = (() => {
     const cd = _chunks.get(key);
     if (!cd) return;
     _disposeChunkData(cd);
+    if (typeof CHUNK_COLLIDERS !== 'undefined') CHUNK_COLLIDERS.delete(key);
     _chunks.delete(key);
   }
 
@@ -2568,6 +2598,7 @@ const THREE_ENV = (() => {
         { pos:[  0, 10, -30], size:[60,20,0.5], norm:{x:0,y:0,z: 1} }, // S wall
         { pos:[ 30, 10,   0], size:[0.5,20,60], norm:{x:-1,y:0,z:0} }, // E wall
         { pos:[-30, 10,   0], size:[0.5,20,60], norm:{x: 1,y:0,z:0} }, // W wall
+        { pos:[  0, 20,   0], size:[60,0.5,60], norm:{x: 0,y:-1,z:0} }, // Ceiling
       ];
       wallDefs.forEach(wd => {
         const wg = new THREE.BoxGeometry(...wd.size);
@@ -3230,7 +3261,7 @@ const ENV = {
     const _droneHalf = 0.074 * (PHYS.droneVisual.bodyScale || 1.0) * 5.0;
     // Always respawn at safe location when switching environments or when clearly underground
     const clearlyUnderground = PHYS.pos.y < gY + _droneHalf - 0.5;
-    if (PHYS.grounded || PHYS.crashed || clearlyUnderground) {
+    if (true) {
       PHYS.crashed = false;
       PHYS.grounded = true;
       PHYS.pos.x = _spawnPt.x;

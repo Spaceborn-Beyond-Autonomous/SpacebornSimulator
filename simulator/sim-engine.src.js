@@ -632,7 +632,7 @@ const PHYS = {
     if(newPos.y < minY){
       const impact = Math.abs(this.vel.y);
       // [FIX-1.8] Crash threshold 8 m/s (was 4.5 m/s)
-      if(impact > 8.0 && (typeof State!=='undefined') && State.armed){
+      if(impact > 2.5 && (typeof State!=='undefined') && State.armed){
         this._doCrash(impact); newPos.y = minY;
       } else {
         newPos.y = minY;
@@ -665,8 +665,8 @@ const PHYS = {
     const hit = this._checkColliders(newPos);
     if(hit){
       const spd = V3.len(this.vel);
-      // [FIX-1.8] Crash threshold 8 m/s
-      if(spd > 8.0 && (typeof State!=='undefined') && State.armed){ this._doCrash(spd); }
+      // [FIX-1.8] Crash threshold 2.5 m/s
+      if(spd > 2.5 && (typeof State!=='undefined') && State.armed){ this._doCrash(spd); }
       else {
         const n = hit.normal || {x:0,y:1,z:0};
         const vn = V3.dot(this.vel, n);
