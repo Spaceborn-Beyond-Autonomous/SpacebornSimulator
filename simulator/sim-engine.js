@@ -776,9 +776,6 @@ const PHYS = {
     this.angVel.x*=0.90; this.angVel.z*=0.90; this.angVel.y*=0.93;
     this.quat=Q.integrate(this.quat,this.angVel,dt);
     Q.toEuler(this.quat, this.euler);
-    // Clamp XZ to world bounds during settle to prevent sliding into terrain
-    this.pos.x=Math.max(-240,Math.min(240,this.pos.x));
-    this.pos.z=Math.max(-240,Math.min(240,this.pos.z));
     const minY=this.groundY+droneHalf;
     if(this.pos.y>minY){
       this.vel.y-=this.GRAVITY*dt; this.pos.y+=this.vel.y*dt;
