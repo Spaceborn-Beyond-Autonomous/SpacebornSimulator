@@ -52,6 +52,12 @@ function applyTreeCrashPhysics(hitCollider) {
   if (spd < 1.5) return;
   PHYS._doCrash(spd);
 
+  const co = document.getElementById('crash-overlay');
+  if (co && !co.classList.contains('show')) co.classList.add('show');
+  if (typeof UI !== 'undefined' && UI.toast) {
+    UI.toast(`💥 Tree collision! Speed: ${spd.toFixed(1)} m/s`);
+  }
+
   const nx = PHYS.pos.x - hitCollider.cx;
   const ny = PHYS.pos.y - hitCollider.cy;
   const nz = PHYS.pos.z - hitCollider.cz;
@@ -227,45 +233,13 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
 }
 
 const SIM_PATCH = {
-  _installed: false,
+  _installed: true,
   install() {
-    if (this._installed) return;
-    if (typeof THREE === 'undefined' || typeof THREE_ENV === 'undefined' || typeof PHYS === 'undefined' || typeof State === 'undefined') {
-      setTimeout(() => this.install(), 100);
-      return;
-    }
-    this._installed = true;
-    this._patchSimLoop();
-    console.log('[SIM_PATCH] Installed spaceborn vegetation optimisations successfully.');
-  },
-  _patchSimLoop() {
-    if (typeof SIM === 'undefined') return;
-    const origLoop = SIM._loop.bind(SIM);
-    SIM._loop = function () {
-      origLoop();
-      if (typeof PHYS !== 'undefined' && !PHYS.crashed && CHUNK_COLLIDERS) {
-        const hit = checkTreeColliders(PHYS.pos, 0.15);
-        if (hit) {
-          const spd = Math.hypot(PHYS.vel.x, PHYS.vel.y, PHYS.vel.z);
-          if (spd > 2.5) {
-            applyTreeCrashPhysics(hit);
-            const co = document.getElementById('crash-overlay');
-            if (co && !co.classList.contains('show')) co.classList.add('show');
-            if (typeof UI !== 'undefined' && UI.toast) {
-              UI.toast(`💥 Tree collision! Speed: ${spd.toFixed(1)} m/s`);
-            }
-          }
-        }
-      }
-    };
+    // Tree collisions moved to core sim-engine.js _substep
   }
 };
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => SIM_PATCH.install());
-} else {
-  setTimeout(() => SIM_PATCH.install(), 0);
-}
+// No longer patching SIM._loop here
 
 if (typeof globalThis !== 'undefined') {
   Object.assign(globalThis, {

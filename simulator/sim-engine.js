@@ -677,7 +677,15 @@ const PHYS = {
           const vtMag = V3.len(vt);
           if(vtMag > 0.001) this.vel = V3.sub(this.vel, V3.scale(V3.norm(vt), Math.min(vtMag, 0.4*Math.abs(vn))));
         }
-        this.pos = V3.add(newPos, V3.scale(n, 0.05));
+                this.pos = V3.add(newPos, V3.scale(n, 0.05));
+      }
+    } else if (typeof checkTreeColliders === 'function' && typeof CHUNK_COLLIDERS !== 'undefined') {
+      const treeHit = checkTreeColliders(newPos, 0.25);
+      if (treeHit) {
+        const spd = V3.len(this.vel);
+        if(spd > 2.5 && (typeof State!=='undefined') && State.armed){
+          if(typeof applyTreeCrashPhysics === 'function') applyTreeCrashPhysics(treeHit);
+        }
       }
     }
 
