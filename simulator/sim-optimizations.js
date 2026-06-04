@@ -22,7 +22,7 @@ const TREE_MATS = (() => {
   };
 })();
 
-const CHUNK_COLLIDERS = new Map();
+const CHUNK_COLLIDERS = new Map();\nlet FLAT_COLLIDERS = [];\nfunction updateFlatColliders() { FLAT_COLLIDERS = []; for (const arr of CHUNK_COLLIDERS.values()) { for(let i=0; i<arr.length; i++) FLAT_COLLIDERS.push(arr[i]); } }
 
 function checkTreeColliders(pos, hitR = 0.35) {
   for (const colliders of CHUNK_COLLIDERS.values()) {
@@ -214,7 +214,7 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
   });
 
   const key = `${cx},${cz}`;
-  CHUNK_COLLIDERS.set(key, colliders);
+  CHUNK_COLLIDERS.set(key, colliders); updateFlatColliders();
   return group;
 }
 
@@ -236,7 +236,7 @@ const SIM_PATCH = {
     SIM._loop = function () {
       origLoop();
       if (typeof PHYS !== 'undefined' && !PHYS.crashed && CHUNK_COLLIDERS) {
-        const hit = checkTreeColliders(PHYS.pos, 0.35);
+        const hit = checkTreeColliders(PHYS.pos, 0.15);
         if (hit) {
           const spd = Math.hypot(PHYS.vel.x, PHYS.vel.y, PHYS.vel.z);
           if (spd > 2.5) {

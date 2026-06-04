@@ -2346,7 +2346,7 @@ const THREE_ENV = (() => {
     const cd = _chunks.get(key);
     if (!cd) return;
     _disposeChunkData(cd);
-    if (typeof CHUNK_COLLIDERS !== 'undefined') CHUNK_COLLIDERS.delete(key);
+    if (typeof CHUNK_COLLIDERS !== 'undefined') { CHUNK_COLLIDERS.delete(key); if (typeof updateFlatColliders === 'function') updateFlatColliders(); }
     _chunks.delete(key);
   }
 
