@@ -22,18 +22,25 @@ const TREE_MATS = (() => {
   };
 })();
 
-const CHUNK_COLLIDERS = new Map();\nlet FLAT_COLLIDERS = [];\nfunction updateFlatColliders() { FLAT_COLLIDERS = []; for (const arr of CHUNK_COLLIDERS.values()) { for(let i=0; i<arr.length; i++) FLAT_COLLIDERS.push(arr[i]); } }
+const CHUNK_COLLIDERS = new Map();
+let FLAT_COLLIDERS = [];
+function updateFlatColliders() {
+  FLAT_COLLIDERS = [];
+  for (const arr of CHUNK_COLLIDERS.values()) {
+    for (let i = 0; i < arr.length; i++) {
+      FLAT_COLLIDERS.push(arr[i]);
+    }
+  }
+}
 
-function checkTreeColliders(pos, hitR = 0.35) {
-  for (const colliders of CHUNK_COLLIDERS.values()) {
-    for (let i = 0, n = colliders.length; i < n; i++) {
-      const c = colliders[i];
-      const dx = pos.x - c.cx, dz = pos.z - c.cz;
-      const distSq = dx*dx + dz*dz;
-      const minD = c.r + hitR;
-      if (distSq < minD*minD) {
-        if (pos.y >= c.minY && pos.y <= c.maxY) return c;
-      }
+function checkTreeColliders(pos, hitR = 0.15) {
+  for (let i = 0, n = FLAT_COLLIDERS.length; i < n; i++) {
+    const c = FLAT_COLLIDERS[i];
+    const dx = pos.x - c.cx, dz = pos.z - c.cz;
+    const distSq = dx*dx + dz*dz;
+    const minD = c.r + hitR;
+    if (distSq < minD*minD) {
+      if (pos.y >= c.minY && pos.y <= c.maxY) return c;
     }
   }
   return null;
@@ -214,7 +221,8 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
   });
 
   const key = `${cx},${cz}`;
-  CHUNK_COLLIDERS.set(key, colliders); updateFlatColliders();
+  CHUNK_COLLIDERS.set(key, colliders);
+  updateFlatColliders();
   return group;
 }
 
@@ -265,6 +273,7 @@ if (typeof globalThis !== 'undefined') {
     checkTreeColliders,
     applyTreeCrashPhysics,
     buildInstancedVegetationForChunk,
-    CHUNK_COLLIDERS
+    CHUNK_COLLIDERS,
+    updateFlatColliders
   });
 }
