@@ -1365,7 +1365,78 @@ const THREE_ENV = (() => {
 
   // Cache last result per env to avoid recalculating same point twice
   let _thCache = null;
-  
+
+  function rawTerrainHeight(x, z, envName) {
+    const env = envName || _envName;
+
+    // Flat environments
+    if (env === 'urban' || env === 'indoor') return 0;
+
+    // Domain-warped low-frequency continent mask (very smooth, no sharp edges)
+    const cx  = x * 0.004, cz = z * 0.004;
+    const wx  = Noise.n(cx + 3.7, 0.1, cz + 1.3) * 18;
+    const wz  = Noise.n(cx + 8.2, 0.8, cz + 6.1) * 18;
+    const continent = Math.max(0, Noise.fbm(cx + wx*0.004, 0, cz + wz*0.004, 4, 0.55, 2.0) * 0.5 + 0.5);
+
+    if (env === 'field' || env === 'windy') {
+      // Gentle rolling hills — continent kept low, heavy smoothing
+      const base = Math.pow(continent * 0.55, 1.6) * 14;
+      const mid  = Noise.fbm(x*0.022, 1.2, z*0.022, 4, 0.48, 2.0) * 6;
+      const fine = Noise.n(x*0.14, 2.3, z*0.14) * 1.2;
+      return Math.max(0, base + mid + fine);
+    }
+
+    if (env === 'desert') {
+      // Dune ridges: elongated in one direction + flat inter-dune pans
+      const duneDir = x * 0.018 + z * 0.006; // asymmetric dune axis
+      const dune    = Math.pow(Math.abs(Noise.n(duneDir, 0.3, z*0.014)), 0.7) * 20;
+      const pan     = Math.max(0, Noise.fbm(x*0.009, 0.8, z*0.009, 3, 0.45, 2.0)) * 8;
+      const fine    = Noise.n(x*0.12, 1.1, z*0.12) * 1.5;
+      return Math.max(0, dune + pan + fine);
+    }
+
+    if (env === 'mountains') {
+      // Sharp, varied peaks using ridged noise + domain warp
+      // Ridged noise: 1 - |fbm|  → inverted valleys, sharp ridges
+      const raw   = Noise.warpedFbm(x, z, 5, 0.55, 2.1, 40);
+      const ridge = Math.pow(Math.max(0, continent * 0.8 + raw * 0.5 + 0.1), 1.5);
+      const peak  = ridge * 80;
+      // Erosion detail layered on top
+      const erode = Noise.fbm(x*0.05, 0.5, z*0.05, 3, 0.42, 2.0) * 10 * continent;
+      const scree = Noise.n(x*0.18, 2.1, z*0.18) * 2.5;
+      return Math.max(0, peak + erode + scree);
+    }
+
+    // Default / generic procedural world
+    const raw    = Noise.warpedFbm(x, z, 5, 0.52, 2.0, 30);
+    const height = Math.pow(Math.max(0, continent * 0.7 + raw * 0.4 + 0.15), 1.4) * 50;
+    const detail = Noise.fbm(x*0.08, 1.5, z*0.08, 3, 0.4, 2.0) * 5;
+    return Math.max(0, height + detail);
+  }
+
+  function terrainHeight(x, z, envName) {
+    const env = envName || _envName;
+    if (env === 'urban' || env === 'indoor') return 0; // Flat environments
+
+    const step = 60 / 16; // 3.75
+    const x0 = Math.floor(x / step) * step;
+    const z0 = Math.floor(z / step) * step;
+    const x1 = x0 + step;
+    const z1 = z0 + step;
+
+    const h00 = rawTerrainHeight(x0, z0, env);
+    const h10 = rawTerrainHeight(x1, z0, env);
+    const h01 = rawTerrainHeight(x0, z1, env);
+    const h11 = rawTerrainHeight(x1, z1, env);
+
+    const tx = (x - x0) / step;
+    const tz = (z - z0) / step;
+
+    // Bilinear interpolation
+    const h0 = h00 * (1 - tx) + h10 * tx;
+    const h1 = h01 * (1 - tx) + h11 * tx;
+    return h0 * (1 - tz) + h1 * tz;
+  }
 
   // ── Safe spawn finder ─────────────────────────────────────────────
   // Drone was spawning inside mountains because (0,0) can be mid-peak.
