@@ -7,11 +7,11 @@ require_once __DIR__ . '/session_config.php';
 sb_configure_session();
 session_start();
 
-// Rate limiting — prevent OAuth abuse
-if (sb_rate_limit('oauth', 10, 300)) {
-    $remaining = sb_rate_limit_remaining('oauth');
+// Rate limiting: max 10 OAuth initiations per IP per 5 minutes
+if (sb_rate_limit('oauth_init', 10, 300)) {
+    $remaining = sb_rate_limit_remaining('oauth_init');
     http_response_code(429);
-    echo "Too many login attempts. Please try again in {$remaining} seconds.";
+    echo htmlspecialchars("Too many login attempts. Please try again in {$remaining} seconds.");
     exit;
 }
 

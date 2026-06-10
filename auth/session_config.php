@@ -92,8 +92,13 @@ function sb_verify_csrf_header(): void
  */
 function sb_rate_limit(string $key, int $maxAttempts = 5, int $windowSeconds = 300): bool
 {
-    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
-    $ip = preg_replace('/[^a-fA-F0-9.:]/', '', $ip); // Sanitize IP
+    $ip = $_SERVER['HTTP_CF_CONNECTING_IP']
+        ?? $_SERVER['HTTP_X_FORWARDED_FOR']
+        ?? $_SERVER['REMOTE_ADDR']
+        ?? '0.0.0.0';
+    // Take first IP from comma-separated list (X-Forwarded-For can be "client, proxy")
+    $ip = trim(explode(',', $ip)[0]);
+    $ip = preg_replace('/[^a-fA-F0-9.:]/', '', $ip);
     
     $cacheFile = sys_get_temp_dir() . '/sb_rl_' . $key . '_' . md5($ip) . '.json';
     $now = time();
@@ -124,7 +129,11 @@ function sb_rate_limit(string $key, int $maxAttempts = 5, int $windowSeconds = 3
  */
 function sb_rate_limit_remaining(string $key): int
 {
-    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    $ip = $_SERVER['HTTP_CF_CONNECTING_IP']
+        ?? $_SERVER['HTTP_X_FORWARDED_FOR']
+        ?? $_SERVER['REMOTE_ADDR']
+        ?? '0.0.0.0';
+    $ip = trim(explode(',', $ip)[0]);
     $ip = preg_replace('/[^a-fA-F0-9.:]/', '', $ip);
     
     $cacheFile = sys_get_temp_dir() . '/sb_rl_' . $key . '_' . md5($ip) . '.json';

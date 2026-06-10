@@ -4,8 +4,17 @@ require __DIR__ . '/../vendor/autoload.php';
 require 'db.php';
 
 require_once __DIR__ . '/session_config.php';
+
 sb_configure_session();
 session_start();
+
+// Rate limiting: max 10 OAuth callbacks per IP per 5 minutes
+if (sb_rate_limit('oauth_callback', 10, 300)) {
+    $remaining = sb_rate_limit_remaining('oauth_callback');
+    http_response_code(429);
+    echo htmlspecialchars("Too many login attempts. Please try again in {$remaining} seconds.");
+    exit;
+}
 
 $client = new Google\Client();
 
