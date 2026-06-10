@@ -47,3 +47,10 @@ RewriteRule ^\.(?!well-known) - [F,L]
 
 # ── Block access to composer files ───────────────────────────────────
 RewriteRule ^(vendor|composer\.(json|lock))(/|$) - [F,L]
+
+# ── Block web access to seed/admin-only scripts ───────────────────────
+<Files "seed_subscriptions.php">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</Files>
