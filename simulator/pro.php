@@ -14,7 +14,7 @@ $email = $_SESSION['email'] ?? '';
 $user = $db->users->findOne(['email' => $email]);
 $sub_id = (int)($user['sub_id'] ?? 0);
 $wallet = (float)($user['wallet_balance'] ?? 0.0);
-$run_plan = strtoupper($_GET['run_plan'] ?? '');
+$run_plan = ($sub_id >= 2) ? 'PRO' : 'WALLET';
 $paidState = sb_paid_plan_state($user, true);
 $paidSessionSeconds = max(0, (int) ($paidState['remaining_seconds'] ?? 0));
 $maxPpm = (float) ($_ENV['PLAN_MAX_PPM'] ?? 0.01);
