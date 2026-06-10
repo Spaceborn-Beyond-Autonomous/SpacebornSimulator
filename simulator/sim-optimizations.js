@@ -14,11 +14,11 @@ const TREE_MATS = (() => {
   if (typeof THREE === 'undefined') return null;
   const leafCols = [0x3a8a2e, 0x2e7a24, 0x4a9a3c, 0x338030, 0x28701e, 0x2d6e2a, 0x245e22, 0x1e5218, 0x8ab840];
   return {
-    pineTrunk: new THREE.MeshStandardMaterial({ color: 0x5c3a1e, roughness: 0.95 }),
-    decTrunk: new THREE.MeshStandardMaterial({ color: 0x3d2612, roughness: 0.95 }),
-    birchTrunk: new THREE.MeshStandardMaterial({ color: 0xddd8cc, roughness: 0.80 }),
+    pineTrunk: new THREE.MeshLambertMaterial({ color: 0x5c3a1e }),
+    decTrunk: new THREE.MeshLambertMaterial({ color: 0x3d2612 }),
+    birchTrunk: new THREE.MeshLambertMaterial({ color: 0xddd8cc }),
     leafCols,
-    leafMats: leafCols.map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.85 }))
+    leafMats: leafCols.map(c => new THREE.MeshLambertMaterial({ color: c }))
   };
 })();
 
@@ -33,14 +33,26 @@ function updateFlatColliders() {
   }
 }
 
-function checkTreeColliders(pos, hitR = 0.15) {
-  for (let i = 0, n = FLAT_COLLIDERS.length; i < n; i++) {
-    const c = FLAT_COLLIDERS[i];
-    const dx = pos.x - c.cx, dz = pos.z - c.cz;
-    const distSq = dx*dx + dz*dz;
-    const minD = c.r + hitR;
-    if (distSq < minD*minD) {
-      if (pos.y >= c.minY && pos.y <= c.maxY) return c;
+function checkTreeColliders(pos, hitR = 0.1) {
+  if (typeof CHUNK_COLLIDERS === 'undefined') return null;
+  const CHUNK_SIZE = 60;
+  const cx = Math.round(pos.x / CHUNK_SIZE);
+  const cz = Math.round(pos.z / CHUNK_SIZE);
+
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dz = -1; dz <= 1; dz++) {
+      const key = `${cx + dx},${cz + dz}`;
+      const colliders = CHUNK_COLLIDERS.get(key);
+      if (!colliders) continue;
+
+      for (let i = 0, n = colliders.length; i < n; i++) {
+        const c = colliders[i];
+        const distSq = (pos.x - c.cx)*(pos.x - c.cx) + (pos.z - c.cz)*(pos.z - c.cz);
+        const minD = c.r + hitR;
+        if (distSq < minD*minD) {
+          if (pos.y >= c.minY && pos.y <= c.maxY) return c;
+        }
+      }
     }
   }
   return null;
@@ -49,37 +61,31 @@ function checkTreeColliders(pos, hitR = 0.15) {
 function applyTreeCrashPhysics(hitCollider) {
   if (!PHYS || PHYS.crashed) return;
   const spd = Math.hypot(PHYS.vel.x, PHYS.vel.y, PHYS.vel.z);
-  if (spd < 1.5) return;
+  
+  // ALWAYS trigger crash when hitting a tree, regardless of speed
   PHYS._doCrash(spd);
-
   const co = document.getElementById('crash-overlay');
   if (co && !co.classList.contains('show')) co.classList.add('show');
-  if (typeof UI !== 'undefined' && UI.toast) {
-    UI.toast(`💥 Tree collision! Speed: ${spd.toFixed(1)} m/s`);
-  }
 
+  // Treat tree as a CYLINDER, ignore Y for distance and normal
   const nx = PHYS.pos.x - hitCollider.cx;
-  const ny = PHYS.pos.y - hitCollider.cy;
   const nz = PHYS.pos.z - hitCollider.cz;
-  const nl = Math.hypot(nx, ny, nz) || 1;
-  const nnx = nx/nl, nny = ny/nl, nnz = nz/nl;
+  const nl = Math.hypot(nx, nz) || 1;
+  const nnx = nx/nl, nny = 0, nnz = nz/nl;
 
-  const vDotN = PHYS.vel.x*nnx + PHYS.vel.y*nny + PHYS.vel.z*nnz;
-  const e = 0.22;
-  if (vDotN < 0) {
-    PHYS.vel.x -= (1+e)*vDotN*nnx;
-    PHYS.vel.y -= (1+e)*vDotN*nny;
-    PHYS.vel.z -= (1+e)*vDotN*nnz;
+  // PUSH OUT of the tree to prevent sticking/lag!
+  const pushDist = (hitCollider.r + 0.25) - nl;
+  if (pushDist > 0) {
+    PHYS.pos.x += nnx * pushDist;
+    PHYS.pos.y += nny * pushDist;
+    PHYS.pos.z += nnz * pushDist;
   }
 
-  PHYS.vel.x += (Math.random()-0.5)*spd*0.5;
-  PHYS.vel.z += (Math.random()-0.5)*spd*0.5;
-  PHYS.vel.y += Math.random()*spd*0.2;
-
-  const spin = spd * 1.5;
-  PHYS.angVel.x += (Math.random()-0.5)*spin;
-  PHYS.angVel.y += (Math.random()-0.5)*spin;
-  PHYS.angVel.z += (Math.random()-0.5)*spin;
+  // If crashed, kill horizontal velocity completely so we slide down the trunk
+  PHYS.vel.x = 0;
+  PHYS.vel.z = 0;
+  PHYS.angVel.x = (Math.random()-0.5)*5;
+  PHYS.angVel.z = (Math.random()-0.5)*5;
 }
 
 function buildInstancedVegetationForChunk(cx, cz, envName) {

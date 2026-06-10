@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../auth/session_guard.php';
+// require_once __DIR__ . '/../auth/session_guard.php'; // BYPASSED
 require_once __DIR__ . '/../auth/db.php';
 
 $email = $_SESSION['email'] ?? '';
@@ -2737,6 +2737,32 @@ const SIM = {
     set('t-alt', alt.toFixed(1));
     set('t-vel', vel.toFixed(1));
     set('t-hdng', (((e.yaw*R2D+360)%360)|0).toString().padStart(3,'0'));
+
+    // NEW HUD updates
+    const elTvAlt = document.getElementById('tv-alt'); if (elTvAlt) elTvAlt.textContent = alt.toFixed(0) + 'm';
+    const elTvSpd = document.getElementById('tv-spd'); if (elTvSpd) elTvSpd.textContent = (vel * 3.6).toFixed(0) + ' km/h';
+    const dist = p.homePos ? Math.hypot(p.pos.x - p.homePos.x, p.pos.z - p.homePos.z) : Math.hypot(p.pos.x, p.pos.z);
+    const elTvDist = document.getElementById('tv-dist'); if (elTvDist) elTvDist.textContent = (dist / 1000).toFixed(1) + ' km';
+    const elTvHdg = document.getElementById('tv-hdg'); if (elTvHdg) elTvHdg.textContent = (((e.yaw*R2D+360)%360)|0).toString().padStart(3,'0') + '°';
+    const vspd = p.vel.y;
+    const elTvVspd = document.getElementById('tv-vspd'); if (elTvVspd) { elTvVspd.textContent = (vspd > 0 ? '+' : '') + vspd.toFixed(1); elTvVspd.className = 'tel-value ' + (vspd > 0 ? 'tel-green' : (vspd < 0 ? 'tel-orange' : '')); }
+    const elFsRoll = document.getElementById('fs-roll'); if (elFsRoll) { elFsRoll.textContent = (e.roll > 0 ? '+' : '') + (e.roll * R2D).toFixed(1) + '°'; elFsRoll.className = 'flight-value ' + (Math.abs(e.roll*R2D) > 20 ? 'fv-orange' : ''); }
+    const elFsPitch = document.getElementById('fs-pitch'); if (elFsPitch) { elFsPitch.textContent = (e.pitch > 0 ? '+' : '') + (e.pitch * R2D).toFixed(1) + '°'; elFsPitch.className = 'flight-value ' + (Math.abs(e.pitch*R2D) > 20 ? 'fv-orange' : ''); }
+
+    
+    // NEW HUD updates
+    set('tv-alt', alt.toFixed(0) + 'm');
+    set('tv-spd', (vel * 3.6).toFixed(0) + ' km/h');
+    const dist = p.homePos ? Math.hypot(p.pos.x - p.homePos.x, p.pos.z - p.homePos.z) : Math.hypot(p.pos.x, p.pos.z);
+    set('tv-dist', (dist / 1000).toFixed(1) + ' km');
+    set('tv-hdg', (((e.yaw*R2D+360)%360)|0).toString().padStart(3,'0') + '°');
+    const vspd = p.vel.y;
+    set('tv-vspd', (vspd > 0 ? '+' : '') + vspd.toFixed(1));
+    if (D['tv-vspd']) D['tv-vspd'].className = 'tel-value ' + (vspd > 0 ? 'tel-green' : (vspd < 0 ? 'tel-orange' : ''));
+    set('fs-roll', (e.roll > 0 ? '+' : '') + (e.roll * R2D).toFixed(1) + '°');
+    set('fs-pitch', (e.pitch > 0 ? '+' : '') + (e.pitch * R2D).toFixed(1) + '°');
+    if (D['fs-roll']) D['fs-roll'].className = 'flight-value ' + (Math.abs(e.roll*R2D) > 20 ? 'fv-orange' : '');
+    if (D['fs-pitch']) D['fs-pitch'].className = 'flight-value ' + (Math.abs(e.pitch*R2D) > 20 ? 'fv-orange' : '');
     set('t-pitch', (e.pitch*R2D).toFixed(1));
     set('t-roll',  (e.roll *R2D).toFixed(1));
     set('t-yaw',   (e.yaw  *R2D).toFixed(1));

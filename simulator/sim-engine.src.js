@@ -463,12 +463,20 @@ const PHYS = {
   _lastTauUp: -1, _lastTauDown: -1, _cachedRpmA_up: 0, _cachedRpmA_dn: 0,
 
   step(dtFull){
-    dtFull=Math.max(0.0005,Math.min(0.04,dtFull));
+    dtFull=Math.max(0.0005,Math.min(0.2,dtFull));
     if(!this._sanitize()) return;
     this._prevPos=V3.clone(this.pos);
     this._prevQuat={...this.quat};
     if(this.crashed){this._crashSettle(dtFull); return;}
-    const SUB=4, dt=dtFull/SUB;
+    
+    // Dynamically increase substeps at high velocity to prevent tunneling through thin tree trunks
+    const spd = Math.hypot(this.vel.x, this.vel.y, this.vel.z);
+    let SUB = 4;
+    if (spd > 30) SUB = 6;
+    if (spd > 60) SUB = 10;
+    if (spd > 100) SUB = 15;
+    
+    const dt=dtFull/SUB;
     for(let s=0;s<SUB;s++) this._substep(dt);
     this._updateSensors(dtFull);
   },
@@ -633,7 +641,7 @@ const PHYS = {
     if(newPos.y < minY){
       const impact = Math.abs(this.vel.y);
       // [FIX-1.8] Crash threshold 8 m/s (was 4.5 m/s)
-      if(impact > 2.5 && (typeof State!=='undefined') && State.armed){
+      if(impact >= 5.0 && (typeof State!=='undefined') && State.armed){
         this._doCrash(impact); newPos.y = minY;
       } else {
         newPos.y = minY;
@@ -665,7 +673,7 @@ const PHYS = {
     if(hit){
       const spd = V3.len(this.vel);
       // [FIX-1.8] Crash threshold 2.5 m/s
-      if(spd > 2.5 && (typeof State!=='undefined') && State.armed){ this._doCrash(spd); }
+      if(spd > 4.0 && (typeof State!=='undefined') && State.armed){ this._doCrash(spd); }
       else {
         const n = hit.normal || {x:0,y:1,z:0};
         const vn = V3.dot(this.vel, n);
@@ -680,11 +688,37 @@ const PHYS = {
                 this.pos = V3.add(newPos, V3.scale(n, 0.05));
       }
     } else if (typeof checkTreeColliders === 'function' && typeof CHUNK_COLLIDERS !== 'undefined') {
-      const treeHit = checkTreeColliders(newPos, 0.25);
+      const treeHit = checkTreeColliders(newPos, 0.15);
       if (treeHit) {
         const spd = V3.len(this.vel);
         if(spd > 2.5 && (typeof State!=='undefined') && State.armed){
           if(typeof applyTreeCrashPhysics === 'function') applyTreeCrashPhysics(treeHit);
+          newPos.x = this.pos.x; newPos.y = this.pos.y; newPos.z = this.pos.z;
+        } else {
+          const nx = newPos.x - treeHit.cx;
+          const nz = newPos.z - treeHit.cz;
+          const nl = Math.hypot(nx, nz) || 1;
+          const nnx = nx/nl, nnz = nz/nl;
+          const pushDist = (treeHit.r + 0.25) - nl;
+          if (pushDist > 0) {
+            newPos.x += nnx * pushDist;
+            newPos.z += nnz * pushDist;
+          }
+          this.pos = newPos;
+          const n = {x: nnx, y: 0, z: nnz};
+          const vn = V3.dot(this.vel, n);
+          if (vn < 0) {
+            this.vel.x -= n.x * (1+0.15) * vn;
+            this.vel.z -= n.z * (1+0.15) * vn;
+            const vtx = this.vel.x - n.x * V3.dot(this.vel, n);
+            const vtz = this.vel.z - n.z * V3.dot(this.vel, n);
+            const vtMag = Math.hypot(vtx, vtz);
+            if(vtMag > 0.001) {
+              const fric = Math.min(vtMag, 0.4*Math.abs(vn));
+              this.vel.x -= (vtx/vtMag) * fric;
+              this.vel.z -= (vtz/vtMag) * fric;
+            }
+          }
         }
       }
     }
@@ -769,7 +803,7 @@ const PHYS = {
 
   _doCrash(impact){
     this.crashed=true;
-    if(typeof State!=='undefined') State.armed=false;
+    if(typeof State!=='undefined') State.armed=false; this.motorRPM=[0,0,0,0]; this.motorCmd=[0,0,0,0];
     const cnt=Math.min(4,Math.floor(impact/2.5));
     const idxs=[0,1,2,3].sort(()=>Math.random()-0.5);
     if(typeof State!=='undefined'){
@@ -777,6 +811,10 @@ const PHYS = {
     }
     if(typeof WARN!=='undefined') WARN.trigger('crash');
     if(typeof updateArmUI==='function') updateArmUI();
+    if(typeof document!=='undefined') {
+      const co = document.getElementById('crash-overlay');
+      if(co && !co.classList.contains('show')) co.classList.add('show');
+    }
   },
 
   _crashSettle(dt){
@@ -784,7 +822,6 @@ const PHYS = {
     this.angVel.x*=0.90; this.angVel.z*=0.90; this.angVel.y*=0.93;
     this.quat=Q.integrate(this.quat,this.angVel,dt);
     Q.toEuler(this.quat, this.euler);
-    // Clamp XZ to world bounds during settle to prevent sliding into terrain
     const minY=this.groundY+droneHalf;
     if(this.pos.y>minY){
       this.vel.y-=this.GRAVITY*dt; this.pos.y+=this.vel.y*dt;
@@ -1040,7 +1077,7 @@ const FC = {
         thrCmd=Math.max(0,Math.min(hov+0.2,hov+this.altVelPID.update(Math.max(-1.5,velSP),PHYS.vel.y,dt)));
         if(PHYS.grounded){
           this.rthPhase=3;
-          if(typeof State!=='undefined') State.armed=false;
+          if(typeof State!=='undefined') State.armed=false; this.motorRPM=[0,0,0,0]; this.motorCmd=[0,0,0,0];
           if(typeof updateArmUI==='function') updateArmUI();
         }
       } else {
@@ -1268,12 +1305,12 @@ const INPUT = {
  * Performance note at 2×: PHYS.step() is called with dtFull up to 2× the wall-clock
  * frame time. The physics substep count is fixed at 4, so each substep dt doubles.
  * All integrators (Euler, RK-style battery, Kalman, PID) remain stable up to ~3× because
- * dtFull is clamped to 40 ms (line: dtFull=Math.max(0.0005,Math.min(0.04,dtFull))), so
+ * dtFull is clamped to 40 ms (line: dtFull=Math.max(0.0005,Math.min(0.2,dtFull))), so
  * the effective per-substep dt never exceeds 10 ms — well within stability margins.
  * CPU cost is IDENTICAL to 1× (same number of substeps per rendered frame); the only
  * difference is the wall-clock time advances faster. No performance issues at 2×.
  */
-const SIM_SPEED = 4;
+const SIM_SPEED = 3;
 
 
 // [FIX-5.2] Shared clock object so both sim-engine and index.html mutate/read the same reference
@@ -1886,3 +1923,6 @@ if(typeof globalThis!=='undefined'){
     MAVLINK, TELEM_GRAPH, PHYS, FC, V3, Q, DRYDEN, Noise, PID, Kalman1D, DRONE_PROFILES
   });
 }
+
+
+
