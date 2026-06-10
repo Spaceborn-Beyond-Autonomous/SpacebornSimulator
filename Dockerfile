@@ -11,8 +11,10 @@ RUN apt-get update && apt-get install -y \
 RUN pecl install mongodb \
     && docker-php-ext-enable mongodb
 
-# Enable Apache mod_rewrite (often needed for PHP routing)
-RUN a2enmod rewrite
+# Enable Apache mod_rewrite and configure AllowOverride for .htaccess
+RUN a2enmod rewrite headers \
+    && sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf \
+    && echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

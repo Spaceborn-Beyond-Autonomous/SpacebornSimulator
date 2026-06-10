@@ -162,6 +162,7 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="csrf-token" content="<?= htmlspecialchars(sb_csrf_token(), ENT_QUOTES, 'UTF-8') ?>"/>
   <title>Certanity — My Plan &amp; Billing</title>
   <link rel="icon" type="image/png" href="assets/logo-iso.png" />
   <link rel="apple-touch-icon" href="assets/logo-iso.png" />
@@ -628,6 +629,7 @@ $total_paid = count(array_filter($invoices, fn($i) => $i['status'] === 'paid'));
     <p>Your remaining subscription time will be prorated and refunded to your wallet balance.</p>
     <form method="POST" action="api/downgrade.php">
       <input type="hidden" name="plan_id" id="downgradePlanId" value="0">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(sb_csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" onclick="closeModal('downgradeModal')">Cancel</button>
         <button type="submit" class="btn btn-primary" style="background:var(--red);box-shadow:0 4px 14px rgba(224,85,85,.3)">Confirm Downgrade</button>
@@ -707,7 +709,7 @@ document.getElementById('confirmUpgradeBtn').addEventListener('click', function(
     var form = document.createElement('form');
     form.method = 'POST';
     form.action = 'billing_action.php';
-    [{n:'action',v:'upgrade'},{n:'plan_id',v:_upgradePlanId}].forEach(function(f){
+    [{n:'action',v:'upgrade'},{n:'plan_id',v:_upgradePlanId},{n:'csrf_token',v:document.querySelector('meta[name="csrf-token"]').getAttribute('content')}].forEach(function(f){
       var i = document.createElement('input');
       i.type='hidden'; i.name=f.n; i.value=f.v;
       form.appendChild(i);

@@ -1,8 +1,15 @@
 (function () {
+  function getCsrfToken() {
+    var meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? meta.getAttribute('content') : '';
+  }
+
   function postToVerify(payload) {
     var form = document.createElement('form');
     form.method = 'POST';
     form.action = 'payments/verify_payment.php';
+
+    payload['csrf_token'] = getCsrfToken();
 
     Object.keys(payload).forEach(function (key) {
       var input = document.createElement('input');
@@ -19,7 +26,10 @@
   function fetchOrder(planId, source) {
     return fetch('payments/create_order.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': getCsrfToken()
+      },
       body: JSON.stringify({
         plan_id: planId,
         source: source
@@ -77,7 +87,10 @@
   function fetchTopupOrder(amountUsd, source) {
     return fetch('payments/create_topup_order.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': getCsrfToken()
+      },
       body: JSON.stringify({
         amount_usd: amountUsd,
         source: source
@@ -133,6 +146,8 @@
             n: 'razorpay_signature', v: response.razorpay_signature
           }, {
             n: 'source', v: source || 'billing'
+          }, {
+            n: 'csrf_token', v: getCsrfToken()
           }].forEach(function (f) {
             var input = document.createElement('input');
             input.type = 'hidden';

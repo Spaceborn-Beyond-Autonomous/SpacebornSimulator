@@ -1,0 +1,21 @@
+{
+  "name": "Certanity Robotics",
+  "short_name": "Certanity",
+  "description": "India's first browser-based drone simulator",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10256D",
+  "icons": [
+    {
+      "src": "/assets/logo-iso.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/logo-iso.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

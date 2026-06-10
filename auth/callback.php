@@ -3,6 +3,8 @@
 require __DIR__ . '/../vendor/autoload.php';
 require 'db.php';
 
+require_once __DIR__ . '/session_config.php';
+sb_configure_session();
 session_start();
 
 $client = new Google\Client();

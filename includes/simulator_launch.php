@@ -370,7 +370,7 @@ function sb_simulator_launch_info(array|object|null $user = null): array
     $freeTrial = sb_free_trial_state($row, false);
     if ($freeTrial['available']) {
         return [
-            'url' => 'simulator/basic.php?run_plan=FREE',
+            'url' => 'simulator/basic.php',
             'plan_id' => 0,
             'plan_name' => 'BASIC',
             'needs_picker' => false,

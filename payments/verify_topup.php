@@ -2,12 +2,17 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/../auth/session_config.php';
+sb_configure_session();
 session_start();
 
 if (!isset($_SESSION['email'])) {
     header('Location: ../billing.php?payment=missing');
     exit;
 }
+
+// CSRF validation — form-based POST
+sb_verify_csrf_form();
 
 require_once __DIR__ . '/razorpay.php';
 
@@ -16,12 +21,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$orderId = (string) ($_POST['razorpay_order_id'] ?? '');
+$orderId   = (string) ($_POST['razorpay_order_id']   ?? '');
 $paymentId = (string) ($_POST['razorpay_payment_id'] ?? '');
-$signature = (string) ($_POST['razorpay_signature'] ?? '');
-$source = (string) ($_POST['source'] ?? 'billing');
+$signature = (string) ($_POST['razorpay_signature']  ?? '');
+$source    = (string) ($_POST['source']              ?? 'billing');
 
-$redirect = $source === 'billing' ? '../billing.php' : '../billing.php';
+$redirect = '../billing.php';
 
 if ($orderId === '' || $paymentId === '' || $signature === '') {
     header('Location: ' . $redirect . '?payment=missing');
@@ -36,7 +41,7 @@ if (!sb_verify_razorpay_signature($orderId, $paymentId, $signature)) {
 $pending = $_SESSION['pending_order'] ?? null;
 if (
     !is_array($pending)
-    || ($pending['type'] ?? '') !== 'wallet_topup'
+    || ($pending['type']     ?? '') !== 'wallet_topup'
     || ($pending['order_id'] ?? '') !== $orderId
 ) {
     header('Location: ' . $redirect . '?payment=failed');
@@ -66,30 +71,30 @@ try {
                 ['$inc' => ['wallet_balance' => $amountUsd]]
             );
 
-            $user = $db->users->findOne(['email' => $email]);
+            $user       = $db->users->findOne(['email' => $email]);
             $newBalance = (float) ($user['wallet_balance'] ?? 0);
             $_SESSION['wallet_balance'] = $newBalance;
 
             if (isset($db->payments)) {
                 $db->payments->insertOne([
-                    'email' => $email,
-                    'type' => 'wallet_topup',
-                    'provider' => 'razorpay',
-                    'order_id' => $orderId,
+                    'email'      => $email,
+                    'type'       => 'wallet_topup',
+                    'provider'   => 'razorpay',
+                    'order_id'   => $orderId,
                     'payment_id' => $paymentId,
                     'amount_usd' => $amountUsd,
-                    'status' => 'paid',
+                    'status'     => 'paid',
                     'created_at' => new MongoDB\BSON\UTCDateTime(),
                 ]);
             }
 
             $db->invoices->insertOne([
-                'email' => $email,
-                'created_at' => new MongoDB\BSON\UTCDateTime(),
+                'email'       => $email,
+                'created_at'  => new MongoDB\BSON\UTCDateTime(),
                 'description' => 'Wallet Top-up (Razorpay)',
-                'amount' => $amountUsd,
-                'status' => 'paid',
-                'payment_id' => $paymentId,
+                'amount'      => $amountUsd,
+                'status'      => 'paid',
+                'payment_id'  => $paymentId,
             ]);
         }
     }

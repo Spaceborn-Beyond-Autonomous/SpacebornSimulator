@@ -6,6 +6,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die("Invalid request method.");
 }
 
+// CSRF validation — must be before any business logic
+sb_verify_csrf_form();
+
 $target_plan_id = (int)($_POST['plan_id'] ?? 0);
 if ($target_plan_id < 1 || $target_plan_id > 3) {
     die("Invalid target plan.");

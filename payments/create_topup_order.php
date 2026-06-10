@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/../auth/session_config.php';
+sb_configure_session();
 session_start();
+
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['email'])) {
@@ -10,6 +13,9 @@ if (!isset($_SESSION['email'])) {
     echo json_encode(['ok' => false, 'message' => 'Unauthorized. Please log in first.']);
     exit;
 }
+
+// CSRF validation — JSON endpoint uses header-based token
+sb_verify_csrf_header();
 
 require_once __DIR__ . '/razorpay.php';
 
@@ -19,10 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$raw = file_get_contents('php://input');
-$body = json_decode($raw ?: '{}', true);
+$raw       = file_get_contents('php://input');
+$body      = json_decode($raw ?: '{}', true);
 $amountUsd = (float) ($body['amount_usd'] ?? 0);
-$source = (string) ($body['source'] ?? 'billing');
+$source    = (string) ($body['source'] ?? 'billing');
 
 if ($amountUsd < 1 || $amountUsd > 500) {
     http_response_code(400);
@@ -50,32 +56,32 @@ try {
         $amountInPaise,
         $receipt,
         [
-            'type' => 'wallet_topup',
+            'type'       => 'wallet_topup',
             'amount_usd' => (string) $amountUsd,
-            'source' => $source,
-            'email' => (string) ($_SESSION['email'] ?? ''),
+            'source'     => $source,
+            'email'      => (string) ($_SESSION['email'] ?? ''),
         ]
     );
 
     $_SESSION['pending_order'] = [
-        'type' => 'wallet_topup',
+        'type'       => 'wallet_topup',
         'amount_usd' => $amountUsd,
-        'order_id' => (string) ($order['id'] ?? ''),
-        'source' => $source,
-        'receipt' => $receipt,
+        'order_id'   => (string) ($order['id'] ?? ''),
+        'source'     => $source,
+        'receipt'    => $receipt,
     ];
 
     $keys = sb_razorpay_keys();
 
     echo json_encode([
-        'ok' => true,
-        'key_id' => $keys['key_id'],
-        'order_id' => (string) $order['id'],
-        'amount' => (int) $order['amount'],
-        'currency' => (string) $order['currency'],
+        'ok'          => true,
+        'key_id'      => $keys['key_id'],
+        'order_id'    => (string) $order['id'],
+        'amount'      => (int) $order['amount'],
+        'currency'    => (string) $order['currency'],
         'description' => 'Wallet top-up ($' . number_format($amountUsd, 2) . ')',
-        'prefill' => [
-            'name' => (string) ($_SESSION['name'] ?? ''),
+        'prefill'     => [
+            'name'  => (string) ($_SESSION['name']  ?? ''),
             'email' => (string) ($_SESSION['email'] ?? ''),
         ],
     ]);
@@ -83,7 +89,7 @@ try {
     $isConfigError = str_contains($e->getMessage(), 'Missing Razorpay credentials');
     http_response_code($isConfigError ? 400 : 500);
     echo json_encode([
-        'ok' => false,
+        'ok'      => false,
         'message' => $e->getMessage(),
     ]);
 }

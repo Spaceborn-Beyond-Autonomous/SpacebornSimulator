@@ -1,6 +1,8 @@
-<?php 
+<?php
 
 if (session_status() === PHP_SESSION_NONE) {
+    require_once __DIR__ . '/session_config.php';
+    sb_configure_session();
     session_start();
 }
 
@@ -22,5 +24,3 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['email'])) {
 }
 
 $name = $_SESSION['name'] ?? '';
-
-?>

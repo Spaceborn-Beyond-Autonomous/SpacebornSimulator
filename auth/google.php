@@ -3,7 +3,17 @@
 require __DIR__ . '/../vendor/autoload.php';
 require 'db.php';
 
+require_once __DIR__ . '/session_config.php';
+sb_configure_session();
 session_start();
+
+// Rate limiting — prevent OAuth abuse
+if (sb_rate_limit('oauth', 10, 300)) {
+    $remaining = sb_rate_limit_remaining('oauth');
+    http_response_code(429);
+    echo "Too many login attempts. Please try again in {$remaining} seconds.";
+    exit;
+}
 
 $client = new Google\Client();
 
