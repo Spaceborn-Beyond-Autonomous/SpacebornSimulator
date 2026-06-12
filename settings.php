@@ -1,5 +1,7 @@
 <?php
 require 'auth/session_guard.php';
+require_once 'auth/session_config.php';
+require_once 'auth/db.php';
 
 $sidebar_active = 'settings';
 $name     = htmlspecialchars($_SESSION['name']  ?? 'Demo Pilot');
@@ -10,9 +12,24 @@ $plan     = htmlspecialchars($_SESSION['user_sub']['plan_name'] ?? 'Free');
 $profile_saved = $password_saved = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    sb_verify_csrf_form();
+
     if (isset($_POST['save_profile'])) {
-        $name = htmlspecialchars($_POST['full_name'] ?? $name);
-        $profile_saved = true;
+        $newName     = trim($_POST['full_name'] ?? '');
+        $newTimezone = trim($_POST['timezone'] ?? 'UTC+05:30');
+
+        if ($newName !== '') {
+            $db->users->updateOne(
+                ['email' => $_SESSION['email']],
+                ['$set' => ['name' => $newName, 'timezone' => $newTimezone]]
+            );
+
+            $_SESSION['name']     = $newName;
+            $_SESSION['timezone'] = $newTimezone;
+
+            $name = htmlspecialchars($newName);
+            $profile_saved = true;
+        }
     } elseif (isset($_POST['save_password'])) {
         $password_saved = true;
     }
@@ -23,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="csrf-token" content="<?= sb_csrf_token() ?>"/>
   <title>Certanity — Settings</title>
   <link rel="icon" type="image/png" href="assets/logo-iso.png" />
   <link rel="apple-touch-icon" href="assets/logo-iso.png" />
@@ -150,6 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
       <?php endif; ?>
       <form method="POST">
+        <input type="hidden" name="csrf_token" value="<?= sb_csrf_token() ?>"/>
         <div class="form-grid-2" style="margin-bottom:20px;">
           <div class="form-group">
             <label class="form-label">Full Name</label>
@@ -184,6 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
       <?php endif; ?>
       <form method="POST">
+        <input type="hidden" name="csrf_token" value="<?= sb_csrf_token() ?>"/>
         <div class="form-grid-2" style="margin-bottom:20px;">
           <div class="form-group">
             <label class="form-label">Current Password</label>
