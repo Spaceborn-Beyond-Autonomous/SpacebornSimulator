@@ -3,7 +3,7 @@ require_once __DIR__ . '/../auth/session_guard.php';
 require_once __DIR__ . '/../auth/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    die("Invalid request method.");
+    header("Location: ../billing.php?msg=error"); exit;
 }
 
 // CSRF validation — must be before any business logic
@@ -11,25 +11,25 @@ sb_verify_csrf_form();
 
 $target_plan_id = (int)($_POST['plan_id'] ?? 0);
 if ($target_plan_id < 1 || $target_plan_id > 3) {
-    die("Invalid target plan.");
+    header("Location: ../billing.php?msg=error"); exit;
 }
 
 $email = $_SESSION['email'] ?? '';
 if (!$email) {
-    die("User session not found.");
+    header("Location: ../billing.php?msg=error"); exit;
 }
 
 $usersCol = $db->users;
 $user = $usersCol->findOne(['email' => $email]);
 if (!$user) {
-    die("User not found in database.");
+    header("Location: ../billing.php?msg=error"); exit;
 }
 
 $current_plan_id = (int)($user['sub_id'] ?? 1);
 
 // Ensure this is actually a downgrade
 if ($target_plan_id >= $current_plan_id) {
-    die("Target plan must be lower than the current plan.");
+    header("Location: ../billing.php?msg=error"); exit;
 }
 
 // Calculate the prorated refund

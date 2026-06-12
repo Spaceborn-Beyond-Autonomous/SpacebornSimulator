@@ -3,7 +3,7 @@ require_once __DIR__ . '/auth/session_guard.php';
 require_once __DIR__ . '/auth/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    die("Invalid request method.");
+    header("Location: billing.php?msg=error"); exit;
 }
 
 // CSRF validation — must be before any business logic
@@ -14,18 +14,18 @@ $plan_id = (int) ($_POST['plan_id'] ?? 0);
 
 if ($action === 'upgrade') {
     if ($plan_id < 1 || $plan_id > 3) {
-        die("Invalid plan selected.");
+        header("Location: billing.php?msg=error"); exit;
     }
 
     $email = $_SESSION['email'] ?? '';
     if (!$email) {
-        die("User session not found.");
+        header("Location: billing.php?msg=error"); exit;
     }
 
     $usersCol = $db->users;
     $user     = $usersCol->findOne(['email' => $email]);
     if (!$user) {
-        die("User not found.");
+        header("Location: billing.php?msg=error"); exit;
     }
 
     $current_plan_id = (int) ($user['sub_id'] ?? 1);
@@ -110,4 +110,4 @@ if ($action === 'upgrade') {
     exit;
 }
 
-die("Action not supported.");
+header("Location: billing.php?msg=error"); exit;
