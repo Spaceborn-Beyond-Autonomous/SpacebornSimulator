@@ -24,8 +24,9 @@ if (!$user) {
 
 $planId = (int) ($user['sub_id'] ?? 0);
 $wallet = (float) ($user['wallet_balance'] ?? 0.0);
-$ppm = (float) ($_GET['ppm'] ?? 0.10);
-$requestedPlan = strtoupper(trim((string) ($_GET['run_plan'] ?? $_GET['plan'] ?? 'FREE')));
+// PPM always from server — never from URL params
+$ppm = 0.0;
+
 
 $timeSeconds = 0;
 $planName = 'FREE';
@@ -60,13 +61,7 @@ if ($planId > 0) {
         $timeSeconds = $walletSeconds;
     }
 } else {
-    if ($requestedPlan === 'BASIC') {
-        $ppm = (float) ($_ENV['PLAN_BASIC_PPM'] ?? 0.10);
-    } elseif ($requestedPlan === 'PRO') {
-        $ppm = (float) ($_ENV['PLAN_PRO_PPM'] ?? 0.05);
-    } elseif ($requestedPlan === 'MAX') {
-        $ppm = (float) ($_ENV['PLAN_MAX_PPM'] ?? 0.01);
-    }
+    $ppm = (float) ($_ENV['PLAN_FREE_PPM'] ?? 0.10);
 
     if ($wallet > 0 && ($ppm > 0)) {
         $walletSeconds = (int) (($wallet / $ppm) * 60);
@@ -106,7 +101,6 @@ echo json_encode([
     'plan_name' => $planName,
     'wallet_balance' => $wallet,
     'base_minutes' => $baseMinutes,
-    'ppm' => $ppm,
     'time_remaining_seconds' => $timeSeconds,
     'max_session_seconds' => $timeSeconds,
     'sub_active' => $subActive,
