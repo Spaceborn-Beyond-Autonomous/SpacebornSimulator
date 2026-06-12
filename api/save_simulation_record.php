@@ -23,11 +23,15 @@ if (empty($telemetryUrl)) {
 }
 
 try {
-    $db = getDB();
-    $userId = $_SESSION['user_id'];
-    
+    $email = $_SESSION['email'] ?? '';
+    if (!$email) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'error' => 'Not logged in']);
+        exit;
+    }
+
     $simRecord = [
-        'user_id' => new MongoDB\BSON\ObjectId($userId),
+        'email' => $email,
         'duration_seconds' => (int)$duration,
         'size_bytes' => (int)$sizeBytes,
         'drone_profile' => $droneProfile,
