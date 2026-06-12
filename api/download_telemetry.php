@@ -39,6 +39,14 @@ if (empty($telemetry_url)) {
     exit('Telemetry data not found.');
 }
 
+// SSRF guard: only allow fetching from our own R2 bucket, never arbitrary URLs
+$r2_base = $_ENV['R2_PUBLIC_URL'] ?? getenv('R2_PUBLIC_URL') ?: '';
+$r2_base = trim($r2_base, " \t\n\r\0\x0B\"'"); // strip surrounding quotes/whitespace from .env value
+if ($r2_base === '' || strncmp($telemetry_url, $r2_base, strlen($r2_base)) !== 0) {
+    header('HTTP/1.1 400 Bad Request');
+    exit('Invalid telemetry URL.');
+}
+
 $filename = "telemetry_{$id}_{$idx}.json";
 
 header('Content-Description: File Transfer');
@@ -52,7 +60,7 @@ header('Pragma: public');
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $telemetry_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, false); // echo directly
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); // no redirects — prevents redirect-based SSRF bypass
 curl_exec($ch);
 curl_close($ch);
 exit;
