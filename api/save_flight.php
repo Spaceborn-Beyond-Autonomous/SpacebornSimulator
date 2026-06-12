@@ -48,21 +48,27 @@ try {
     if ($user) {
         $wallet = (float)($user['wallet_balance'] ?? 0.0);
         $duration = (float)($input['duration'] ?? 0); // flight duration in seconds
-        $plan = strtoupper($input['plan'] ?? 'FREE');
-        $ppm = (float)($input['ppm'] ?? 0.10);
-        $planId = (int) ($user['sub_id'] ?? 0);
+        $planId = (int)($user['sub_id'] ?? 0);
         $sub_remaining_seconds = 0.0;
+
+        // PPM and plan name always from server — never from user input
+        if ($planId === 3) {
+            $ppm = (float)($_ENV['PLAN_MAX_PPM'] ?? 0.10);
+            $plan = 'MAX';
+        } elseif ($planId === 2) {
+            $ppm = (float)($_ENV['PLAN_PRO_PPM'] ?? 0.05);
+            $plan = 'PRO';
+        } elseif ($planId === 1) {
+            $ppm = (float)($_ENV['PLAN_BASIC_PPM'] ?? 0.02);
+            $plan = 'BASIC';
+        } else {
+            $ppm = (float)($_ENV['PLAN_FREE_PPM'] ?? 0.10);
+            $plan = 'FREE';
+        }
 
         if ($planId > 0) {
             $paidState = sb_paid_plan_state($user, false);
-            $sub_remaining_seconds = (float) ($paidState['remaining_seconds'] ?? 0);
-            if ($planId === 1) {
-                $ppm = (float) ($_ENV['PLAN_BASIC_PPM'] ?? $ppm);
-            } elseif ($planId === 2) {
-                $ppm = (float) ($_ENV['PLAN_PRO_PPM'] ?? $ppm);
-            } elseif ($planId === 3) {
-                $ppm = (float) ($_ENV['PLAN_MAX_PPM'] ?? $ppm);
-            }
+            $sub_remaining_seconds = (float)($paidState['remaining_seconds'] ?? 0);
         }
         
         $charge = 0.0;
