@@ -1,4 +1,4 @@
-/* SpaceBorn Simulator Optimizations - Fixed Version */
+/* SpaceBorn Simulator Optimizations - FIXED: Universal Collision System */
 const TREE_GEOS = (() => {
   if (typeof THREE === 'undefined') return null;
   return {
@@ -22,8 +22,10 @@ const TREE_MATS = (() => {
   };
 })();
 
+// UNIFIED collider system for ALL obstacles (trees, rocks, buildings, etc)
 const CHUNK_COLLIDERS = new Map();
 let FLAT_COLLIDERS = [];
+
 function updateFlatColliders() {
   FLAT_COLLIDERS = [];
   for (const arr of CHUNK_COLLIDERS.values()) {
@@ -33,6 +35,7 @@ function updateFlatColliders() {
   }
 }
 
+// Check ANY collider (trees, rocks, buildings, terrain obstacles)
 function checkTreeColliders(pos, hitR = 0.1) {
   if (typeof CHUNK_COLLIDERS === 'undefined') return null;
   const CHUNK_SIZE = 60;
@@ -62,18 +65,18 @@ function applyTreeCrashPhysics(hitCollider) {
   if (!PHYS || PHYS.crashed) return;
   const spd = Math.hypot(PHYS.vel.x, PHYS.vel.y, PHYS.vel.z);
   
-  // ALWAYS trigger crash when hitting a tree, regardless of speed
+  // ALWAYS trigger crash when hitting ANY rigid obstacle
   PHYS._doCrash(spd);
   const co = document.getElementById('crash-overlay');
   if (co && !co.classList.contains('show')) co.classList.add('show');
 
-  // Treat tree as a CYLINDER, ignore Y for distance and normal
+  // Treat collision as CYLINDER, ignore Y for distance and normal
   const nx = PHYS.pos.x - hitCollider.cx;
   const nz = PHYS.pos.z - hitCollider.cz;
   const nl = Math.hypot(nx, nz) || 1;
   const nnx = nx/nl, nny = 0, nnz = nz/nl;
 
-  // PUSH OUT of the tree to prevent sticking/lag!
+  // PUSH OUT of the obstacle to prevent sticking/lag
   const pushDist = (hitCollider.r + 0.25) - nl;
   if (pushDist > 0) {
     PHYS.pos.x += nnx * pushDist;
@@ -81,7 +84,7 @@ function applyTreeCrashPhysics(hitCollider) {
     PHYS.pos.z += nnz * pushDist;
   }
 
-  // If crashed, kill horizontal velocity completely so we slide down the trunk
+  // If crashed, kill horizontal velocity completely
   PHYS.vel.x = 0;
   PHYS.vel.z = 0;
   PHYS.angVel.x = (Math.random()-0.5)*5;
@@ -141,7 +144,7 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
       for (let l = 0; l < 3; l++) {
         treeData.lobes.push({ la: (l / 3) * Math.PI * 2 + rng() * 0.8, yo: rng() * 0.5 });
       }
-      leafCounts[leafCI] += 4; // 1 main canopy + 3 lobes
+      leafCounts[leafCI] += 4;
     } else {
       numBirch++;
       treeData.tH = 3.5 + rng() * 3;
@@ -238,14 +241,116 @@ function buildInstancedVegetationForChunk(cx, cz, envName) {
   return group;
 }
 
+// ADD rock/boulder colliders to chunk (for mountains/desert/fields)
+function buildRockCollidersForChunk(cx, cz, envName) {
+  if (typeof CHUNK_COLLIDERS === 'undefined') return [];
+  
+  const env = envName || 'field';
+  const CHUNK_SIZE = 60;
+  const rng = (typeof _chunkRng !== 'undefined') ? _chunkRng(cx + 5000, cz + 6000) : Math.random;
+  
+  const worldOffX = cx * CHUNK_SIZE;
+  const worldOffZ = cz * CHUNK_SIZE;
+  
+  // More rocks in mountains, fewer in fields/desert
+  const count = env === 'mountains' ? 25 : (env === 'desert' ? 15 : 8);
+  
+  const colliders = [];
+  
+  for (let i = 0; i < count; i++) {
+    const lx = (rng() - 0.5) * CHUNK_SIZE * 0.85;
+    const lz = (rng() - 0.5) * CHUNK_SIZE * 0.85;
+    
+    // Skip center spawn area
+    if (Math.abs(lx) < 5 && Math.abs(lz) < 5 && cx === 0 && cz === 0) continue;
+    
+    const wx = lx + worldOffX;
+    const wz = lz + worldOffZ;
+    const hy = THREE_ENV.getTerrainHeight(wx, wz);
+    
+    // Skip very high peaks in mountains
+    if (env === 'mountains' && hy > 35) continue;
+    
+    const scale = 0.5 + rng() * 1.2;
+    const radius = scale * 0.5;
+    
+    colliders.push({
+      cx: wx,
+      cy: hy + scale * 0.4,
+      cz: wz,
+      minY: hy,
+      maxY: hy + scale * 1.2,
+      r: radius,
+      type: 'rock'
+    });
+  }
+  
+  return colliders;
+}
+
+// ADD building/structure colliders for urban environment
+function buildBuildingCollidersForChunk(cx, cz) {
+  if (typeof CHUNK_COLLIDERS === 'undefined') return [];
+  
+  const CHUNK_SIZE = 60;
+  const rng = (typeof _chunkRng !== 'undefined') ? _chunkRng(cx + 7000, cz + 8000) : Math.random;
+  
+  const worldOffX = cx * CHUNK_SIZE;
+  const worldOffZ = cz * CHUNK_SIZE;
+  
+  const colliders = [];
+  const buildingCount = 6;
+  
+  for (let i = 0; i < buildingCount; i++) {
+    const lx = (rng() - 0.5) * CHUNK_SIZE * 0.75;
+    const lz = (rng() - 0.5) * CHUNK_SIZE * 0.75;
+    
+    // Skip center spawn
+    if (Math.abs(lx) < 8 && Math.abs(lz) < 8 && cx === 0 && cz === 0) continue;
+    
+    const wx = lx + worldOffX;
+    const wz = lz + worldOffZ;
+    const bHeight = 8 + rng() * 15;
+    const bWidth = 4 + rng() * 6;
+    
+    colliders.push({
+      cx: wx,
+      cy: bHeight * 0.5,
+      cz: wz,
+      minY: 0,
+      maxY: bHeight,
+      r: bWidth * 0.4,
+      type: 'building'
+    });
+  }
+  
+  return colliders;
+}
+
+// Merge all colliders into the chunk system
+function registerChunkColliders(cx, cz, rockColliders, buildingColliders = []) {
+  const key = `${cx},${cz}`;
+  let allColliders = CHUNK_COLLIDERS.get(key) || [];
+  
+  if (rockColliders && rockColliders.length > 0) {
+    allColliders = allColliders.concat(rockColliders);
+  }
+  if (buildingColliders && buildingColliders.length > 0) {
+    allColliders = allColliders.concat(buildingColliders);
+  }
+  
+  if (allColliders.length > 0) {
+    CHUNK_COLLIDERS.set(key, allColliders);
+    updateFlatColliders();
+  }
+}
+
 const SIM_PATCH = {
   _installed: true,
   install() {
-    // Tree collisions moved to core sim-engine.js _substep
+    // Tree & rock collisions handled in core sim-engine.js _substep
   }
 };
-
-// No longer patching SIM._loop here
 
 if (typeof globalThis !== 'undefined') {
   Object.assign(globalThis, {
@@ -253,6 +358,9 @@ if (typeof globalThis !== 'undefined') {
     checkTreeColliders,
     applyTreeCrashPhysics,
     buildInstancedVegetationForChunk,
+    buildRockCollidersForChunk,
+    buildBuildingCollidersForChunk,
+    registerChunkColliders,
     CHUNK_COLLIDERS,
     updateFlatColliders
   });
