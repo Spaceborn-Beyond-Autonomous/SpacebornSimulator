@@ -61,15 +61,15 @@ function checkTreeColliders(pos, hitR = 0.1) {
   return null;
 }
 
+/**
+ * ✅ REALISTIC COLLISION DAMAGE SYSTEM
+ * Determines which motor hits obstacle and applies realistic damage
+ */
 function applyTreeCrashPhysics(hitCollider) {
   if (!PHYS || PHYS.crashed) return;
+  
   const spd = Math.hypot(PHYS.vel.x, PHYS.vel.y, PHYS.vel.z);
   
-  // ALWAYS trigger crash when hitting ANY rigid obstacle
-  PHYS._doCrash(spd);
-  const co = document.getElementById('crash-overlay');
-  if (co && !co.classList.contains('show')) co.classList.add('show');
-
   // Treat collision as CYLINDER, ignore Y for distance and normal
   const nx = PHYS.pos.x - hitCollider.cx;
   const nz = PHYS.pos.z - hitCollider.cz;
@@ -84,11 +84,127 @@ function applyTreeCrashPhysics(hitCollider) {
     PHYS.pos.z += nnz * pushDist;
   }
 
-  // If crashed, kill horizontal velocity completely
-  PHYS.vel.x = 0;
-  PHYS.vel.z = 0;
-  PHYS.angVel.x = (Math.random()-0.5)*5;
-  PHYS.angVel.z = (Math.random()-0.5)*5;
+  // ✅ NEW: Determine which motor(s) are hit based on drone orientation
+  // Quad-X configuration: motors at 45° angles
+  // Motor 0: Front-Right (+X, +Z)
+  // Motor 1: Front-Left (-X, +Z)  
+  // Motor 2: Back-Left (-X, -Z)
+  // Motor 3: Back-Right (+X, -Z)
+  
+  // Get drone's current rotation to determine motor positions
+  const motorOffsets = [
+    { x: 0.15, z: 0.15 },   // Motor 0: FR
+    { x: -0.15, z: 0.15 },  // Motor 1: FL
+    { x: -0.15, z: -0.15 }, // Motor 2: BL
+    { x: 0.15, z: -0.15 }   // Motor 3: BR
+  ];
+  
+  // Rotate motor offsets by drone's yaw
+  const cos_yaw = Math.cos(PHYS.euler.yaw);
+  const sin_yaw = Math.sin(PHYS.euler.yaw);
+  const rotatedOffsets = motorOffsets.map(m => ({
+    x: m.x * cos_yaw - m.z * sin_yaw,
+    z: m.x * sin_yaw + m.z * cos_yaw
+  }));
+  
+  // Find which motor is closest to collision point
+  let closestMotor = 0;
+  let closestDist = Infinity;
+  
+  for (let i = 0; i < 4; i++) {
+    const motor_x = PHYS.pos.x + rotatedOffsets[i].x;
+    const motor_z = PHYS.pos.z + rotatedOffsets[i].z;
+    const dx = motor_x - hitCollider.cx;
+    const dz = motor_z - hitCollider.cz;
+    const dist = Math.hypot(dx, dz);
+    
+    if (dist < closestDist) {
+      closestDist = dist;
+      closestMotor = i;
+    }
+  }
+  
+  // ✅ Realistic damage based on impact speed and collision type
+  const impactFactor = Math.min(1, spd / 15); // Normalize by max speed (15 m/s)
+  
+  // Damage varies by obstacle type
+  let damageAmount = 0.3 + impactFactor * 0.5; // 0.3 - 0.8 base damage
+  
+  if (hitCollider.type === 'rock') {
+    damageAmount *= 1.5; // Rocks cause 50% more damage
+  } else if (hitCollider.type === 'building') {
+    damageAmount *= 1.3; // Buildings cause 30% more damage
+  } else if (hitCollider.type === 'tree') {
+    // Tree branches/leaves cause less damage but can hit multiple motors
+    damageAmount *= 0.8;
+    
+    // Trees can damage multiple motors if hit at branch level
+    const branchDamageRadius = 0.4;
+    if (typeof State !== 'undefined' && State.motorDamage) {
+      for (let i = 0; i < 4; i++) {
+        const motor_x = PHYS.pos.x + rotatedOffsets[i].x;
+        const motor_z = PHYS.pos.z + rotatedOffsets[i].z;
+        const dx = motor_x - hitCollider.cx;
+        const dz = motor_z - hitCollider.cz;
+        const dist = Math.hypot(dx, dz);
+        
+        if (dist < branchDamageRadius) {
+          // Multiple hit damage is reduced per motor
+          State.motorDamage[i] = Math.min(1, State.motorDamage[i] + damageAmount * 0.6);
+        }
+      }
+    }
+  }
+  
+  // ✅ Apply damage to closest motor (or multiple if tree)
+  if (typeof State !== 'undefined' && State.motorDamage) {
+    State.motorDamage[closestMotor] = Math.min(1, State.motorDamage[closestMotor] + damageAmount);
+    
+    // Additional motors hit if collision is severe
+    if (spd > 12) { // High speed hits multiple motors
+      const secondMotor = (closestMotor + 1) % 4;
+      State.motorDamage[secondMotor] = Math.min(1, State.motorDamage[secondMotor] + damageAmount * 0.4);
+    }
+  }
+  
+  // ✅ Realistic control loss - don't fully crash, lose control gradually
+  const maxDamage = Math.max(...(State?.motorDamage || [0, 0, 0, 0]));
+  
+  if (maxDamage >= 0.7) {
+    // Major damage - trigger crash
+    PHYS._doCrash(spd);
+    const co = document.getElementById('crash-overlay');
+    if (co && !co.classList.contains('show')) co.classList.add('show');
+  } else if (maxDamage >= 0.4) {
+    // Moderate damage - lose some control, spin uncontrollably
+    PHYS.vel.x *= 0.5;  // Reduce forward velocity
+    PHYS.vel.z *= 0.5;  // Reduce sideways velocity
+    PHYS.angVel.x = (Math.random()-0.5)*8;  // Spin
+    PHYS.angVel.y = (Math.random()-0.5)*6;  // Yaw spin
+    PHYS.angVel.z = (Math.random()-0.5)*8;  // Roll
+    
+    // Disarm but don't fully crash - recovery possible
+    if (typeof State !== 'undefined') {
+      State.armed = false;
+    }
+    
+    // Show warning but not full crash overlay
+    if (typeof WARN !== 'undefined') {
+      WARN.trigger('collision');
+    }
+  } else {
+    // Light damage - just lose some velocity, recover possible
+    PHYS.vel.x *= 0.7;
+    PHYS.vel.z *= 0.7;
+    PHYS.angVel.x = (Math.random()-0.5)*3;
+    PHYS.angVel.z = (Math.random()-0.5)*3;
+  }
+  
+  // Always show some feedback
+  const co = document.getElementById('crash-overlay');
+  if (co && maxDamage >= 0.4 && !co.classList.contains('show')) {
+    co.classList.add('show');
+  }
 }
 
 function buildInstancedVegetationForChunk(cx, cz, envName) {

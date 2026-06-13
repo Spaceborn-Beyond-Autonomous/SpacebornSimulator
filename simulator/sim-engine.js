@@ -781,18 +781,49 @@ const PHYS = {
 
   _crashSettle(dt){
     const droneHalf = 0.074 * (this.droneVisual.bodyScale || 1.0) * 5.0;
-    this.angVel.x*=0.90; this.angVel.z*=0.90; this.angVel.y*=0.93;
-    this.quat=Q.integrate(this.quat,this.angVel,dt);
-    Q.toEuler(this.quat, this.euler);
-    const minY=this.groundY+droneHalf;
-    if(this.pos.y>minY){
-      this.vel.y-=this.GRAVITY*dt; this.pos.y+=this.vel.y*dt;
-    } else {
-      this.pos.y=minY; this.vel=V3.zero();
+    
+    // ✅ Realistic tumbling - don't immediately stop rotation
+    // Simulate air resistance and motor spin-down more gradually
+    this.angVel.x *= 0.92;    // Pitch damps faster (air resistance)
+    this.angVel.y *= 0.88;    // Yaw damps (harder to spin around)
+    this.angVel.z *= 0.92;    // Roll damps
+    
+    // ✅ Add damaging motor spins - damaged motors can't produce thrust
+    // This creates asymmetric forces causing uncontrolled spinning
+    if (typeof State !== 'undefined' && State.motorDamage) {
+      for (let i = 0; i < 4; i++) {
+        const damage = State.motorDamage[i] || 0;
+        // Damaged motors spin at reduced rate, creating gyroscopic imbalance
+        this.motorRPM[i] *= (1 - damage * 0.5);
+      }
     }
-    // Hard floor: never go below terrain (prevents camera clipping through mountain)
-    if(this.pos.y<minY) this.pos.y=minY;
-    for(let i=0;i<4;i++) this.motorRPM[i]*=0.90;
+    
+    // Integrate rotation
+    this.quat = Q.integrate(this.quat, this.angVel, dt);
+    Q.toEuler(this.quat, this.euler);
+    
+    // ✅ Realistic falling - maintain downward velocity unless on ground
+    const minY = this.groundY + droneHalf;
+    if (this.pos.y > minY) {
+      // Still falling - apply gravity
+      this.vel.y -= this.GRAVITY * dt * 0.8; // Slightly less gravity due to tumbling
+      this.pos.y += this.vel.y * dt;
+    } else {
+      // Hit ground - stop falling
+      this.pos.y = minY;
+      this.vel.y = Math.max(this.vel.y * 0.7, 0); // Bounce reduction
+    }
+    
+    // Hard floor: never go below terrain
+    if (this.pos.y < minY) this.pos.y = minY;
+    
+    // ✅ Realistic motor spool-down (not instant stop)
+    // Damaged motors spool down SLOWER (stuck or partially stuck prop)
+    for (let i = 0; i < 4; i++) {
+      const damage = (State?.motorDamage?.[i] || 0);
+      const spoolDownRate = 0.88 + damage * 0.08; // Damaged motors stick (spool slower)
+      this.motorRPM[i] *= spoolDownRate;
+    }
   },
 
   /**
