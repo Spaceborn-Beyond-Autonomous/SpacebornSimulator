@@ -1,5 +1,5 @@
 <?php
-// require_once __DIR__ . '/../auth/session_guard.php'; // BYPASSED
+require_once __DIR__ . '/../auth/session_guard.php';
 
 // Prevent direct URL access (detect address bar typing)
 $secFetchSite = $_SERVER['HTTP_SEC_FETCH_SITE'] ?? '';
@@ -22,8 +22,8 @@ $walletSeconds = ($wallet > 0 && $maxPpm > 0) ? (int) (($wallet / $maxPpm) * 60)
 $accessSeconds = 2592000; // BYPASSED
 
 // Allow access if: subscribed to MAX, OR running on wallet with run_plan=MAX
-$allowed = true; // BYPASSED
-/* allowed check bypassed */
+$allowed = ($sub_id >= 2) || ($wallet > 0);
+if (!$allowed) { header("Location: ../dashboard.php?msg=upgrade"); exit; }
 
 if ($sub_id >= 2) {
     if ($paidSessionSeconds > 0) {

@@ -1,5 +1,5 @@
 <?php
-// require_once __DIR__ . '/../auth/session_guard.php'; // BYPASSED
+require_once __DIR__ . '/../auth/session_guard.php';
 
 // Prevent direct URL access (detect address bar typing)
 $secFetchSite = $_SERVER['HTTP_SEC_FETCH_SITE'] ?? '';
@@ -19,16 +19,14 @@ $paidState = sb_paid_plan_state($user, true);
 $paidSessionSeconds = max(0, (int) ($paidState['remaining_seconds'] ?? 0));
 $basicPpm = (float) ($_ENV['PLAN_BASIC_PPM'] ?? 0.10);
 $walletSeconds = ($wallet > 0 && $basicPpm > 0) ? (int) (($wallet / $basicPpm) * 60) : 0;
-$trialRemainingSeconds = 0;
-
-// Allow access if: subscribed to any paid plan, OR free user (sub_id === 0)
-$allowed = true; // BYPASSED
-/* allowed check bypassed */
-
 $trialState = sb_free_trial_state($user, false);
+$trialRemainingSeconds = 0;
 if ($trialState['available']) {
     $trialRemainingSeconds = (int) ($trialState['remaining_seconds'] ?? (10 * 60));
 }
+// Allow access if: subscribed to any paid plan, OR free user with wallet funds, OR free trial available
+$allowed = ($sub_id >= 1) || ($sub_id === 0 && ($wallet > 0 || $trialState['available']));
+if (!$allowed) { header("Location: ../dashboard.php?msg=upgrade"); exit; }
 
 $accessSeconds = 2592000; // BYPASSED
 if ($sub_id >= 1) {
